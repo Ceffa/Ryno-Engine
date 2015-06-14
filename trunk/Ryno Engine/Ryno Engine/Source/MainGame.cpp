@@ -99,6 +99,12 @@ void MainGame::draw(){
 	/* Swap our buffers to make our changes visible */
 	SDL_GL_SwapWindow(m_window);
 
+	glUseProgram(0);
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDeleteBuffers(2, vbo);
+	glDeleteVertexArrays(1, &vao);
+
 		
 	
 
