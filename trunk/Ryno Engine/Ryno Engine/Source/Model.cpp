@@ -67,35 +67,22 @@ Model* Model::load_model(const std::string& name, glm::vec4 color)
 
 		}
 	}
-	for (unsigned int i = 0; i < vertexIndices.size(); i++){
-		unsigned int vertexIndex = vertexIndices[i];
-		glm::vec3 vertex = temp_vertices[vertexIndex - 1];
-		model->positions.push_back(vertex);
+
+	I32 size = vertexIndices.size();
+	model->vertices = std::vector<Vertex3D>(size);
+
+	for (U32 i = 0; i < size; i++){
+		U32 vertexIndex = vertexIndices[i];
+		U32 uvIndex = uvIndices[i];
+		U32 normalIndex = normalIndices[i];
+		
+		model->vertices[i].position = temp_vertices[vertexIndex - 1];
+		model->vertices[i].uv = temp_uvs[uvIndex - 1];
+		model->vertices[i].normal = temp_normals[normalIndex - 1];
 	}
 
-	for (unsigned int i = 0; i < uvIndices.size(); i++){
-		unsigned int uvIndex = uvIndices[i];
-		glm::vec2 uv = temp_uvs[uvIndex - 1];
-		model->uvs.push_back(uv);
-	}
-	for (unsigned int i = 0; i < normalIndices.size(); i++){
-
-		unsigned int normalIndex = normalIndices[i];
-		glm::vec3 normal = temp_normals[normalIndex - 1];
-		model->normals.push_back(normal);
-	}
+	
 	return model;
 }
 
-
-std::vector<Vertex3D> Model::get_vertex_array(){
-	std::vector <Vertex3D> vertices(positions.size());
-	U32 i;
-	for (i = 0; i < vertices.size(); i++){
-		vertices[i].position = positions[i];
-		vertices[i].uv = uvs[i];
-		vertices[i].color = color;
-	}
-	return vertices;
-}
 

@@ -50,13 +50,12 @@ void MainGame::update(){
 void MainGame::draw(){
 	
 
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-	std::vector<Vertex3D> vertices = m_model->get_vertex_array();
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	I32 t_locations = m_program.getUniformLocation("myTextureSampler");
 	glUniform1i(t_locations, 0);
@@ -64,16 +63,16 @@ void MainGame::draw(){
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_model->texture.id);
 	//orphan buffer
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_model->vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
 	//upload the data
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data()); //data return pointer to first element somehow
+	glBufferSubData(GL_ARRAY_BUFFER, 0, m_model->vertices.size() * sizeof(Vertex3D), m_model->vertices.data()); //data return pointer to first element somehow
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
 
-	glDrawArrays(GL_TRIANGLES,0,vertices.size()/3);
+	glDrawArrays(GL_TRIANGLES, 0, m_model->vertices.size() / 3);
 
 	/* Swap our buffers to make our changes visible */
 	SDL_GL_SwapWindow(m_window);
