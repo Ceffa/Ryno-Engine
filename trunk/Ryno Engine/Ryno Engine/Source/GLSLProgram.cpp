@@ -7,7 +7,13 @@
 #include <iostream>
 #include <string>
 
-
+void GLSLProgram::create(const std::string& name){
+	init();
+	load_shaders(name);
+	compile_shaders();
+	bind_attributes();
+	link_shaders();
+}
 void GLSLProgram::init(){
 	m_program_id=0;
 	m_attr_no=0;

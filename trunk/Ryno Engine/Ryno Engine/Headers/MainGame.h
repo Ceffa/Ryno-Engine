@@ -4,6 +4,7 @@
 #include <GL\glew.h>
 #include "ErrorManager.h"
 #include "GLSLProgram.h"
+#include "Model.h"
 
 class MainGame
 {
@@ -36,6 +37,12 @@ private:
 	void handle_input();
 
 	/**
+	To be called in the game loop before draw().
+	It update the logic of the game.
+	*/
+	void update();
+
+	/**
 	To be called in the game loop after handle_input().
 	It renders on screen.
 	*/
@@ -57,6 +64,8 @@ private:
 	GameState m_game_state;
 	GLSLProgram m_program;
 	SDL_Window* m_window;
+	Model* m_model;
+	U32 vao, vbo;
 
 
 	

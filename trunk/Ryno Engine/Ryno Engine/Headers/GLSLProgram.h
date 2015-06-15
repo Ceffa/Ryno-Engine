@@ -12,6 +12,16 @@ class GLSLProgram
 public:
 
 	/**
+	This function create a new GLSLProgram, it loads the shaders and everything else.
+	After this call, the GLSLProgram could be used.
+	Use init, load_shaders, compile_shaders, bind_attributes and link_shaders to
+	separate these steps.
+	@Param name of the shader 
+	*/
+	void create(const std::string& name);
+
+
+	/**
 	Initialize the GLSLProgram
 	*/
 	void init();
@@ -41,7 +51,7 @@ public:
 	/**
 	Get uniform location used to pass uniforms to the shader
 	*/
-	GLint getUniformLocation(const std::string& uniformName);
+	I32 getUniformLocation(const std::string& uniformName);
 
 	/**
 	Use the current program, call this befor starting to draw
