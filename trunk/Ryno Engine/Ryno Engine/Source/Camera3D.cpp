@@ -14,7 +14,7 @@ namespace Ryno{
 
 	void Camera3D::generate_camera_matrix(){
 		//scale
-		camera_matrix = glm::scale(glm::mat4(1.0), glm::vec3(scale/800.0f));
+		camera_matrix = glm::scale(glm::mat4(1.0), glm::vec3(scale/2.0f));
 		//rotate
 		camera_matrix = glm::rotate(camera_matrix, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 		camera_matrix = glm::rotate(camera_matrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));

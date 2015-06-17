@@ -56,24 +56,49 @@ namespace Ryno{
 	}
 
 	void MainGame::update(){
-		m_camera->generate_camera_matrix(); 
-		m_game_object->generate_model_matrix();
+
+		for (GameObject* o : m_game_objects)
+			o->generate_model_matrix();
+		//std::cout << glm::to_string(m_game_object->model_matrix) << std::endl;
+
 
 	}
 
 	void MainGame::start(){
-		m_batch3d = new Batch3D();
-		m_batch3d->init();
 		m_camera = new Camera3D(800, 600);
+		m_batch3d = new Batch3D();
+		Mesh m;
+		GLTexture texture = TextureLoader::loadPNG("metal");
+		Model::load_model("cube", &m);
+		for (I32 i = 0; i < 10; i++){
+			for (I32 j = 0; j < 10; j++){
+				GameObject* new_go = new GameObject();
+				new_go->position = glm::vec3(i *1.3f , j*1.3f , -7);
+				new_go->model.mesh = m;
+				new_go->model.texture = texture;
+				new_go->scale = glm::vec3(300, 300, 300);
+				m_game_objects.push_back(new_go);
+
+
+			}
+		}
+	/*	m_game_object->model = Model::load_model("cube");
+		m_game_object->model->texture = TextureLoader::loadPNG("metal");
+		m_game_object->scale = glm::vec3(300, 300, 300);
+		m_game_object->position = glm::vec3(0, 0, -6);*/
+
+
+		m_camera->position = glm::vec3(-800, -600, 300);
+		m_camera->scale = glm::vec3(1, 1, 1);
+
+		m_batch3d->init(m_camera);
 		
 		m_program.create("prova");
-		m_model = Model::load_model("cube");
-		m_model->texture = TextureLoader::loadPNG("metal");
+		
 
-		m_game_object = new GameObject();
-		m_game_object->model = m_model;
+	
 
-		m_game_object->position = glm::vec3(-200, -100, 0);
+		
 
 
 	}
@@ -85,6 +110,7 @@ namespace Ryno{
 		while (m_game_state == GameState::Running){
 			
 			handle_input();
+			update();
 			m_program.use();
 			draw();
 			m_program.unuse();
@@ -106,14 +132,9 @@ namespace Ryno{
 
 		
 	
-		I32 t_locations = m_program.getUniformLocation("myTextureSampler");
-		glUniform1i(t_locations, 0);
-
-		I32 m_loc = m_program.getUniformLocation("MVP_matrix");
-		glm::mat4 final_mat = m_camera->camera_matrix * m_game_object->model_matrix;
-		glUniformMatrix4fv(m_loc, 1, GL_FALSE, &(final_mat[0][0]));
-	
-		m_batch3d->draw(*m_model);
+		
+		for (GameObject* o : m_game_objects)
+			m_batch3d->draw(&(o->model));
 		//glActiveTexture(GL_TEXTURE0);
 		//glBindTexture(GL_TEXTURE_2D, m_model->texture.id);
 		////orphan buffer
@@ -131,11 +152,21 @@ namespace Ryno{
 		///* Swap our buffers to make our changes visible */
 
 		m_batch3d->end();
+
+
+		I32 t_locations = m_program.getUniformLocation("myTextureSampler");
+		glUniform1i(t_locations, 0);
+
+		/*I32 m_loc = m_program.getUniformLocation("MVP_matrix");
+		glm::mat4 MVP = m_camera->camera_matrix * m_game_object->model->model_matrix;
+		glUniformMatrix4fv(m_loc, 1, GL_FALSE, &(MVP[0][0]));*/
+
+
 		m_batch3d->render_batch();
 
 		SDL_GL_SwapWindow(m_window);
 		
-
+	//	exit_game();
 	
 
 

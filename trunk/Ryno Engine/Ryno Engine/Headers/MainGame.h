@@ -71,7 +71,7 @@ namespace Ryno{
 
 		Camera3D* m_camera;
 		GameState m_game_state;
-		GameObject* m_game_object;
+		std::vector<GameObject*> m_game_objects;
 		GLSLProgram m_program;
 		SDL_Window* m_window;
 		Model* m_model;

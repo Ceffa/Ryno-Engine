@@ -23,18 +23,17 @@ namespace Ryno{
 	class Batch3D{
 	public:
 	
-		void init();
+		void init(Camera3D* camera);
 		void begin();
 		void end();
 		void render_batch();
 		
-		void draw(const Model& model);
+		void draw(Model* model);
 		
 	private:
 
 		//two vector to optimize access and sorting
-		std::vector<Model*> m_models_pointers;
-		std::vector<Model> m_models;
+		std::vector<Model*> m_models;
 		std::vector<RenderBatch> m_render_batches;
 		
 		static U8 compare_texture(Model* a, Model* b);
@@ -43,8 +42,10 @@ namespace Ryno{
 		void create_vertex_array();
 
 		U32 m_vbo;
+		U32 m_i_vbo;//instancing vbo
 		U32 m_vao;
 
+		Camera3D* m_camera;
 
 
 	};

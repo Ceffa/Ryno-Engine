@@ -5,10 +5,10 @@
 #include "GLM/gtx/string_cast.hpp"
 
 namespace Ryno{
-	Model* Model::load_model(const std::string& name, ColorRGBA color)
+	void Model::load_model(const std::string& name,Mesh* mesh, ColorRGBA color)
 	{
 		const std::string& path = "Resources/Models/" + name + ".obj";
-		Model* model = new Model();
+		
 		std::vector< U32 > vertexIndices, uvIndices, normalIndices;
 		std::vector< glm::vec3 > temp_vertices;
 		std::vector< glm::vec2 > temp_uvs;
@@ -17,7 +17,7 @@ namespace Ryno{
 		FILE * file = fopen(path.c_str(), "r");
 		if (!file){
 			printf("Impossible to open the file !\n");
-			return nullptr;
+			return;
 		}
 
 		while (1){
@@ -52,7 +52,7 @@ namespace Ryno{
 				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 				if (matches != 9){
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					return false;
+					return;
 				}
 
 				vertexIndices.push_back(vertexIndex[0]);
@@ -69,20 +69,20 @@ namespace Ryno{
 		}
 
 		U32 size = (U32)vertexIndices.size();
-		model->vertices = std::vector<Vertex3D>(size);
+		mesh->vertices = std::vector<Vertex3D>(size);
 
 		for (U32 i = 0; i < size; i++){
 			U32 vertexIndex = vertexIndices[i];
 			U32 uvIndex = uvIndices[i];
 			U32 normalIndex = normalIndices[i];
 
-			model->vertices[i].position = temp_vertices[vertexIndex - 1];
-			model->vertices[i].uv = temp_uvs[uvIndex - 1];
-			model->vertices[i].normal = temp_normals[normalIndex - 1];
-			model->vertices[i].color = color;
+			mesh->vertices[i].position = temp_vertices[vertexIndex - 1];
+			mesh->vertices[i].uv = temp_uvs[uvIndex - 1];
+			mesh->vertices[i].normal = temp_normals[normalIndex - 1];
+			mesh->vertices[i].color = color;
 		}
 
 
-		return model;
+		return;
 	}
 }
