@@ -11,5 +11,5 @@ out vec3 middle_color;
 void main(){
 	gl_Position = in_MVP * vec4(in_Position,1.0);
 	middle_uv = in_Uv;
-    middle_color = in_Color.rgb * in_Normal.rgb;
+    middle_color = in_Color.rgb;
 }

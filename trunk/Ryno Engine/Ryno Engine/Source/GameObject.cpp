@@ -11,7 +11,7 @@ namespace Ryno{
 		model.model_matrix = glm::rotate(model.model_matrix, rotation.y, glm::vec3(0.0, 1.0, 0.0));
 		model.model_matrix = glm::rotate(model.model_matrix, rotation.z, glm::vec3(0.0, 0.0, 1.0));
 		//translate
-		model.model_matrix = glm::translate(model.model_matrix, position);
+		model.model_matrix = glm::translate(model.model_matrix, glm::vec3(position.x,position.y,-position.z));
 	}
 
 }

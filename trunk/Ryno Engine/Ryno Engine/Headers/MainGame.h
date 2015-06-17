@@ -7,6 +7,7 @@
 #include "GameObject.h"
 #include "Batch3D.h"
 #include "Camera3D.h"
+#include "Global.h"
 namespace Ryno{
 	class MainGame
 	{
@@ -68,6 +69,9 @@ namespace Ryno{
 		@param: file path
 		*/
 		C* load_shader(C *file);
+
+
+	
 
 		Camera3D* m_camera;
 		GameState m_game_state;

@@ -8,6 +8,8 @@
 namespace Ryno{
 	void MainGame::init_systems(){
 
+		
+
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 			Log::FatalError("Failed to initialize SDL: ", SDL_GetError());
 		}
@@ -17,7 +19,7 @@ namespace Ryno{
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
 		SDL_GL_SetSwapInterval(1);
 
-		if ((m_window = SDL_CreateWindow("Ryno Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL)) == NULL){
+		if ((m_window = SDL_CreateWindow("Ryno Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL)) == NULL){
 			Log::FatalError("Failed to create SDL window: ", SDL_GetError());
 		}
 
@@ -65,30 +67,28 @@ namespace Ryno{
 	}
 
 	void MainGame::start(){
-		m_camera = new Camera3D(800, 600);
+		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_batch3d = new Batch3D();
 		Mesh m;
 		GLTexture texture = TextureLoader::loadPNG("metal");
 		Model::load_model("cube", &m);
-		for (I32 i = 0; i < 10; i++){
-			for (I32 j = 0; j < 10; j++){
+		for (I32 i = 10; i < 30; i++){
+			for (I32 j = 0; j < 30; j++){
+				
 				GameObject* new_go = new GameObject();
-				new_go->position = glm::vec3(i *1.3f , j*1.3f , -7);
+				new_go->position = glm::vec3(i *1.3f , j*1.3f , 10);
 				new_go->model.mesh = m;
 				new_go->model.texture = texture;
-				new_go->scale = glm::vec3(300, 300, 300);
+				new_go->scale = glm::vec3(1,1,1);
 				m_game_objects.push_back(new_go);
 
 
 			}
 		}
-	/*	m_game_object->model = Model::load_model("cube");
-		m_game_object->model->texture = TextureLoader::loadPNG("metal");
-		m_game_object->scale = glm::vec3(300, 300, 300);
-		m_game_object->position = glm::vec3(0, 0, -6);*/
+	
 
 
-		m_camera->position = glm::vec3(-800, -600, 300);
+		m_camera->position = glm::vec3(0,0, -3);
 		m_camera->scale = glm::vec3(1, 1, 1);
 
 		m_batch3d->init(m_camera);
