@@ -3,16 +3,14 @@
 #include <GLM\glm.hpp>
 #include "Types.h"
 #include "TextureLoader.h"
+#include "Structures.h"
 
-struct Vertex3D{
-	glm::vec3 position;
-	glm::vec2 uv;
-	glm::vec4 color;
-	glm::vec3 normal;
-};
+namespace Ryno{
+
+	
 
 
-class Model{
+	class Model{
 	public:
 
 		/**
@@ -20,12 +18,12 @@ class Model{
 		@Param name -> name of the model in Resource folder
 		@Paramm color -> initial color of the model. White is default.
 		*/
-		static Model* load_model(const std::string& name, glm::vec4 color = glm::vec4(1.0f,1.0f,1.0f,1.0f));
+		static Model* load_model(const std::string& name, ColorRGBA color = ColorRGBA::ColorRGBA(1,1,1,1));
 
 
 		GLTexture texture;
-		glm::vec4 color;
 		std::vector<Vertex3D> vertices;
-		
 
-};
+
+	};
+}

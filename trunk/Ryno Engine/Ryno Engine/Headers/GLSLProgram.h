@@ -5,124 +5,125 @@
 #include <GL/gl.h>
 #include "Types.h"
 #include <array>
+namespace Ryno{
+	class GLSLProgram
+	{
 
-class GLSLProgram
-{
+	public:
 
-public:
-
-	/**
-	This function create a new GLSLProgram, it loads the shaders and everything else.
-	After this call, the GLSLProgram could be used.
-	Use init, load_shaders, compile_shaders, bind_attributes and link_shaders to
-	separate these steps.
-	@Param name of the shader 
-	*/
-	void create(const std::string& name);
-
-
-	/**
-	Initialize the GLSLProgram
-	*/
-	void init();
-
-	/**
-	Load both shaders
-	*/
-	void load_shaders(const std::string& name);
-	
-	/**
-	Compile both Vertex and Fragment shader.
-	*/
-	void compile_shaders();
-
-	/**
-	Scan the meta file to bind the attributes that will be used.
-	Provide the ordered list of attributes in the meta file.
-	I should later automatize this process.
-	*/
-	void bind_attributes();
-
-	/**
-	Attach shaders to this program, and then link it
-	*/
-	void link_shaders();
-
-	/**
-	Get uniform location used to pass uniforms to the shader
-	*/
-	I32 getUniformLocation(const std::string& uniformName);
-
-	/**
-	Use the current program, call this befor starting to draw
-	*/
-	void use();
-
-	/**
-	Call this after drawing
-	*/
-	void unuse();
-
-	/**
-	Destroy this program, along with the loaded shaders. Call it at the end, not between game cycles
-	*/
-	void destroy();
+		/**
+		This function create a new GLSLProgram, it loads the shaders and everything else.
+		After this call, the GLSLProgram could be used.
+		Use init, load_shaders, compile_shaders, bind_attributes and link_shaders to
+		separate these steps.
+		@Param name of the shader
+		*/
+		void create(const std::string& name);
 
 
-private:
+		/**
+		Initialize the GLSLProgram
+		*/
+		void init();
 
-	//local enum to differentiate the shader type
-	enum  ShadersIndex{ VERT, FRAG };
+		/**
+		Load both shaders
+		*/
+		void load_shaders(const std::string& name);
 
-	//local enum to identify the different operations on a shader
-	enum  OperationIndex{ CREATE, COMPILE, LINK };
+		/**
+		Compile both Vertex and Fragment shader.
+		*/
+		void compile_shaders();
 
-	//number of attributes input to vert shader
-	U32 m_attr_no;
-	//id of the glsl program
-	U32 m_program_id;
-	//the two ids of the two shaders
-	U32 m_shader_ids[2];
+		/**
+		Scan the meta file to bind the attributes that will be used.
+		Provide the ordered list of attributes in the meta file.
+		I should later automatize this process.
+		*/
+		void bind_attributes();
 
-	std::string shader_name;
+		/**
+		Attach shaders to this program, and then link it
+		*/
+		void link_shaders();
 
-	/**
-	Load a single shader.
-	@Param index -> Type of the shader
-	@Param path -> Path of the shader
-	*/
-	void load_shader(ShadersIndex index, const std::string& path);
+		/**
+		Get uniform location used to pass uniforms to the shader
+		*/
+		I32 getUniformLocation(const std::string& uniformName);
 
-	/**
-	Compile a previously loaded shader.
-	@Param index -> shader id
-	*/
-	void compile_shader(ShadersIndex index);
+		/**
+		Use the current program, call this befor starting to draw
+		*/
+		void use();
 
-	/**
-	Function to load a shader inside a buffer
-	*/
-	void read_file_inside_string(const std::string& path, const char** c);
+		/**
+		Call this after drawing
+		*/
+		void unuse();
 
-	/**
-	Check for error during shader creation
-	*/
-	U8 check_create_errors(ShadersIndex index);
-
-	/**
-	Check for error during shader compilation
-	*/
-	U8 check_compile_errors(ShadersIndex index);
-
-	/**
-	Check for error during program linking
-	*/
-	U8 check_link_errors();
+		/**
+		Destroy this program, along with the loaded shaders. Call it at the end, not between game cycles
+		*/
+		void destroy();
 
 
-	void add_attribute(const C* attributeName);
+	private:
+
+		//local enum to differentiate the shader type
+		enum  ShadersIndex{ VERT, FRAG };
+
+		//local enum to identify the different operations on a shader
+		enum  OperationIndex{ CREATE, COMPILE, LINK };
+
+		//number of attributes input to vert shader
+		U32 m_attr_no;
+		//id of the glsl program
+		U32 m_program_id;
+		//the two ids of the two shaders
+		U32 m_shader_ids[2];
+
+		std::string shader_name;
+
+		/**
+		Load a single shader.
+		@Param index -> Type of the shader
+		@Param path -> Path of the shader
+		*/
+		void load_shader(ShadersIndex index, const std::string& path);
+
+		/**
+		Compile a previously loaded shader.
+		@Param index -> shader id
+		*/
+		void compile_shader(ShadersIndex index);
+
+		/**
+		Function to load a shader inside a buffer
+		*/
+		void read_file_inside_string(const std::string& path, const char** c);
+
+		/**
+		Check for error during shader creation
+		*/
+		U8 check_create_errors(ShadersIndex index);
+
+		/**
+		Check for error during shader compilation
+		*/
+		U8 check_compile_errors(ShadersIndex index);
+
+		/**
+		Check for error during program linking
+		*/
+		U8 check_link_errors();
 
 
-	
+		void add_attribute(const C* attributeName);
 
-};
+
+
+
+	};
+}

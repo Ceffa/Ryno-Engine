@@ -2,14 +2,15 @@
 layout(location = 0) in vec3 in_Position;
 layout(location = 1) in vec2 in_Uv;
 layout(location = 2) in vec4 in_Color;
+layout(location = 2) in vec4 in_Normal;
 
 out vec2 middle_uv;
 out vec3 middle_color;
 
-uniform mat4 WVP_matrix;
+uniform mat4 MVP_matrix;
 
 void main(){
-	gl_Position = WVP_matrix * vec4(in_Position,1.0);
+	gl_Position = MVP_matrix * vec4(in_Position,1.0);
 	middle_uv = in_Uv;
-    middle_color = in_Color.rgb;
+    middle_color = in_Color.rgb * in_Normal.rgb;
 }
