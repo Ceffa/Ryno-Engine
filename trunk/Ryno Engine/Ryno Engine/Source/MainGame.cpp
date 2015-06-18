@@ -61,24 +61,33 @@ namespace Ryno{
 
 		for (GameObject* o : m_game_objects)
 			o->generate_model_matrix();
-		//std::cout << glm::to_string(m_game_object->model_matrix) << std::endl;
 
 
 	}
 
 	void MainGame::start(){
+		m_mesh_loader = MeshLoader::get_instance();
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_batch3d = new Batch3D();
-		Mesh m;
-		GLTexture texture = TextureLoader::loadPNG("metal");
-		Model::load_model("cube", &m);
-		for (I32 i = 10; i < 30; i++){
-			for (I32 j = 0; j < 30; j++){
+		
+		GLTexture texture_metal = TextureLoader::loadPNG("metal");
+		GLTexture texture_wood = TextureLoader::loadPNG("wood");
+		I32 cube_mesh = m_mesh_loader.load_mesh("cube");
+		I32 sphere_mesh = m_mesh_loader.load_mesh("sphere");
+		for (I32 i = -10; i < 10; i++){
+			for (I32 j = -10; j < 10; j++){
 				
 				GameObject* new_go = new GameObject();
-				new_go->position = glm::vec3(i *1.3f , j*1.3f , 10);
-				new_go->model.mesh = m;
-				new_go->model.texture = texture;
+				new_go->position = glm::vec3(i *1.3f , j*1.3f , 6);
+				if (((i+j)%2)==0)
+					new_go->model.mesh = sphere_mesh;
+				else
+					new_go->model.mesh = cube_mesh;
+
+				if (((i + j) % 3) == 0)
+					new_go->model.texture = texture_metal;
+				else
+					new_go->model.texture = texture_wood;
 				new_go->scale = glm::vec3(1,1,1);
 				m_game_objects.push_back(new_go);
 

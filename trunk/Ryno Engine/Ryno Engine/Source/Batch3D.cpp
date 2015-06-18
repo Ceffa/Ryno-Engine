@@ -8,17 +8,11 @@
 namespace Ryno {
 
 
-	/*Mesh::Mesh(const std::vector <Vertex3D>& verticex, GLuint t)
-
-	{
-		texture = t;
-		for (I32 i = 0; i< vertices.size(); i++)
-			vertices.emplace_back(verticex[i]);
-	}*/
-
+	
 
 	void Batch3D::init(Camera3D* camera) {
 		m_camera = camera;
+		m_mesh_loader = MeshLoader::get_instance();
 		create_vertex_array();
 
 	}
@@ -29,7 +23,7 @@ namespace Ryno {
 	void Batch3D::begin() {
 
 		m_render_batches.clear();
-		
+		mvp_instances.clear();
 		m_models.clear();
 
 
@@ -61,19 +55,16 @@ namespace Ryno {
 
 		//Create vertices vector to send to gpu
 		std::vector<Vertex3D> vertices;
-		std::vector<glm::mat4> mvp_instances;
+		
 
-		I32 size = 0;
-		I32 models_size = m_models.size();
+	
+		I32 models_size = (I32) m_models.size();
 
-		//Resize the vector at the beginning to avoid reallocations
-		for (Model* m : m_models)
-			size += (I32) m->mesh.vertices.size();
-		vertices.resize(size); 
+		//Resize the MVP vector at the beginning to avoid reallocations
 		mvp_instances.resize(models_size);
 
 		//Adds MVP to the final instance array.
-		//One for each instance. Needed for instancing only
+		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
 			mvp_instances[i] = m_camera->camera_matrix *  m_models[i]->model_matrix;
 		}
@@ -83,48 +74,52 @@ namespace Ryno {
 		if (m_models.empty())
 			return;
 
-		U32 cv = 0;
-		U32 offset = 0;
+		U32 vertex_offset = 0;
+		U32 mvp_offset = 0;
+		
 
 		//For each mesh...
 		for (I32 cg = 0; cg < m_models.size(); cg++){
 
-			I32 mesh_size = (I32) m_models[cg]->mesh.vertices.size();
+			I32 mesh_size = (I32)m_mesh_loader.get_mesh(m_models[cg]->mesh)->size;
 
-			//If a mesh has a different texture than the one before, i create a new batch
-			if (cg == 0 || m_models[cg]->texture.id != m_models[cg - 1]->texture.id){
-				m_render_batches.emplace_back(offset, mesh_size, m_models[cg]->texture.id);
+			//If a mesh has a different texture or mesh than the one before, i create a new batch
+			if (cg == 0
+				|| m_models[cg]->texture.id != m_models[cg - 1]->texture.id
+				|| m_models[cg]->mesh != m_models[cg - 1]->mesh)
+			{
+				if (cg != 0){
+					vertex_offset += m_render_batches.back().num_vertices;
+					mvp_offset += m_render_batches.back().num_instances;
+				}
+					
+				m_render_batches.emplace_back(vertex_offset,mvp_offset, mesh_size, 1, m_models[cg]->texture.id, m_models[cg]->mesh);
+				
+				
 			}
 			else
 			{
-				m_render_batches.back().num_vertices += mesh_size;
+				//else, i increment the number of instances
+				m_render_batches.back().num_instances ++;
 			}
 
-			//Adds vertices to the final array.
-			//One for each vertex
-			for (I32 i = 0; i < mesh_size; i++)
-				vertices[cv++] = m_models[cg]->mesh.vertices[i];
-
-			
-			
-
-
-
-			offset += mesh_size;
-
+		
+		}
+		I32 total_vertices = m_render_batches.back().vertex_offset + m_render_batches.back().num_vertices;
+		I32 cv = 0;
+		vertices.resize(total_vertices);
+		for (RenderBatch rb : m_render_batches){
+			for (Vertex3D v : m_mesh_loader.get_mesh(rb.mesh)->vertices){
+				vertices[cv++] = v;
+			}
 		}
 
-		//Once i have the full vector of vertices (unrelated with the batches though)
 		//i can bind the vbo, orphan it, pass the new data, and unbind it.
 		glActiveTexture(GL_TEXTURE0);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data());
-		//Same with instance buffer, but i'm not sure
-		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-		glBufferData(GL_ARRAY_BUFFER, mvp_instances.size() * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, mvp_instances.size() * sizeof(glm::mat4), mvp_instances.data());
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
 	}
 
 	void Batch3D::create_vertex_array(){
@@ -187,18 +182,30 @@ namespace Ryno {
 
 	void Batch3D::render_batch() {
 		
-
-		for (I32 i = 0; i < m_render_batches.size(); i++){
+		I32 draw_calls = 0;
+		bool a = false;
+		for (RenderBatch rb : m_render_batches){
 			
-			glBindTexture(GL_TEXTURE_2D, m_render_batches[i].texture);
-			//glDrawArrays(GL_TRIANGLES, m_render_batches[i].offset, m_render_batches[i].num_vertices);
-			glDrawArraysInstanced(GL_TRIANGLES,0,36,m_render_batches[i].num_vertices/36);
-		}
+		
+			glBindTexture(GL_TEXTURE_2D, rb.texture);
+			
 
+			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
+			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(glm::mat4), &mvp_instances[rb.mvp_offset]);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			
+			++draw_calls;
+
+			glDrawArraysInstanced(GL_TRIANGLES,rb.vertex_offset ,rb.num_vertices,rb.num_instances);
+		}
+		std::cout << "Draw calls: " << draw_calls << std::endl;
 
 	}
 
 	U8 Batch3D::compare_texture(Model* a, Model* b){
+		if (a->texture.id == b->texture.id)
+			return a->mesh < b->mesh;
 		return a->texture.id < b->texture.id;
 
 	}

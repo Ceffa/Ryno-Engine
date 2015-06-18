@@ -8,6 +8,7 @@
 #include "Batch3D.h"
 #include "Camera3D.h"
 #include "Global.h"
+#include "MeshLoader.h"
 namespace Ryno{
 	class MainGame
 	{
@@ -72,7 +73,7 @@ namespace Ryno{
 
 
 	
-
+		MeshLoader& m_mesh_loader = MeshLoader::get_instance(); 
 		Camera3D* m_camera;
 		GameState m_game_state;
 		std::vector<GameObject*> m_game_objects;

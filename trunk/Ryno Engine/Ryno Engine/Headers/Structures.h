@@ -1,6 +1,6 @@
 #pragma once
 #include <GLm/glm.hpp>
-
+#include "Types.h"
 
 struct ColorRGBA{
 	
