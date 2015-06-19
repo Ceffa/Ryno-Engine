@@ -44,7 +44,7 @@ namespace Ryno{
 		U32 texture_id;
 		glGenTextures(1, &(texture_id));
 		glBindTexture(GL_TEXTURE_2D, texture_id);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(out[0]));
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(out[0]));
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -70,9 +70,9 @@ namespace Ryno{
 
 		//calculate file size
 		file.seekg(0, std::ios::end); //seek to the end
-		I32 size = file.tellg(); //determine 
+		I32 size = (I32)file.tellg(); //determine 
 		file.seekg(0, std::ios::beg);
-		size -= file.tellg(); //remove eventual headers still present
+		size -= (I32)file.tellg(); //remove eventual headers still present
 
 		buffer.resize(size);
 		file.read((C*)&(buffer[0]), size);//get char address at the beginning of vector

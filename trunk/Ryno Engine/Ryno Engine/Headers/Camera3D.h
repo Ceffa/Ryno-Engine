@@ -17,6 +17,7 @@ namespace Ryno{
 		I32 width;
 		I32 height;
 		glm::mat4 camera_matrix;
+		glm::mat4 perspective_matrix;
 
 		
 

@@ -7,9 +7,6 @@
 
 namespace Ryno {
 
-
-	
-
 	void Batch3D::init(Camera3D* camera) {
 		m_camera = camera;
 		m_mesh_loader = MeshManager::get_instance();
@@ -196,11 +193,15 @@ namespace Ryno {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			
 			++draw_calls;
-
+			
 			glDrawArraysInstanced(GL_TRIANGLES,rb.vertex_offset ,rb.num_vertices,rb.num_instances);
 		}
-		std::cout << "Draw calls: " << draw_calls << std::endl;
 
+		static U32 count = 0;
+		if (count++ == 30){
+			count = 0;
+			std::cout << "Draw calls: " << draw_calls << std::endl;
+		}
 	}
 
 	U8 Batch3D::compare_texture(Model* a, Model* b){

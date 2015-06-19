@@ -10,6 +10,8 @@
 #include "Global.h"
 #include "MeshManager.h"
 #include "TextureManager.h"
+#include "TimeManager.h"
+#include "InputManager.h"
 namespace Ryno{
 	class MainGame
 	{
@@ -34,13 +36,7 @@ namespace Ryno{
 		*/
 		void init_systems();
 
-		/**
-		To be called at the beginning of the game loop.
-		It handles the various input that SDL can handle.
-		I will wrap everything up with a InputManager in the future.
-		*/
-		void handle_input();
-
+	
 		/**
 		To be called in the game loop before draw().
 		It update the logic of the game.
@@ -52,6 +48,14 @@ namespace Ryno{
 		Initialize here objects and stuff for the game
 		*/
 		void start();
+
+		/**
+		To be called at the beginning of the game loop.
+		It handles the various input that SDL can handle.
+		I will wrap everything up with a InputManager in the future.
+		*/
+		void handle_input();
+
 
 		/**
 		To be called in the game loop after handle_input().
@@ -72,8 +76,8 @@ namespace Ryno{
 		*/
 		C* load_shader(C *file);
 
-
-	
+		InputManager m_input_manager;
+		TimeManager m_time_manager;
 		TextureManager& m_texture_loader = TextureManager::get_instance();
 		MeshManager& m_mesh_loader = MeshManager::get_instance();
 		Camera3D* m_camera;
