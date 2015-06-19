@@ -66,12 +66,12 @@ namespace Ryno{
 	}
 
 	void MainGame::start(){
-		m_mesh_loader = MeshLoader::get_instance();
+		
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_batch3d = new Batch3D();
 		
-		GLTexture texture_metal = TextureLoader::loadPNG("metal");
-		GLTexture texture_wood = TextureLoader::loadPNG("wood");
+		U32 texture_metal = m_texture_loader.loadPNG("metal");
+		U32 texture_wood = m_texture_loader.loadPNG("wood");
 		I32 cube_mesh = m_mesh_loader.load_mesh("cube");
 		I32 sphere_mesh = m_mesh_loader.load_mesh("sphere");
 		for (I32 i = -10; i < 10; i++){

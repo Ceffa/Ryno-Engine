@@ -2,7 +2,7 @@
 #include <vector>
 #include <GLM\glm.hpp>
 #include "Types.h"
-#include "TextureLoader.h"
+#include "TextureManager.h"
 #include "Structures.h"
 
 namespace Ryno{
@@ -14,7 +14,7 @@ namespace Ryno{
 	public:
 
 		glm::mat4 model_matrix;
-		GLTexture texture;
+		U32 texture;
 		I32 mesh;
 	};
 }

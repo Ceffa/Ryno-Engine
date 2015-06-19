@@ -4,7 +4,7 @@
 #include "Structures.h"
 #include "Model.h"
 #include "Camera3D.h"
-#include "MeshLoader.h"
+#include "MeshManager.h"
 #include <GLM/glm.hpp>
 #include <GL/glew.h>
 #include <vector>
@@ -51,7 +51,7 @@ namespace Ryno{
 		U32 m_vao;
 
 		Camera3D* m_camera;
-		MeshLoader& m_mesh_loader = MeshLoader::get_instance();
+		MeshManager& m_mesh_loader = MeshManager::get_instance();
 
 
 	};

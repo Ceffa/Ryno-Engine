@@ -12,7 +12,7 @@ namespace Ryno {
 
 	void Batch3D::init(Camera3D* camera) {
 		m_camera = camera;
-		m_mesh_loader = MeshLoader::get_instance();
+		m_mesh_loader = MeshManager::get_instance();
 		create_vertex_array();
 
 	}
@@ -85,7 +85,7 @@ namespace Ryno {
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
-				|| m_models[cg]->texture.id != m_models[cg - 1]->texture.id
+				|| m_models[cg]->texture != m_models[cg - 1]->texture
 				|| m_models[cg]->mesh != m_models[cg - 1]->mesh)
 			{
 				if (cg != 0){
@@ -93,7 +93,7 @@ namespace Ryno {
 					mvp_offset += m_render_batches.back().num_instances;
 				}
 					
-				m_render_batches.emplace_back(vertex_offset,mvp_offset, mesh_size, 1, m_models[cg]->texture.id, m_models[cg]->mesh);
+				m_render_batches.emplace_back(vertex_offset,mvp_offset, mesh_size, 1, m_models[cg]->texture, m_models[cg]->mesh);
 				
 				
 			}
@@ -204,9 +204,9 @@ namespace Ryno {
 	}
 
 	U8 Batch3D::compare_texture(Model* a, Model* b){
-		if (a->texture.id == b->texture.id)
+		if (a->texture == b->texture)
 			return a->mesh < b->mesh;
-		return a->texture.id < b->texture.id;
+		return a->texture < b->texture;
 
 	}
 
