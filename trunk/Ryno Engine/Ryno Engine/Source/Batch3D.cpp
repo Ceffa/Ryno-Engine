@@ -200,7 +200,7 @@ namespace Ryno {
 		static U32 count = 0;
 		if (count++ == 30){
 			count = 0;
-			std::cout << "Draw calls: " << draw_calls << std::endl;
+			//std::cout << "Draw calls: " << draw_calls << std::endl;
 		}
 	}
 

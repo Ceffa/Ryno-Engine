@@ -1,15 +1,21 @@
 #include "InputManager.h"
-#include <SDL\SDL.h>
 
 namespace Ryno {
 
 	InputManager::InputManager() : m_mouse_coords(0.0f)
 	{
+		
 	}
 
 
 	InputManager::~InputManager()
 	{
+	}
+
+	void InputManager::init(SDL_Window* window){
+		m_window = window;
+		SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
+
 	}
 
 	Input InputManager::get_input(){
@@ -23,6 +29,7 @@ namespace Ryno {
 			case SDL_MOUSEMOTION:
 
 				set_mouse_coords((F32)evnt.motion.x, (F32)evnt.motion.y);
+
 				break;
 			case SDL_KEYDOWN:
 				key_press(evnt.key.keysym.sym);
@@ -36,8 +43,10 @@ namespace Ryno {
 			case SDL_MOUSEBUTTONUP:
 				key_release(evnt.button.button);
 				break;
+		
 			}
 		}
+		SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
 
 		return Input::OK;
 	}
@@ -47,6 +56,8 @@ namespace Ryno {
 		for (auto& it : m_key_map) {
 			m_previous_key_map[it.first] = it.second;
 		}
+
+		
 	}
 
 	void InputManager::key_press(U32 keyID) {
@@ -60,9 +71,12 @@ namespace Ryno {
 	}
 
 	void InputManager::set_mouse_coords(F32 x, F32 y) {
+		
 		m_mouse_coords.x = x;
 		m_mouse_coords.y = y;
 	}
+
+	
 
 	U8 InputManager::is_key_down(U32 keyID) {
 		// We dont want to use the associative array approach here

@@ -33,7 +33,7 @@ namespace Ryno{
 		static U32 frame_count = 0;
 		if (frame_count++ == 30) {
 			frame_count = 0;
-			std::cout << current_fps << std::endl;
+			//std::cout << current_fps << std::endl;
 		}
 	}
 

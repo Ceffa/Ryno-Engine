@@ -21,7 +21,9 @@ namespace Ryno{
 			Log::FatalError("Failed to create SDL window: ", SDL_GetError());
 		}
 
-
+		SDL_ShowCursor(GL_FALSE);
+		//SDL_SetRelativeMouseMode(SDL_TRUE);
+		//SDL_SetWindowGrab(m_window, SDL_TRUE);
 
 		SDL_GLContext gl_context;
 		if ((gl_context = SDL_GL_CreateContext(m_window)) = nullptr){
@@ -60,7 +62,8 @@ namespace Ryno{
 
 	void MainGame::start(){
 		
-		m_time_manager.init(300);
+		m_time_manager.init(60);
+		m_input_manager.init(m_window);
 
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 		
@@ -71,12 +74,12 @@ namespace Ryno{
 		I32 cube_mesh = m_mesh_loader.load_mesh("cube");
 		I32 sphere_mesh = m_mesh_loader.load_mesh("sphere");
 		I32 rock_mesh = m_mesh_loader.load_mesh("rock");
-		for (I32 i = 0; i < 30; i++){
-			for (I32 j = 0; j < 30; j++){
-				for (I32 k = 0; k < 30; k++){
+		for (I32 i = 0; i < 20; i++){
+			for (I32 j = 0; j < 20; j++){
+				for (I32 k = 0; k < 20; k++){
 
 					GameObject* new_go = new GameObject();
-					new_go->position = glm::vec3(i *1.2f, j*1.2f, k*1.2f);
+					new_go->position = glm::vec3(i *1.5f, j*1.5f, k*1.5f);
 					//if (((i+j)%2)==0)
 					//	new_go->model.mesh = sphere_mesh;
 					//else
@@ -114,25 +117,25 @@ namespace Ryno{
 		m_input_manager.update();
 		if (m_input_manager.get_input() == Input::EXIT_REQUEST)
 			m_game_state = GameState::Exit;
-
+		//std::cout << glm::to_string(m_input_manager.m_mouse_coords)<< std::endl;
 		if (m_input_manager.is_key_down(SDLK_d)){
-			m_camera->position += glm::vec3(.5f, 0, 0);
+			m_camera->move_right(.5f);
+
 		}
 		if (m_input_manager.is_key_down(SDLK_a)){
-			m_camera->position -= glm::vec3(.5f, 0, 0);
+			m_camera->move_left(.5f);
 		}
 		if (m_input_manager.is_key_down(SDLK_w)){
-			m_camera->position += glm::vec3(0,.5f, 0);
+			m_camera->move_forward(.5f);
 		}
 		if (m_input_manager.is_key_down(SDLK_s)){
-			m_camera->position -= glm::vec3(0, .5f, 0);
+			m_camera->move_back(.5f);
 		}
-		if (m_input_manager.is_key_down(SDLK_q)){
-			m_camera->scale += glm::vec3(0,0,.1f);
-		}
-		if (m_input_manager.is_key_down(SDLK_e)){
-			m_camera->scale -= glm::vec3(0,0,.1f);
-		}
+		
+
+		glm::vec2 mouse_coords = m_input_manager.get_mouse_movement();
+		m_camera->rotate(.005f* mouse_coords.y, .005f* mouse_coords.x, 0);
+
 	}
 
 	void MainGame::run(){
