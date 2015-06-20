@@ -23,10 +23,9 @@ namespace Ryno{
 	}
 
 	void Camera3D::generate_camera_matrix(){
-		//scale
-		//camera_matrix = glm::scale(glm::mat4(1.0), scale);
+	
 		//rotate
-		camera_matrix = glm::rotate(glm::mat4(1.0), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		camera_matrix = glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 		camera_matrix = glm::rotate(camera_matrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 		camera_matrix = glm::rotate(camera_matrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 		//translate
@@ -38,7 +37,7 @@ namespace Ryno{
 
 	void Camera3D::move_forward(F32 speed){
 		
-		position += speed*glm::vec3(sin(rotation.y), -sin(rotation.x), cos(rotation.y));
+		position += speed*glm::vec3(-sin(rotation.y), -sin(rotation.x), cos(rotation.y));
 
 	}
 	void Camera3D::move_right(F32 speed){
@@ -53,9 +52,9 @@ namespace Ryno{
 	}
 	void Camera3D::rotate(glm::vec3 rot){
 		rotation+= rot;
-		if (rotation.x > M_PI_2 || rotation.x <0) rotation.x -= ((I32)(rotation.x /M_PI_2))*M_PI_2;
-		if (rotation.y > M_PI_2 || rotation.y <0) rotation.y -= ((I32)(rotation.y / M_PI_2))*M_PI_2;
-		if (rotation.z > M_PI_2 || rotation.z <0) rotation.z -= ((I32)(rotation.z / M_PI_2))*M_PI_2;
+		if (rotation.x > M_PI_2 || rotation.x <0) rotation.x -= (F32)((I32)(rotation.x /M_PI_2))*M_PI_2;
+		if (rotation.y > M_PI_2 || rotation.y <0) rotation.y -= (F32)((I32)(rotation.y / M_PI_2))*M_PI_2;
+		if (rotation.z > M_PI_2 || rotation.z <0) rotation.z -= (F32)((I32)(rotation.z / M_PI_2))*M_PI_2;
 	}
 	void Camera3D::rotate(F32 x, F32 y, F32 z){
 		rotate(glm::vec3(x, y, z));

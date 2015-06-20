@@ -20,7 +20,7 @@ namespace Ryno{
 		return meshes[mesh_number-1];
 	}
 
-	I32 MeshManager::load_mesh(const std::string& name, ColorRGBA color)
+	I32 MeshManager::load_mesh(const std::string& name)
 	{
 		const std::string& path = "Resources/Models/" + name + ".obj";
 
@@ -97,7 +97,6 @@ namespace Ryno{
 			meshes[last_mesh]->vertices[i].position = temp_vertices[vertexIndex - 1];
 			meshes[last_mesh]->vertices[i].uv = temp_uvs[uvIndex - 1];
 			meshes[last_mesh]->vertices[i].normal = temp_normals[normalIndex - 1];
-			meshes[last_mesh]->vertices[i].color = color;
 		}
 
 		meshes[last_mesh]->size = meshes[last_mesh]->vertices.size(); //One time only

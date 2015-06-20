@@ -16,18 +16,18 @@ namespace Ryno{
 		void move_left(F32 speed);
 		void rotate(glm::vec3 rot);
 		void rotate(F32 x, F32 y, F32 z);
+		glm::mat4 get_camera_matrix() const { return camera_matrix; }
 
 		
 		I32 width;
 		I32 height;
 		glm::vec3 position;
-		glm::vec3 scale;
 		glm::vec3 rotation;
+	
+	private:
+	
 		glm::mat4 camera_matrix;
 		glm::mat4 perspective_matrix;
-	private:
-		
-
 				
 
 

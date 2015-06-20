@@ -20,7 +20,7 @@ namespace Ryno {
 	void Batch3D::begin() {
 
 		m_render_batches.clear();
-		mvp_instances.clear();
+		input_instances.clear();
 		m_models.clear();
 
 
@@ -58,12 +58,13 @@ namespace Ryno {
 		I32 models_size = (I32) m_models.size();
 
 		//Resize the MVP vector at the beginning to avoid reallocations
-		mvp_instances.resize(models_size);
+		input_instances.resize(models_size);
 
 		//Adds MVP to the final instance array.
 		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
-			mvp_instances[i] = m_camera->camera_matrix *  m_models[i]->model_matrix;
+			input_instances[i].color = m_models[i]->color;
+			input_instances[i].mvp = m_camera->get_camera_matrix() *  m_models[i]->model_matrix;
 		}
 		
 
@@ -116,6 +117,7 @@ namespace Ryno {
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data());
+		
 	
 	}
 
@@ -139,14 +141,12 @@ namespace Ryno {
 		//Tell vbo how to use the data it will receive
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, position));
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, uv));
-		glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, color));
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, normal));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, normal));
 
 		//Enable the attrib arrays
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
 
 		//Create instanced vbo
 		if (!m_i_vbo)
@@ -155,16 +155,20 @@ namespace Ryno {
 
 		
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
+		
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 17, (void*)(0));
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 17, (void*)(4 * 4));
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 17, (void*)(8 * 4));
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 17, (void*)(12 * 4));
+		glVertexAttribPointer(7, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(F32) * 17, (void*)(16 * 4));
 
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 4 * 4, (void*)(0));
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 4 * 4, (void*)(sizeof(F32) * 4));
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 4 * 4, (void*)(sizeof(F32) * 8));
-		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 4 * 4, (void*)(sizeof(F32) * 12));
+		glVertexAttribDivisor(3, 1);
 		glVertexAttribDivisor(4, 1);
 		glVertexAttribDivisor(5, 1);
 		glVertexAttribDivisor(6, 1);
 		glVertexAttribDivisor(7, 1);
 
+		glEnableVertexAttribArray(3);
 		glEnableVertexAttribArray(4);
 		glEnableVertexAttribArray(5);
 		glEnableVertexAttribArray(6);
@@ -188,8 +192,8 @@ namespace Ryno {
 			
 
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(glm::mat4), &mvp_instances[rb.mvp_offset]);
+			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InputInstance), nullptr, GL_STATIC_DRAW);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(InputInstance), &input_instances[rb.instance_offset]);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			
 			++draw_calls;

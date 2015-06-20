@@ -11,12 +11,17 @@
 
 namespace Ryno{
 
+	struct InputInstance{
+		
+		glm::mat4 mvp;
+		ColorRGBA color;
 
+	};
 	class RenderBatch{
 	public:
-		RenderBatch(U32 v_o, U32 m_o, U32 n_v, U32 n_i, U32 t, U32 m) : vertex_offset(v_o), mvp_offset(m_o),num_vertices(n_v),num_instances(n_i), texture(t), mesh(m){}
+		RenderBatch(U32 v_o, U32 m_o, U32 n_v, U32 n_i, U32 t, U32 m) : vertex_offset(v_o), instance_offset(m_o),num_vertices(n_v),num_instances(n_i), texture(t), mesh(m){}
 		U32 vertex_offset;
-		U32 mvp_offset;
+		U32 instance_offset;
 		U32 num_vertices;
 		U32 num_instances;
 		U32 texture;
@@ -38,7 +43,7 @@ namespace Ryno{
 
 		//two vector to optimize access and sorting
 		std::vector<Model*> m_models;
-		std::vector<glm::mat4> mvp_instances;
+		std::vector<InputInstance> input_instances;
 		std::vector<RenderBatch> m_render_batches;
 		
 		static U8 compare_texture(Model* a, Model* b);

@@ -39,7 +39,7 @@ namespace Ryno{
 
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_MULTISAMPLE);
-		SDL_GL_SetSwapInterval(0); //disable vsync
+		SDL_GL_SetSwapInterval(1); //disable vsync
 
 
 		m_game_state = GameState::Running;
@@ -53,10 +53,13 @@ namespace Ryno{
 	
 
 	void MainGame::update(){
-
-		for (GameObject* o : m_game_objects)
+		U64 time = SDL_GetTicks();
+		for (GameObject* o : m_game_objects){
+			
+			o->position = glm::vec3(o->position.x, 5 * sin(time / 300.0f) * sin(o->position.x / 5.0f) + 5 * sin(time / 600.0f) * sin(o->position.z / 5.0f), o->position.z);
+			o->model.set_color(255, (o->position.y + 10.0f)*255.0f / 20.0f, 0, 255);
 			o->generate_model_matrix();
-
+		}
 
 	}
 
@@ -69,37 +72,32 @@ namespace Ryno{
 		
 		m_batch3d = new Batch3D();
 		
-		U32 texture_metal = m_texture_loader.loadPNG("metal");
-		U32 texture_wood = m_texture_loader.loadPNG("wood");
+		U32 texture_metal = m_texture_loader.loadPNG("white");
+		
 		I32 cube_mesh = m_mesh_loader.load_mesh("cube");
-		I32 sphere_mesh = m_mesh_loader.load_mesh("sphere");
-		I32 rock_mesh = m_mesh_loader.load_mesh("rock");
-		for (I32 i = 0; i < 20; i++){
-			for (I32 j = 0; j < 20; j++){
-				for (I32 k = 0; k < 20; k++){
+	
+		for (I32 x = -50; x < 51; x++){
+			for (I32 z = -50; z <51; z++){
+				
 
 					GameObject* new_go = new GameObject();
-					new_go->position = glm::vec3(i *1.5f, j*1.5f, k*1.5f);
-					//if (((i+j)%2)==0)
-					//	new_go->model.mesh = sphere_mesh;
-					//else
+					new_go->position = glm::vec3(x, 10*(sin(x/10.0f)+cos(z/10.0f)),z);
+					
 					new_go->model.mesh = cube_mesh;
 
-					if (((i + j) % 2) == 0)
-						new_go->model.texture = texture_metal;
-						else
-					new_go->model.texture = texture_wood;
+					new_go->model.texture = texture_metal;
+						
+					
 					new_go->scale = glm::vec3(1, 1, 1);
 					m_game_objects.push_back(new_go);
 
-				}
+				
 			}
 		}
 	
 
 
 		m_camera->position = glm::vec3(0,0, -3);
-		m_camera->scale = glm::vec3(1, 1, 1);
 
 		m_batch3d->init(m_camera);
 		
@@ -125,10 +123,10 @@ namespace Ryno{
 		if (m_input_manager.is_key_down(SDLK_a)){
 			m_camera->move_left(.5f);
 		}
-		if (m_input_manager.is_key_down(SDLK_w)){
+		if (m_input_manager.is_key_down(SDLK_w) || m_input_manager.is_key_down(SDL_BUTTON_LEFT)){
 			m_camera->move_forward(.5f);
 		}
-		if (m_input_manager.is_key_down(SDLK_s)){
+		if (m_input_manager.is_key_down(SDLK_s) || m_input_manager.is_key_down(SDL_BUTTON_RIGHT)){
 			m_camera->move_back(.5f);
 		}
 		
@@ -163,7 +161,7 @@ namespace Ryno{
 
 	void MainGame::draw(){
 
-		glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_batch3d->begin(); 
