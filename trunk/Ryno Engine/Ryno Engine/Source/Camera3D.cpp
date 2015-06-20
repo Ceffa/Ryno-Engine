@@ -37,7 +37,7 @@ namespace Ryno{
 
 	void Camera3D::move_forward(F32 speed){
 		
-		position += speed*glm::vec3(-sin(rotation.y), -sin(rotation.x), cos(rotation.y));
+		position += speed*glm::vec3(sin(rotation.y), -sin(rotation.x), cos(rotation.y));
 
 	}
 	void Camera3D::move_right(F32 speed){
