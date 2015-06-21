@@ -1,6 +1,8 @@
 #pragma once
 #include "Types.h"
 #include <GLM/glm.hpp>
+#include <GLM/gtc/quaternion.hpp>
+#include <GLM/gtx/quaternion.hpp>
 
 
 namespace Ryno{
@@ -14,18 +16,18 @@ namespace Ryno{
 		void move_right(F32 speed);
 		void move_back(F32 speed);
 		void move_left(F32 speed);
-		void rotate(glm::vec3 rot);
-		void rotate(F32 x, F32 y, F32 z);
+		void rotate(F32 y, F32 p);
 		glm::mat4 get_camera_matrix() const { return camera_matrix; }
 
 		
 		I32 width;
 		I32 height;
-		glm::vec3 position;
-		glm::vec3 rotation;
+		glm::vec4 position;
+		glm::quat rotation;
+		F32 yaw, pitch;
 	
 	private:
-	
+		
 		glm::mat4 camera_matrix;
 		glm::mat4 perspective_matrix;
 				
