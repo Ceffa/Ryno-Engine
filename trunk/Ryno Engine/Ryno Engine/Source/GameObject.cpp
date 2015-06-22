@@ -14,7 +14,7 @@ namespace Ryno{
 	
 		model.model_matrix = glm::scale(
 			//Translate matrix
-			glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, -position.y, position.z)) *
+			glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, position.z)) *
 			//Rotation matrix built from three quaternions
 			glm::toMat4(glm::quat(glm::vec3(0, 0, roll))*glm::quat(glm::vec3(pitch, 0, 0))*glm::quat(glm::vec3(0, yaw, 0))),
 			//Scaling the rot-trans matrix
