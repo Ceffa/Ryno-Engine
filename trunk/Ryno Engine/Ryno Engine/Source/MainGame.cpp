@@ -55,17 +55,19 @@ namespace Ryno{
 		U64 time = SDL_GetTicks();
 		I32 i = 0;
 		for (GameObject* o : m_game_objects){
+
 			
-			//o->position.y =  5 * sin((time) / 300.0f) * sin(o->position.x / 5.0f) + 5 * sin(time / 600.0f) * sin(o->position.z / 5.0f);
-			//o->model.set_color(255.0f, (o->position.y + 10.0f)*255.0f / 20.0f,0.0f, 255.0f);
+	
 			
+			o->position.y =  5 * sin((time) / 300.0f) * sin(o->position.x / 5.0f) + 5 * sin(time / 600.0f) * sin(o->position.z / 5.0f);
+			o->model.set_color(255.0f, (o->position.y + 10.0f)*255.0f / 20.0f,0.0f, 255.0f);
 			//o->position.y = sin(time/400.0f) * (pow(o->position.x, 3)*o->position.z + pow(o->position.z, 3)*o->position.x) / 50000.0f;
 			//o->model.set_color(0, 255, (o->position.y + 125.0f)*255.0f / 250.0f, 255);
 			
-			F32 ticks = .1f * time / sqrt(i);
+			/*F32 ticks = .1f * time / sqrt(i);
 			o->position = glm::vec3(10*cos(ticks), i/20.0f, 10*sin(ticks));
 			o->model.set_color(255.0f, i/12500.0f*255.0f, 0.0f, 255.0f);
-			i++;
+			i++;*/
 			o->generate_model_matrix();
 		}
 
@@ -97,7 +99,7 @@ namespace Ryno{
 						
 					
 					new_go->scale = glm::vec3(1, 1, 1);
-					new_go->model.set_color(255, 0, 0, 255);
+					new_go->model.set_color(255,255,255, 255);
 					m_game_objects.push_back(new_go);
 
 				

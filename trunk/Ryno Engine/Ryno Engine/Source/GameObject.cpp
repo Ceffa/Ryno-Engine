@@ -1,17 +1,40 @@
 #include "GameObject.h"
 #include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtc/quaternion.hpp>
+#include <GLM/gtx/quaternion.hpp>
+#define M_HALF_PI 1.57079632679489661923
+#define M_PI 3.14159265358979323846
+#define M_PI_2 6.28318530717958647692
 
 namespace Ryno{
 
+	GameObject::GameObject() :yaw(0), pitch(0), roll(0){}
+
 	void GameObject::generate_model_matrix(){
-		//scale
-		model.model_matrix = glm::scale(glm::mat4(1.0), scale);
-		//rotate
-		model.model_matrix = glm::rotate(model.model_matrix, rotation.x, glm::vec3(1.0, 0.0, 0.0));
-		model.model_matrix = glm::rotate(model.model_matrix, rotation.y, glm::vec3(0.0, 1.0, 0.0));
-		model.model_matrix = glm::rotate(model.model_matrix, rotation.z, glm::vec3(0.0, 0.0, 1.0));
-		//translate
-		model.model_matrix = glm::translate(model.model_matrix, glm::vec3(position.x,position.y,-position.z));
+	
+		model.model_matrix = glm::scale(
+			//Translate matrix
+			glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, -position.y, position.z)) *
+			//Rotation matrix built from three quaternions
+			glm::toMat4(glm::quat(glm::vec3(0, 0, roll))*glm::quat(glm::vec3(pitch, 0, 0))*glm::quat(glm::vec3(0, yaw, 0))),
+			//Scaling the rot-trans matrix
+			scale);
+		
+
+	}
+
+
+	void GameObject::rotate(F32 y, F32 p, F32 r){
+		
+		pitch += p;
+		yaw += y;
+		roll += r;
+
+		if (pitch > M_PI_2 || pitch <0) pitch -= (F32)((I32)(pitch / M_PI_2))*M_PI_2;
+		
+		if (yaw > M_PI_2 || yaw <0) yaw -= (F32)((I32)(yaw / M_PI_2))*M_PI_2;
+		
+		if (roll > M_PI_2 || roll <0) roll -= (F32)((I32)(roll / M_PI_2))*M_PI_2;
 	}
 
 }

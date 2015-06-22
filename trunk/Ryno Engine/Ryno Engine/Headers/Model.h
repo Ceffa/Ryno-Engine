@@ -18,7 +18,7 @@ namespace Ryno{
 		U32 texture;
 		I32 mesh;
 		ColorRGBA color;
-		//glm::vec4 color;
+		
 
 		
 	};

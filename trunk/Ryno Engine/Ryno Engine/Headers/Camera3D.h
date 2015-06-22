@@ -23,7 +23,6 @@ namespace Ryno{
 		I32 width;
 		I32 height;
 		glm::vec4 position;
-		glm::quat rotation;
 		F32 yaw, pitch;
 	
 	private:

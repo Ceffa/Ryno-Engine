@@ -25,19 +25,16 @@ namespace Ryno{
 	}
 
 	void Camera3D::generate_camera_matrix(){
-	
-		//rotate
-		//camera_matrix = glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		//camera_matrix = glm::rotate(camera_matrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-		//camera_matrix = glm::rotate(camera_matrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 		
-
-		rotation = glm::quat(glm::vec3(pitch, 0, 0)) * glm::quat(glm::vec3(0, yaw, 0));
-
-		//translate
-		camera_matrix = perspective_matrix * glm::translate(glm::mat4_cast(rotation), glm::vec3(-position.x, -position.y, position.z));
+		//I ignore the scale.
+		//I get the rotation from the pitch and yaw, and i make it faster with quaternions.
+		//Finally i translate by the position 
+		camera_matrix = perspective_matrix * 
+						glm::translate(
+							glm::toMat4(glm::quat(glm::vec3(pitch, 0, 0)) * glm::quat(glm::vec3(0, yaw, 0))),
+							glm::vec3(-position.x, -position.y, position.z)
+							);
 	
-		
 	}
 	
 
@@ -48,8 +45,7 @@ namespace Ryno{
 
 	}
 	void Camera3D::move_right(F32 speed){
-		position.x += speed* cos(yaw);
-		position.z += speed* -sin(yaw);
+		position += speed* glm::vec4(cos(yaw),0,-sin(yaw),0);
 
 	}
 	void Camera3D::move_back(F32 speed){
