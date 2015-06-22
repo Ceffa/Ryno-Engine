@@ -19,7 +19,7 @@
 
 
 namespace Ryno{
-	class IMainGame
+	class MainGameInterface
 	{
 	public:
 		

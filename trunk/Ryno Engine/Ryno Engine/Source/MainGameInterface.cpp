@@ -1,8 +1,8 @@
-#include "IMainGame.h"
+#include "MainGameInterface.h"
 
 
 namespace Ryno{
-	void IMainGame::init_external_systems(){
+	void MainGameInterface::init_external_systems(){
 
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 			Log::FatalError("Failed to initialize SDL: ", SDL_GetError());
@@ -39,14 +39,14 @@ namespace Ryno{
 		m_game_state = GameState::Running;
 	}
 
-	void IMainGame::init_internal_systems(){
+	void MainGameInterface::init_internal_systems(){
 		m_time_manager.init(60);
 		m_input_manager.init(m_window);
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_batch3d = new Batch3D();
 	}
 
-	void IMainGame::run(){
+	void MainGameInterface::run(){
 		init_external_systems();
 		init_internal_systems();
 		start();
@@ -68,12 +68,12 @@ namespace Ryno{
 
 	}
 
-	void IMainGame::exit_game(){
+	void MainGameInterface::exit_game(){
 		SDL_Quit();
 		exit(0);
 	}	
 
-	void IMainGame::handle_input(){
+	void MainGameInterface::handle_input(){
 		m_input_manager.update();
 		if (m_input_manager.get_input() == Input::EXIT_REQUEST)
 			m_game_state = GameState::Exit;

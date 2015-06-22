@@ -1,8 +1,8 @@
 #pragma once
-#include "IMainGame.h"
+#include "MainGameInterface.h"
 
 namespace Ryno{
-	class MainGame : public IMainGame
+	class MainGame : public MainGameInterface
 	{
 	private:
 	
