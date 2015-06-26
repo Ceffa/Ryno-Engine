@@ -65,6 +65,7 @@ namespace Ryno {
 		for (I32 i = 0; i < models_size; i++){
 			input_instances[i].color = m_models[i]->color;
 			input_instances[i].mvp = m_camera->get_camera_matrix() *  m_models[i]->model_matrix;
+			input_instances[i].normal_matrix = glm::transpose(glm::inverse(m_camera->get_view_matrix() *m_models[i]->model_matrix));
 		}
 		
 
@@ -156,23 +157,35 @@ namespace Ryno {
 		
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		
-		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 17, (void*)(0));
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 17, (void*)(4 * 4));
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 17, (void*)(8 * 4));
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 17, (void*)(12 * 4));
-		glVertexAttribPointer(7, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(F32) * 17, (void*)(16 * 4));
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(0));
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(4 * 4));
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(8 * 4));
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(12 * 4));
+		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(16 * 4));
+		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(20 * 4));
+		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(24 * 4));
+		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(28 * 4));
+		glVertexAttribPointer(11, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(F32) * 33, (void*)(32 * 4));
 
 		glVertexAttribDivisor(3, 1);
 		glVertexAttribDivisor(4, 1);
 		glVertexAttribDivisor(5, 1);
 		glVertexAttribDivisor(6, 1);
 		glVertexAttribDivisor(7, 1);
+		glVertexAttribDivisor(8, 1);
+		glVertexAttribDivisor(9, 1);
+		glVertexAttribDivisor(10, 1);
+		glVertexAttribDivisor(11, 1);
 
 		glEnableVertexAttribArray(3);
 		glEnableVertexAttribArray(4);
 		glEnableVertexAttribArray(5);
 		glEnableVertexAttribArray(6);
 		glEnableVertexAttribArray(7);
+		glEnableVertexAttribArray(8);
+		glEnableVertexAttribArray(9);
+		glEnableVertexAttribArray(10);
+		glEnableVertexAttribArray(11);
 	
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		

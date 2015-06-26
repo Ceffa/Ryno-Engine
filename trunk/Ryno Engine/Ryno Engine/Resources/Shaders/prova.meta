@@ -1,3 +1,6 @@
 in_Position
 in_Uv
+in_Normal
+in_MVP
+in_NormalMatrix
 in_Color

@@ -18,6 +18,7 @@ namespace Ryno{
 		void move_left(F32 speed);
 		void rotate(F32 y, F32 p);
 		glm::mat4 get_camera_matrix() const { return camera_matrix; }
+		glm::mat4 get_view_matrix() const { return view_matrix; }
 
 		
 		I32 width;
@@ -26,7 +27,7 @@ namespace Ryno{
 		F32 yaw, pitch;
 	
 	private:
-		
+		glm::mat4 view_matrix;
 		glm::mat4 camera_matrix;
 		glm::mat4 perspective_matrix;
 				

@@ -9,9 +9,11 @@
 #include "TextureManager.h"
 #include "TimeManager.h"
 #include "InputManager.h"
+#include "AudioManager.h"
 #include "Log.h"
 //other
 #include "Global.h"
+#include "FrameBuffer.h"
 #include "GLSLProgram.h"
 #include "GameObject.h"
 #include "Batch3D.h"
@@ -52,6 +54,8 @@ namespace Ryno{
 
 		U32 vao, vbo;
 
+		FrameBuffer* m_frame_buffer;
+		AudioManager m_audio_manager;
 		InputManager m_input_manager;
 		TimeManager m_time_manager;
 		TextureManager& m_texture_loader = TextureManager::get_instance();

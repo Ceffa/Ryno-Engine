@@ -14,6 +14,7 @@ namespace Ryno{
 	struct InputInstance{
 		
 		glm::mat4 mvp;
+		glm::mat4 normal_matrix;
 		ColorRGBA color;
 
 	};

@@ -9,8 +9,8 @@ namespace Ryno{
 		}
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
+	//	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	//	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
 		if ((m_window = SDL_CreateWindow("Ryno Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL)) == NULL){
 			Log::FatalError("Failed to create SDL window: ", SDL_GetError());
 		}
@@ -31,19 +31,24 @@ namespace Ryno{
 
 		
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_MULTISAMPLE);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//	glEnable(GL_MULTISAMPLE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe
 		SDL_GL_SetSwapInterval(1); //disable vsync
 
+	
 
 		m_game_state = GameState::Running;
 	}
 
 	void MainGameInterface::init_internal_systems(){
+		m_frame_buffer = new FrameBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+		m_audio_manager.init();
 		m_time_manager.init(60);
 		m_input_manager.init(m_window);
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_batch3d = new Batch3D();
+		
 	}
 
 	void MainGameInterface::run(){

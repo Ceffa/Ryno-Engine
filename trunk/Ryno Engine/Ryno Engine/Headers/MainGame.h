@@ -12,11 +12,14 @@ namespace Ryno{
 		void draw() override;
 
 
-
 		bool swap_curve = false;
+		bool just_played = false;
 		I64 speed = 40;
 		I64 time = 0;;
+		Sound sound;
+		Music music;
 		std::vector<GameObject*> m_game_objects;
+		GameObject* sphere;
 		
 
 	};

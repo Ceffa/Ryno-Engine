@@ -29,11 +29,12 @@ namespace Ryno{
 		//I ignore the scale.
 		//I get the rotation from the pitch and yaw, and i make it faster with quaternions.
 		//Finally i translate by the position 
-		camera_matrix = perspective_matrix * 
-						glm::translate(
-							glm::toMat4(glm::quat(glm::vec3(pitch, 0, 0)) * glm::quat(glm::vec3(0, yaw, 0))),
-							glm::vec3(-position.x, -position.y, position.z)
-							);
+		view_matrix = glm::translate(
+			glm::toMat4(glm::quat(glm::vec3(pitch, 0, 0)) * glm::quat(glm::vec3(0, yaw, 0))),
+			glm::vec3(-position.x, -position.y, position.z)
+			); 
+		camera_matrix = perspective_matrix * view_matrix;
+						
 	
 	}
 	
