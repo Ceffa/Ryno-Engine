@@ -4,7 +4,9 @@ uniform sampler2D m_pos;
 uniform sampler2D m_col;
 uniform sampler2D m_nor;
 
-uniform vec3 point_light_pos;
+uniform vec3 position;
+uniform vec3 color;
+uniform vec3 attenuation;
 
 out vec3 frag_color;
 
@@ -18,8 +20,9 @@ void main(){
 	vec3 nor = normalize(texture(m_nor, TexCoord).xyz);
 	vec4 col = vec4(Color, 1);
 	
-
-
-//	frag_color = max(0, dot(nor,- normalize(pos-point_light_pos))) * col.xyz;
-	frag_color = max(0, dot(nor, -normalize(pos-point_light_pos))) * col.xyz + vec3(.2,0,0) + pos.xyz * 0.00001;
+	vec3 dir_between = pos - position;
+	float dist = length(dir_between);
+	float atten = max(attenuation.z * dist * dist,1.0f);
+	vec3 final_col =  col.xyz * (color.xyz * 256/ atten);
+	frag_color =vec3(.1,0,0) + max(0, dot(nor, -normalize(dir_between))) * final_col;
 }

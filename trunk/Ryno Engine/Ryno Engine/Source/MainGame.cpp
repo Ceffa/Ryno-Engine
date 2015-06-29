@@ -36,11 +36,11 @@ namespace Ryno{
 		I32 mod = m_mesh_loader.load_mesh("sphere");
 		for (I32 i = 0; i < 3; i++){
 			GameObject* sphere = new GameObject;
-			sphere->model.texture = tex;
-			sphere->model.mesh = mod;
+			sphere->model.texture = texture_metal;
+			sphere->model.mesh = cube_mesh;
 			
 			sphere->scale = glm::vec3(100, 100, 100);
-			sphere->model.set_color(255, 255, 255, 255);
+			sphere->model.set_color(1, 1, 1, 1);
 			spheres.push_back(sphere);
 		}
 		spheres[0]->position = glm::vec3(-100, 100, 200);
@@ -72,7 +72,7 @@ namespace Ryno{
 
 
 		
-		
+		p = new LightPoint(0, 100, 200);
 
 
 		
@@ -103,6 +103,31 @@ namespace Ryno{
 		}
 		if (m_input_manager.is_key_down(SDLK_RIGHT)){
 			speed++;
+		}
+		if (m_input_manager.is_key_down(SDLK_RIGHT)){
+			p->x += 1;
+		}
+		if (m_input_manager.is_key_down(SDLK_LEFT)){
+			p->x -= 1;
+		}
+		if (m_input_manager.is_key_down(SDLK_UP)){
+			p->y += 1;
+		}
+		if (m_input_manager.is_key_down(SDLK_DOWN)){
+			p->y -= 1;
+		}
+		if (m_input_manager.is_key_down(SDLK_i)){
+
+			p->attenuation.constant -= 1;
+			if (p->attenuation.constant < 0)p->attenuation.constant = 0;
+ 		}
+		if (m_input_manager.is_key_down(SDLK_o)){
+			p->attenuation.exp -= 0.01;
+			if (p->attenuation.exp < 0)p->attenuation.linear = 0;
+		}
+		if (m_input_manager.is_key_down(SDLK_p)){
+			p->attenuation.exp += 0.01;
+			if (p->attenuation.exp < 0)p->attenuation.exp = 0;
 		}
 
 
@@ -197,44 +222,46 @@ namespace Ryno{
 		//Clear it (not the depth, because it is not supported)
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		//Now we use the directional light program to draw a quad the size of the screen.
-		//This quad will use the frame buffer to obtain data
-		//We pass lights as uniforms
-		m_program_dir.use();
-		LightDirectional l(.3, .3,.6);
-		glm::vec3 r = l.get_view_space_direction(m_camera);
-		glUniform3f(m_program_dir.getUniformLocation("dir_light"),r.x,r.y,r.z);
+		////Now we use the directional light program to draw a quad the size of the screen.
+		////This quad will use the frame buffer to obtain data
+		////We pass lights as uniforms
+		//m_program_dir.use();
+		//LightDirectional l(.3, .3,.6);
+		//glm::vec3 r = l.get_view_space_direction(m_camera);
+		//glUniform3f(m_program_dir.getUniformLocation("dir_light"),r.x,r.y,r.z);
 
-		Model* s = new Model();
-		s->mesh = square_model;
-		m_simple_drawer->draw(s);
-		glEnd();
+		//Model* s = new Model();
+		//s->mesh = square_model;
+		//m_simple_drawer->draw(s);
+		//glEnd();
 
-		//The draw is done, unuse the program
-		m_program_dir.unuse();
+		////The draw is done, unuse the program
+		//m_program_dir.unuse();
 
 
 		//Same with point light
 		m_program_point.use();
-		LightPoint p(0,100,200);
 		
-		glm::vec3 z = p.get_view_space_position(m_camera);
-		glUniform3f(m_program_point.getUniformLocation("point_light_pos"),z.x,z.y,z.z);
+		std::cout << p->calculate_max_radius() << std::endl;
 		
-		
+		glm::vec3 z = p->get_view_space_position(m_camera);
+		glUniform3f(m_program_point.getUniformLocation("position"),z.x,z.y,z.z);
+		glUniform3f(m_program_point.getUniformLocation("attenuation"), p->attenuation.constant, p->attenuation.linear, p->attenuation.exp);
+		glUniform3f(m_program_point.getUniformLocation("color"), p->color.r,p->color.g,p->color.b);
+
+		F32 size =  p->calculate_max_radius();
 		Model* m = new Model();
 		m->mesh = cube_mesh;
-		glm::mat4 final_camera = m_camera->get_camera_matrix() * glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0,100,-200)), glm::vec3(100, 100, 100));
+		glm::mat4 final_camera = m_camera->get_camera_matrix() * glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0, 100, -200)), glm::vec3(size, size, size));
 		glUniformMatrix4fv(m_program_point.getUniformLocation("MVP"), 1, GL_FALSE, &final_camera[0][0]);
 
+		/*Model* m = new Model();
+		m->mesh = square_model;
+		glUniformMatrix4fv(m_program_point.getUniformLocation("MVP"), 1, GL_FALSE, &glm::mat4(1.0f)[0][0]); 
+		*/
 		m_simple_drawer->draw(m);
 
-		/*glBegin(GL_QUADS);
-		glVertex2f(-1.0f, -1.0f);
-		glVertex2f(1.0f, -1.0f);
-		glVertex2f(1.0f, 1.0f);
-		glVertex2f(-1.0f, 1.0f);
-		glEnd();*/
+	
 		m_program_point.unuse();
 
 	

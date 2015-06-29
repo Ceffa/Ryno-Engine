@@ -1,6 +1,7 @@
 #pragma once
 #include "MainGameInterface.h"
 #include "SimpleDrawer.h"
+#include "LightPoint.h"
 
 namespace Ryno{
 	class MainGame : public MainGameInterface
@@ -25,6 +26,7 @@ namespace Ryno{
 		I32 cube_mesh;
 
 		SimpleDrawer* m_simple_drawer;
+		LightPoint* p;
 		GLuint vao, vbo;
 
 	};
