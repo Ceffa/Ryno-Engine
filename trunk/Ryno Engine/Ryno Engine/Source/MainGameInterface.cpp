@@ -60,14 +60,13 @@ namespace Ryno{
 			m_time_manager.begin_frame();
 			handle_input();
 			update();
-			m_program.use();
 			draw();
-			m_program.unuse();
 			m_time_manager.end_frame();
 			m_time_manager.print_fps();
 
 		}
 		m_program.destroy();
+		m_program_dir.destroy();
 		exit_game();
 
 

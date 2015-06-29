@@ -1,5 +1,6 @@
 #pragma once
 #include "MainGameInterface.h"
+#include "SimpleDrawer.h"
 
 namespace Ryno{
 	class MainGame : public MainGameInterface
@@ -19,8 +20,12 @@ namespace Ryno{
 		Sound sound;
 		Music music;
 		std::vector<GameObject*> m_game_objects;
-		GameObject* sphere;
-		
+		std::vector<GameObject*>  spheres;
+		I32 square_model;
+		I32 cube_mesh;
+
+		SimpleDrawer* m_simple_drawer;
+		GLuint vao, vbo;
 
 	};
 }

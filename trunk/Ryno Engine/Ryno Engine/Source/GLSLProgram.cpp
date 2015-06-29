@@ -114,15 +114,11 @@ namespace Ryno{
 
 	void GLSLProgram::use(){
 		glUseProgram(m_program_id);
-		for (int i = 0; i < m_attr_no; i++){
-			glEnableVertexAttribArray(i);
-		}
+		
 	}
 	void GLSLProgram::unuse(){
 		glUseProgram(0);
-		for (int i = 0; i < m_attr_no; i++){
-			glDisableVertexAttribArray(i);
-		}
+		
 	}
 
 	void GLSLProgram::read_file_inside_string(const std::string&  path, const char** c){

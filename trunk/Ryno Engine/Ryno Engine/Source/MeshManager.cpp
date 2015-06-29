@@ -64,10 +64,23 @@ namespace Ryno{
 			else if (strcmp(lineHeader, "f") == 0){
 				std::string vertex1, vertex2, vertex3;
 				unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+				
+				fgetc(file);
+				char buffer[100];
+				fgets(buffer, 100, file);
+				//std::cout << std::string(buffer) << std::endl;
+				int matches = sscanf(buffer, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 				if (matches != 9){
-					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					return -1;
+				
+					uvIndex[0] = 1;
+					uvIndex[1] = 1;
+					uvIndex[2] = 1;
+				
+					matches = sscanf(buffer, "%d//%d %d//%d %d//%d\n", &vertexIndex[0],  &normalIndex[0], &vertexIndex[1],  &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
+					if (matches != 6){
+						printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+						return -1;
+					}
 				}
 
 				vertexIndices.push_back(vertexIndex[0]);
@@ -79,6 +92,7 @@ namespace Ryno{
 				normalIndices.push_back(normalIndex[0]);
 				normalIndices.push_back(normalIndex[1]);
 				normalIndices.push_back(normalIndex[2]);
+				
 
 			}
 		}
@@ -87,20 +101,25 @@ namespace Ryno{
 		Mesh* m = new Mesh();
 		meshes.push_back(m);
 		meshes[last_mesh]->vertices.resize(size);
-		
+
+		bool has_uvs = temp_uvs.empty() ? false : true;
 
 		for (U32 i = 0; i < size; i++){
 			U32 vertexIndex = vertexIndices[i];
-			U32 uvIndex = uvIndices[i];
-			U32 normalIndex = normalIndices[i];
-
 			meshes[last_mesh]->vertices[i].position = temp_vertices[vertexIndex - 1];
-			meshes[last_mesh]->vertices[i].uv = temp_uvs[uvIndex - 1];
+
+			if (has_uvs){
+				U32 uvIndex = uvIndices[i];
+				meshes[last_mesh]->vertices[i].uv = temp_uvs[uvIndex - 1];
+			}
+			U32 normalIndex = normalIndices[i];
 			meshes[last_mesh]->vertices[i].normal = temp_normals[normalIndex - 1];
+
+
 		}
 
 		meshes[last_mesh]->size = meshes[last_mesh]->vertices.size(); //One time only
-		
+
 		return ++last_mesh;
 	}
 }

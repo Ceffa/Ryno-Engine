@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.h"
-
+#include "GLSLProgram.h"
 namespace Ryno{
 	class FrameBuffer
 	{
@@ -9,17 +9,17 @@ namespace Ryno{
 		FrameBuffer(U32 width, U32 height);
 		~FrameBuffer(){}
 		enum FRAME_TEXTURE_TYPE{
-			FRAME_TEXTURE_TYPE_POSITION=0,
-			FRAME_TEXTURE_TYPE_DIFFUSE=1,
-			FRAME_TEXTURE_TYPE_NORMAL=2,
-			FRAME_TEXTURE_TYPE_TEXCOORD=3,
-			FRAME_NUM_TEXTURES=4
+			FRAME_TEXTURE_TYPE_POSITION,
+			FRAME_TEXTURE_TYPE_DIFFUSE,
+			FRAME_TEXTURE_TYPE_NORMAL,
+			FRAME_NUM_TEXTURES
 		};
 
 		void init(U32 width, U32 height);
 		void bind_for_reading();
+		void send_uniforms(GLSLProgram* p);
+		void set_read_buffer(FRAME_TEXTURE_TYPE TextureType);
 		void bind_for_writing();
-		void set_read_buffer(FRAME_TEXTURE_TYPE texture_type);
 
 		U32 m_fbo;
 		U32 m_textures[FRAME_NUM_TEXTURES];
