@@ -62,7 +62,7 @@ namespace Ryno{
 		MeshManager& m_mesh_loader = MeshManager::get_instance();
 		Camera3D* m_camera;
 		GameState m_game_state;
-		GLSLProgram m_program,m_program_dir, m_program_point;
+		GLSLProgram m_program,m_program_dir, m_program_point, m_null;
 		SDL_Window* m_window;
 		Batch3D* m_batch3d;
 

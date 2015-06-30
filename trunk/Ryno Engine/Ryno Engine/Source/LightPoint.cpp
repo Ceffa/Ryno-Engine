@@ -4,9 +4,8 @@ namespace Ryno{
 
 
 	LightPoint::LightPoint(F32 _x, F32 _y, F32 _z) : x(_x), y(_y), z(_z){
-		attenuation.constant = 1;
-		attenuation.linear = 1;
-		attenuation.exp =0;
+		attenuation = 0;
+		
 		intensity = 1;
 		color.r = 255;
 		color.g = 255;
@@ -30,7 +29,7 @@ namespace Ryno{
 	{
 		F32 MaxChannel = fmax(fmax(color.r, color.g), color.b);
 
-		F32 ret = sqrt(MaxChannel * 256 / attenuation.exp);
+		F32 ret = sqrt(MaxChannel * 255 / attenuation);
 		return ret;
 	}
 }

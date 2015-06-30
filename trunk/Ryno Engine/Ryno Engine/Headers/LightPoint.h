@@ -6,11 +6,7 @@
 #include <GLM\glm.hpp>
 
 namespace Ryno{
-	struct Attenuation{
-		F32 constant;
-		F32 linear;
-		F32 exp;
-	};
+	
 	
 	class LightPoint{
 	public:
@@ -25,7 +21,7 @@ namespace Ryno{
 		F32 x;
 		F32 y;
 		F32 z;
-		Attenuation attenuation;
+		F32 attenuation; //exponential
 		F32 intensity;
 		ColorRGBA color;
 

@@ -20,6 +20,7 @@ namespace Ryno {
 		// Create the frame buffer textures
 		glGenTextures(FRAME_NUM_TEXTURES, m_textures);
 		glGenTextures(1, &m_depth_texture);
+		glGenTextures(1, &m_final_texture);
 
 		//We bind them just to initialize them and assign them to the p-buffers of the frame buffer
 		for (U32 i = 0; i < FRAME_NUM_TEXTURES; i++) {
@@ -32,14 +33,15 @@ namespace Ryno {
 
 		}
 
-		//Same with the depth
+		//Bind depth texture (with 8 bits for stencil)
 		glBindTexture(GL_TEXTURE_2D, m_depth_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT,nullptr);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth_texture, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, nullptr);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depth_texture, 0);
 
-		//We tell the default wrtie buffer of the fragment shader, so it will output data in the p-buffers
-		GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-		glDrawBuffers(FRAME_NUM_TEXTURES, DrawBuffers);
+		//Bind final texture
+		glBindTexture(GL_TEXTURE_2D, m_final_texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_final_texture, 0);
 
 		//Check if ok
 		GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -55,17 +57,54 @@ namespace Ryno {
 
 	}
 
-	void FrameBuffer::bind_for_reading(){
-		//Bind default frame buffer for writing (thus automatically unbinding the custom frame buffer)
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	void FrameBuffer::start_frame()
+	{
+		//Binds the custom framebuffer, and then clear the previous final_texture
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 
-		//Bind the textures id to the opengl location, so the shader will read from them
-		for (U32 i = 0; i < FRAME_NUM_TEXTURES; i++){
+	void FrameBuffer::bind_for_geometry_pass()
+	{
+		//Binds custom buffer, specify draw buffers, and set them to draw
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+
+		GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0,
+			GL_COLOR_ATTACHMENT1,
+			GL_COLOR_ATTACHMENT2 };
+
+		glDrawBuffers(FRAME_NUM_TEXTURES, DrawBuffers);
+	}
+
+	void FrameBuffer::bind_for_stencil_pass()
+	{
+		//Disable all draw buffers, cause it just wants to get depth and stencil.
+		//Without this, the drawing would override geometry pass (because the fbo is the same)
+		glDrawBuffer(GL_NONE);
+	}
+
+
+	void FrameBuffer::bind_for_light_pass()
+	{
+		//Draw in the final_texture of fbo, not yet in the screen buffer
+		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+
+		//Bind the textures correspondent to the buffers of the gbuffer.
+		//The light shader needs textures position (like GL_TEXTURE0), not texture ids.
+		//So we need to bind the id to the location.
+
+		for (U8 i = 0; i < FRAME_NUM_TEXTURES; i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, m_textures[i]);
 		}
-			
-		
+	}
+
+	void FrameBuffer::bind_for_final_pass()
+	{
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
+		glReadBuffer(GL_COLOR_ATTACHMENT4);
 	}
 
 	void FrameBuffer::send_uniforms(GLSLProgram* p){
@@ -83,11 +122,5 @@ namespace Ryno {
 
 	}
 
-	void FrameBuffer::bind_for_writing(){
-		//Enable the custom framebuffer to drawing
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
-
-	}
-	
 }
 	
