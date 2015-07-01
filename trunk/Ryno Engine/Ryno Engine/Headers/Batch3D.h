@@ -58,7 +58,7 @@ namespace Ryno{
 		U32 m_vao;
 
 		Camera3D* m_camera;
-		MeshManager& m_mesh_loader = MeshManager::get_instance();
+		MeshManager* m_mesh_manager;
 
 
 	};

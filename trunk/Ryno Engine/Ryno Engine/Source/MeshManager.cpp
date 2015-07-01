@@ -10,10 +10,10 @@ namespace Ryno{
 		meshes.resize(0);
 	}
 
-	MeshManager& MeshManager::get_instance(){
+	MeshManager* MeshManager::get_instance(){
 
 		static MeshManager instance;//only at the beginning
-		return instance;
+		return &instance;
 	}
 
 	Mesh* MeshManager::get_mesh(I32 mesh_number){

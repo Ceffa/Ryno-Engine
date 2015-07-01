@@ -12,19 +12,18 @@ namespace Ryno{
 	
 	class SimpleDrawer{
 	public:
-		SimpleDrawer(){}
-		~SimpleDrawer(){}
-		void init();
+		
+		static SimpleDrawer* get_instance();
 		void draw(Model* model);
 		
 	private:
-
+		SimpleDrawer();
 		void create_vertex_array();
 
 		U32 m_vbo;
 		U32 m_vao;
 
-		MeshManager& m_mesh_loader = MeshManager::get_instance();
+		MeshManager* m_mesh_manager;
 
 
 	};

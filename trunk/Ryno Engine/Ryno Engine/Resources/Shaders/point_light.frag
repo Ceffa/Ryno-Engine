@@ -8,12 +8,14 @@ uniform vec3 position;
 uniform vec3 color;
 uniform float intensity;
 uniform float attenuation;
+uniform int x;
+uniform int y;
 
 out vec3 frag_color;
 
 
 void main(){
-	vec2 TexCoord = gl_FragCoord.xy / vec2(800, 600);
+	vec2 TexCoord = gl_FragCoord.xy / vec2(x, y);
 	
 	vec3 Color = texture(m_col, TexCoord).xyz;
 

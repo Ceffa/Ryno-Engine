@@ -9,8 +9,8 @@ namespace Ryno {
 
 	void Batch3D::init(Camera3D* camera) {
 		m_camera = camera;
-		m_mesh_loader = MeshManager::get_instance();
 		create_vertex_array();
+		m_mesh_manager = MeshManager::get_instance();
 
 	}
 
@@ -82,7 +82,7 @@ namespace Ryno {
 		//For each mesh...
 		for (I32 cg = 0; cg < m_models.size(); cg++){
 
-			I32 mesh_size = (I32)m_mesh_loader.get_mesh(m_models[cg]->mesh)->size;
+			I32 mesh_size = (I32)m_mesh_manager->get_mesh(m_models[cg]->mesh)->size;
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
@@ -110,7 +110,7 @@ namespace Ryno {
 		I32 cv = 0;
 		vertices.resize(total_vertices);
 		for (RenderBatch rb : m_render_batches){
-			for (Vertex3D v : m_mesh_loader.get_mesh(rb.mesh)->vertices){
+			for (Vertex3D v : m_mesh_manager->get_mesh(rb.mesh)->vertices){
 				vertices[cv++] = v;
 			}
 		}

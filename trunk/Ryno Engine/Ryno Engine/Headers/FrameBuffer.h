@@ -23,8 +23,6 @@ namespace Ryno{
 		void bind_for_light_pass();
 		void bind_for_final_pass();
 	
-		void send_uniforms(GLSLProgram* p);
-
 		U32 m_fbo;
 		U32 m_textures[FRAME_NUM_TEXTURES];
 		U32 m_depth_texture;

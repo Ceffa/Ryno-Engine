@@ -10,6 +10,7 @@
 #include "TimeManager.h"
 #include "InputManager.h"
 #include "AudioManager.h"
+#include "SimpleDrawer.h"
 #include "Log.h"
 //other
 #include "Global.h"
@@ -58,8 +59,9 @@ namespace Ryno{
 		AudioManager m_audio_manager;
 		InputManager m_input_manager;
 		TimeManager m_time_manager;
-		TextureManager& m_texture_loader = TextureManager::get_instance();
-		MeshManager& m_mesh_loader = MeshManager::get_instance();
+		TextureManager* m_texture_loader;
+		MeshManager* m_mesh_manager;
+		SimpleDrawer* m_simple_drawer;
 		Camera3D* m_camera;
 		GameState m_game_state;
 		GLSLProgram m_program,m_program_dir, m_program_point, m_null;

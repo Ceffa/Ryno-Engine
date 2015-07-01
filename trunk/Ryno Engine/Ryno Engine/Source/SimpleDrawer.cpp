@@ -7,26 +7,30 @@
 
 namespace Ryno {
 
-
-
-	void SimpleDrawer::init() {
+	SimpleDrawer::SimpleDrawer(){
 		m_vao = 0;
 		m_vbo = 0;
-		m_mesh_loader = MeshManager::get_instance();
+		m_mesh_manager = MeshManager::get_instance();
 		create_vertex_array();
-
 	}
 
+	SimpleDrawer* SimpleDrawer::get_instance(){
+
+		static SimpleDrawer instance;//only at the beginning
+		return &instance;
+	}
+
+	
 
 	void SimpleDrawer::draw(Model* model) {
-		Mesh* m = m_mesh_loader.get_mesh(model->mesh);
+		Mesh* m = m_mesh_manager->get_mesh(model->mesh);
 		glBindVertexArray(m_vao);
 
 		//glActiveTexture(GL_TEXTURE0);
 		//glBindTexture(GL_TEXTURE_2D, model->texture);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER, m->size * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, m->size * sizeof(Vertex3D), m_mesh_loader.get_mesh(model->mesh)->vertices.data());
+		glBufferSubData(GL_ARRAY_BUFFER, 0, m->size * sizeof(Vertex3D), m_mesh_manager->get_mesh(model->mesh)->vertices.data());
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		glDrawArrays(GL_TRIANGLES, 0, m->size);

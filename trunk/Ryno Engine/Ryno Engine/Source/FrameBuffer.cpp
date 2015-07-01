@@ -106,21 +106,5 @@ namespace Ryno {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
 	}
-
-	void FrameBuffer::send_uniforms(GLSLProgram* p){
-		//Use at the beginning.
-		//It will permanently tell the program to use the textures bound at location 0,1,2.
-		//Do not confuse with textures ids.
-		//Texture number 8 could be bound to location 0, here i'm interested in locations
-
-		p->use();
-		glUniform1i(p->getUniformLocation("m_pos"), 0);
-		glUniform1i(p->getUniformLocation("m_col"), 1);
-		glUniform1i(p->getUniformLocation("m_nor"), 2);
-		p->unuse();
-
-
-	}
-
 }
 	

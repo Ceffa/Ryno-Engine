@@ -48,6 +48,9 @@ namespace Ryno{
 		m_input_manager.init(m_window);
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_batch3d = new Batch3D();
+	    m_texture_loader = TextureManager::get_instance();
+		m_mesh_manager = MeshManager::get_instance();
+
 		
 	}
 

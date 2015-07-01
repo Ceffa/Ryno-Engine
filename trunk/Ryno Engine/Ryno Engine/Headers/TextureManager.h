@@ -14,7 +14,7 @@ namespace Ryno{
 	};
 	class TextureManager{
 	public:
-		static TextureManager& get_instance();
+		static TextureManager* get_instance();
 		U32 loadPNG(const std::string& name);
 		GLTexture get_texture(U32 texture_number);
 	private:

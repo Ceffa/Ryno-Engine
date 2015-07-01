@@ -8,10 +8,10 @@ namespace Ryno{
 
 	TextureManager::TextureManager(){}
 
-	TextureManager& TextureManager::get_instance(){
+	TextureManager* TextureManager::get_instance(){
 
 		static TextureManager instance;//only at the beginning
-		return instance;
+		return &instance;
 	}
 
 	GLTexture TextureManager::get_texture(U32 mesh_number){

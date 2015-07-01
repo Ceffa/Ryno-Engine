@@ -1,7 +1,8 @@
 #pragma once
 #include "MainGameInterface.h"
-#include "SimpleDrawer.h"
-#include "LightPoint.h"
+#include "PointLight.h"
+#include "DeferredRenderer.h"
+#include "DirectionalLight.h"
 
 namespace Ryno{
 	class MainGame : public MainGameInterface
@@ -12,8 +13,7 @@ namespace Ryno{
 		void input() override;
 		void update() override;
 		void draw() override;
-
-
+		
 		bool swap_curve = false;
 		bool just_played = false;
 		I64 speed = 40;
@@ -27,8 +27,9 @@ namespace Ryno{
 		I32 cube_mesh;
 		Model* sphere_box_model;
 
-		SimpleDrawer* m_simple_drawer;
-		std::vector<LightPoint*> point_lights;
+		std::vector<PointLight*> point_lights;
+		DirectionalLight* l;
+		DeferredRenderer* m_deferred_renderer;
 		GLuint vao, vbo;
 
 	};
