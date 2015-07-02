@@ -34,9 +34,9 @@ namespace Ryno{
 				if (x % 2 == 0 && z % 2 == 0){
 				
 					PointLight* l = new PointLight(x * 10, 5.9+ 4 * z, z * 10);
-					l->attenuation = .9;
-					l->color = ColorRGBA(((double)rand() / (RAND_MAX)) * 255, ((double)rand() / (RAND_MAX)) * 255, ((double)rand() / (RAND_MAX))*255, 255);
-					l->intensity = 1;
+					l->attenuation = .1;
+					l->set_diffuse_color(((double)rand() / (RAND_MAX)) * 255, ((double)rand() / (RAND_MAX)) * 255, ((double)rand() / (RAND_MAX))*255, 255);
+					l->diffuse_intensity = 1;
 					l->program = &m_program_point;
 					point_lights.push_back(l);
 				}
@@ -90,8 +90,8 @@ namespace Ryno{
 		sphere_box_model = new Model();
 		sphere_box_model->mesh = bound_sphere;
 		l = new DirectionalLight(.3f, .6f, .3f);
-		l->intensity = .15;
-		l->color = ColorRGBA(255, 255, 255, 255);
+		l->diffuse_intensity = .25;
+		l->set_diffuse_color(255, 255, 255, 255);
 		l->program = &m_program_dir;
 
 
@@ -123,22 +123,41 @@ namespace Ryno{
 		if (m_input_manager.is_key_pressed(SDLK_c)){
 			swap_curve = !swap_curve;
 		}
-		if (m_input_manager.is_key_down(SDLK_LEFT)){
-			speed--;
-		}
-		if (m_input_manager.is_key_down(SDLK_RIGHT)){
-			speed++;
-		}
+	
 	
 		if (m_input_manager.is_key_down(SDLK_o)){
 			for (PointLight* l : point_lights){
-				l->intensity += 1;
-				if (l->attenuation < 0)l->attenuation = 0;
+				l->diffuse_intensity += 1;
+				
+			}
+		}
+		if (m_input_manager.is_key_down(SDLK_LEFT)){
+			for (PointLight* l : point_lights){
+				l->position.z -= 1;
+
+			}
+		}
+		if (m_input_manager.is_key_down(SDLK_RIGHT)){
+			for (PointLight* l : point_lights){
+				l->position.z += 1;
+
+			}
+		}
+		if (m_input_manager.is_key_down(SDLK_UP)){
+			for (PointLight* l : point_lights){
+				l->position.y += 1;
+
+			}
+		}
+		if (m_input_manager.is_key_down(SDLK_DOWN)){
+			for (PointLight* l : point_lights){
+				l->position.y -= 1;
+
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_p)){
 			for (PointLight* l : point_lights){
-				l->intensity -= 1;
+				l->diffuse_intensity -= 1;
 				
 			}
 		}

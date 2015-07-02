@@ -3,33 +3,29 @@
 namespace Ryno{
 
 
-	PointLight::PointLight(F32 _x, F32 _y, F32 _z) : x(_x), y(_y), z(_z){
+	PointLight::PointLight(F32 x, F32 y, F32 z) {
+		position = glm::vec3(x, y, z);
 		attenuation = 0;
-		
-		intensity = 1;
-		color.r = 255;
-		color.g = 255;
-		color.b = 255;
-		color.a = 255;
 	}
 	
 
-	glm::vec3 PointLight::get_view_space_position(Camera3D* camera){
-		glm::vec4 pos = camera->get_view_matrix()*glm::vec4(x, y, -z, 1);
-		return glm::vec3(pos.x, pos.y, pos.z);
+	glm::vec3 PointLight::move_to_view_space(Camera3D* camera){
+	
+		return glm::vec3(camera->get_view_matrix()*
+			glm::vec4(position.x, position.y, -position.z, 1));
+
 	}
 
-	void PointLight::set_position(F32 _x, F32 _y, F32 _z){
-		x = _x;
-		y = _y;
-		z = _z;
-	}
 
 	F32 PointLight::calculate_max_radius()
 	{
-		F32 MaxChannel = fmax(fmax(color.r, color.g), color.b);
+		//Get the max radius as the max between the specular and the diffuse one
+		F32 max_diffuse = fmax(fmax(diffuse_color.r, diffuse_color.g), diffuse_color.b);
+		F32 max_specular = fmax(fmax(specular_color.r, specular_color.g), specular_color.b);
 
-		F32 ret = sqrt(MaxChannel / attenuation);
-		return ret;
+		//Compare before the sqrt, because it's expensive
+		F32 max_value = fmax(max_diffuse / attenuation, max_specular / attenuation);
+
+		return sqrt(max_value);
 	}
 }

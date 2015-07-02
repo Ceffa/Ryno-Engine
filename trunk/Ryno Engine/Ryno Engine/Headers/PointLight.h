@@ -1,31 +1,22 @@
 #pragma once
 
-#include "Types.h"
-#include "Camera3D.h"
-#include "Structures.h"
-#include "GLSLProgram.h"
-#include <GLM\glm.hpp>
+#include "AbstractLight.h"
 
 namespace Ryno{
 	
-	
-	class PointLight{
+
+	class PointLight : public AbstractLight{
 	public:
-		PointLight();
-		PointLight(F32 _x, F32 _y, F32 _z);
+		PointLight(F32 x, F32 y, F32 z);
 		~PointLight(){}
 
-		glm::vec3 get_view_space_position(Camera3D* camera);
+		glm::vec3 move_to_view_space(Camera3D* camera) override;
 		F32 calculate_max_radius();
-		void set_position(F32 _x, F32 _y, F32 _z);
+		
 
-		F32 x;
-		F32 y;
-		F32 z;
-		F32 attenuation; //exponential
-		F32 intensity;
-		ColorRGBA color;
-		GLSLProgram* program;
+		glm::vec3 position;
+		F32 attenuation; //exp
+		
 
 	};
 
