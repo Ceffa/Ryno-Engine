@@ -1,32 +1,53 @@
 #version 330
 
-uniform sampler2D m_pos;
-uniform sampler2D m_col;
-uniform sampler2D m_nor;
+//Structures
 
-uniform vec3 position;
-uniform vec3 color;
-uniform float intensity;
-uniform float attenuation;
-uniform int x;
-uniform int y;
+//4-byte aligned baby!
+struct PointLight{
+	vec4 position_and_attenuation; //Needs to be divided
+	vec4 diffuse;
+	vec4 specular;
+};
+
+//Unifroms taken by the buffers
+uniform sampler2D g_position_tex;
+uniform sampler2D g_color_tex;
+uniform sampler2D g_normal_tex;
+//All the point light uniforms
+uniform PointLight point_light;
+//Screen size uniforms
+uniform int screen_width;
+uniform int screen_height;
+
 
 out vec3 frag_color;
 
 
 void main(){
-	vec2 TexCoord = gl_FragCoord.xy / vec2(x, y);
+	//Get uvs of the current fragment
+	vec2 uv_coords = gl_FragCoord.xy / vec2(screen_width, screen_height);
 	
-	vec3 Color = texture(m_col, TexCoord).xyz;
+	//Get data from the gbuffer
+	vec3 g_color = texture(g_color_tex, uv_coords).xyz;
+	vec3 g_position = texture(g_position_tex, uv_coords).xyz;
+	vec3 g_normal = texture(g_normal_tex, uv_coords).xyz;
+	
+	vec3 direction_between = point_light.position_and_attenuation.xyz - g_position;
+	float distance = length(direction_between);
+	float attenuation = max(point_light.position_and_attenuation.w * distance * distance,1.0f);
+	vec3 diff_color = point_light.diffuse.w *(point_light.diffuse.xyz / attenuation);
+	vec3 spec_color = point_light.specular.w *(point_light.specular.xyz / attenuation);
+	
+	
+	vec3 light_dir = normalize(direction_between);
+	vec3 view_dir = normalize(-g_position);
 
-	vec3 pos = texture(m_pos, TexCoord).xyz;
-	vec3 nor = normalize(texture(m_nor, TexCoord).xyz);
-	vec4 col = vec4(Color, 1);
+	vec3 half_dir = normalize(light_dir + view_dir);
+	float spec_angle = max(dot(half_dir, g_normal), 0);
+
+	vec3 diffuse_final = max(0, dot(g_normal, light_dir)) * diff_color;
+
+	vec3 specular_final = spec_color * pow(spec_angle, point_light.specular.w);
 	
-	vec3 dir_between = pos - position;
-	float dist = length(dir_between);
-	float atten = max(attenuation * dist * dist,1.0f);
-	vec3 final_col =  intensity * col.xyz * (color.xyz / atten);
-	final_col = clamp(final_col, 0.0, 1.0);
-	frag_color = max(0, dot(nor, -normalize(dir_between))) * final_col;
+	frag_color = clamp(g_color * (specular_final+ diffuse_final), 0,1);
 }

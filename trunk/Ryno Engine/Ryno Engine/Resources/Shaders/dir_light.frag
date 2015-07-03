@@ -1,29 +1,36 @@
 #version 330
 
-uniform sampler2D m_col;
-uniform sampler2D m_nor;
+struct DirectionalLight{
+	vec4 diffuse;	//Intensity in alpha
+	vec4 specular;	//Intensity in alpha
+	vec4 ambient;	//Intensity in alpha
+	vec3 direction; 
+};
 
-uniform vec3 dir_light;
-uniform vec3 dir_color;
-uniform float dir_intensity;
+uniform sampler2D g_color_tex;
+uniform sampler2D g_normal_tex;
 
-uniform int x;
-uniform int y;
+uniform DirectionalLight dir_light;
+
+uniform int screen_width;
+uniform int screen_height;
 
 out vec3 frag_color;
 
 
 
 void main(){
-	vec2 TexCoord = gl_FragCoord.xy / vec2(x, y);
-	vec3 Color = texture(m_col, TexCoord).xyz;
-
-	vec3 Normal = texture(m_nor, TexCoord).xyz;
-	//Normal = normalize(Normal);
+	vec2 uv_coords = gl_FragCoord.xy / vec2(screen_width,screen_height);
 	
-	vec4 col =  vec4(Color, 1);///norm
-	vec3 nor =  normalize(Normal);///pos
+	vec3 g_color = texture(g_color_tex, uv_coords).xyz;
+	vec3 g_normal = texture(g_normal_tex, uv_coords).xyz;
+	
+	vec3 diff_color = dir_light.diffuse.xyz * dir_light.diffuse.w;
+	vec3 spec_color = dir_light.specular.xyz * dir_light.specular.w;
+	vec3 amb_color = dir_light.ambient.xyz * dir_light.ambient.w;
 
+	vec3 final_color = g_color * (diff_color + spec_color);
 
-	frag_color = (max(0, dot(nor, normalize(dir_light))) *  col.xyz * dir_color * dir_intensity);
+	frag_color = max(0, dot(g_normal, normalize(dir_light.direction))) *final_color + g_color * amb_color;
+
 }

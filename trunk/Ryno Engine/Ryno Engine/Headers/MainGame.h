@@ -22,6 +22,7 @@ namespace Ryno{
 		Music music;
 		std::vector<GameObject*> m_game_objects;
 		std::vector<GameObject*> spheres;
+		GameObject* ball;
 		I32 square_model;
 		I32 bound_sphere;
 		I32 cube_mesh;

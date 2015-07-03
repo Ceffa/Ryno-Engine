@@ -16,6 +16,16 @@ namespace Ryno{
 
 	}
 
+	void PointLight::send_uniforms(Camera3D* camera){
+
+		glm::vec3 view_space_pos = move_to_view_space(camera);
+
+		glUniform4f(program->getUniformLocation("point_light.position_and_attenuation"), view_space_pos.x, view_space_pos.y, view_space_pos.z,attenuation);
+		glUniform4f(program->getUniformLocation("point_light.diffuse"), diffuse_color.r,diffuse_color.g,diffuse_color.b,diffuse_intensity);
+		glUniform4f(program->getUniformLocation("point_light.specular"), specular_color.r, specular_color.g, specular_color.b,specular_intensity);
+
+	}
+
 
 	F32 PointLight::calculate_max_radius()
 	{

@@ -11,6 +11,9 @@ namespace Ryno{
 		~PointLight(){}
 
 		glm::vec3 move_to_view_space(Camera3D* camera) override;
+
+		void send_uniforms(Camera3D* camera) override;
+
 		F32 calculate_max_radius();
 		
 

@@ -13,44 +13,15 @@ namespace Ryno{
 		m_simple_drawer = SimpleDrawer::get_instance();
 
 		U32 texture_metal = m_texture_loader->loadPNG("metal");
+		U32 white = m_texture_loader->loadPNG("white");
 		cube_mesh = m_mesh_manager->load_mesh("cube");
 		bound_sphere = m_mesh_manager->load_mesh("bound_sphere");
-		for (I32 x = -11; x < 12; x++){
-			for (I32 z = -11; z < 12; z++){
+		
+		
 
 
-				GameObject* new_go = new GameObject();
-				new_go->position = glm::vec3(x * 10, 4 *z, z*10);
-
-				new_go->model.mesh = cube_mesh;
-
-				new_go->model.texture = texture_metal;
-
-
-				new_go->scale = glm::vec3(10,10,10);
-				new_go->model.set_color(1, 1, 1, 1);
-				m_game_objects.push_back(new_go);
-
-				if (x % 2 == 0 && z % 2 == 0){
-				
-					PointLight* l = new PointLight(x * 10, 5.9+ 4 * z, z * 10);
-					l->attenuation = .1;
-					l->set_diffuse_color(((double)rand() / (RAND_MAX)) * 255, ((double)rand() / (RAND_MAX)) * 255, ((double)rand() / (RAND_MAX))*255, 255);
-					l->diffuse_intensity = 1;
-					l->program = &m_program_point;
-					point_lights.push_back(l);
-				}
-				else{
-					
-					 new_go->position.y += 4;
-					
-				}
-
-
-			}
-		}
 		U32 tex = m_texture_loader->loadPNG("moon");
-		I32 mod = m_mesh_manager->load_mesh("sphere");
+		I32 sphere_model = m_mesh_manager->load_mesh("sphere");
 		
 	
 		sound = m_audio_manager.load_sound("stomp.wav");
@@ -71,17 +42,17 @@ namespace Ryno{
 		
 	
 		m_program_dir.use();
-		glUniform1i(m_program_dir.getUniformLocation("x"), WINDOW_WIDTH);
-		glUniform1i(m_program_dir.getUniformLocation("y"), WINDOW_HEIGHT);
-		glUniform1i(m_program_dir.getUniformLocation("m_col"), 1);
-		glUniform1i(m_program_dir.getUniformLocation("m_nor"), 2);
+		glUniform1i(m_program_dir.getUniformLocation("screen_width"), WINDOW_WIDTH);
+		glUniform1i(m_program_dir.getUniformLocation("screen_height"), WINDOW_HEIGHT);
+		glUniform1i(m_program_dir.getUniformLocation("g_color_tex"), 1);
+		glUniform1i(m_program_dir.getUniformLocation("g_normal_tex"), 2);
 
 		m_program_point.use();
-		glUniform1i(m_program_point.getUniformLocation("x"), WINDOW_WIDTH);
-		glUniform1i(m_program_point.getUniformLocation("y"), WINDOW_HEIGHT);
-		glUniform1i(m_program_point.getUniformLocation("m_pos"), 0);
-		glUniform1i(m_program_point.getUniformLocation("m_col"), 1);
-		glUniform1i(m_program_point.getUniformLocation("m_nor"), 2);
+		glUniform1i(m_program_point.getUniformLocation("screen_width"), WINDOW_WIDTH);
+		glUniform1i(m_program_point.getUniformLocation("screen_height"), WINDOW_HEIGHT);
+		glUniform1i(m_program_point.getUniformLocation("g_position_tex"), 0);
+		glUniform1i(m_program_point.getUniformLocation("g_color_tex"), 1);
+		glUniform1i(m_program_point.getUniformLocation("g_normal_tex"), 2);
 		m_program_point.unuse();
 
 		
@@ -90,8 +61,10 @@ namespace Ryno{
 		sphere_box_model = new Model();
 		sphere_box_model->mesh = bound_sphere;
 		l = new DirectionalLight(.3f, .6f, .3f);
-		l->diffuse_intensity = .25;
+		l->diffuse_intensity = .5;
 		l->set_diffuse_color(255, 255, 255, 255);
+		l->ambient_intensity = .3;
+		l->set_ambient_color(255, 255,255, 255);
 		l->program = &m_program_dir;
 
 
@@ -101,7 +74,51 @@ namespace Ryno{
 		
 
 		
+		//Simple room
+		GameObject* base = new GameObject();
+		base->model.mesh = cube_mesh;
+		base->model.texture = texture_metal;
+		base->scale = glm::vec3(200, 10, 100);
+		m_game_objects.push_back(base);
 
+		GameObject* back = new GameObject();
+		back->model.mesh = cube_mesh;
+		back->model.texture = texture_metal;
+		back->scale = glm::vec3(210, 100, 10);
+		back->position = glm::vec3(0, 45, 55);
+		m_game_objects.push_back(back);
+
+		GameObject* left = new GameObject();
+		left->model.mesh = cube_mesh;
+		left->model.texture = texture_metal;
+		left->scale = glm::vec3(10, 100, 100);
+		left->position = glm::vec3(-100, 45, 0);
+		m_game_objects.push_back(left);
+
+		GameObject* right = new GameObject();
+		right->model.mesh = cube_mesh;
+		right->model.texture = texture_metal;
+		right->scale = glm::vec3(10, 100, 100);
+		right->position = glm::vec3(100, 45, 0);
+		m_game_objects.push_back(right);
+
+		ball = new GameObject();
+		ball->model.mesh = sphere_model;
+		ball->model.texture = texture_metal;
+		ball->model.set_color(255, 170, 0, 255);
+		ball->scale = glm::vec3(5, 5, 5);
+		ball->position = glm::vec3(0, 50, 20);
+		m_game_objects.push_back(ball);
+
+		PointLight* p = new PointLight(0, 50,20);
+		p->set_diffuse_color(255, 170, 0, 255);
+		p->diffuse_intensity = .2;
+		p->attenuation = 0.1; 
+		p->specular_intensity = 50;
+		p->set_specular_color(255,170,0,255);
+		p->program = &m_program_point;
+		point_lights.push_back(p);
+		
 
 	}
 	
@@ -133,27 +150,31 @@ namespace Ryno{
 		}
 		if (m_input_manager.is_key_down(SDLK_LEFT)){
 			for (PointLight* l : point_lights){
-				l->position.z -= 1;
+				l->position.x -= 1;
 
 			}
+			ball->position.x -= 1;
 		}
 		if (m_input_manager.is_key_down(SDLK_RIGHT)){
 			for (PointLight* l : point_lights){
-				l->position.z += 1;
+				l->position.x += 1;
 
 			}
+			ball->position.x += 1;
 		}
 		if (m_input_manager.is_key_down(SDLK_UP)){
 			for (PointLight* l : point_lights){
 				l->position.y += 1;
 
 			}
+			ball->position.y += 1;
 		}
 		if (m_input_manager.is_key_down(SDLK_DOWN)){
 			for (PointLight* l : point_lights){
 				l->position.y -= 1;
 
 			}
+			ball->position.y -= 1;
 		}
 		if (m_input_manager.is_key_down(SDLK_p)){
 			for (PointLight* l : point_lights){
@@ -201,7 +222,7 @@ namespace Ryno{
 			
 			o->generate_model_matrix();
 		}
-
+		
 		for (PointLight* l : point_lights){
 			//l->y += sin(time/500)/5;
 			//l->z -= cos(time / 500) / 5;

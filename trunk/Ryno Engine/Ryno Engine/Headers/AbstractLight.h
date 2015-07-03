@@ -17,6 +17,9 @@ namespace Ryno{
 		//Must be overriden
 		virtual glm::vec3 move_to_view_space(Camera3D* camera) = 0;
 
+		//Send to shader all the light data
+		virtual void send_uniforms(Camera3D* camera) = 0;
+
 		void set_diffuse_color(U8 r, U8 g, U8 b, U8 a);
 		void set_specular_color(U8 r, U8 g, U8 b, U8 a);
 
