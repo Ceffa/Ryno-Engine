@@ -60,7 +60,7 @@ namespace Ryno{
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
 		F32 size = point_light->calculate_max_radius();
-		
+		std::cout << size << std::endl;
 		glm::vec3 temp_pos = point_light->position;
 		temp_pos.z *= -1;
 		MVP_camera = m_camera->get_camera_matrix() * glm::scale(glm::translate(glm::mat4(1.0f),temp_pos ), glm::vec3(size, size, size));

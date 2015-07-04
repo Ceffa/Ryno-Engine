@@ -28,26 +28,28 @@ void main(){
 	vec2 uv_coords = gl_FragCoord.xy / vec2(screen_width, screen_height);
 	
 	//Get data from the gbuffer
-	vec3 g_color = texture(g_color_tex, uv_coords).xyz;
 	vec3 g_position = texture(g_position_tex, uv_coords).xyz;
+	vec3 g_color = texture(g_color_tex, uv_coords).xyz;
 	vec3 g_normal = texture(g_normal_tex, uv_coords).xyz;
 	
-	vec3 direction_between = point_light.position_and_attenuation.xyz - g_position;
-	float distance = length(direction_between);
-	float attenuation = max(point_light.position_and_attenuation.w * distance * distance,1.0f);
-	vec3 diff_color = point_light.diffuse.w *(point_light.diffuse.xyz / attenuation);
-	vec3 spec_color = point_light.specular.w *(point_light.specular.xyz / attenuation);
-	
-	
-	vec3 light_dir = normalize(direction_between);
+	//Important vectors
+	vec3 not_normal_ligth_dir = point_light.position_and_attenuation.xyz - g_position;
+	vec3 light_dir = normalize(not_normal_ligth_dir);
 	vec3 view_dir = normalize(-g_position);
-
 	vec3 half_dir = normalize(light_dir + view_dir);
-	float spec_angle = max(dot(half_dir, g_normal), 0);
 
-	vec3 diffuse_final = max(0, dot(g_normal, light_dir)) * diff_color;
+	//Calculate attenuation
+	float distance = length(not_normal_ligth_dir);
+	float attenuation = max(point_light.position_and_attenuation.w * distance * distance,1.0f);
 
-	vec3 specular_final = spec_color * pow(spec_angle, point_light.specular.w);
+	//Calculate base colors
+	vec3 diff_color = point_light.diffuse.w * point_light.diffuse.xyz;
+	vec3 spec_color = point_light.specular.w * point_light.specular.xyz;
 	
-	frag_color = clamp(g_color * (specular_final+ diffuse_final), 0,1);
+	//final colors for diffuse and specular
+	vec3 diffuse_final = max(0, dot(g_normal, light_dir)) * diff_color;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0), point_light.specular.w);
+	
+    //fragment color
+	frag_color = g_color * (specular_final + diffuse_final) / attenuation;
 }

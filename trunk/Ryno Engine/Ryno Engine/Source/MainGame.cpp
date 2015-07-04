@@ -44,6 +44,7 @@ namespace Ryno{
 		m_program_dir.use();
 		glUniform1i(m_program_dir.getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_program_dir.getUniformLocation("screen_height"), WINDOW_HEIGHT);
+		glUniform1i(m_program_point.getUniformLocation("g_position_tex"), 0);
 		glUniform1i(m_program_dir.getUniformLocation("g_color_tex"), 1);
 		glUniform1i(m_program_dir.getUniformLocation("g_normal_tex"), 2);
 
@@ -60,13 +61,7 @@ namespace Ryno{
 		
 		sphere_box_model = new Model();
 		sphere_box_model->mesh = bound_sphere;
-		l = new DirectionalLight(.3f, .6f, .3f);
-		l->diffuse_intensity = .5;
-		l->set_diffuse_color(255, 255, 255, 255);
-		l->ambient_intensity = .3;
-		l->set_ambient_color(255, 255,255, 255);
-		l->program = &m_program_dir;
-
+		
 
 		m_deferred_renderer = new DeferredRenderer();
 		m_deferred_renderer->init(m_camera);
@@ -79,6 +74,7 @@ namespace Ryno{
 		base->model.mesh = cube_mesh;
 		base->model.texture = texture_metal;
 		base->scale = glm::vec3(200, 10, 100);
+
 		m_game_objects.push_back(base);
 
 		GameObject* back = new GameObject();
@@ -86,6 +82,7 @@ namespace Ryno{
 		back->model.texture = texture_metal;
 		back->scale = glm::vec3(210, 100, 10);
 		back->position = glm::vec3(0, 45, 55);
+
 		m_game_objects.push_back(back);
 
 		GameObject* left = new GameObject();
@@ -100,6 +97,7 @@ namespace Ryno{
 		right->model.texture = texture_metal;
 		right->scale = glm::vec3(10, 100, 100);
 		right->position = glm::vec3(100, 45, 0);
+
 		m_game_objects.push_back(right);
 
 		ball = new GameObject();
@@ -112,13 +110,22 @@ namespace Ryno{
 
 		PointLight* p = new PointLight(0, 50,20);
 		p->set_diffuse_color(255, 170, 0, 255);
-		p->diffuse_intensity = .2;
-		p->attenuation = 0.1; 
+		p->diffuse_intensity = 10;
+		p->attenuation = .1; 
 		p->specular_intensity = 50;
 		p->set_specular_color(255,170,0,255);
 		p->program = &m_program_point;
 		point_lights.push_back(p);
 		
+		l = new DirectionalLight(.3f, .6f, .3f);
+		l->diffuse_intensity = .3;
+		l->set_diffuse_color(255, 255, 255, 255);
+		l->specular_intensity = .5;
+		l->set_specular_color(255, 255, 255, 255);
+		l->ambient_intensity = .1;
+		l->set_ambient_color(255, 255, 255, 255);
+		l->program = &m_program_dir;
+
 
 	}
 	
@@ -142,12 +149,7 @@ namespace Ryno{
 		}
 	
 	
-		if (m_input_manager.is_key_down(SDLK_o)){
-			for (PointLight* l : point_lights){
-				l->diffuse_intensity += 1;
-				
-			}
-		}
+		
 		if (m_input_manager.is_key_down(SDLK_LEFT)){
 			for (PointLight* l : point_lights){
 				l->position.x -= 1;
@@ -176,10 +178,31 @@ namespace Ryno{
 			}
 			ball->position.y -= 1;
 		}
+		if (m_input_manager.is_key_down(SDLK_o)){
+			for (PointLight* l : point_lights){
+				
+				l->diffuse_intensity += 1;
+				
+			}
+		}
 		if (m_input_manager.is_key_down(SDLK_p)){
 			for (PointLight* l : point_lights){
+				if (l->diffuse_intensity > 0)
 				l->diffuse_intensity -= 1;
-				
+
+			}
+		}
+		if (m_input_manager.is_key_down(SDLK_k)){
+			for (PointLight* l : point_lights){
+				l->specular_intensity += 1;
+
+			}
+		}
+		if (m_input_manager.is_key_down(SDLK_l)){
+			for (PointLight* l : point_lights){
+				if (l->specular_intensity > 0)
+				l->specular_intensity -= 1;
+
 			}
 		}
 
