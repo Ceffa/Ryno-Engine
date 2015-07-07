@@ -67,7 +67,7 @@ namespace Ryno {
 			input_instances[i].color = m_models[i]->color;
 			input_instances[i].mv = m_camera->get_view_matrix() *  m_models[i]->model_matrix;
 			input_instances[i].mvp = m_camera->get_camera_matrix() *  m_models[i]->model_matrix;
-			input_instances[i].normal_matrix = glm::transpose(glm::inverse(m_camera->get_view_matrix() *m_models[i]->model_matrix));
+
 		}
 		
 
@@ -87,6 +87,7 @@ namespace Ryno {
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
 				|| m_models[cg]->texture != m_models[cg - 1]->texture
+				|| m_models[cg]->normal_map != m_models[cg - 1]->normal_map
 				|| m_models[cg]->mesh != m_models[cg - 1]->mesh)
 			{
 				if (cg != 0){
@@ -94,7 +95,7 @@ namespace Ryno {
 					mvp_offset += m_render_batches.back().num_instances;
 				}
 					
-				m_render_batches.emplace_back(vertex_offset,mvp_offset, mesh_size, 1, m_models[cg]->texture, m_models[cg]->mesh);
+				m_render_batches.emplace_back(vertex_offset, mvp_offset, mesh_size, 1, m_models[cg]->texture, m_models[cg]->normal_map, m_models[cg]->mesh);
 				
 				
 			}
@@ -116,7 +117,6 @@ namespace Ryno {
 		}
 
 		//i can bind the vbo, orphan it, pass the new data, and unbind it.
-		glActiveTexture(GL_TEXTURE0);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data());
@@ -145,11 +145,14 @@ namespace Ryno {
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, position));
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, uv));
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, normal));
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, tangent));
 
 		//Enable the attrib arrays
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
+
 
 		//Create instanced vbo
 		if (!m_i_vbo)
@@ -159,21 +162,17 @@ namespace Ryno {
 		
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		
-		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(0));
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(4 * 4));
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(8 * 4));
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(12 * 4));
-		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(16 * 4));
-		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(20 * 4));
-		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(24 * 4));
-		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(28 * 4));
-		glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(32 * 4));
-		glVertexAttribPointer(12, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(36 * 4));
-		glVertexAttribPointer(13, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(40 * 4));
-		glVertexAttribPointer(14, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 49, (void*)(44 * 4));
-		glVertexAttribPointer(15, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(F32) * 49, (void*)(48 * 4));
+		
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, 0);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(4 * 4));
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(8 * 4));
+		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(12 * 4));
+		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(16 * 4));
+		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(20 * 4));
+		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(24 * 4));
+		glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 33, (void*)(28 * 4));
+		glVertexAttribPointer(12, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(F32) * 33, (void*)(32 * 4));
 
-		glVertexAttribDivisor(3, 1);
 		glVertexAttribDivisor(4, 1);
 		glVertexAttribDivisor(5, 1);
 		glVertexAttribDivisor(6, 1);
@@ -183,11 +182,8 @@ namespace Ryno {
 		glVertexAttribDivisor(10, 1);
 		glVertexAttribDivisor(11, 1);
 		glVertexAttribDivisor(12, 1);
-		glVertexAttribDivisor(13, 1);
-		glVertexAttribDivisor(14, 1);
-		glVertexAttribDivisor(15, 1);
+		
 
-		glEnableVertexAttribArray(3);
 		glEnableVertexAttribArray(4);
 		glEnableVertexAttribArray(5);
 		glEnableVertexAttribArray(6);
@@ -197,9 +193,7 @@ namespace Ryno {
 		glEnableVertexAttribArray(10);
 		glEnableVertexAttribArray(11);
 		glEnableVertexAttribArray(12);
-		glEnableVertexAttribArray(13);
-		glEnableVertexAttribArray(14);
-		glEnableVertexAttribArray(15);
+		
 	
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
@@ -215,9 +209,11 @@ namespace Ryno {
 		glBindVertexArray(m_vao);
 		for (RenderBatch rb : m_render_batches){
 			
-		
+			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, rb.texture);
-			
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, rb.normal_map);			
+			glActiveTexture(GL_TEXTURE0);
 
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InputInstance), nullptr, GL_STATIC_DRAW);
@@ -237,10 +233,12 @@ namespace Ryno {
 	}
 
 	U8 Batch3D::compare_texture(Model* a, Model* b){
-		if (a->texture == b->texture)
-			return a->mesh < b->mesh;
+		if (a->texture == b->texture){
+			if (a->normal_map == b->normal_map)
+				return a->mesh < b->mesh;
+			return a->normal_map < b->normal_map;
+		}
 		return a->texture < b->texture;
-
 	}
 
 

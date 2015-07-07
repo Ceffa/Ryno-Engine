@@ -106,5 +106,7 @@ namespace Ryno {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
 	}
+
+	 
 }
 	

@@ -30,6 +30,10 @@ namespace Ryno{
 		//Print on screen the result of the whole deferred rendering
 		void final_pass();
 
+		//Plot on screen the content of the gbuffer buffers
+		void debug_geometry_pass();
+
+
 	private:
 		//Stencil pass for point lights only.
 		//Call for each light inside the light pass

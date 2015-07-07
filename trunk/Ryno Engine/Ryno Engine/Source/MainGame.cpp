@@ -19,7 +19,6 @@ namespace Ryno{
 		
 		
 
-
 		U32 tex = m_texture_loader->loadPNG("moon");
 		I32 sphere_model = m_mesh_manager->load_mesh("sphere");
 		
@@ -66,44 +65,47 @@ namespace Ryno{
 		m_deferred_renderer = new DeferredRenderer();
 		m_deferred_renderer->init(m_camera);
 		
-		
+		U32 texture_brick = m_texture_loader->loadPNG("brick");
+		U32 normal_map_brick = m_texture_loader->loadPNG("brick_normal");
+		U32 pixel_normal = m_texture_loader->loadPNG("pixel_normal");
+		Model* m = new Model();
+		m->mesh = cube_mesh;
+		m->texture = texture_brick;
+		m->normal_map = normal_map_brick;
 
 		
 		//Simple room
 		GameObject* base = new GameObject();
-		base->model.mesh = cube_mesh;
-		base->model.texture = texture_metal;
-		base->scale = glm::vec3(200, 10, 100);
-
+		base->model = *m;
+		base->scale = glm::vec3(200, 10, 200);
+		base->position = glm::vec3(0, 0, -50);
 		m_game_objects.push_back(base);
 
 		GameObject* back = new GameObject();
-		back->model.mesh = cube_mesh;
-		back->model.texture = texture_metal;
+		back->model = *m;
 		back->scale = glm::vec3(210, 100, 10);
 		back->position = glm::vec3(0, 45, 55);
 
 		m_game_objects.push_back(back);
 
 		GameObject* left = new GameObject();
-		left->model.mesh = cube_mesh;
-		left->model.texture = texture_metal;
+		left->model = *m;
 		left->scale = glm::vec3(10, 100, 100);
 		left->position = glm::vec3(-100, 45, 0);
 		m_game_objects.push_back(left);
 
 		GameObject* right = new GameObject();
-		right->model.mesh = cube_mesh;
-		right->model.texture = texture_metal;
+		right->model = *m;
 		right->scale = glm::vec3(10, 100, 100);
 		right->position = glm::vec3(100, 45, 0);
 
 		m_game_objects.push_back(right);
 
 		ball = new GameObject();
-		ball->model.mesh = sphere_model;
-		ball->model.texture = texture_metal;
 		ball->model.set_color(255, 170, 0, 255);
+		ball->model.mesh = sphere_model;
+		ball->model.texture = white;
+		ball->model.normal_map = pixel_normal;
 		ball->scale = glm::vec3(5, 5, 5);
 		ball->position = glm::vec3(0, 50, 20);
 		m_game_objects.push_back(ball);
@@ -117,7 +119,7 @@ namespace Ryno{
 		p->program = &m_program_point;
 		point_lights.push_back(p);
 		
-		l = new DirectionalLight(.3f, .6f, .3f);
+		l = new DirectionalLight(.3f, .3f, .3f);
 		l->diffuse_intensity = .3;
 		l->set_diffuse_color(255, 255, 255, 255);
 		l->specular_intensity = .5;
@@ -246,12 +248,7 @@ namespace Ryno{
 			o->generate_model_matrix();
 		}
 		
-		for (PointLight* l : point_lights){
-			//l->y += sin(time/500)/5;
-			//l->z -= cos(time / 500) / 5;
-			//l->x += cos(time / 500) / 5;
-			
-		}
+
 
 	}
 
@@ -263,6 +260,11 @@ namespace Ryno{
 
 		m_program.use();
 
+		I32 t_location = m_program.getUniformLocation("texture_sampler");
+		glUniform1i(t_location, 0);
+		I32 n_m_location = m_program.getUniformLocation("normal_map_sampler");
+		glUniform1i(n_m_location, 1);
+
 		m_batch3d->begin(); 
 
 		for (GameObject* o : m_game_objects)
@@ -271,13 +273,15 @@ namespace Ryno{
 			m_batch3d->draw(&(o->model));
 		m_batch3d->end();
 
-		I32 t_location = m_program.getUniformLocation("myTextureSampler");
-		glUniform1i(t_location, 0);
+
+		
+		
 	
 		m_batch3d->render_batch();
 
 		m_program.unuse();
 		
+		//m_deferred_renderer->debug_geometry_pass();
 		m_deferred_renderer->point_light_pass(&point_lights);
 		m_deferred_renderer->directional_light_pass(l);
 		m_deferred_renderer->final_pass();

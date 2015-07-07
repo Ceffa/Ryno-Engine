@@ -98,24 +98,59 @@ namespace Ryno{
 		}
 
 		U32 size = (U32)vertexIndices.size();
-		Mesh* m = new Mesh();
-		meshes.push_back(m);
-		meshes[last_mesh]->vertices.resize(size);
+		Mesh* mesh = new Mesh();
+		meshes.push_back(mesh);
+		mesh->vertices.resize(size);
 
 		bool has_uvs = temp_uvs.empty() ? false : true;
 
 		for (U32 i = 0; i < size; i++){
 			U32 vertexIndex = vertexIndices[i];
-			meshes[last_mesh]->vertices[i].position = temp_vertices[vertexIndex - 1];
+			mesh->vertices[i].position = temp_vertices[vertexIndex - 1];
 
 			if (has_uvs){
 				U32 uvIndex = uvIndices[i];
-				meshes[last_mesh]->vertices[i].uv = temp_uvs[uvIndex - 1];
+				mesh->vertices[i].uv = temp_uvs[uvIndex - 1];
 			}
 			U32 normalIndex = normalIndices[i];
-			meshes[last_mesh]->vertices[i].normal = temp_normals[normalIndex - 1];
+			mesh->vertices[i].normal = temp_normals[normalIndex - 1];
 
 
+		}
+
+		for (U32 i = 0; i < mesh->vertices.size(); i += 3) {
+			Vertex3D* v0 = &mesh->vertices[i];
+			Vertex3D* v1 = &mesh->vertices[i+1];
+			Vertex3D* v2 = &mesh->vertices[i+2];
+
+			glm::vec3 Edge1 = v1->position - v0->position;
+			glm::vec3 Edge2 = v2->position - v0->position;
+
+			F32 DeltaU1 = v1->uv.x - v0->uv.x;
+			F32 DeltaV1 = v1->uv.y - v0->uv.y;
+			F32 DeltaU2 = v2->uv.x - v0->uv.x;
+			F32 DeltaV2 = v2->uv.y - v0->uv.y;
+
+			F32 f = 1.0f / (DeltaU1 * DeltaV2 - DeltaU2 * DeltaV1);
+
+			glm::vec3 Tangent, Bitangent;
+
+			Tangent.x = f * (DeltaV2 * Edge1.x - DeltaV1 * Edge2.x);
+			Tangent.y = f * (DeltaV2 * Edge1.y - DeltaV1 * Edge2.y);
+			Tangent.z = f * (DeltaV2 * Edge1.z - DeltaV1 * Edge2.z);
+
+			//Calculated in the fragment shader, but i leave the code here
+			//Bitangent.x = f * (-DeltaU2 * Edge1.x - DeltaU1 * Edge2.x);
+			//Bitangent.y = f * (-DeltaU2 * Edge1.y - DeltaU1 * Edge2.y);
+			//Bitangent.z = f * (-DeltaU2 * Edge1.z - DeltaU1 * Edge2.z);
+
+			v0->tangent += Tangent;
+			v1->tangent += Tangent;
+			v2->tangent += Tangent;
+		}
+
+		for (U32 i = 0; i < mesh->vertices.size(); i++) {
+			mesh->vertices[i].tangent = glm::normalize(mesh->vertices[i].tangent);
 		}
 
 		meshes[last_mesh]->size = meshes[last_mesh]->vertices.size(); //One time only

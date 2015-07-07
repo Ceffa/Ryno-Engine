@@ -12,21 +12,22 @@
 namespace Ryno{
 
 	struct InputInstance{
-		
 		glm::mat4 mv;
 		glm::mat4 mvp;
-		glm::mat4 normal_matrix;
 		ColorRGBA color;
+
+		
 
 	};
 	class RenderBatch{
 	public:
-		RenderBatch(U32 v_o, U32 m_o, U32 n_v, U32 n_i, U32 t, U32 m) : vertex_offset(v_o), instance_offset(m_o),num_vertices(n_v),num_instances(n_i), texture(t), mesh(m){}
+		RenderBatch(U32 v_o, U32 m_o, U32 n_v, U32 n_i, U32 t,U32 n_m, U32 m) : vertex_offset(v_o), instance_offset(m_o),num_vertices(n_v),num_instances(n_i), texture(t),normal_map(n_m), mesh(m){}
 		U32 vertex_offset;
 		U32 instance_offset;
 		U32 num_vertices;
 		U32 num_instances;
 		U32 texture;
+		U32 normal_map;
 		U32 mesh;
 	};
 

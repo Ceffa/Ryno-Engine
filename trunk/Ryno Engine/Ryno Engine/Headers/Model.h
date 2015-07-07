@@ -17,7 +17,7 @@ namespace Ryno{
 
 		void set_color(U8 r, U8 g, U8 b, U8 a);
 		glm::mat4 model_matrix;
-		U32 texture;
+		U32 texture,normal_map;
 		I32 mesh;
 		ColorRGBA color;
 		
