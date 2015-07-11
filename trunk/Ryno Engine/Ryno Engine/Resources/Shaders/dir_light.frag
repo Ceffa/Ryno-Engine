@@ -39,7 +39,7 @@ void main(){
 
 	//final colors for diffuse, specular and ambient
 	vec3 diffuse_final = max(0, dot(g_normal, dir_light.direction)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0), dir_light.specular.w);
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0), dir_light.specular.w) ;
 	vec3 amb_final = dir_light.ambient.xyz * dir_light.ambient.w;
 
 	//fragment color

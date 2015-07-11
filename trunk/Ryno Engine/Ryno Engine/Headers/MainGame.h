@@ -13,6 +13,7 @@ namespace Ryno{
 		void input() override;
 		void update() override;
 		void draw() override;
+		void end() override;
 		
 		bool swap_curve = false;
 		bool just_played = false;
@@ -31,6 +32,8 @@ namespace Ryno{
 		std::vector<PointLight*> point_lights;
 		DirectionalLight* l;
 		DeferredRenderer* m_deferred_renderer;
+		GLSLProgram m_program_geometry, m_program_dir, m_program_point, m_program_flat;
+
 		GLuint vao, vbo;
 
 	};

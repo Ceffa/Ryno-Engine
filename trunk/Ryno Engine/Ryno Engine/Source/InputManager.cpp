@@ -19,6 +19,7 @@ namespace Ryno {
 	}
 
 	Input InputManager::get_input(){
+		static bool exit = false;
 		SDL_Event evnt;
 		//Will keep looping until there are no more events to process
 		while (SDL_PollEvent(&evnt)) {
@@ -46,7 +47,8 @@ namespace Ryno {
 		
 			}
 		}
-		SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
+		if (is_key_pressed(SDLK_ESCAPE))exit = !exit;
+		if(!exit)SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
 
 		return Input::OK;
 	}

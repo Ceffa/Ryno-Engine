@@ -50,12 +50,13 @@ namespace Ryno{
 
 		virtual void draw() = 0;
 
+		virtual void end() = 0;
+
 		void exit_game();
 
 
 		U32 vao, vbo;
 
-		FrameBuffer* m_frame_buffer;
 		AudioManager m_audio_manager;
 		InputManager m_input_manager;
 		TimeManager m_time_manager;
@@ -64,7 +65,6 @@ namespace Ryno{
 		SimpleDrawer* m_simple_drawer;
 		Camera3D* m_camera;
 		GameState m_game_state;
-		GLSLProgram m_program,m_program_dir, m_program_point, m_null;
 		SDL_Window* m_window;
 		Batch3D* m_batch3d;
 

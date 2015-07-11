@@ -33,6 +33,8 @@ namespace Ryno{
 		//Plot on screen the content of the gbuffer buffers
 		void debug_geometry_pass();
 
+		void destroy();
+
 
 	private:
 		//Stencil pass for point lights only.

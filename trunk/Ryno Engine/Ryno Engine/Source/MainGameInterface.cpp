@@ -33,7 +33,7 @@ namespace Ryno{
 		glEnable(GL_DEPTH_TEST);
 	//	glEnable(GL_MULTISAMPLE);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe
-		SDL_GL_SetSwapInterval(1); //disable vsync
+		SDL_GL_SetSwapInterval(0); //disable vsync
 
 	
 
@@ -41,7 +41,6 @@ namespace Ryno{
 	}
 
 	void MainGameInterface::init_internal_systems(){
-		m_frame_buffer = new FrameBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		m_audio_manager.init();
 		m_time_manager.init(60);
@@ -50,8 +49,7 @@ namespace Ryno{
 		m_batch3d = new Batch3D();
 	    m_texture_loader = TextureManager::get_instance();
 		m_mesh_manager = MeshManager::get_instance();
-
-		
+				
 	}
 
 	void MainGameInterface::run(){
@@ -68,8 +66,7 @@ namespace Ryno{
 			m_time_manager.print_fps();
 
 		}
-		m_program.destroy();
-		m_program_dir.destroy();
+		end();
 		exit_game();
 
 

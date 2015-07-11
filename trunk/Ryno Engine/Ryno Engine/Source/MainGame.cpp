@@ -1,7 +1,9 @@
 #include "MainGame.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "GPUProfiler.h"
 #include <GLM/gtx/transform.hpp>
+
 
 
 
@@ -14,12 +16,19 @@ namespace Ryno{
 
 		U32 texture_metal = m_texture_loader->loadPNG("metal");
 		U32 white = m_texture_loader->loadPNG("white");
+		
+		U32 tex = m_texture_loader->loadPNG("moon");
+		U32 texture_bricks = m_texture_loader->loadPNG("pack/177");
+		U32 normal_map_bricks = m_texture_loader->loadPNG("pack/177_norm");
+		U32 texture_red_wall = m_texture_loader->loadPNG("pack/179");
+		U32 normal_map_red_wall = m_texture_loader->loadPNG("pack/179_norm");
+		U32 texture_grey_wall = m_texture_loader->loadPNG("pack/178");
+		U32 normal_map_grey_wall = m_texture_loader->loadPNG("pack/178_norm");
+		U32 texture_oblique = m_texture_loader->loadPNG("pack/199");
+		U32 normal_map_oblique = m_texture_loader->loadPNG("pack/199_norm");
+
 		cube_mesh = m_mesh_manager->load_mesh("cube");
 		bound_sphere = m_mesh_manager->load_mesh("bound_sphere");
-		
-		
-
-		U32 tex = m_texture_loader->loadPNG("moon");
 		I32 sphere_model = m_mesh_manager->load_mesh("sphere");
 		
 	
@@ -34,12 +43,16 @@ namespace Ryno{
 
 		m_batch3d->init(m_camera);
 	
-		m_program.create("prova");
+		m_program_geometry.create("geometry");
 		m_program_dir.create("dir_light");
 		m_program_point.create("point_light");
-		m_null.create("null");
+		m_program_flat.create("flat");
 		
-	
+		m_program_geometry.use();
+		glUniform1i(m_program_geometry.getUniformLocation("texture_sampler"), 0);
+		glUniform1i(m_program_geometry.getUniformLocation("normal_map_sampler"), 1);
+		m_program_geometry.unuse();
+
 		m_program_dir.use();
 		glUniform1i(m_program_dir.getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_program_dir.getUniformLocation("screen_height"), WINDOW_HEIGHT);
@@ -65,57 +78,54 @@ namespace Ryno{
 		m_deferred_renderer = new DeferredRenderer();
 		m_deferred_renderer->init(m_camera);
 		
-		U32 texture_brick = m_texture_loader->loadPNG("brick");
-		U32 normal_map_brick = m_texture_loader->loadPNG("brick_normal");
-		U32 pixel_normal = m_texture_loader->loadPNG("pixel_normal");
-		Model* m = new Model();
-		m->mesh = cube_mesh;
-		m->texture = texture_brick;
-		m->normal_map = normal_map_brick;
+		
+	
 
 		
 		//Simple room
 		GameObject* base = new GameObject();
-		base->model = *m;
+		base->model.set_mesh_texture_normal(cube_mesh, texture_bricks, normal_map_bricks);
 		base->scale = glm::vec3(200, 10, 200);
-		base->position = glm::vec3(0, 0, -50);
+		base->model.set_tiling(5, 5);
+		base->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(base);
 
 		GameObject* back = new GameObject();
-		back->model = *m;
-		back->scale = glm::vec3(210, 100, 10);
-		back->position = glm::vec3(0, 45, 55);
+		back->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
+		back->scale = glm::vec3(200, 200, 10);
+		back->model.set_tiling(5, 5);
+		back->position = glm::vec3(0, 100, 100);
 
 		m_game_objects.push_back(back);
 
 		GameObject* left = new GameObject();
-		left->model = *m;
-		left->scale = glm::vec3(10, 100, 100);
-		left->position = glm::vec3(-100, 45, 0);
+		left->model.set_mesh_texture_normal(cube_mesh, texture_grey_wall, normal_map_grey_wall);
+		left->scale = glm::vec3(10, 200, 200);
+		left->position = glm::vec3(-100, 100, 0);
+		left->model.set_tiling(5, 5);
 		m_game_objects.push_back(left);
 
 		GameObject* right = new GameObject();
-		right->model = *m;
-		right->scale = glm::vec3(10, 100, 100);
-		right->position = glm::vec3(100, 45, 0);
+		right->model.set_mesh_texture_normal(cube_mesh, texture_oblique, normal_map_oblique);
+		right->scale = glm::vec3(10, 200, 200);
+		right->model.set_tiling(5, 5);
+		right->position = glm::vec3(100, 100, 0);
 
 		m_game_objects.push_back(right);
 
 		ball = new GameObject();
 		ball->model.set_color(255, 170, 0, 255);
-		ball->model.mesh = sphere_model;
+		ball->model.set_mesh_texture_normal(sphere_model, white, -1);
 		ball->model.texture = white;
-		ball->model.normal_map = pixel_normal;
-		ball->scale = glm::vec3(5, 5, 5);
-		ball->position = glm::vec3(0, 50, 20);
-		m_game_objects.push_back(ball);
+		ball->scale = glm::vec3(50, 50, 50);
+		ball->position = glm::vec3(0, 50, 50);
 
-		PointLight* p = new PointLight(0, 50,20);
-		p->set_diffuse_color(255, 170, 0, 255);
+		PointLight* p = new PointLight(0, 50,50);
+		p->set_diffuse_color(255,150,0, 255);
 		p->diffuse_intensity = 10;
 		p->attenuation = .1; 
 		p->specular_intensity = 50;
-		p->set_specular_color(255,170,0,255);
+		p->set_specular_color(255,150,0,255);
 		p->program = &m_program_point;
 		point_lights.push_back(p);
 		
@@ -166,6 +176,21 @@ namespace Ryno{
 			}
 			ball->position.x += 1;
 		}
+
+		if (m_input_manager.is_key_down(SDLK_n)){
+			for (PointLight* l : point_lights){
+				l->position.z -= 1;
+
+			}
+			ball->position.z -= 1;
+		}
+		if (m_input_manager.is_key_down(SDLK_m)){
+			for (PointLight* l : point_lights){
+				l->position.z += 1;
+
+			}
+			ball->position.z += 1;
+		}
 		if (m_input_manager.is_key_down(SDLK_UP)){
 			for (PointLight* l : point_lights){
 				l->position.y += 1;
@@ -196,14 +221,14 @@ namespace Ryno{
 		}
 		if (m_input_manager.is_key_down(SDLK_k)){
 			for (PointLight* l : point_lights){
-				l->specular_intensity += 1;
+				l->specular_intensity += 3;
 
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_l)){
 			for (PointLight* l : point_lights){
 				if (l->specular_intensity > 0)
-				l->specular_intensity -= 1;
+				l->specular_intensity -= 3;
 
 			}
 		}
@@ -247,6 +272,8 @@ namespace Ryno{
 			
 			o->generate_model_matrix();
 		}
+
+		ball->generate_model_matrix();
 		
 
 
@@ -254,41 +281,66 @@ namespace Ryno{
 
 	void MainGame::draw(){
 	
-		
+
+
+		GPUProfiler::begin(3);
+			
+			
 
 		m_deferred_renderer->init_geometric_pass();
 
-		m_program.use();
+		m_program_geometry.use();
 
-		I32 t_location = m_program.getUniformLocation("texture_sampler");
-		glUniform1i(t_location, 0);
-		I32 n_m_location = m_program.getUniformLocation("normal_map_sampler");
-		glUniform1i(n_m_location, 1);
+		
 
 		m_batch3d->begin(); 
-
 		for (GameObject* o : m_game_objects)
 			m_batch3d->draw(&(o->model));
 		for (GameObject* o : spheres)
 			m_batch3d->draw(&(o->model));
 		m_batch3d->end();
 
-
-		
-		
-	
+		GPUProfiler::start_time();
 		m_batch3d->render_batch();
+		GPUProfiler::end_time();
 
-		m_program.unuse();
+		m_program_geometry.unuse();
+
 		
-		//m_deferred_renderer->debug_geometry_pass();
+
+		//Draw sphere with flat shader and non-batched drawer
+		m_program_flat.use();
+		glUniform3f(m_program_flat.getUniformLocation("Color"), 255,255,255);
+		glm::mat4 matrix = m_camera->get_camera_matrix() * ball->model.model_matrix;
+		glUniformMatrix4fv(m_program_flat.getUniformLocation("MVP"), 1, GL_FALSE, &matrix[0][0]);
+		m_simple_drawer->draw(&(ball->model));
+		m_program_flat.unuse();
+	
+		GPUProfiler::start_time();
 		m_deferred_renderer->point_light_pass(&point_lights);
+		GPUProfiler::end_time();
+
+		GPUProfiler::start_time();
 		m_deferred_renderer->directional_light_pass(l);
+		GPUProfiler::end_time();
+
+		
 		m_deferred_renderer->final_pass();
 		
+		//
 		//Finally swap windows
 		SDL_GL_SwapWindow(m_window);
-	
+		 
+		GPUProfiler::print_time();
+		
 
+	}
+
+	void MainGame::end(){
+		m_program_geometry.destroy();
+		m_program_dir.destroy();
+		m_program_point.destroy();
+		m_program_flat.destroy();
+		m_deferred_renderer->destroy();
 	}
 }

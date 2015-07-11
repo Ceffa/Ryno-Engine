@@ -60,7 +60,6 @@ namespace Ryno{
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
 		F32 size = point_light->calculate_max_radius();
-		std::cout << size << std::endl;
 		glm::vec3 temp_pos = point_light->position;
 		temp_pos.z *= -1;
 		MVP_camera = m_camera->get_camera_matrix() * glm::scale(glm::translate(glm::mat4(1.0f),temp_pos ), glm::vec3(size, size, size));
@@ -146,6 +145,14 @@ namespace Ryno{
 		glReadBuffer(GL_COLOR_ATTACHMENT3);
 		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
 			WINDOW_WIDTH / 2, 0, WINDOW_WIDTH, WINDOW_HEIGHT/2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	}
+
+
+	void DeferredRenderer::destroy(){
+		free(m_frame_buffer);
+		free(m_bounding_box);
+		free(m_fullscreen_quad);
+		m_null_program->destroy();
 	}
 
 
