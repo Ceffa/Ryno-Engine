@@ -11,11 +11,12 @@
 
 namespace Ryno{
 
+
 	struct InputInstance{
 		glm::mat4 mv;
 		glm::mat4 mvp;
 		glm::vec2 tiling;
-		ColorRGBA color;
+		ColorRGB color;
 
 		
 

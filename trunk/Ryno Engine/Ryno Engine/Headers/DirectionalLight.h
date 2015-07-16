@@ -27,11 +27,11 @@ namespace Ryno{
 
 		void set_direction(F32 p, F32 y, F32 r);
 
-		void set_ambient_color(U8 r, U8 g, U8 b, U8 a);
-		glm::vec4 get_ambient_color();
+		void set_ambient_color(U8 r, U8 g, U8 b);
+		glm::vec3 get_ambient_color();
 
 		//Since i only use one directional light, i calculate here the ambient light
-		ColorRGBA ambient_color;
+		ColorRGB ambient_color;
 		F32 ambient_intensity;
 		Direction direction;
 	

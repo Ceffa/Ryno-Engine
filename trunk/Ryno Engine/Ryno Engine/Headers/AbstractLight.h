@@ -20,13 +20,13 @@ namespace Ryno{
 		//Send to shader all the light data
 		virtual void send_uniforms(Camera3D* camera) = 0;
 
-		void set_diffuse_color(U8 r, U8 g, U8 b, U8 a);
-		void set_specular_color(U8 r, U8 g, U8 b, U8 a);
+		void set_diffuse_color(U8 r, U8 g, U8 b);
+		void set_specular_color(U8 r, U8 g, U8 b);
 
-		glm::vec4 get_diffuse_color();
-		glm::vec4 get_specular_color();
+		glm::vec3 get_diffuse_color();
+		glm::vec3 get_specular_color();
 		
-		ColorRGBA diffuse_color, specular_color;
+		ColorRGB diffuse_color, specular_color;
 		F32 diffuse_intensity, specular_intensity;
 
 		//Light program

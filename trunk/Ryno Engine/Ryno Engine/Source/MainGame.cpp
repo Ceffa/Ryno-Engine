@@ -85,7 +85,7 @@ namespace Ryno{
 	
 
 		
-		//Simple room
+		////Simple room
 		GameObject* base = new GameObject();
 		base->model.set_mesh_texture_normal(cube_mesh, texture_bricks, normal_map_bricks);
 		base->scale = glm::vec3(2000, 10, 2000);
@@ -93,54 +93,59 @@ namespace Ryno{
 		base->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(base);
 
-		GameObject* back = new GameObject();
-		back->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
-		back->scale = glm::vec3(200, 200, 10);
-		back->model.set_tiling(5, 5);
-		back->position = glm::vec3(0, 100, 100);
+		//GameObject* back = new GameObject();
+		//back->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
+		//back->scale = glm::vec3(200, 200, 10);
+		//back->model.set_tiling(5, 5);
+		//back->position = glm::vec3(0, 100, 100);
 
-		m_game_objects.push_back(back);
+		//m_game_objects.push_back(back);
 
-		GameObject* left = new GameObject();
-		left->model.set_mesh_texture_normal(cube_mesh, texture_grey_wall, normal_map_grey_wall);
-		left->scale = glm::vec3(10, 200, 200);
-		left->position = glm::vec3(-100, 100, 0);
-		left->model.set_tiling(5, 5);
-		m_game_objects.push_back(left);
+		//GameObject* left = new GameObject();
+		//left->model.set_mesh_texture_normal(cube_mesh, texture_grey_wall, normal_map_grey_wall);
+		//left->scale = glm::vec3(10, 200, 200);
+		//left->position = glm::vec3(-100, 100, 0);
+		//left->model.set_tiling(5, 5);
+		//m_game_objects.push_back(left);
 
-		GameObject* right = new GameObject();
-		right->model.set_mesh_texture_normal(cube_mesh, texture_oblique, normal_map_oblique);
-		right->scale = glm::vec3(10, 200, 200);
-		right->model.set_tiling(5, 5);
-		right->position = glm::vec3(100, 100, 0);
+		//GameObject* right = new GameObject();
+		//right->model.set_mesh_texture_normal(cube_mesh, texture_oblique, normal_map_oblique);
+		//right->scale = glm::vec3(10, 200, 200);
+		//right->model.set_tiling(5, 5);
+		//right->position = glm::vec3(100, 100, 0);
 
-		m_game_objects.push_back(right);
+		//m_game_objects.push_back(right);
 
-		ball = new GameObject();
-		ball->model.set_color(255, 170, 0, 255);
-		ball->model.set_mesh_texture_normal(sphere_model, white, -1);
-		ball->model.texture = white;
-		ball->scale = glm::vec3(50, 50, 50);
-		ball->position = glm::vec3(0, 50, 50);
+		//ball = new GameObject();
+		//ball->model.set_color(255, 170, 0);
+		//ball->model.set_mesh_texture_normal(sphere_model, white, -1);
+		//ball->model.texture = white;
+		//ball->scale = glm::vec3(50, 50, 50);
+		//ball->position = glm::vec3(0, 50, 50);
 
 		for (int i = -3; i < 3; i++){
-			PointLight* p = new PointLight(50*i,5, 50*i);
-			p->set_diffuse_color(255, 150, 0, 255);
-			p->diffuse_intensity = 10;
-			p->attenuation = .1;
-			p->specular_intensity = 50;
-			p->set_specular_color(255, 150, 0, 255);
-			p->program = &m_program_point;
-			point_lights.push_back(p);
+			for (int j = -3; j < 3; j++){
+				PointLight* p = new PointLight(40 * j, 10, 40 * i);
+				U8 r = 255 * rand() / RAND_MAX;
+				U8 g = 255 * rand() / RAND_MAX;
+				U8 b = 255 * rand() / RAND_MAX;
+				p->set_diffuse_color(r,g,b);
+				p->diffuse_intensity = 10;
+				p->attenuation = .1;
+				p->specular_intensity = 50;
+				p->set_specular_color(r,g,b);
+				p->program = &m_program_point;
+				point_lights.push_back(p);
+			}
 		}
 		
 		l = new DirectionalLight(.3f, .3f, .3f);
-		l->diffuse_intensity = .3;
-		l->set_diffuse_color(255, 255, 255, 255);
-		l->specular_intensity = .5;
-		l->set_specular_color(255, 255, 255, 255);
-		l->ambient_intensity = .1;
-		l->set_ambient_color(255, 255, 255, 255);
+		l->diffuse_intensity = 0;
+		l->set_diffuse_color(255, 255, 255);
+		l->specular_intensity = 0;
+		l->set_specular_color(255, 255, 255);
+		l->ambient_intensity = .03;
+		l->set_ambient_color(255, 255, 255);
 		l->program = &m_program_dir;
 
 
@@ -172,14 +177,14 @@ namespace Ryno{
 				l->position.x -= 1;
 
 			}
-			ball->position.x -= 1;
+			//ball->position.x -= 1;
 		}
 		if (m_input_manager.is_key_down(SDLK_RIGHT)){
 			for (PointLight* l : point_lights){
 				l->position.x += 1;
 
 			}
-			ball->position.x += 1;
+			//ball->position.x += 1;
 		}
 
 		if (m_input_manager.is_key_down(SDLK_n)){
@@ -187,28 +192,28 @@ namespace Ryno{
 				l->position.z -= 1;
 
 			}
-			ball->position.z -= 1;
+			//ball->position.z -= 1;
 		}
 		if (m_input_manager.is_key_down(SDLK_m)){
 			for (PointLight* l : point_lights){
 				l->position.z += 1;
 
 			}
-			ball->position.z += 1;
+			//ball->position.z += 1;
 		}
 		if (m_input_manager.is_key_down(SDLK_UP)){
 			for (PointLight* l : point_lights){
 				l->position.y += 1;
 
 			}
-			ball->position.y += 1;
+			//ball->position.y += 1;
 		}
 		if (m_input_manager.is_key_down(SDLK_DOWN)){
 			for (PointLight* l : point_lights){
 				l->position.y -= 1;
 
 			}
-			ball->position.y -= 1;
+			//ball->position.y -= 1;
 		}
 		if (m_input_manager.is_key_down(SDLK_o)){
 			for (PointLight* l : point_lights){
@@ -278,7 +283,7 @@ namespace Ryno{
 			o->generate_model_matrix();
 		}
 
-		ball->generate_model_matrix();
+		//ball->generate_model_matrix();
 		
 
 
@@ -313,13 +318,13 @@ namespace Ryno{
 
 		
 
-		//Draw sphere with flat shader and non-batched drawer
-		m_program_flat.use();
-		glUniform3f(m_program_flat.getUniformLocation("Color"), 255,255,255);
-		glm::mat4 matrix = m_camera->get_camera_matrix() * ball->model.model_matrix;
-		glUniformMatrix4fv(m_program_flat.getUniformLocation("MVP"), 1, GL_FALSE, &matrix[0][0]);
-		m_simple_drawer->draw(&(ball->model));
-		m_program_flat.unuse();
+		////Draw sphere with flat shader and non-batched drawer
+		//m_program_flat.use();
+		//glUniform3f(m_program_flat.getUniformLocation("Color"), 255,255,255);
+		//glm::mat4 matrix = m_camera->get_camera_matrix() * ball->model.model_matrix;
+		//glUniformMatrix4fv(m_program_flat.getUniformLocation("MVP"), 1, GL_FALSE, &matrix[0][0]);
+		//m_simple_drawer->draw(&(ball->model));
+		//m_program_flat.unuse();
 
 
 	

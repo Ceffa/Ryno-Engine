@@ -28,11 +28,11 @@ namespace Ryno{
 		direction.set_direction(p, y, r);
 	}
 
-	void DirectionalLight::set_ambient_color(U8 r, U8 g, U8 b, U8 a){
-		ambient_color.set_color(r, g, b, a);
+	void DirectionalLight::set_ambient_color(U8 r, U8 g, U8 b){
+		ambient_color.set_color(r, g, b);
 	}
 
-	glm::vec4 DirectionalLight::get_ambient_color(){
-		return ambient_color.to_vec4();
+	glm::vec3 DirectionalLight::get_ambient_color(){
+		return ambient_color.to_vec3();
 	}
 }
