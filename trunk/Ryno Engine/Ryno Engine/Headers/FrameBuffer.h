@@ -9,9 +9,9 @@ namespace Ryno{
 		FrameBuffer(U32 width, U32 height);
 		~FrameBuffer(){}
 		enum FRAME_TEXTURE_TYPE{
-			FRAME_TEXTURE_TYPE_POSITION,
 			FRAME_TEXTURE_TYPE_DIFFUSE,
 			FRAME_TEXTURE_TYPE_NORMAL,
+			FRAME_TEXTURE_TYPE_DEPTH,
 			FRAME_NUM_TEXTURES
 		};
 

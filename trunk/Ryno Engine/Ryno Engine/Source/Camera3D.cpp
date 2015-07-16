@@ -12,7 +12,7 @@ namespace Ryno{
 
 	Camera3D::Camera3D(U32 w, U32 h) :width(w), height(h), yaw(0), pitch(0)
 	{
-		perspective_matrix = glm::perspective(
+		projection_matrix = glm::perspective(
 			45.0f,         // The horizontal Field of View, in degrees : the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
 			width / (F32)height, // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
 			1.0f,        // Near clipping plane. Keep as big as possible, or you'll get precision issues.
@@ -33,7 +33,7 @@ namespace Ryno{
 			glm::toMat4(glm::quat(glm::vec3(pitch, 0, 0)) * glm::quat(glm::vec3(0, yaw, 0))),
 			glm::vec3(-position.x, -position.y, position.z)
 			); 
-		camera_matrix = perspective_matrix * view_matrix;
+		camera_matrix = projection_matrix * view_matrix;
 						
 	
 	}

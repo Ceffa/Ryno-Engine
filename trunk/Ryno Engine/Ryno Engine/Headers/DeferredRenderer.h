@@ -30,9 +30,7 @@ namespace Ryno{
 		//Print on screen the result of the whole deferred rendering
 		void final_pass();
 
-		//Plot on screen the content of the gbuffer buffers
-		void debug_geometry_pass();
-
+	
 		void destroy();
 
 
@@ -51,6 +49,7 @@ namespace Ryno{
 		MeshManager* m_mesh_manager;
 		Model* m_bounding_box, *m_fullscreen_quad;
 		glm::mat4 MVP_camera;
+		glm::mat4 inverse_WP;
 
 		
 

@@ -56,16 +56,19 @@ namespace Ryno{
 		m_program_dir.use();
 		glUniform1i(m_program_dir.getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_program_dir.getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(m_program_point.getUniformLocation("g_position_tex"), 0);
-		glUniform1i(m_program_dir.getUniformLocation("g_color_tex"), 1);
-		glUniform1i(m_program_dir.getUniformLocation("g_normal_tex"), 2);
+		glUniform1i(m_program_dir.getUniformLocation("g_color_tex"), 0);
+		glUniform1i(m_program_dir.getUniformLocation("g_normal_tex"), 1);
+		glUniform1i(m_program_dir.getUniformLocation("g_depth_tex"), 2);
+		
 
 		m_program_point.use();
 		glUniform1i(m_program_point.getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_program_point.getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(m_program_point.getUniformLocation("g_position_tex"), 0);
-		glUniform1i(m_program_point.getUniformLocation("g_color_tex"), 1);
-		glUniform1i(m_program_point.getUniformLocation("g_normal_tex"), 2);
+		glUniform1i(m_program_point.getUniformLocation("g_color_tex"), 0);
+		glUniform1i(m_program_point.getUniformLocation("g_normal_tex"), 1);
+		glUniform1i(m_program_point.getUniformLocation("g_depth_tex"), 2);
+
+
 		m_program_point.unuse();
 
 		
@@ -85,8 +88,8 @@ namespace Ryno{
 		//Simple room
 		GameObject* base = new GameObject();
 		base->model.set_mesh_texture_normal(cube_mesh, texture_bricks, normal_map_bricks);
-		base->scale = glm::vec3(200, 10, 200);
-		base->model.set_tiling(5, 5);
+		base->scale = glm::vec3(2000, 10, 2000);
+		base->model.set_tiling(50, 50);
 		base->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(base);
 
@@ -120,14 +123,16 @@ namespace Ryno{
 		ball->scale = glm::vec3(50, 50, 50);
 		ball->position = glm::vec3(0, 50, 50);
 
-		PointLight* p = new PointLight(0, 50,50);
-		p->set_diffuse_color(255,150,0, 255);
-		p->diffuse_intensity = 10;
-		p->attenuation = .1; 
-		p->specular_intensity = 50;
-		p->set_specular_color(255,150,0,255);
-		p->program = &m_program_point;
-		point_lights.push_back(p);
+		for (int i = -3; i < 3; i++){
+			PointLight* p = new PointLight(50*i,5, 50*i);
+			p->set_diffuse_color(255, 150, 0, 255);
+			p->diffuse_intensity = 10;
+			p->attenuation = .1;
+			p->specular_intensity = 50;
+			p->set_specular_color(255, 150, 0, 255);
+			p->program = &m_program_point;
+			point_lights.push_back(p);
+		}
 		
 		l = new DirectionalLight(.3f, .3f, .3f);
 		l->diffuse_intensity = .3;
@@ -315,7 +320,11 @@ namespace Ryno{
 		glUniformMatrix4fv(m_program_flat.getUniformLocation("MVP"), 1, GL_FALSE, &matrix[0][0]);
 		m_simple_drawer->draw(&(ball->model));
 		m_program_flat.unuse();
+
+
 	
+
+
 		GPUProfiler::start_time();
 		m_deferred_renderer->point_light_pass(&point_lights);
 		GPUProfiler::end_time();
@@ -330,9 +339,10 @@ namespace Ryno{
 		//
 		//Finally swap windows
 		SDL_GL_SwapWindow(m_window);
-		 
-		GPUProfiler::print_time();
 		
+	
+		//GPUProfiler::print_time();
+	
 
 	}
 

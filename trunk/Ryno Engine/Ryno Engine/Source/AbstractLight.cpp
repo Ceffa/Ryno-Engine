@@ -13,7 +13,7 @@ namespace Ryno{
 		return diffuse_color.to_vec4();
 	}
 	glm::vec4 AbstractLight::get_specular_color(){
-		specular_color.to_vec4();
+		return specular_color.to_vec4();
 	}
 	
 

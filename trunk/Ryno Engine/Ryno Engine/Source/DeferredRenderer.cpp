@@ -22,6 +22,9 @@ namespace Ryno{
 
 	//Call before drawing geometry
 	void DeferredRenderer::init_geometric_pass(){
+
+		inverse_WP = glm::inverse(m_camera->get_projection_matrix());
+
 		m_frame_buffer->start_frame();
 
 		//GEOMETRY PASS
@@ -38,6 +41,8 @@ namespace Ryno{
 	void DeferredRenderer::point_light_pass(std::vector<PointLight*>* point_lights){
 		glDepthMask(GL_FALSE);
 		glEnable(GL_STENCIL_TEST);
+
+
 		for (PointLight* p : *point_lights){
 			stencil_pass(p);
 			light_pass(p);
@@ -75,6 +80,7 @@ namespace Ryno{
 
 		m_frame_buffer->bind_for_light_pass();
 		point_light->program->use();
+		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_WP[0][0]);
 
 		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 
@@ -105,6 +111,8 @@ namespace Ryno{
 
 		m_frame_buffer->bind_for_light_pass();
 		directional_light->program->use();
+		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_WP[0][0]);
+
 		glDisable(GL_DEPTH_TEST);
 
 
@@ -128,24 +136,7 @@ namespace Ryno{
 			0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	}
 
-	void DeferredRenderer::debug_geometry_pass(){
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		glReadBuffer(GL_COLOR_ATTACHMENT0);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			0, 0, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-		glReadBuffer(GL_COLOR_ATTACHMENT1);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			0, WINDOW_HEIGHT / 2, WINDOW_WIDTH / 2, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-		glReadBuffer(GL_COLOR_ATTACHMENT2);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			WINDOW_WIDTH / 2, WINDOW_HEIGHT/2, WINDOW_WIDTH, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-		glReadBuffer(GL_COLOR_ATTACHMENT3);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			WINDOW_WIDTH / 2, 0, WINDOW_WIDTH, WINDOW_HEIGHT/2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-	}
+	
 
 
 	void DeferredRenderer::destroy(){

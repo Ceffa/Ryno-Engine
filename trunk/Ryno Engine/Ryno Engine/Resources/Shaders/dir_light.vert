@@ -2,7 +2,6 @@
 
 in vec3 in_Position;
 
-//uniform mat4 MVP;
 
 void main()
 {

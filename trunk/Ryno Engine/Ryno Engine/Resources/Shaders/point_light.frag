@@ -10,9 +10,13 @@ struct PointLight{
 };
 
 //Unifroms taken by the buffers
-uniform sampler2D g_position_tex;
+//uniform sampler2D g_position_tex;
 uniform sampler2D g_color_tex;
 uniform sampler2D g_normal_tex;
+uniform sampler2D g_depth_tex;
+
+//Inverse matrix to rebuild position from depth
+uniform mat4 inverse_P_matrix;
 //All the point light uniforms
 uniform PointLight point_light;
 //Screen size uniforms
@@ -27,11 +31,19 @@ void main(){
 	//Get uvs of the current fragment
 	vec2 uv_coords = gl_FragCoord.xy / vec2(screen_width, screen_height);
 	
-	//Get data from the gbuffer
-	vec3 g_position = texture(g_position_tex, uv_coords).xyz;
+	//Rebuild position from depth
+	float depth = texture(g_depth_tex, uv_coords).r *2.0-1.0;
+	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
+	vec4 position_world_space = inverse_P_matrix * position_screen_space;
+	vec3 g_position = position_world_space.xyz / position_world_space.w;
+
+	//Color directly from g buffer
 	vec3 g_color = texture(g_color_tex, uv_coords).xyz;
-	vec3 g_normal = texture(g_normal_tex, uv_coords).xyz;
-	
+
+	//Normal z-axis built back from the other two
+	vec2 n = texture(g_normal_tex, uv_coords).xy;
+	vec3 g_normal = vec3(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)));
+
 	//Important vectors
 	vec3 not_normal_ligth_dir = point_light.position_and_attenuation.xyz - g_position;
 	vec3 light_dir = normalize(not_normal_ligth_dir);
@@ -51,5 +63,5 @@ void main(){
 	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0), point_light.specular.w);
 	
     //fragment color
-	frag_color = g_color * (specular_final + diffuse_final) / attenuation;
+	frag_color =  g_color * (specular_final + diffuse_final) / attenuation;
 }
