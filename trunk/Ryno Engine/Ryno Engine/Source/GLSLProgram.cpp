@@ -33,6 +33,7 @@ namespace Ryno{
 	}
 	void GLSLProgram::load_shaders(const std::string& name){
 		shader_name = name;
+
 		load_shader(VERT, "Resources/Shaders/" + name + ".vert");
 		load_shader(FRAG, "Resources/Shaders/" + name + ".frag");
 	}
@@ -126,6 +127,7 @@ namespace Ryno{
 		std::ifstream file(path, std::ios::in);
 		file.seekg(0, std::ios::end);
 		I32 size = (I32)file.tellg();
+		
 		file.seekg(0, std::ios::beg);
 		C* buffer = (C*)calloc(size, 1);
 		file.read(buffer, size + 1);

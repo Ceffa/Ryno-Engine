@@ -32,7 +32,12 @@ void main(){
 	vec4 position_world_space = inverse_P_matrix * position_screen_space;
 	vec3 g_position = position_world_space.xyz / position_world_space.w;
 
-	vec3 g_color = texture(g_color_tex, uv_coords).xyz;
+	//Get color and flatness from g buffer
+	vec4 g_RGBF = texture(g_color_tex, uv_coords);
+	vec3 g_color = g_RGBF.rgb;
+	float g_flatness = g_RGBF.a;
+
+	//Get normal (and rebuilt it's z axis) from g buffer
 	vec2 n = texture(g_normal_tex, uv_coords).xy;
 	vec3 g_normal = vec3(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)));
 
@@ -46,10 +51,10 @@ void main(){
 
 	//final colors for diffuse, specular and ambient
 	vec3 diffuse_final = max(0, dot(g_normal, dir_light.direction)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0), dir_light.specular.w) ;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.000001), dir_light.specular.w) ;
 	vec3 amb_final = dir_light.ambient.xyz * dir_light.ambient.w;
 
 	//fragment color
-	frag_color = g_color * (specular_final + diffuse_final + amb_final);
+	frag_color = g_flatness * g_color + (1.0-g_flatness)*g_color *(specular_final + diffuse_final + amb_final);
 
 }

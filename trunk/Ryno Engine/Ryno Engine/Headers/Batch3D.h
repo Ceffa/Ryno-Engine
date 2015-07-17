@@ -16,7 +16,7 @@ namespace Ryno{
 		glm::mat4 mv;
 		glm::mat4 mvp;
 		glm::vec2 tiling;
-		ColorRGB color;
+		ColorRGBA color;
 
 		
 
