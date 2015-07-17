@@ -22,8 +22,8 @@ namespace Ryno{
 		U32 tex = m_texture_loader->loadPNG("moon");
 		U32 texture_bricks = m_texture_loader->loadPNG("pack/177");
 		U32 normal_map_bricks = m_texture_loader->loadPNG("pack/177_norm");
-		U32 texture_red_wall = m_texture_loader->loadPNG("pack/179");
-		U32 normal_map_red_wall = m_texture_loader->loadPNG("pack/179_norm");
+		U32 texture_red_wall = m_texture_loader->loadPNG("pack/178");
+		U32 normal_map_red_wall = m_texture_loader->loadPNG("pack/178_norm");
 		U32 texture_grey_wall = m_texture_loader->loadPNG("pack/178");
 		U32 normal_map_grey_wall = m_texture_loader->loadPNG("pack/178_norm");
 		U32 texture_oblique = m_texture_loader->loadPNG("pack/199");
@@ -146,9 +146,10 @@ namespace Ryno{
 			F32 n = 36.5;
 			F32 k = i + 3;
 
-			U8 r =n*k;
-			U8 g = n*k;
-			U8 b = 255.0 - (n*k);
+			U8 r =255;
+			U8 g = 255.0 - (n*k);
+			U8 b = 0;
+			
 			for (int j = -3; j < 4; j++){
 				
 				p = new PointLight(30 * j, 10, 30 * i );
