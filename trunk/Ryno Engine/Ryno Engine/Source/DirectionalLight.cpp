@@ -18,9 +18,9 @@ namespace Ryno{
 
 		glm::vec3 r = move_to_view_space(camera);
 		glUniform3f(program->getUniformLocation("dir_light.direction"), r.x, r.y, r.z);
-		glUniform4f(program->getUniformLocation("dir_light.diffuse"), diffuse_color.r /256.0f, diffuse_color.r /256.0f, diffuse_color.r /256.0f,diffuse_intensity);
-		glUniform4f(program->getUniformLocation("dir_light.specular"), specular_color.r /256.0f, specular_color.r /256.0f, specular_color.r /256.0f,specular_intensity);
-		glUniform4f(program->getUniformLocation("dir_light.ambient"), ambient_color.r /256.0f, ambient_color.r /256.0f, ambient_color.r /256.0f, ambient_intensity);
+		glUniform4f(program->getUniformLocation("dir_light.diffuse"), diffuse_color.r /256.0f, diffuse_color.g /256.0f, diffuse_color.b /256.0f,diffuse_intensity);
+		glUniform4f(program->getUniformLocation("dir_light.specular"), specular_color.r /256.0f, specular_color.g /256.0f, specular_color.b /256.0f,specular_intensity);
+		glUniform4f(program->getUniformLocation("dir_light.ambient"), ambient_color.r /256.0f, ambient_color.g /256.0f, ambient_color.b /256.0f, ambient_intensity);
 		
 	}
 

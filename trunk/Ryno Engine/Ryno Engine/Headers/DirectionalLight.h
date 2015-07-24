@@ -10,6 +10,7 @@ namespace Ryno{
 			yaw = _y;
 			roll = _r;
 		}
+		glm::vec3 to_vec3(){ return glm::vec3(pitch, yaw, roll); }
 		F32 pitch;
 		F32 yaw;
 		F32 roll;

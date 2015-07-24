@@ -14,26 +14,28 @@ namespace Ryno{
 
 		m_simple_drawer = SimpleDrawer::get_instance();
 
-		U32 texture_metal = m_texture_loader->loadPNG("metal");
-		U32 white = m_texture_loader->loadPNG("white_pixel");
-		U32 white_normal = m_texture_loader->loadPNG("normal_pixel");
+		U32 texture_metal = m_texture_manager->loadPNG("metal");
+		U32 white = m_texture_manager->loadPNG("white_pixel");
+		U32 white_normal = m_texture_manager->loadPNG("normal_pixel");
 
 
-		U32 tex = m_texture_loader->loadPNG("moon");
-		U32 texture_bricks = m_texture_loader->loadPNG("pack/177");
-		U32 normal_map_bricks = m_texture_loader->loadPNG("pack/177_norm");
-		U32 texture_red_wall = m_texture_loader->loadPNG("pack/178");
-		U32 normal_map_red_wall = m_texture_loader->loadPNG("pack/178_norm");
-		U32 texture_grey_wall = m_texture_loader->loadPNG("pack/178");
-		U32 normal_map_grey_wall = m_texture_loader->loadPNG("pack/178_norm");
-		U32 texture_oblique = m_texture_loader->loadPNG("pack/199");
-		U32 normal_map_oblique = m_texture_loader->loadPNG("pack/199_norm");
+		U32 tex = m_texture_manager->loadPNG("moon");
+		U32 texture_bricks = m_texture_manager->loadPNG("pack/177");
+		U32 normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm");
+		U32 texture_red_wall = m_texture_manager->loadPNG("pack/178");
+		U32 normal_map_red_wall = m_texture_manager->loadPNG("pack/178_norm");
+		U32 texture_grey_wall = m_texture_manager->loadPNG("pack/178");
+		U32 normal_map_grey_wall = m_texture_manager->loadPNG("pack/178_norm");
+		U32 texture_oblique = m_texture_manager->loadPNG("pack/199");
+		U32 normal_map_oblique = m_texture_manager->loadPNG("pack/199_norm");
 
 		cube_mesh = m_mesh_manager->load_mesh("cube");
 		bound_sphere = m_mesh_manager->load_mesh("bound_sphere");
 		I32 sphere_model = m_mesh_manager->load_mesh("sphere");
 		
 	
+		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon");
+
 		sound = m_audio_manager.load_sound("stomp.wav");
 		music = m_audio_manager.load_music("cthulhu.ogg");
 		sound.set_volume(0.0f);
@@ -63,6 +65,8 @@ namespace Ryno{
 		glUniform1i(m_program_dir.getUniformLocation("g_color_tex"), 0);
 		glUniform1i(m_program_dir.getUniformLocation("g_normal_tex"), 1);
 		glUniform1i(m_program_dir.getUniformLocation("g_depth_tex"), 2);
+		glUniform1i(m_program_dir.getUniformLocation("g_shadow_tex"), 3);
+
 		
 
 		m_program_point.use();
@@ -93,31 +97,31 @@ namespace Ryno{
 		GameObject* base = new GameObject();
 		base->model.set_color_and_flatness(255, 255, 255, 0);
 		base->model.set_mesh_texture_normal(cube_mesh, texture_bricks, normal_map_bricks);
-		base->scale = glm::vec3(2000, 10, 2000);
+		base->scale = glm::vec3(1000, 10, 1000);
 		base->model.set_tiling(50, 50);
 		base->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(base);
 
 		GameObject* back = new GameObject();
-		back->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
-		back->scale = glm::vec3(220, 400, 10);
+		back->model.set_mesh_texture_normal(sphere_model, texture_red_wall, normal_map_red_wall);
+		back->scale = glm::vec3(200, 200, 200);
 		back->model.set_tiling(5, 10);
-		back->position = glm::vec3(0, 100, 200);
+		back->position = glm::vec3(0, 200, 200);
 
 		m_game_objects.push_back(back);
-
+		
 		GameObject* left = new GameObject();
 		left->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
-		left->scale = glm::vec3(10, 400, 400);
-		left->position = glm::vec3(-110, 100, 0);
+		left->scale = glm::vec3(100,500,100);
+		left->position = glm::vec3(0,320,-100);
 		left->model.set_tiling(10,10);
 		m_game_objects.push_back(left);
 
 		GameObject* right = new GameObject();
-		right->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
-		right->scale = glm::vec3(10, 400, 400);
+		right->model.set_mesh_texture_normal(sphere_model, texture_red_wall, normal_map_red_wall);
+		right->scale = glm::vec3(300, 300, 300);
 		right->model.set_tiling(10,10);
-		right->position = glm::vec3(110, 100, 0);
+		right->position = glm::vec3(500, 150, 500);
 
 		m_game_objects.push_back(right);
 
@@ -126,7 +130,7 @@ namespace Ryno{
 		GameObject* bl;
 		PointLight* p;
 
-		p = new PointLight(0,120,120);
+		/*p = new PointLight(0,120,120);
 		
 		p->set_diffuse_color(255,0,0);
 		p->diffuse_intensity = 700;
@@ -140,19 +144,19 @@ namespace Ryno{
 		bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
 		bl->scale = glm::vec3(100,100,30);
 		bl->position = glm::vec3(0,120,120);
-		spheres.push_back(bl);
+		spheres.push_back(bl);*/
 
-		for (int i = -3; i < 4; i++){
+		for (int i = -1; i < 2; i++){
 			F32 n = 36.5;
 			F32 k = i + 3;
 
-			U8 r =255;
-			U8 g = 255.0 - (n*k);
-			U8 b = 0;
+			U8 r =200;
+			U8 g = 200;
+			U8 b = 255;
 			
-			for (int j = -3; j < 4; j++){
+			for (int j = -1; j < 2; j++){
 				
-				p = new PointLight(30 * j, 10, 30 * i );
+				p = new PointLight(60 * j, 10, 60 * i );
 				
 				p->set_diffuse_color(r,g,b);
 				p->diffuse_intensity = 10;
@@ -165,18 +169,19 @@ namespace Ryno{
 				bl->model.set_color_and_flatness(220 + 35 * r / 255, 220 + 35 * g / 255, 220 + 35 * b / 255, 255);
 				bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
 				bl->scale = glm::vec3(10,10,10);
-				bl->position = glm::vec3(30 * j, 10, 30 * i);
+				bl->position = glm::vec3(60 * j, 10, 60 * i);
 				spheres.push_back(bl);
+				
 			}
 		}
 		
-		l = new DirectionalLight(0,0,1);
-		l->diffuse_intensity = 0.05;
-		l->set_diffuse_color(255,0,0);
-		l->specular_intensity = 0;
-		l->set_specular_color(255, 255, 255);
-		l->ambient_intensity = 0.05;
-		l->set_ambient_color(255, 255, 0);
+		l = new DirectionalLight(1,1,1);
+		l->diffuse_intensity = .45;
+		l->set_diffuse_color(0,150,255);
+		l->specular_intensity =.45;
+		l->set_specular_color(0,200, 255);
+		l->ambient_intensity = .1;
+		l->set_ambient_color(0,150, 255);
 		l->program = &m_program_dir;
 
 
@@ -306,6 +311,9 @@ namespace Ryno{
 			s->generate_model_matrix();
 		}
 
+		//generate camera matrix
+		m_camera->generate_camera_matrix();
+
 		
 
 
@@ -333,27 +341,23 @@ namespace Ryno{
 		
 		m_batch3d->end();
 
-		GPUProfiler::start_time();
-		m_batch3d->render_batch();
-		GPUProfiler::end_time();
+		m_batch3d->render_deferred_scene(&m_program_geometry);
 
 		m_program_geometry.unuse();
 
-		
 
-
-		GPUProfiler::start_time();
 		m_deferred_renderer->point_light_pass(&point_lights);
-		GPUProfiler::end_time();
 
-		GPUProfiler::start_time();
+		m_deferred_renderer->shadow_pass(l);
+		m_batch3d->render_shadow_scene();
+
 		m_deferred_renderer->directional_light_pass(l);
-		GPUProfiler::end_time();
+
+		//m_deferred_renderer->skybox_pass();
+
+		m_deferred_renderer->final_pass();
 
 		
-		m_deferred_renderer->final_pass();
-		
-		//
 		//Finally swap windows
 		SDL_GL_SwapWindow(m_window);
 		

@@ -26,8 +26,7 @@ namespace Ryno {
 		Mesh* m = m_mesh_manager->get_mesh(model->mesh);
 		glBindVertexArray(m_vao);
 
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, model->texture);
+		
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER, m->size * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, m->size * sizeof(Vertex3D), m_mesh_manager->get_mesh(model->mesh)->vertices.data());

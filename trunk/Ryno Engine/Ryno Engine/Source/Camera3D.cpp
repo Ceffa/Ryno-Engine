@@ -15,9 +15,12 @@ namespace Ryno{
 		projection_matrix = glm::perspective(
 			45.0f,         // The horizontal Field of View, in degrees : the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
 			width / (F32)height, // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
-			1.0f,        // Near clipping plane. Keep as big as possible, or you'll get precision issues.
+			.1f,        // Near clipping plane. Keep as big as possible, or you'll get precision issues.
 			10000.0f       // Far clipping plane. Keep as little as possible.
 			);
+
+		ortho_matrix = glm::ortho<float>(-1000, 1000, -1000, 1000, -1000,2000);
+
 	
 	}
 	Camera3D::~Camera3D(){

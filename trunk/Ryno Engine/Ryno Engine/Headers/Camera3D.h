@@ -19,6 +19,7 @@ namespace Ryno{
 		void rotate(F32 y, F32 p);
 		glm::mat4 get_camera_matrix() const { return camera_matrix; }
 		glm::mat4 get_view_matrix() const { return view_matrix; }
+		glm::mat4 get_ortho_matrix() const { return ortho_matrix; }
 		glm::mat4 get_projection_matrix() const { return projection_matrix; }
 
 		
@@ -26,11 +27,14 @@ namespace Ryno{
 		I32 height;
 		glm::vec4 position;
 		F32 yaw, pitch;
+		U32 skybox;
 	
 	private:
 		glm::mat4 view_matrix;
 		glm::mat4 camera_matrix;
 		glm::mat4 projection_matrix;
+		glm::mat4 ortho_matrix;
+
 				
 
 

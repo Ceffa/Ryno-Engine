@@ -11,10 +11,12 @@ struct DirectionalLight{
 uniform sampler2D g_color_tex;
 uniform sampler2D g_normal_tex;
 uniform sampler2D g_depth_tex;
-
+uniform sampler2D g_shadow_tex;
 
 //Inverse projection matrix to get position from depth
 uniform mat4 inverse_P_matrix;
+uniform mat4 inverse_VP_matrix;
+uniform mat4 light_VP_matrix;
 uniform DirectionalLight dir_light;
 
 uniform int screen_width;
@@ -29,8 +31,19 @@ void main(){
 	vec2 uv_coords = gl_FragCoord.xy / vec2(screen_width,screen_height);
 	float depth = texture(g_depth_tex, uv_coords).r *2.0 - 1.0;
 	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
-	vec4 position_world_space = inverse_P_matrix * position_screen_space;
-	vec3 g_position = position_world_space.xyz / position_world_space.w;
+
+	vec4 position_view_space = inverse_P_matrix * position_screen_space;
+	vec3 g_position = position_view_space.xyz / position_view_space.w;
+	
+	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
+	vec4 position_light_ortho_matrix = light_VP_matrix * position_world_space;
+	vec3 position_light_ortho_matrix_norm = position_light_ortho_matrix.xyz / position_light_ortho_matrix.w;
+
+	
+
+	
+	
+	
 
 	//Get color and flatness from g buffer
 	vec4 g_RGBF = texture(g_color_tex, uv_coords);
@@ -50,11 +63,34 @@ void main(){
 	vec3 spec_color = dir_light.specular.xyz * dir_light.specular.w;
 
 	//final colors for diffuse, specular and ambient
-	vec3 diffuse_final = max(0, dot(g_normal, dir_light.direction)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.000001), dir_light.specular.w) ;
+	float dotNL = max(0, dot(g_normal, dir_light.direction));
+	vec3 diffuse_final =  dotNL * diff_color;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.0001), dir_light.specular.w) ;
 	vec3 amb_final = dir_light.ambient.xyz * dir_light.ambient.w;
 
+	//shadows
+	float visibility = min(1.0, diffuse_final.x+1);
+	float bias = 0.005;// *tan(acos(dotNL));
+
+	vec2 poissonDisk[4] = vec2[](
+		vec2(-0.94201624, -0.39906216),
+		vec2(0.94558609, -0.76890725),
+		vec2(-0.094184101, -0.92938870),
+		vec2(0.34495938, 0.29387760)
+		);
+
+	float shad;
+	float dep;
+	for (int i = 0; i < 4; i++){
+		shad = texture(g_shadow_tex, position_light_ortho_matrix_norm.xy + poissonDisk[i] / 700.0).x;
+		dep = position_light_ortho_matrix_norm.z - bias;
+		if ( shad < dep){
+
+			visibility -= 0.1;
+		}
+	}
+	
 	//fragment color
-	frag_color = g_flatness * g_color + (1.0-g_flatness)*g_color *(specular_final + diffuse_final + amb_final);
+	frag_color = g_flatness * g_color + (1.0 - g_flatness)*g_color *(amb_final + visibility *( specular_final));
 
 }

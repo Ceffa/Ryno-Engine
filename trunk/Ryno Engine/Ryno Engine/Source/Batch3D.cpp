@@ -33,8 +33,6 @@ namespace Ryno {
 		//Sort with provided compare function
 		std::stable_sort(m_models.begin(), m_models.end(), compare_texture);
 
-		//generate camera matrix
-		m_camera->generate_camera_matrix();
 
 		//Create batches
 		create_render_batches();
@@ -65,8 +63,7 @@ namespace Ryno {
 		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
 			input_instances[i].color = m_models[i]->color;
-			input_instances[i].mv = m_camera->get_view_matrix() *  m_models[i]->model_matrix;
-			input_instances[i].mvp = m_camera->get_camera_matrix() *  m_models[i]->model_matrix;
+			input_instances[i].m = m_models[i]->model_matrix;
 			input_instances[i].tiling = m_models[i]->tiling.get_vec_2();
 
 		}
@@ -164,16 +161,12 @@ namespace Ryno {
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		
 		
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 35, 0);
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 35, (void*)(4 * 4));
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 35, (void*)(8 * 4));
-		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 35, (void*)(12 * 4));
-		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 35, (void*)(16 * 4));
-		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 35, (void*)(20 * 4));
-		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 35, (void*)(24 * 4));
-		glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 35, (void*)(28 * 4));
-		glVertexAttribPointer(12, 2, GL_FLOAT, GL_FALSE, sizeof(F32) * 35, (void*)(32 * 4));
-		glVertexAttribPointer(13, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(F32) * 35, (void*)(34 * 4));
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, 0);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, (void*)(4 * 4));
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, (void*)(8 * 4));
+		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, (void*)(12 * 4));
+		glVertexAttribPointer(8, 2, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, (void*)(16 * 4));
+		glVertexAttribPointer(9, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(F32) * 19, (void*)(18 * 4));
 
 		glVertexAttribDivisor(4, 1);
 		glVertexAttribDivisor(5, 1);
@@ -181,24 +174,7 @@ namespace Ryno {
 		glVertexAttribDivisor(7, 1);
 		glVertexAttribDivisor(8, 1);
 		glVertexAttribDivisor(9, 1);
-		glVertexAttribDivisor(10, 1);
-		glVertexAttribDivisor(11, 1);
-		glVertexAttribDivisor(12, 1);
-		glVertexAttribDivisor(13, 1);
 
-
-		glEnableVertexAttribArray(4);
-		glEnableVertexAttribArray(5);
-		glEnableVertexAttribArray(6);
-		glEnableVertexAttribArray(7);
-		glEnableVertexAttribArray(8);
-		glEnableVertexAttribArray(9);
-		glEnableVertexAttribArray(10);
-		glEnableVertexAttribArray(11);
-		glEnableVertexAttribArray(12);
-		glEnableVertexAttribArray(13);
-
-	
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
 
@@ -206,19 +182,90 @@ namespace Ryno {
 
 	}
 
+	void Batch3D::render_deferred_scene(GLSLProgram* p){
+		
+		glUniformMatrix4fv(p->getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_view_matrix()[0][0]);
+		glUniformMatrix4fv(p->getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_camera_matrix()[0][0]);
+
+		bind_for_deferred_scene();
+		render_batch();
+	}
+
+	void Batch3D::render_shadow_scene(){
+		bind_for_shadow_scene();
+		render_batch();
+	}
+
+	void Batch3D::bind_for_deferred_scene(){
+
+		//use texture and normal map
+		texture_needed = true;
+
+		glBindVertexArray(m_vao);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		//Enable all vertex info
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
+		//enable M matrix
+		glEnableVertexAttribArray(4);
+		glEnableVertexAttribArray(5);
+		glEnableVertexAttribArray(6);
+		glEnableVertexAttribArray(7);
+	
+		//Enable tiling and color
+		glEnableVertexAttribArray(8);
+		glEnableVertexAttribArray(9);
+	
+
+	}
+
+	void Batch3D::bind_for_shadow_scene(){
+
+		//don't use texture and normal map
+		texture_needed = false;
+
+		glBindVertexArray(m_vao);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		//Enable only vertex position
+		glEnableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+		glDisableVertexAttribArray(3);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
+		//enable M matrix
+		glEnableVertexAttribArray(4);
+		glEnableVertexAttribArray(5);
+		glEnableVertexAttribArray(6);
+		glEnableVertexAttribArray(7);
+		
+		//Disable tiling and color
+		glDisableVertexAttribArray(8);
+		glDisableVertexAttribArray(9);
+	}
+
 	void Batch3D::render_batch() {
 		
 		I32 draw_calls = 0;
 		bool a = false;
-		glBindVertexArray(m_vao);
+		
+
+
+
 		for (RenderBatch rb : m_render_batches){
 			
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, rb.texture);
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, rb.normal_map);			
-			glActiveTexture(GL_TEXTURE0);
-
+			if (texture_needed){
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, rb.texture);
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, rb.normal_map);
+			}
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InputInstance), nullptr, GL_STATIC_DRAW);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(InputInstance), &input_instances[rb.instance_offset]);

@@ -30,7 +30,6 @@ namespace Ryno{
 		}
 
 		
-		glEnable(GL_DEPTH_TEST);
 	//	glEnable(GL_MULTISAMPLE);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe
 		SDL_GL_SetSwapInterval(0); //disable vsync
@@ -47,7 +46,7 @@ namespace Ryno{
 		m_input_manager.init(m_window);
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_batch3d = new Batch3D();
-	    m_texture_loader = TextureManager::get_instance();
+	    m_texture_manager = TextureManager::get_instance();
 		m_mesh_manager = MeshManager::get_instance();
 				
 	}

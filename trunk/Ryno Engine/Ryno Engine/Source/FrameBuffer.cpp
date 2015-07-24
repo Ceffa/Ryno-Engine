@@ -20,43 +20,52 @@ namespace Ryno {
 		// Create the frame buffer textures
 		glGenTextures(FRAME_NUM_TEXTURES, m_textures);
 		glGenTextures(1, &m_depth_texture);
+		glGenTextures(1, &m_shadow_texture);
 		glGenTextures(1, &m_final_texture);
 
-		////bind position texture
-		//glBindTexture(GL_TEXTURE_2D, m_textures[FRAME_TEXTURE_TYPE_POSITION]);
-		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textures[FRAME_TEXTURE_TYPE_POSITION], 0);
-
-		//bind color texture
+		
+		//bind g color texture
 		glBindTexture(GL_TEXTURE_2D, m_textures[FRAME_TEXTURE_TYPE_DIFFUSE]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textures[FRAME_TEXTURE_TYPE_DIFFUSE], 0);
 
-		//bind normal texture
+		//bind g normal texture
 		glBindTexture(GL_TEXTURE_2D, m_textures[FRAME_TEXTURE_TYPE_NORMAL]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, width, height, 0, GL_RG, GL_FLOAT, nullptr);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_textures[FRAME_TEXTURE_TYPE_NORMAL], 0);
 
-		//bind depth texture
+		//bind g depth texture
 		glBindTexture(GL_TEXTURE_2D, m_textures[FRAME_TEXTURE_TYPE_DEPTH]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, nullptr);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_textures[FRAME_TEXTURE_TYPE_DEPTH], 0);
 
+		//NON-DEFERRED TEXTURES
+
+		////Bind shadow texture 
+		//glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadow_texture, 0);
 		
+		//Bind shadow texture 
+		glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, nullptr);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_shadow_texture, 0);
+
 
 		//Bind depth texture (with 8 bits for stencil)
 		glBindTexture(GL_TEXTURE_2D, m_depth_texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, nullptr);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depth_texture, 0);
 
+		
 		//Bind final texture
 		glBindTexture(GL_TEXTURE_2D, m_final_texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_FLOAT, NULL);
@@ -70,8 +79,7 @@ namespace Ryno {
 	
 		}
 
-		// Restore default FBO
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	
 
 
 	}
@@ -89,9 +97,11 @@ namespace Ryno {
 		//Binds custom buffer, specify draw buffers, and set them to draw
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
-		GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0,
+		GLenum DrawBuffers[] = {
+			GL_COLOR_ATTACHMENT0,
 			GL_COLOR_ATTACHMENT1,
-			GL_COLOR_ATTACHMENT2 };
+			GL_COLOR_ATTACHMENT2
+		};
 
 		glDrawBuffers(FRAME_NUM_TEXTURES, DrawBuffers);
 	}
@@ -117,14 +127,33 @@ namespace Ryno {
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, m_textures[i]);
 		}
+
+		glActiveTexture(GL_TEXTURE0 + FRAME_NUM_TEXTURES);
+		glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
+		
 	}
+
+	void FrameBuffer::bind_for_skybox_pass(){
+	
+		
+
+	}
+
+	void FrameBuffer::bind_for_shadow_map_pass(){
+		
+		glDrawBuffer(GL_COLOR_ATTACHMENT3);
+	}
+
+
 
 	void FrameBuffer::bind_for_final_pass()
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
+	
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
 	}
+
 
 	 
 }

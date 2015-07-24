@@ -1,4 +1,5 @@
 #include "DeferredRenderer.h"
+#include <GLM/glm.hpp>
 #include <GLM/gtx/transform.hpp>
 
 
@@ -9,12 +10,19 @@ namespace Ryno{
 
 		m_camera = camera;
 		m_mesh_manager = MeshManager::get_instance();
+		m_texture_manager = TextureManager::get_instance();
 		m_simple_drawer = SimpleDrawer::get_instance();
 		m_frame_buffer = new FrameBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_null_program = new GLSLProgram();
 		m_null_program->create("null");
+		m_skybox_program = new GLSLProgram();
+		m_skybox_program->create("skybox");
+		m_shadow_program = new GLSLProgram();
+		m_shadow_program->create("shadow");
 		m_bounding_box = new Model();
 		m_fullscreen_quad = new Model();
+		m_cube_box = new Model();
+		m_cube_box->mesh = m_mesh_manager->load_mesh("simple_cube");
 		m_bounding_box->mesh = m_mesh_manager->load_mesh("bound_sphere");
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square");
 
@@ -23,7 +31,9 @@ namespace Ryno{
 	//Call before drawing geometry
 	void DeferredRenderer::init_geometric_pass(){
 
-		inverse_WP = glm::inverse(m_camera->get_projection_matrix());
+		
+
+		inverse_P = glm::inverse(m_camera->get_projection_matrix());
 
 		m_frame_buffer->start_frame();
 
@@ -34,6 +44,9 @@ namespace Ryno{
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
+
+	
+
 
 
 
@@ -48,6 +61,7 @@ namespace Ryno{
 			light_pass(p);
 		}
 		glDisable(GL_STENCIL_TEST);
+
 	}
 
 	//Stencil pass for point lights only.
@@ -80,7 +94,7 @@ namespace Ryno{
 
 		m_frame_buffer->bind_for_light_pass();
 		point_light->program->use();
-		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_WP[0][0]);
+		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P[0][0]);
 
 		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 
@@ -103,17 +117,57 @@ namespace Ryno{
 	}
 
 
+	void DeferredRenderer::shadow_pass(DirectionalLight* directional_light){
+		m_frame_buffer->bind_for_shadow_map_pass();
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_CULL_FACE);
+		//glCullFace(GL_FRONT);
+		m_shadow_program->use();
+		glm::vec3 inv_dir = directional_light->direction.to_vec3();
+		inv_dir.z *= -1;
+		glm::mat4 ortho_mat = m_camera->get_ortho_matrix();
+		glm::mat4 view_mat = glm::lookAt(inv_dir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		glm::mat4 final_mat = ortho_mat * view_mat;
+
+
+		glUniformMatrix4fv(m_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &final_mat[0][0]);
+		//m_simple_drawer->draw(m_bounding_box);
+		//m_shadow_program->unuse();
+		//glDepthMask(GL_FALSE);
+	}
+
+
 	//Apply diretional light
 	void DeferredRenderer::directional_light_pass(DirectionalLight* directional_light)
 	{
 		
-		glDisable(GL_CULL_FACE);
-
+		//glCullFace(GL_BACK);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glDepthMask(GL_FALSE);
+		glDisable(GL_DEPTH_TEST);
 		m_frame_buffer->bind_for_light_pass();
 		directional_light->program->use();
-		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_WP[0][0]);
+		static const glm::mat4 bias(
+			0.5, 0.0, 0.0, 0.0,
+			0.0, 0.5, 0.0, 0.0,
+			0.0, 0.0, 0.5, 0.0,
+			0.5, 0.5, 0.5, 1.0
+			);
+		glm::vec3 inv_dir = directional_light->direction.to_vec3();
+		inv_dir.z *= -1;
+		glm::mat4 ortho_mat = m_camera->get_ortho_matrix();
+		glm::mat4 view_mat = glm::lookAt(inv_dir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		glm::mat4 final_mat = bias * ortho_mat * view_mat;
 
-		glDisable(GL_DEPTH_TEST);
+		
+		glUniformMatrix4fv(directional_light->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &final_mat[0][0]);
+
+		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P[0][0]);
+		glm::mat4 inverse_VP_matrix = glm::inverse(m_camera->get_camera_matrix());
+		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+
+		
 
 
 		glEnable(GL_BLEND);
@@ -124,14 +178,58 @@ namespace Ryno{
 		m_simple_drawer->draw(m_fullscreen_quad);
 
 		glDisable(GL_BLEND);
+		
 
 		//The draw is done, unuse the program
 		directional_light->program->unuse();
 	}
 
+	
+
+
+	void DeferredRenderer::skybox_pass(){
+		m_frame_buffer->bind_for_skybox_pass();
+		glDepthMask(GL_FALSE);
+		glEnable(GL_DEPTH_TEST);
+
+		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
+		glReadBuffer(GL_COLOR_ATTACHMENT2);
+		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
+			0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_LINEAR);
+
+		//To draw sky at infinite Z
+		glDepthRange(0.99999, 1.0);
+
+		
+		
+		m_skybox_program->use();
+
+		//Remove translation from VP matrix
+		glm::mat4 no_trans_VP = m_camera->get_projection_matrix() *  glm::mat4(glm::mat3(m_camera->get_view_matrix()));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_camera->skybox);
+		glUniformMatrix4fv(m_skybox_program->getUniformLocation("no_trans_VP"), 1, GL_FALSE, &no_trans_VP[0][0]);
+		glUniform1i(m_skybox_program->getUniformLocation("cube_map"), 0);
+
+
+		m_simple_drawer->draw(m_cube_box);
+
+		m_skybox_program->unuse();
+
+		//Restore depth
+		glDepthRange(0.0, 1.0);
+		glDepthMask(GL_TRUE);
+
+
+
+	}
+
+
 	//Print on screen the result of the whole deferred rendering
 	void DeferredRenderer::final_pass(){
 		m_frame_buffer->bind_for_final_pass();
+
 		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
 			0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	}

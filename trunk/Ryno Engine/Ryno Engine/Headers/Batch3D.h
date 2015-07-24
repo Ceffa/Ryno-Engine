@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "Camera3D.h"
 #include "MeshManager.h"
+#include "GLSLProgram.h"
 #include <GLM/glm.hpp>
 #include <GL/glew.h>
 #include <vector>
@@ -13,8 +14,7 @@ namespace Ryno{
 
 
 	struct InputInstance{
-		glm::mat4 mv;
-		glm::mat4 mvp;
+		glm::mat4 m;
 		glm::vec2 tiling;
 		ColorRGBA color;
 
@@ -40,12 +40,18 @@ namespace Ryno{
 		void init(Camera3D* camera);
 		void begin();
 		void end();
-		void render_batch();
 		
 		void draw(Model* model);
+
+		void render_deferred_scene(GLSLProgram* p);
+		void render_shadow_scene();
 		
 	private:
+		void render_batch();
+		void bind_for_deferred_scene();
+		void bind_for_shadow_scene();
 
+		bool texture_needed;
 		//two vector to optimize access and sorting
 		std::vector<Model*> m_models;
 		std::vector<InputInstance> input_instances;

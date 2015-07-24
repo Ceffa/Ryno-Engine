@@ -1,4 +1,4 @@
-#version 330
+#version 430
 //#extension GL_EXT_gpu_shader4 : enable
 
 in  vec4 middle_color;
@@ -7,7 +7,7 @@ in  vec2 middle_uv;
 
 layout(location = 0) out vec4 out_diffuse;
 layout(location = 1) out vec2 out_normal;
-layout(location = 2) out vec2 out_depth;
+layout(location = 2) out float out_depth;
 
 
 uniform sampler2D texture_sampler;
@@ -21,5 +21,5 @@ void main() {
 	//else
 		//out_normal = vec2(TBN[0][2],TBN[1][2]); //get back the "normal" normal
 	
-	out_depth = vec2(gl_FragCoord.z,0);
+	out_depth = gl_FragCoord.z;
 }
