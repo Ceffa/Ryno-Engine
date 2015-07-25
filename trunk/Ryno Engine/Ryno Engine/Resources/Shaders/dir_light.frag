@@ -70,7 +70,7 @@ void main(){
 
 	//shadows
 	float visibility = min(1.0, diffuse_final.x+1);
-	float bias = 0.005;// *tan(acos(dotNL));
+	float bias = 0.004;// *tan(acos(dotNL));
 
 	vec2 poissonDisk[4] = vec2[](
 		vec2(-0.94201624, -0.39906216),

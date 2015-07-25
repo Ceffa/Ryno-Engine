@@ -19,6 +19,13 @@ namespace Ryno{
 		m_skybox_program->create("skybox");
 		m_shadow_program = new GLSLProgram();
 		m_shadow_program->create("shadow");
+		m_blit_program = new GLSLProgram();
+		m_blit_program->create("blit");
+		m_blit_program->use();
+		glUniform1i(m_blit_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
+		glUniform1i(m_blit_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
+		glUniform1i(m_blit_program->getUniformLocation("source_buffer"), 0);
+
 		m_bounding_box = new Model();
 		m_fullscreen_quad = new Model();
 		m_cube_box = new Model();
@@ -32,7 +39,6 @@ namespace Ryno{
 	void DeferredRenderer::init_geometric_pass(){
 
 		
-
 		inverse_P = glm::inverse(m_camera->get_projection_matrix());
 
 		m_frame_buffer->start_frame();
@@ -119,10 +125,10 @@ namespace Ryno{
 
 	void DeferredRenderer::shadow_pass(DirectionalLight* directional_light){
 		m_frame_buffer->bind_for_shadow_map_pass();
-		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
-		//glEnable(GL_CULL_FACE);
-		//glCullFace(GL_FRONT);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
 		m_shadow_program->use();
 		glm::vec3 inv_dir = directional_light->direction.to_vec3();
 		inv_dir.z *= -1;
@@ -141,12 +147,13 @@ namespace Ryno{
 	//Apply diretional light
 	void DeferredRenderer::directional_light_pass(DirectionalLight* directional_light)
 	{
-		
-		//glCullFace(GL_BACK);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		glDepthMask(GL_FALSE);
-		glDisable(GL_DEPTH_TEST);
 		m_frame_buffer->bind_for_light_pass();
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		
+		glDisable(GL_DEPTH_TEST);
+
 		directional_light->program->use();
 		static const glm::mat4 bias(
 			0.5, 0.0, 0.0, 0.0,
@@ -189,19 +196,24 @@ namespace Ryno{
 
 	void DeferredRenderer::skybox_pass(){
 		m_frame_buffer->bind_for_skybox_pass();
-		glDepthMask(GL_FALSE);
+		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
-		glReadBuffer(GL_COLOR_ATTACHMENT2);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_LINEAR);
+		m_blit_program->use();
+		m_simple_drawer->draw(m_fullscreen_quad);
+		m_blit_program->unuse();
+
+		glDepthMask(GL_FALSE);
+		
 
 		//To draw sky at infinite Z
 		glDepthRange(0.99999, 1.0);
 
 		
-		
+		glDrawBuffer(GL_COLOR_ATTACHMENT4);
 		m_skybox_program->use();
 
 		//Remove translation from VP matrix
@@ -230,8 +242,8 @@ namespace Ryno{
 	void DeferredRenderer::final_pass(){
 		m_frame_buffer->bind_for_final_pass();
 
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+		/*glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
+			0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);*/
 	}
 
 	
@@ -242,6 +254,8 @@ namespace Ryno{
 		free(m_bounding_box);
 		free(m_fullscreen_quad);
 		m_null_program->destroy();
+		m_blit_program->destroy();
+		m_shadow_program->destroy();
 	}
 
 

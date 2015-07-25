@@ -52,7 +52,7 @@ namespace Ryno{
 		Camera3D* m_camera;
 		FrameBuffer* m_frame_buffer;
 		SimpleDrawer* m_simple_drawer;
-		GLSLProgram* m_null_program, *m_skybox_program, *m_shadow_program;
+		GLSLProgram* m_null_program, *m_skybox_program, *m_shadow_program, *m_blit_program;
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
 		Model* m_bounding_box, *m_fullscreen_quad, *m_cube_box;

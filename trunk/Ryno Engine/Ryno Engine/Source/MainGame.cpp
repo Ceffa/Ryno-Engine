@@ -31,7 +31,7 @@ namespace Ryno{
 
 		cube_mesh = m_mesh_manager->load_mesh("cube");
 		bound_sphere = m_mesh_manager->load_mesh("bound_sphere");
-		I32 sphere_model = m_mesh_manager->load_mesh("sphere");
+		I32 sphere_model = m_mesh_manager->load_mesh("spheres");
 		
 	
 		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon");
@@ -113,7 +113,8 @@ namespace Ryno{
 		GameObject* left = new GameObject();
 		left->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
 		left->scale = glm::vec3(100,500,100);
-		left->position = glm::vec3(0,320,-100);
+		left->position = glm::vec3(0,255,-100);
+		left->rotate(10, 0, 0);
 		left->model.set_tiling(10,10);
 		m_game_objects.push_back(left);
 
@@ -303,8 +304,9 @@ namespace Ryno{
 		
 
 		for (GameObject* o : m_game_objects){
-
+			o->rotate(0.01, 0, 0);
 			o->generate_model_matrix();
+
 		}
 		for (GameObject* s : spheres){
 
@@ -353,7 +355,7 @@ namespace Ryno{
 
 		m_deferred_renderer->directional_light_pass(l);
 
-		//m_deferred_renderer->skybox_pass();
+		m_deferred_renderer->skybox_pass();
 
 		m_deferred_renderer->final_pass();
 

@@ -1,5 +1,6 @@
 #include "FrameBuffer.h"
 #include "Log.h"
+#include "Global.h"
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -50,12 +51,18 @@ namespace Ryno {
 		////Bind shadow texture 
 		//glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadow_texture, 0);
-		
+		//
 		//Bind shadow texture 
 		glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, nullptr);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_shadow_texture, 0);
 
@@ -88,6 +95,7 @@ namespace Ryno {
 	{
 		//Binds the custom framebuffer, and then clear the previous final_texture
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
@@ -133,18 +141,26 @@ namespace Ryno {
 		
 	}
 
-	void FrameBuffer::bind_for_skybox_pass(){
-	
-		
 
-	}
 
 	void FrameBuffer::bind_for_shadow_map_pass(){
-		
+		////Select draw buffer and clear it from previous frame
+		//glDrawBuffer(GL_COLOR_ATTACHMENT3);
+		//glClear(GL_COLOR_BUFFER_BIT);
+
+		//Select draw buffer and clear it from previous frame
 		glDrawBuffer(GL_COLOR_ATTACHMENT3);
+		//glClear(GL_DEPTH_BUFFER_BIT);
+		}
+
+	void FrameBuffer::bind_for_skybox_pass(){
+
+		glDrawBuffer(GL_NONE);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_textures[2]);
+
+
 	}
-
-
 
 	void FrameBuffer::bind_for_final_pass()
 	{
@@ -152,6 +168,12 @@ namespace Ryno {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 	
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
+			0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR); 
+	/*	glReadBuffer(GL_COLOR_ATTACHMENT2);
+		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
+			WINDOW_WIDTH/2, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);*/
 	}
 
 
