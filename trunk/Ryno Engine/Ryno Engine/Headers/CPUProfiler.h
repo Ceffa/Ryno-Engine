@@ -3,17 +3,15 @@
 #include <vector>
 
 namespace Ryno{
-	class GPUProfiler{
+	class CPUProfiler{
 		struct Times{
-			Times(){}
+			Times(U32 _start) :start(_start){}
 			U32 get_elapsed_time(){
 				return end - start;
 			}
-			U64 start;
-			U64 end;
-			U32 query_id_0;
-			U32 query_id_1;
-		};
+			U32 start;
+			U32 end;
+			};
 	public:
 		//n is the number of samples, helps to reallocate before.
 		static void begin();

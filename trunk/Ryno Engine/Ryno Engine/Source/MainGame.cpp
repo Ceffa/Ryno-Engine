@@ -2,6 +2,7 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "GPUProfiler.h"
+#include "CPUProfiler.h"
 #include <GLM/gtx/transform.hpp>
 
 
@@ -11,8 +12,8 @@
 namespace Ryno{
 
 	void MainGame::start(){
-		GPUProfiler::begin();
-
+		CPUProfiler::begin();
+		CPUProfiler::start_time();
 		//initializations
 		m_simple_drawer = SimpleDrawer::get_instance();
 		m_camera->position = glm::vec4(0, 30, -50, 1);
@@ -20,7 +21,7 @@ namespace Ryno{
 		m_deferred_renderer = new DeferredRenderer();
 		m_deferred_renderer->init(m_camera);
 
-		//GPUProfiler::next_time();
+		CPUProfiler::next_time();
 		
 		//loading graphics
 		U32 texture_metal = m_texture_manager->loadPNG("metal");
@@ -33,7 +34,7 @@ namespace Ryno{
 		U32 texture_wood = m_texture_manager->loadPNG("pack/176");
 		U32 normal_map_wood = m_texture_manager->loadPNG("pack/176_norm");
 		
-		GPUProfiler::start_time();
+		CPUProfiler::next_time();
 
 		//loading models
 		cube_mesh = m_mesh_manager->load_mesh("cube");
@@ -41,12 +42,12 @@ namespace Ryno{
 		I32 sphere_model = m_mesh_manager->load_mesh("sphere");
 		square_model = m_mesh_manager->load_mesh("square");
 
-		//GPUProfiler::next_time();
+		CPUProfiler::next_time();
 
 		//loading skyboxes
 		m_camera->skybox = m_texture_manager->loadCubeMap("day");
 
-		//GPUProfiler::next_time();
+		CPUProfiler::next_time();
 
 		//loading audio
 		sound = m_audio_manager.load_sound("stomp.wav");
@@ -56,7 +57,7 @@ namespace Ryno{
 		music.play();
 
 
-		//GPUProfiler::next_time();
+		CPUProfiler::next_time();
 
 		//initialize programs
 		m_program_geometry.create("geometry");
@@ -95,7 +96,7 @@ namespace Ryno{
 		sphere_box_model->mesh = bound_sphere;
 		
 
-		//GPUProfiler::next_time();
+		CPUProfiler::next_time();
 
 		//Build the environnement
 		GameObject* base = new GameObject();
@@ -131,7 +132,7 @@ namespace Ryno{
 		m_game_objects.push_back(right);
 
 	
-		//GPUProfiler::next_time();
+		CPUProfiler::next_time();
 
 		//build light 
 
@@ -191,8 +192,8 @@ namespace Ryno{
 		l->ambient_intensity = .07;
 		l->set_ambient_color(100, 200, 255);
 		l->program = &m_program_dir;
-		GPUProfiler::end_time();
-		GPUProfiler::print_time();
+		CPUProfiler::end_time();
+		CPUProfiler::print_time();
 
 
 

@@ -12,7 +12,7 @@ namespace Ryno{
 		current_time = 0;
 	}
 	void GPUProfiler::start_time(){
-		times.emplace_back();
+		times.resize(current_time+1);
 		glGenQueries(2, &times[current_time].query_id_0);
 		glQueryCounter(times[current_time].query_id_0, GL_TIMESTAMP);
 	}
@@ -43,7 +43,7 @@ namespace Ryno{
 			glGetQueryObjectui64v(times[i].query_id_0, GL_QUERY_RESULT, &times[i].start);
 			glGetQueryObjectui64v(times[i].query_id_1, GL_QUERY_RESULT, &times[i].end);
 
-			printf("%f  ", (times[i].end - times[i].start) / 1000000.0);
+			printf("%f  ", times[i].get_elapsed_time() / 1000000.0);
 		}
 		printf("\n");
 	}
