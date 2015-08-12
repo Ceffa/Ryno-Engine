@@ -19,7 +19,7 @@ namespace Ryno{
 			10000.0f       // Far clipping plane. Keep as little as possible.
 			);
 
-		ortho_matrix = glm::ortho<float>(-1000, 1000, -1000, 1000, -1000,2000);
+		ortho_matrix = glm::ortho<float>(-500, 500, -500, 500, -500,500);
 
 	
 	}

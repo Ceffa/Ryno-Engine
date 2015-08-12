@@ -128,7 +128,7 @@ namespace Ryno{
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
+		glCullFace(GL_BACK);
 		m_shadow_program->use();
 		glm::vec3 inv_dir = directional_light->direction.to_vec3();
 		inv_dir.z *= -1;

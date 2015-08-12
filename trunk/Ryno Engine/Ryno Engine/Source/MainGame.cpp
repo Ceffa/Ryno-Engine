@@ -11,31 +11,44 @@
 namespace Ryno{
 
 	void MainGame::start(){
+		GPUProfiler::begin();
 
+		//initializations
 		m_simple_drawer = SimpleDrawer::get_instance();
+		m_camera->position = glm::vec4(0, 30, -50, 1);
+		m_batch3d->init(m_camera);
+		m_deferred_renderer = new DeferredRenderer();
+		m_deferred_renderer->init(m_camera);
 
+		//GPUProfiler::next_time();
+		
+		//loading graphics
 		U32 texture_metal = m_texture_manager->loadPNG("metal");
 		U32 white = m_texture_manager->loadPNG("white_pixel");
 		U32 white_normal = m_texture_manager->loadPNG("normal_pixel");
-
-
-		U32 tex = m_texture_manager->loadPNG("moon");
 		U32 texture_bricks = m_texture_manager->loadPNG("pack/177");
 		U32 normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm");
 		U32 texture_red_wall = m_texture_manager->loadPNG("pack/178");
 		U32 normal_map_red_wall = m_texture_manager->loadPNG("pack/178_norm");
-		U32 texture_grey_wall = m_texture_manager->loadPNG("pack/178");
-		U32 normal_map_grey_wall = m_texture_manager->loadPNG("pack/178_norm");
-		U32 texture_oblique = m_texture_manager->loadPNG("pack/199");
-		U32 normal_map_oblique = m_texture_manager->loadPNG("pack/199_norm");
+		U32 texture_wood = m_texture_manager->loadPNG("pack/176");
+		U32 normal_map_wood = m_texture_manager->loadPNG("pack/176_norm");
+		
+		GPUProfiler::start_time();
 
+		//loading models
 		cube_mesh = m_mesh_manager->load_mesh("cube");
 		bound_sphere = m_mesh_manager->load_mesh("bound_sphere");
-		I32 sphere_model = m_mesh_manager->load_mesh("spheres");
-		
-	
-		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon");
+		I32 sphere_model = m_mesh_manager->load_mesh("sphere");
+		square_model = m_mesh_manager->load_mesh("square");
 
+		//GPUProfiler::next_time();
+
+		//loading skyboxes
+		m_camera->skybox = m_texture_manager->loadCubeMap("day");
+
+		//GPUProfiler::next_time();
+
+		//loading audio
 		sound = m_audio_manager.load_sound("stomp.wav");
 		music = m_audio_manager.load_music("cthulhu.ogg");
 		sound.set_volume(0.0f);
@@ -43,13 +56,10 @@ namespace Ryno{
 		music.play();
 
 
-		m_camera->position = glm::vec4(0, 30, -50, 1);
+		//GPUProfiler::next_time();
 
-		m_batch3d->init(m_camera);
-		
-
+		//initialize programs
 		m_program_geometry.create("geometry");
-
 		m_program_dir.create("dir_light");
 		m_program_point.create("point_light");
 		m_program_flat.create("flat");
@@ -80,79 +90,76 @@ namespace Ryno{
 		m_program_point.unuse();
 
 		
-		square_model = m_mesh_manager->load_mesh("square");
 		
 		sphere_box_model = new Model();
 		sphere_box_model->mesh = bound_sphere;
 		
 
-		m_deferred_renderer = new DeferredRenderer();
-		m_deferred_renderer->init(m_camera);
-		
-		
-	
+		//GPUProfiler::next_time();
 
-		
-		////Simple room
+		//Build the environnement
 		GameObject* base = new GameObject();
 		base->model.set_color_and_flatness(255, 255, 255, 0);
 		base->model.set_mesh_texture_normal(cube_mesh, texture_bricks, normal_map_bricks);
-		base->scale = glm::vec3(1000, 10, 1000);
-		base->model.set_tiling(50, 50);
+		base->scale = glm::vec3(500, 10, 500);
+		base->model.set_tiling(8, 8);
 		base->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(base);
 
 		GameObject* back = new GameObject();
-		back->model.set_mesh_texture_normal(sphere_model, texture_red_wall, normal_map_red_wall);
-		back->scale = glm::vec3(200, 200, 200);
-		back->model.set_tiling(5, 10);
-		back->position = glm::vec3(0, 200, 200);
+		back->model.set_mesh_texture_normal(sphere_model, texture_bricks, normal_map_bricks);
+		back->scale = glm::vec3(50, 50, 50);
+		back->model.set_tiling(1, 1);
+		back->position = glm::vec3(0, 70, 100);
 
 		m_game_objects.push_back(back);
 		
 		GameObject* left = new GameObject();
 		left->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
-		left->scale = glm::vec3(100,500,100);
-		left->position = glm::vec3(0,255,-100);
+		left->scale = glm::vec3(40,40,40);
+		left->position = glm::vec3(-200,25,120);
 		left->rotate(10, 0, 0);
-		left->model.set_tiling(10,10);
+		left->model.set_tiling(1,1);
 		m_game_objects.push_back(left);
 
 		GameObject* right = new GameObject();
-		right->model.set_mesh_texture_normal(sphere_model, texture_red_wall, normal_map_red_wall);
-		right->scale = glm::vec3(300, 300, 300);
-		right->model.set_tiling(10,10);
-		right->position = glm::vec3(500, 150, 500);
+		right->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
+		right->scale = glm::vec3(200, 50, 50);
+		right->model.set_tiling(4,1);
+		right->position = glm::vec3(-100, 50, 200);
 
 		m_game_objects.push_back(right);
 
 	
-		
+		//GPUProfiler::next_time();
+
+		//build light 
+
 		GameObject* bl;
 		PointLight* p;
 
-		/*p = new PointLight(0,120,120);
+		p = new PointLight(0,120,120);
 		
-		p->set_diffuse_color(255,0,0);
-		p->diffuse_intensity = 700;
+		p->set_diffuse_color(255,255,200);
+		p->diffuse_intensity = 100;
 		p->attenuation = .1;
-		p->specular_intensity = 700;
-		p->set_specular_color(255,0,0);
+		p->specular_intensity = 100;
+		p->set_specular_color(255, 255, 200);
 		p->program = &m_program_point;
 		point_lights.push_back(p);
 		bl = new GameObject();
-		bl->model.set_color_and_flatness(0,0,0, 255);
+		bl->model.set_color_and_flatness(255,255,255, 255);
 		bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
-		bl->scale = glm::vec3(100,100,30);
+		bl->scale = glm::vec3(5,5,5);
 		bl->position = glm::vec3(0,120,120);
-		spheres.push_back(bl);*/
+		spheres.push_back(bl);
 
-		for (int i = -1; i < 2; i++){
+		/*for (int i = -1; i < 2; i++){
 			F32 n = 36.5;
 			F32 k = i + 3;
 
-			U8 r =200;
-			U8 g = 200;
+			U8 r =100;
+			U8 g = 100;
 			U8 b = 255;
 			
 			for (int j = -1; j < 2; j++){
@@ -174,16 +181,19 @@ namespace Ryno{
 				spheres.push_back(bl);
 				
 			}
-		}
+		}*/
 		
 		l = new DirectionalLight(1,1,1);
-		l->diffuse_intensity = .45;
-		l->set_diffuse_color(0,150,255);
-		l->specular_intensity =.45;
-		l->set_specular_color(0,200, 255);
-		l->ambient_intensity = .1;
-		l->set_ambient_color(0,150, 255);
+		l->diffuse_intensity = .2;
+		l->set_diffuse_color(100,200,255);
+		l->specular_intensity =.2;
+		l->set_specular_color(100, 200, 255);
+		l->ambient_intensity = .07;
+		l->set_ambient_color(100, 200, 255);
 		l->program = &m_program_dir;
+		GPUProfiler::end_time();
+		GPUProfiler::print_time();
+
 
 
 	}
@@ -304,7 +314,7 @@ namespace Ryno{
 		
 
 		for (GameObject* o : m_game_objects){
-			o->rotate(0.01, 0, 0);
+		
 			o->generate_model_matrix();
 
 		}
@@ -321,13 +331,7 @@ namespace Ryno{
 
 	}
 
-	void MainGame::draw(){
-	
-
-
-		GPUProfiler::begin(3);
-			
-			
+	void MainGame::draw(){	
 
 		m_deferred_renderer->init_geometric_pass();
 

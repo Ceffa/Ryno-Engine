@@ -52,7 +52,7 @@ void main(){
 
 	//Get normal (and rebuilt it's z axis) from g buffer
 	vec2 n = texture(g_normal_tex, uv_coords).xy;
-	vec3 g_normal = vec3(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)));
+	vec3 g_normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
 
 	//Important vectors
 	vec3 view_dir = normalize(-g_position);
@@ -70,7 +70,7 @@ void main(){
 
 	//shadows
 	float visibility = min(1.0, diffuse_final.x+1);
-	float bias = 0.004;// *tan(acos(dotNL));
+	float bias = 0.005;// *tan(acos(dotNL));
 
 	vec2 poissonDisk[4] = vec2[](
 		vec2(-0.94201624, -0.39906216),
@@ -91,6 +91,6 @@ void main(){
 	}
 	
 	//fragment color
-	frag_color = g_flatness * g_color + (1.0 - g_flatness)*g_color *(amb_final + visibility *( specular_final));
+	frag_color = g_flatness * g_color + (1.0 - g_flatness)*g_color *(amb_final + visibility *( diffuse_final + specular_final));
 
 }

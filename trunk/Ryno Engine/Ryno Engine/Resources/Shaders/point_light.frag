@@ -44,7 +44,7 @@ void main(){
 	
 	//Normal z-axis built back from the other two
 	vec2 n = texture(g_normal_tex, uv_coords).xy;
-	vec3 g_normal = vec3(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)));
+	vec3 g_normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
 
 	//Important vectors
 	vec3 not_normal_ligth_dir = point_light.position_and_attenuation.xyz - g_position;
