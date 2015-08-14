@@ -16,7 +16,8 @@
 #include "Global.h"
 #include "GLSLProgram.h"
 #include "GameObject.h"
-#include "Batch3D.h"
+#include "Batch3DGeometry.h"
+#include "Batch3DShadow.h"
 #include "Camera3D.h"
 
 
@@ -65,7 +66,8 @@ namespace Ryno{
 		Camera3D* m_camera;
 		GameState m_game_state;
 		SDL_Window* m_window;
-		Batch3D* m_batch3d;
+		Batch3DGeometry* m_geometry_batch3d;
+		Batch3DShadow* m_shadow_batch3d;
 
 	};
 }

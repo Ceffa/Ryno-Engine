@@ -1,4 +1,4 @@
-#include "Batch3D.h"
+#include "Batch3DGeometry.h"
 #include <algorithm>
 #include <iostream>
 #include <SDL/SDL.h>
@@ -7,17 +7,8 @@
 
 namespace Ryno {
 
-	void Batch3D::init(Camera3D* camera) {
-		m_camera = camera;
-		create_vertex_array();
-		m_mesh_manager = MeshManager::get_instance();
-
-	}
-
-
-
-
-	void Batch3D::begin() {
+	
+	void Batch3DGeometry::begin() {
 
 		m_render_batches.clear();
 		input_instances.clear();
@@ -27,18 +18,18 @@ namespace Ryno {
 
 
 	}
-	void Batch3D::end() {
+	void Batch3DGeometry::end() {
 
 	
 		//Sort with provided compare function
-		std::stable_sort(m_models.begin(), m_models.end(), compare_texture);
+		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
 
 
 		//Create batches
 		create_render_batches();
 	}
 
-	void Batch3D::draw(Model* model) {
+	void Batch3DGeometry::draw(Model* model) {
 
 		m_models.push_back(model);
 
@@ -47,7 +38,7 @@ namespace Ryno {
 
 
 
-	void Batch3D::create_render_batches(){
+	void Batch3DGeometry::create_render_batches(){
 
 		//Create vertices vector to send to gpu
 		std::vector<Vertex3D> vertices;
@@ -108,7 +99,7 @@ namespace Ryno {
 		I32 total_vertices = m_render_batches.back().vertex_offset + m_render_batches.back().num_vertices;
 		I32 cv = 0;
 		vertices.resize(total_vertices);
-		for (RenderBatch rb : m_render_batches){
+		for (RenderBatchGeometry rb : m_render_batches){
 			for (Vertex3D v : m_mesh_manager->get_mesh(rb.mesh)->vertices){
 				vertices[cv++] = v;
 			}
@@ -119,10 +110,34 @@ namespace Ryno {
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data());
 		
+		enable_attributes();
+
 	
 	}
 
-	void Batch3D::create_vertex_array(){
+	void Batch3DGeometry::enable_attributes(){
+		glBindVertexArray(m_vao);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		//Enable all vertex info
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
+		//enable M matrix
+		glEnableVertexAttribArray(4);
+		glEnableVertexAttribArray(5);
+		glEnableVertexAttribArray(6);
+		glEnableVertexAttribArray(7);
+
+		//Enable tiling and color
+		glEnableVertexAttribArray(8);
+		glEnableVertexAttribArray(9);
+	}
+
+	void Batch3DGeometry::create_vertex_array(){
 		//Create vao
 		if (!m_vao){
 			glGenVertexArrays(1, &m_vao);
@@ -145,11 +160,8 @@ namespace Ryno {
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, normal));
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, tangent));
 
-		//Enable the attrib arrays
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
+	
+		
 
 
 		//Create instanced vbo
@@ -176,81 +188,23 @@ namespace Ryno {
 		glVertexAttribDivisor(9, 1);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
 		
 
 
 
 	}
 
-	void Batch3D::render_deferred_scene(GLSLProgram* p){
-		
-		glUniformMatrix4fv(p->getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_view_matrix()[0][0]);
-		glUniformMatrix4fv(p->getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_camera_matrix()[0][0]);
 
-		bind_for_deferred_scene();
-		render_batch();
-	}
 
-	void Batch3D::render_shadow_scene(){
-		bind_for_shadow_scene();
-		render_batch();
-	}
 
-	void Batch3D::bind_for_deferred_scene(){
 
-		//use texture and normal map
-		texture_needed = true;
 
-		glBindVertexArray(m_vao);
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		//Enable all vertex info
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
-
-		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-		//enable M matrix
-		glEnableVertexAttribArray(4);
-		glEnableVertexAttribArray(5);
-		glEnableVertexAttribArray(6);
-		glEnableVertexAttribArray(7);
-	
-		//Enable tiling and color
-		glEnableVertexAttribArray(8);
-		glEnableVertexAttribArray(9);
 	
 
-	}
-
-	void Batch3D::bind_for_shadow_scene(){
-
-		//don't use texture and normal map
-		texture_needed = false;
-
-		glBindVertexArray(m_vao);
-
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		//Enable only vertex position
-		glEnableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
-		glDisableVertexAttribArray(3);
-
-		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-		//enable M matrix
-		glEnableVertexAttribArray(4);
-		glEnableVertexAttribArray(5);
-		glEnableVertexAttribArray(6);
-		glEnableVertexAttribArray(7);
-		
-		//Disable tiling and color
-		glDisableVertexAttribArray(8);
-		glDisableVertexAttribArray(9);
-	}
-
-	void Batch3D::render_batch() {
+	void Batch3DGeometry::render_batch() {
 		
 		I32 draw_calls = 0;
 		bool a = false;
@@ -258,17 +212,16 @@ namespace Ryno {
 
 
 
-		for (RenderBatch rb : m_render_batches){
+		for (RenderBatchGeometry rb : m_render_batches){
 			
-			if (texture_needed){
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, rb.texture);
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, rb.normal_map);
-			}
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, rb.texture);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, rb.normal_map);
+			
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InputInstance), nullptr, GL_STATIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(InputInstance), &input_instances[rb.instance_offset]);
+			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InputInstanceGeometry), nullptr, GL_STATIC_DRAW);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(InputInstanceGeometry), &input_instances[rb.instance_offset]);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			
 			++draw_calls;
@@ -283,7 +236,7 @@ namespace Ryno {
 		}
 	}
 
-	U8 Batch3D::compare_texture(Model* a, Model* b){
+	U8 Batch3DGeometry::compare_models(Model* a, Model* b){
 		if (a->texture == b->texture){
 			if (a->normal_map == b->normal_map)
 				return a->mesh < b->mesh;
