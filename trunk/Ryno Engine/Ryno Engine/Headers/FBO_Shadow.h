@@ -14,11 +14,9 @@ namespace Ryno{
 		void start_frame();
 		void bind_for_shadow_map_pass();
 		void bind_for_light_pass();
-		void plot_on_screen();
 
 		U32 m_fbo;
-		U32 m_depth_texture;
-		U32 m_shadow_texture; //Holds shadow mapping informations
+		U32 m_shadow_texture;
 
 	};
 }

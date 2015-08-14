@@ -41,6 +41,9 @@ namespace Ryno{
 			glm::vec4 to_vec4(){
 				return glm::vec4(r, g, b, f);
 			}
+			glm::vec3 to_vec3(){
+				return glm::vec3(r, g, b);
+			}
 
 			U8 r; U8 g; U8 b; U8 f;
 

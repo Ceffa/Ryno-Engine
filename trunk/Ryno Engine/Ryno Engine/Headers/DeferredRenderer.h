@@ -19,6 +19,8 @@ namespace Ryno{
 		//Initialize deferred rendering
 		void init(Camera3D* camera);
 
+		void init_frame();
+
 		//Call before drawing geometry
 		void init_geometric_pass();
 

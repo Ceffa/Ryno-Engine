@@ -36,16 +36,20 @@ namespace Ryno{
 
 	}
 
-	//Call before drawing geometry
-	void DeferredRenderer::init_geometric_pass(){
+	void DeferredRenderer::init_frame(){
 
-		
+		//Calculate camera matrix once and for all
 		inverse_P = glm::inverse(m_camera->get_projection_matrix());
-		
+
+		//Setup the two fbos for this frame
 		m_fbo_deferred->start_frame();
 		m_fbo_shadow->start_frame();
 
-		//GEOMETRY PASS
+	}
+
+	//Call before drawing geometry
+	void DeferredRenderer::init_geometric_pass(){
+
 		m_fbo_deferred->bind_for_geometry_pass();
 
 		glDepthMask(GL_TRUE);
@@ -128,7 +132,7 @@ namespace Ryno{
 	void DeferredRenderer::shadow_pass(DirectionalLight* directional_light){
 
 		m_fbo_shadow->bind_for_shadow_map_pass();
-		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
@@ -141,9 +145,7 @@ namespace Ryno{
 
 
 		glUniformMatrix4fv(m_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &final_mat[0][0]);
-		//m_simple_drawer->draw(m_bounding_box);
-		//m_shadow_program->unuse();
-		//glDepthMask(GL_FALSE);
+	
 
 	}
 
@@ -246,10 +248,8 @@ namespace Ryno{
 	//Print on screen the result of the whole deferred rendering
 	void DeferredRenderer::final_pass(){
 		m_fbo_deferred->bind_for_final_pass();
-		m_fbo_shadow->plot_on_screen();
 
-		/*glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);*/
+	
 	}
 
 	

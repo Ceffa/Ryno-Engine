@@ -334,6 +334,9 @@ namespace Ryno{
 
 	void MainGame::draw(){	
 
+
+		m_deferred_renderer->init_frame();
+
 		m_deferred_renderer->init_geometric_pass();
 
 		m_program_geometry.use();
