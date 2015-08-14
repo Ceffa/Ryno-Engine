@@ -32,8 +32,8 @@ namespace Ryno{
 		U32 normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm");
 		U32 texture_red_wall = m_texture_manager->loadPNG("pack/178");
 		U32 normal_map_red_wall = m_texture_manager->loadPNG("pack/178_norm");
-		U32 texture_wood = m_texture_manager->loadPNG("pack/176");
-		U32 normal_map_wood = m_texture_manager->loadPNG("pack/176_norm");
+		U32 texture_wood = m_texture_manager->loadPNG("pack/196");
+		U32 normal_map_wood = m_texture_manager->loadPNG("pack/196_norm");
 		
 		CPUProfiler::next_time();
 
@@ -46,7 +46,7 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading skyboxes
-		m_camera->skybox = m_texture_manager->loadCubeMap("day");
+		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon");
 
 		CPUProfiler::next_time();
 
@@ -108,7 +108,7 @@ namespace Ryno{
 		base->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(base);
 
-		GameObject* back = new GameObject();
+		/*GameObject* back = new GameObject();
 		back->model.set_mesh_texture_normal(sphere_model, texture_bricks, normal_map_bricks);
 		back->scale = glm::vec3(50, 50, 50);
 		back->model.set_tiling(1, 1);
@@ -130,7 +130,15 @@ namespace Ryno{
 		right->model.set_tiling(4,1);
 		right->position = glm::vec3(-100, 50, 200);
 
-		m_game_objects.push_back(right);
+		m_game_objects.push_back(right);*/
+
+		go1 = new GameObject();
+		go1->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
+		go1->scale = glm::vec3(50, 200, 50);
+		go1->model.set_tiling(1,4);
+		go1->position = glm::vec3(0,100,0);
+
+		m_game_objects.push_back(go1);
 
 	
 		CPUProfiler::next_time();
@@ -140,52 +148,38 @@ namespace Ryno{
 		GameObject* bl;
 		PointLight* p;
 
-		p = new PointLight(0,120,120);
+
+
+	
 		
-		p->set_diffuse_color(255,255,200);
-		p->diffuse_intensity = 100;
-		p->attenuation = .1;
-		p->specular_intensity = 100;
-		p->set_specular_color(255, 255, 200);
-		p->program = &m_program_point;
-		point_lights.push_back(p);
-		bl = new GameObject();
-		bl->model.set_color_and_flatness(255,255,255, 255);
-		bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
-		bl->scale = glm::vec3(5,5,5);
-		bl->position = glm::vec3(0,120,120);
-		spheres.push_back(bl);
 
-		/*for (int i = -1; i < 2; i++){
-			F32 n = 36.5;
-			F32 k = i + 3;
-
-			U8 r =100;
-			U8 g = 100;
-			U8 b = 255;
 			
-			for (int j = -1; j < 2; j++){
-				
-				p = new PointLight(60 * j, 10, 60 * i );
-				
-				p->set_diffuse_color(r,g,b);
-				p->diffuse_intensity = 10;
-				p->attenuation = .1;
-				p->specular_intensity = 50;
-				p->set_specular_color(r,g,b);
-				p->program = &m_program_point;
-				point_lights.push_back(p);
-				bl = new GameObject();
-				bl->model.set_color_and_flatness(220 + 35 * r / 255, 220 + 35 * g / 255, 220 + 35 * b / 255, 255);
-				bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
-				bl->scale = glm::vec3(10,10,10);
-				bl->position = glm::vec3(60 * j, 10, 60 * i);
-				spheres.push_back(bl);
-				
-			}
-		}*/
+
+		for (int j = 0; j < 18; j++){
+			float conv = j * 3.14159265358979323846 / 180.0f * 20;
+			U8 r = 255;
+			U8 g = 200;
+			U8 b = 100;
+			p = new PointLight(100 * cos(conv), 10, 100 * sin(conv));
+
+			p->set_diffuse_color(r, g, b);
+			p->diffuse_intensity = 10;
+			p->attenuation = .1;
+			p->specular_intensity = 50;
+			p->set_specular_color(r, g, b);
+			p->program = &m_program_point;
+			point_lights.push_back(p);
+			bl = new GameObject();
+			bl->model.set_color_and_flatness(220 + 35 * r / 255, 220 + 35 * g / 255, 220 + 35 * b / 255, 255);
+			bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
+			bl->scale = glm::vec3(10, 10, 10);
+			bl->position = glm::vec3(100 * cos(conv), 10, 100 * sin(conv));
+			spheres.push_back(bl);
+
+		}
+
 		
-		l = new DirectionalLight(1,1,1);
+		l = new DirectionalLight(-.6,.6,.2);
 		l->diffuse_intensity = .2;
 		l->set_diffuse_color(100,200,255);
 		l->specular_intensity =.2;
