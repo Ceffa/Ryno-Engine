@@ -1,4 +1,4 @@
-#include "FrameBuffer.h"
+#include "FBO_Deferred.h"
 #include "Log.h"
 #include "Global.h"
 #include <iostream>
@@ -7,12 +7,12 @@
 
 namespace Ryno {
 
-	FrameBuffer::FrameBuffer(U32 width, U32 height){
+	FBO_Deferred::FBO_Deferred(U32 width, U32 height){
 		init(width, height);
 	}
 
 
-	void FrameBuffer::init(U32 width, U32 height){
+	void FBO_Deferred::init(U32 width, U32 height){
 
 		// Create and bind the FBO
 		glGenFramebuffers(1, &m_fbo);
@@ -21,7 +21,6 @@ namespace Ryno {
 		// Create the frame buffer textures
 		glGenTextures(FRAME_NUM_TEXTURES, m_textures);
 		glGenTextures(1, &m_depth_texture);
-		glGenTextures(1, &m_shadow_texture);
 		glGenTextures(1, &m_final_texture);
 
 		
@@ -48,25 +47,6 @@ namespace Ryno {
 
 		//NON-DEFERRED TEXTURES
 
-		////Bind shadow texture 
-		//glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
-		//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadow_texture, 0);
-		//
-		//Bind shadow texture 
-		glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, nullptr);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_shadow_texture, 0);
-
-
 		//Bind depth texture (with 8 bits for stencil)
 		glBindTexture(GL_TEXTURE_2D, m_depth_texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, nullptr);
@@ -91,7 +71,7 @@ namespace Ryno {
 
 	}
 
-	void FrameBuffer::start_frame()
+	void FBO_Deferred::start_frame()
 	{
 		//Binds the custom framebuffer, and then clear the previous final_texture
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
@@ -100,7 +80,7 @@ namespace Ryno {
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void FrameBuffer::bind_for_geometry_pass()
+	void FBO_Deferred::bind_for_geometry_pass()
 	{
 		//Binds custom buffer, specify draw buffers, and set them to draw
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
@@ -114,7 +94,7 @@ namespace Ryno {
 		glDrawBuffers(FRAME_NUM_TEXTURES, DrawBuffers);
 	}
 
-	void FrameBuffer::bind_for_stencil_pass()
+	void FBO_Deferred::bind_for_stencil_pass()
 	{
 		//Disable all draw buffers, cause it just wants to get depth and stencil.
 		//Without this, the drawing would override geometry pass (because the fbo is the same)
@@ -122,8 +102,10 @@ namespace Ryno {
 	}
 
 
-	void FrameBuffer::bind_for_light_pass()
+	void FBO_Deferred::bind_for_light_pass()
 	{
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+
 		//Draw in the final_texture of fbo, not yet in the screen buffer
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
 
@@ -137,23 +119,12 @@ namespace Ryno {
 		}
 
 		glActiveTexture(GL_TEXTURE0 + FRAME_NUM_TEXTURES);
-		glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
+		glBindTexture(GL_TEXTURE_2D, m_depth_texture);
 		
 	}
 
 
-
-	void FrameBuffer::bind_for_shadow_map_pass(){
-		////Select draw buffer and clear it from previous frame
-		//glDrawBuffer(GL_COLOR_ATTACHMENT3);
-		//glClear(GL_COLOR_BUFFER_BIT);
-
-		//Select draw buffer and clear it from previous frame
-		glDrawBuffer(GL_COLOR_ATTACHMENT3);
-		//glClear(GL_DEPTH_BUFFER_BIT);
-		}
-
-	void FrameBuffer::bind_for_skybox_pass(){
+	void FBO_Deferred::bind_for_skybox_pass(){
 
 		glDrawBuffer(GL_NONE);
 		glActiveTexture(GL_TEXTURE0);
@@ -162,13 +133,13 @@ namespace Ryno {
 
 	}
 
-	void FrameBuffer::bind_for_final_pass()
+	void FBO_Deferred::bind_for_final_pass()
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 	
 
-	/*	glReadBuffer(GL_COLOR_ATTACHMENT0);
+		glReadBuffer(GL_COLOR_ATTACHMENT0);
 		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
 			 WINDOW_WIDTH / 3, WINDOW_HEIGHT / 2, 2 * WINDOW_WIDTH / 3, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
@@ -180,18 +151,15 @@ namespace Ryno {
 		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
 			0, 0, WINDOW_WIDTH / 3, WINDOW_HEIGHT / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 		
-		glReadBuffer(GL_COLOR_ATTACHMENT3);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			WINDOW_WIDTH / 3, 0, 2*WINDOW_WIDTH / 3, WINDOW_HEIGHT / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-		glReadBuffer(GL_COLOR_ATTACHMENT4);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			2*WINDOW_WIDTH / 3, 0,  WINDOW_WIDTH , WINDOW_HEIGHT / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);*/
 	
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
 		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
+			2*WINDOW_WIDTH / 3, 0,  WINDOW_WIDTH , WINDOW_HEIGHT / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	
+		/*glReadBuffer(GL_COLOR_ATTACHMENT4);
+		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
 			0,0, WINDOW_WIDTH , WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
+*/
 	}
 
 

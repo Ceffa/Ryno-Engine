@@ -8,16 +8,13 @@
 #define M_HALF_PI 1.57079632679489661923
 #define M_PI 3.14159265358979323846
 #define M_PI_2 6.28318530717958647692
+
+
 namespace Ryno{
 
 	Camera3D::Camera3D(U32 w, U32 h) :width(w), height(h), yaw(0), pitch(0)
 	{
-		projection_matrix = glm::perspective(
-			45.0f,         // The horizontal Field of View, in degrees : the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
-			width / (F32)height, // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
-			.1f,        // Near clipping plane. Keep as big as possible, or you'll get precision issues.
-			10000.0f       // Far clipping plane. Keep as little as possible.
-			);
+		projection_matrix = generate_perspective_matrix(45, w, h, .1f, 10000.0f);
 
 		ortho_matrix = glm::ortho<float>(-500, 500, -500, 500, -500,500);
 
@@ -26,6 +23,11 @@ namespace Ryno{
 	Camera3D::~Camera3D(){
 
 	}
+
+	glm::mat4 Camera3D::generate_perspective_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far){
+		return glm::perspective(angle,width/(F32) height, near, far);
+	}
+
 
 	void Camera3D::generate_camera_matrix(){
 		

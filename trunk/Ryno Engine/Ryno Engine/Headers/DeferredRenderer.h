@@ -6,7 +6,8 @@
 #include <vector>
 #include "DirectionalLight.h"
 #include "PointLight.h"
-#include "FrameBuffer.h"
+#include "FBO_Deferred.h"
+#include "FBO_Shadow.h"
 #include "SimpleDrawer.h"
 #include "Global.h"
 #include "GLSLProgram.h"
@@ -50,7 +51,8 @@ namespace Ryno{
 		void light_pass(PointLight* point_light);
 
 		Camera3D* m_camera;
-		FrameBuffer* m_frame_buffer;
+		FBO_Deferred* m_fbo_deferred;
+		FBO_Shadow* m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
 		GLSLProgram* m_null_program, *m_skybox_program, *m_shadow_program, *m_blit_program;
 		MeshManager* m_mesh_manager;

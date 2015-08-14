@@ -12,7 +12,8 @@ namespace Ryno{
 		m_mesh_manager = MeshManager::get_instance();
 		m_texture_manager = TextureManager::get_instance();
 		m_simple_drawer = SimpleDrawer::get_instance();
-		m_frame_buffer = new FrameBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
+		m_fbo_deferred = new FBO_Deferred(WINDOW_WIDTH, WINDOW_HEIGHT);
+		m_fbo_shadow = new FBO_Shadow(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_null_program = new GLSLProgram();
 		m_null_program->create("null");
 		m_skybox_program = new GLSLProgram();
@@ -40,11 +41,12 @@ namespace Ryno{
 
 		
 		inverse_P = glm::inverse(m_camera->get_projection_matrix());
-
-		m_frame_buffer->start_frame();
+		
+		m_fbo_deferred->start_frame();
+		m_fbo_shadow->start_frame();
 
 		//GEOMETRY PASS
-		m_frame_buffer->bind_for_geometry_pass();
+		m_fbo_deferred->bind_for_geometry_pass();
 
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
@@ -75,7 +77,7 @@ namespace Ryno{
 	void DeferredRenderer::stencil_pass(PointLight* point_light){
 
 		m_null_program->use();
-		m_frame_buffer->bind_for_stencil_pass();
+		m_fbo_deferred->bind_for_stencil_pass();
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
 		glClear(GL_STENCIL_BUFFER_BIT);
@@ -98,7 +100,7 @@ namespace Ryno{
 	//Renders point light inside it's bounding sphere
 	void DeferredRenderer::light_pass(PointLight* point_light){
 
-		m_frame_buffer->bind_for_light_pass();
+		m_fbo_deferred->bind_for_light_pass();
 		point_light->program->use();
 		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P[0][0]);
 
@@ -124,8 +126,9 @@ namespace Ryno{
 
 
 	void DeferredRenderer::shadow_pass(DirectionalLight* directional_light){
-		m_frame_buffer->bind_for_shadow_map_pass();
-		glEnable(GL_DEPTH_TEST);
+
+		m_fbo_shadow->bind_for_shadow_map_pass();
+		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
@@ -141,13 +144,15 @@ namespace Ryno{
 		//m_simple_drawer->draw(m_bounding_box);
 		//m_shadow_program->unuse();
 		//glDepthMask(GL_FALSE);
+
 	}
 
 
 	//Apply diretional light
 	void DeferredRenderer::directional_light_pass(DirectionalLight* directional_light)
 	{
-		m_frame_buffer->bind_for_light_pass();
+		m_fbo_deferred->bind_for_light_pass();
+		m_fbo_shadow->bind_for_light_pass();
 
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
@@ -195,7 +200,7 @@ namespace Ryno{
 
 
 	void DeferredRenderer::skybox_pass(){
-		m_frame_buffer->bind_for_skybox_pass();
+		m_fbo_deferred->bind_for_skybox_pass();
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -240,7 +245,8 @@ namespace Ryno{
 
 	//Print on screen the result of the whole deferred rendering
 	void DeferredRenderer::final_pass(){
-		m_frame_buffer->bind_for_final_pass();
+		m_fbo_deferred->bind_for_final_pass();
+		m_fbo_shadow->plot_on_screen();
 
 		/*glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
 			0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);*/
@@ -250,9 +256,10 @@ namespace Ryno{
 
 
 	void DeferredRenderer::destroy(){
-		free(m_frame_buffer);
-		free(m_bounding_box);
-		free(m_fullscreen_quad);
+		delete m_fbo_deferred;
+		delete m_fbo_shadow;
+		delete m_bounding_box;
+		delete m_fullscreen_quad;
 		m_null_program->destroy();
 		m_blit_program->destroy();
 		m_shadow_program->destroy();

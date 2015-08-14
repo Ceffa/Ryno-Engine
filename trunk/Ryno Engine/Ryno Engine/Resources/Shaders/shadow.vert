@@ -2,9 +2,6 @@
 layout(location = 0) in vec3 in_Position;
 layout(location = 4) in mat4 in_M;
 
-
-
-
 uniform mat4 light_VP;
 
 void main(){

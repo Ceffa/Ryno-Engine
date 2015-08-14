@@ -21,6 +21,7 @@ namespace Ryno{
 		glm::mat4 get_view_matrix() const { return view_matrix; }
 		glm::mat4 get_ortho_matrix() const { return ortho_matrix; }
 		glm::mat4 get_projection_matrix() const { return projection_matrix; }
+		static glm::mat4 generate_perspective_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far);
 
 		
 		I32 width;
