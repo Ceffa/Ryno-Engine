@@ -35,7 +35,7 @@ namespace Ryno {
 	void Batch3DShadow::draw(Model* model) {
 
 		//discard light-emitting models
-		if (model->color.f<1)
+		if (model->cast_shadows)
 			m_models.push_back(model);
 
 	}

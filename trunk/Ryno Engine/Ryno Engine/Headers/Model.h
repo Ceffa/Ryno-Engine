@@ -36,6 +36,7 @@ namespace Ryno{
 		I32 mesh;
 		UV tiling;
 		ColorRGBA color;  //Alpha is flatness
+		bool cast_shadows = true;
 		
 		
 

@@ -170,6 +170,7 @@ namespace Ryno{
 			p->program = &m_program_point;
 			point_lights.push_back(p);
 			bl = new GameObject();
+			bl->model.cast_shadows = false;
 			bl->model.set_color_and_flatness(220 + 35 * r / 255, 220 + 35 * g / 255, 220 + 35 * b / 255, 255);
 			bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
 			bl->scale = glm::vec3(10, 10, 10);
