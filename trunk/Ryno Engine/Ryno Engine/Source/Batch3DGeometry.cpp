@@ -40,8 +40,7 @@ namespace Ryno {
 
 	void Batch3DGeometry::create_render_batches(){
 
-		//Create vertices vector to send to gpu
-		std::vector<Vertex3D> vertices;
+		
 		
 
 	
@@ -105,12 +104,7 @@ namespace Ryno {
 			}
 		}
 
-		//i can bind the vbo, orphan it, pass the new data, and unbind it.
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data());
 		
-		enable_attributes();
 
 	
 	}
@@ -209,7 +203,12 @@ namespace Ryno {
 		I32 draw_calls = 0;
 		bool a = false;
 		
+		//i can bind the vbo, orphan it, pass the new data, and unbind it.
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data());
 
+		enable_attributes();
 
 
 		for (RenderBatchGeometry rb : m_render_batches){

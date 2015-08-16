@@ -45,10 +45,7 @@ namespace Ryno {
 
 	void Batch3DShadow::create_render_batches(){
 
-		//Create vertices vector to send to gpu
-		std::vector<Vertex3D> vertices;
 		
-
 	
 		I32 models_size = (I32) m_models.size();
 
@@ -108,12 +105,7 @@ namespace Ryno {
 			}
 		}
 
-		//i can bind the vbo, orphan it, pass the new data, and unbind it.
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data());
 		
-		enable_attributes();
 
 	}
 
@@ -197,7 +189,12 @@ namespace Ryno {
 		bool a = false;
 		
 
+		//i can bind the vbo, orphan it, pass the new data, and unbind it.
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data());
 
+		enable_attributes();
 
 		for (RenderBatchShadow rb : m_render_batches){
 			

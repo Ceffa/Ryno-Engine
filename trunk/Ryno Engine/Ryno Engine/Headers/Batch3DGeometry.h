@@ -38,7 +38,8 @@ namespace Ryno{
 		void render_batch() override;
 		
 	protected:
-		
+
+		std::vector<Vertex3D> vertices;
 		std::vector<InputInstanceGeometry> input_instances;
 		std::vector<RenderBatchGeometry> m_render_batches;
 		

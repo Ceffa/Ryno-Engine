@@ -328,46 +328,35 @@ namespace Ryno{
 
 	}
 
-	void MainGame::draw(){	
-
+	void MainGame::draw(){
 
 		m_deferred_renderer->init_frame();
 
-		m_deferred_renderer->init_geometric_pass();
-
-		m_program_geometry.use();
-
-		
-
-		m_geometry_batch3d->begin(); 
+		//geometry batch
+		m_geometry_batch3d->begin();
 		for (GameObject* o : m_game_objects)
 			m_geometry_batch3d->draw(&(o->model));
 		for (GameObject* o : spheres)
 			m_geometry_batch3d->draw(&(o->model));
-		
 		m_geometry_batch3d->end();
 
-		glUniformMatrix4fv(m_program_geometry.getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_view_matrix()[0][0]);
-		glUniformMatrix4fv(m_program_geometry.getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_camera_matrix()[0][0]);
-
-		m_geometry_batch3d->render_batch();
-
-		m_program_geometry.unuse();
+	
+		m_deferred_renderer->geometry_pass(m_geometry_batch3d, &m_program_geometry);
 
 
-		m_deferred_renderer->point_light_pass(&point_lights);
-
-		m_deferred_renderer->shadow_pass(l);
-
+		//shadow batch
 		m_shadow_batch3d->begin();
 		for (GameObject* o : m_game_objects)
 			m_shadow_batch3d->draw(&(o->model));
 		for (GameObject* o : spheres)
 			m_shadow_batch3d->draw(&(o->model));
-
 		m_shadow_batch3d->end();
-		m_shadow_batch3d->render_batch();
 
+
+		m_deferred_renderer->point_shadow_pass(&point_lights, m_shadow_batch3d);
+		m_deferred_renderer->point_light_pass(&point_lights);
+
+		m_deferred_renderer->directional_shadow_pass(l, m_shadow_batch3d);
 		m_deferred_renderer->directional_light_pass(l);
 
 		m_deferred_renderer->skybox_pass();
@@ -379,7 +368,6 @@ namespace Ryno{
 		SDL_GL_SwapWindow(m_window);
 		
 	
-		//GPUProfiler::print_time();
 	
 
 	}

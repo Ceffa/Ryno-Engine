@@ -29,5 +29,8 @@ namespace Ryno{
 		U32 m_depth_texture;
 		U32 m_final_texture; //Render here the final image, and then send it to screen 
 
+	private:
+		void bind_fbo();
+
 	};
 }

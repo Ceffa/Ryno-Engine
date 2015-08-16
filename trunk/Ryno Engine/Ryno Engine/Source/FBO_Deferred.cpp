@@ -74,7 +74,7 @@ namespace Ryno {
 	void FBO_Deferred::start_frame()
 	{
 		//Binds the custom framebuffer, and then clear the previous final_texture
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+		bind_fbo();
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -83,7 +83,7 @@ namespace Ryno {
 	void FBO_Deferred::bind_for_geometry_pass()
 	{
 		//Binds custom buffer, specify draw buffers, and set them to draw
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+		bind_fbo();
 
 		GLenum DrawBuffers[] = {
 			GL_COLOR_ATTACHMENT0,
@@ -96,6 +96,8 @@ namespace Ryno {
 
 	void FBO_Deferred::bind_for_stencil_pass()
 	{
+		bind_fbo();
+	
 		//Disable all draw buffers, cause it just wants to get depth and stencil.
 		//Without this, the drawing would override geometry pass (because the fbo is the same)
 		glDrawBuffer(GL_NONE);
@@ -104,7 +106,7 @@ namespace Ryno {
 
 	void FBO_Deferred::bind_for_light_pass()
 	{
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+		bind_fbo();
 
 		//Draw in the final_texture of fbo, not yet in the screen buffer
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
@@ -164,5 +166,14 @@ namespace Ryno {
 
 
 	 
+	void FBO_Deferred::bind_fbo()
+	{
+		I32 old_fbo;
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_fbo);
+		if (old_fbo!=m_fbo)
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+
+	}
+
 }
 	

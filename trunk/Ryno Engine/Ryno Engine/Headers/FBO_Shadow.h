@@ -13,10 +13,15 @@ namespace Ryno{
 
 		void start_frame();
 		void bind_for_shadow_map_pass();
-		void bind_for_light_pass();
+		void bind_for_directional_light_pass();
+		void bind_for_point_light_pass();
 
 		U32 m_fbo;
 		U32 m_shadow_texture;
+		U32 m_shadow_cube;
+
+	private:
+		void bind_fbo();
 
 	};
 }

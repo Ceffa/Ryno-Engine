@@ -37,6 +37,8 @@ namespace Ryno{
 
 	protected:
 		
+		
+		std::vector<Vertex3D> vertices;
 		std::vector<InputInstanceShadow> input_instances;
 		std::vector<RenderBatchShadow> m_render_batches;
 		
