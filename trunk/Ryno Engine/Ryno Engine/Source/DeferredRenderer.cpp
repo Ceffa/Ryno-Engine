@@ -6,6 +6,16 @@
 
 namespace Ryno{
 
+	const CameraDirection DeferredRenderer::camera_directions[NUM_OF_LAYERS]=
+	{
+		{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
+		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
+		{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f) },
+		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
+		{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
+		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f) }
+	};
+
 	//Initialize deferred rendering
 	void DeferredRenderer::init(Camera3D* camera){
 
@@ -19,8 +29,11 @@ namespace Ryno{
 		m_null_program->create("null");
 		m_skybox_program = new GLSLProgram();
 		m_skybox_program->create("skybox");
-		m_shadow_program = new GLSLProgram();
-		m_shadow_program->create("shadow");
+		m_directional_shadow_program = new GLSLProgram();
+		m_directional_shadow_program->create("directional_shadow");
+		m_point_shadow_program = new GLSLProgram();
+		m_point_shadow_program->create("point_shadow");
+
 		m_blit_program = new GLSLProgram();
 		m_blit_program->create("blit");
 		m_blit_program->use();
@@ -166,10 +179,10 @@ namespace Ryno{
 		glm::mat4 view_mat = glm::lookAt(inv_dir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		glm::mat4 final_mat = ortho_mat * view_mat;
 
-		m_shadow_program->use();
-		glUniformMatrix4fv(m_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &final_mat[0][0]);
+		m_directional_shadow_program->use();
+		glUniformMatrix4fv(m_directional_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &final_mat[0][0]);
 		batch->render_batch();
-		m_shadow_program->unuse();
+		m_directional_shadow_program->unuse();
 
 	
 
@@ -290,7 +303,7 @@ namespace Ryno{
 		delete m_fullscreen_quad;
 		m_null_program->destroy();
 		m_blit_program->destroy();
-		m_shadow_program->destroy();
+		m_directional_shadow_program->destroy();
 	}
 
 

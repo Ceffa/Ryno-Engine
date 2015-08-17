@@ -7,6 +7,9 @@
 
 namespace Ryno {
 
+	
+
+
 	FBO_Shadow::FBO_Shadow(U32 width, U32 height){
 		init(width, height);
 	}
@@ -86,6 +89,14 @@ namespace Ryno {
 		bind_fbo();
 	}
 
+
+	void FBO_Shadow::bind_face(GLenum cube_face)
+	{	
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cube_face, m_shadow_cube, 0);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		
+	}
 
 	void FBO_Shadow::bind_fbo()
 	{

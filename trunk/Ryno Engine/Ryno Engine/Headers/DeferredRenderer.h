@@ -71,22 +71,14 @@ namespace Ryno{
 		FBO_Deferred* m_fbo_deferred;
 		FBO_Shadow* m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
-		GLSLProgram* m_null_program, *m_skybox_program, *m_shadow_program, *m_blit_program;
+		GLSLProgram* m_null_program, *m_skybox_program, *m_directional_shadow_program, *m_point_shadow_program, *m_blit_program;
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
 		Model* m_bounding_box, *m_fullscreen_quad, *m_cube_box;
 		glm::mat4 MVP_camera;
 		glm::mat4 inverse_P;
 
-	/*	CameraDirection camera_directions[NUM_OF_LAYERS] =
-		{
-			{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
-			{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
-			{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f) },
-			{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
-			{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
-			{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f) }
-		};*/
+		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 
 
 		
 
