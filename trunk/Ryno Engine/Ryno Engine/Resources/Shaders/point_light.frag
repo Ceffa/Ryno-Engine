@@ -14,6 +14,7 @@ struct PointLight{
 uniform sampler2D g_color_tex;
 uniform sampler2D g_normal_tex;
 uniform sampler2D g_depth_tex;
+uniform samplerCube shadow_cube;
 
 //Inverse matrix to rebuild position from depth
 uniform mat4 inverse_P_matrix;
@@ -64,6 +65,10 @@ void main(){
 	vec3 diffuse_final = max(0, dot(g_normal, light_dir)) * diff_color;
 	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.000001), point_light.specular.w);
 	
+	//Shadows
+	float visibility = texture(shadow_cube, vec3(0,0,0)).x;
+
+
     //fragment color
-	frag_color =  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
+	frag_color = visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
 }

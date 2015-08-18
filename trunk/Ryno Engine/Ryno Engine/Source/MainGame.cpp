@@ -77,7 +77,7 @@ namespace Ryno{
 		glUniform1i(m_program_dir.getUniformLocation("g_color_tex"), 0);
 		glUniform1i(m_program_dir.getUniformLocation("g_normal_tex"), 1);
 		glUniform1i(m_program_dir.getUniformLocation("g_depth_tex"), 2);
-		glUniform1i(m_program_dir.getUniformLocation("g_shadow_tex"), 3);
+		glUniform1i(m_program_dir.getUniformLocation("shadow_tex"), 3);
 
 		
 
@@ -87,6 +87,8 @@ namespace Ryno{
 		glUniform1i(m_program_point.getUniformLocation("g_color_tex"), 0);
 		glUniform1i(m_program_point.getUniformLocation("g_normal_tex"), 1);
 		glUniform1i(m_program_point.getUniformLocation("g_depth_tex"), 2);
+		glUniform1i(m_program_point.getUniformLocation("shadow_cube"), 3);
+
 
 
 		m_program_point.unuse();
@@ -116,6 +118,7 @@ namespace Ryno{
 
 		m_game_objects.push_back(back);
 		
+	    */
 		GameObject* left = new GameObject();
 		left->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
 		left->scale = glm::vec3(40,40,40);
@@ -123,6 +126,7 @@ namespace Ryno{
 		left->rotate(10, 0, 0);
 		left->model.set_tiling(1,1);
 		m_game_objects.push_back(left);
+		/*
 
 		GameObject* right = new GameObject();
 		right->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
@@ -140,6 +144,15 @@ namespace Ryno{
 
 		m_game_objects.push_back(go1);
 
+		go2 = new GameObject();
+		go2->model.set_mesh_texture_normal(sphere_model, texture_wood, normal_map_wood);
+		go2->scale = glm::vec3(20, 20, 20);
+		go2->model.set_tiling(1, 1);
+		go2->position = glm::vec3(100, 50, 200);
+
+		m_game_objects.push_back(go2);
+
+
 	
 		CPUProfiler::next_time();
 
@@ -155,7 +168,7 @@ namespace Ryno{
 
 			
 
-		for (int j = 0; j < 18; j++){
+		for (int j = 0; j < 1; j++){
 			float conv = j * 3.14159265358979323846 / 180.0f * 20;
 			U8 r = 255;
 			U8 g = 200;

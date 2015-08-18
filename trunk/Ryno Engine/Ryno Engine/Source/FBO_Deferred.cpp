@@ -120,8 +120,8 @@ namespace Ryno {
 			glBindTexture(GL_TEXTURE_2D, m_textures[i]);
 		}
 
-		glActiveTexture(GL_TEXTURE0 + FRAME_NUM_TEXTURES);
-		glBindTexture(GL_TEXTURE_2D, m_depth_texture);
+	/*	glActiveTexture(GL_TEXTURE0 + FRAME_NUM_TEXTURES);
+		glBindTexture(GL_TEXTURE_2D, m_depth_texture);*/
 		
 	}
 
@@ -160,7 +160,7 @@ namespace Ryno {
 	
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
 		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			0,0, WINDOW_WIDTH , WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			0,0, WINDOW_WIDTH/2 , WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 	}
 
