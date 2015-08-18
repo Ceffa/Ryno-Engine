@@ -2,6 +2,7 @@
 
 #include "Types.h"
 #include "GLSLProgram.h"
+#include <GLM/glm.hpp>
 namespace Ryno{
 	class FBO_Shadow
 	{
@@ -22,6 +23,9 @@ namespace Ryno{
 		U32 m_shadow_texture;
 		U32 m_shadow_cube;
 
+		glm::mat4 point_shadow_projection_matrix;
+
+		U32 cube_shadow_resolution = 512;
 	private:
 		void bind_fbo();
 

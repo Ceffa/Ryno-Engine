@@ -4,6 +4,7 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <Glm/gtx/transform.hpp>
 
 namespace Ryno {
 
@@ -55,8 +56,10 @@ namespace Ryno {
 
 
 		for (U8 i = 0; i < 6; i++) {
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, 256, 256, 0, GL_RED, GL_FLOAT, NULL);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, cube_shadow_resolution, cube_shadow_resolution, 0, GL_RED, GL_FLOAT, NULL);
 		}
+
+		point_shadow_projection_matrix =  glm::perspective(90.0, 1.0, 0.1, 1000.0);
 		
 
 		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
@@ -84,7 +87,6 @@ namespace Ryno {
 		//Binds the shadow framebuffer, and then clear the buffer
 		bind_fbo();
 
-		
 		glClear(GL_DEPTH_BUFFER_BIT);
 	}
 
@@ -121,7 +123,6 @@ namespace Ryno {
 		bind_fbo();
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_shadow_cube, 0);
-
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cube_face, m_shadow_cube, 0);
 		
 	}
@@ -145,7 +146,7 @@ void FBO_Shadow::blit_to_debug(U8 face_index)
 	U8 h = face_index / 2;
 
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
-	glBlitFramebuffer(0, 0, 256, 256,
+	glBlitFramebuffer(0, 0, cube_shadow_resolution, cube_shadow_resolution,
 		 WINDOW_WIDTH / 2 + w * WINDOW_WIDTH / 4,
 		 h * WINDOW_HEIGHT / 3,
 		 3 * WINDOW_WIDTH / 4 + w * WINDOW_WIDTH/4 ,

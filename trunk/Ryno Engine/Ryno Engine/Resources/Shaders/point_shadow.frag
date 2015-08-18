@@ -10,5 +10,5 @@ void main() {
 	
 	vec3 distance_vector = world_pos - light_world_pos;
 	float distance = length(distance_vector);
-	color = distance/1000.0;
+	color = distance/500.0;
 }

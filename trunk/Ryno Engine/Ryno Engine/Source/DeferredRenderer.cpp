@@ -2,18 +2,19 @@
 
 #include <GLM/glm.hpp>
 #include <GLM/gtx/transform.hpp>
+#define PI 3.14159265359
 
 
 namespace Ryno{
 
 	const CameraDirection DeferredRenderer::camera_directions[NUM_OF_LAYERS]=
 	{
-		{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
-		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
+		{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f) },
+		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f) },
 		{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f) },
 		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
-		{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
-		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f) }
+		{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f) },
+		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f) }
 	};
 
 	//Initialize deferred rendering
@@ -80,42 +81,51 @@ namespace Ryno{
 
 	void DeferredRenderer::point_shadow_pass(std::vector<PointLight*>* point_lights, Batch3DShadow* batch)
 	{
-		//glm::mat4 perspective_mat = Camera3D::generate_perspective_matrix(90, WINDOW_WIDTH, WINDOW_HEIGHT, 0.1, 1000);
-		
+		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glDisable(GL_CULL_FACE);
-		//glCullFace(GL_FRONT);
+		
+		//Set viewportto cubemap size (because the next rendering will not be at fullscreen)
+		glViewport(0, 0, m_fbo_shadow->cube_shadow_resolution, m_fbo_shadow->cube_shadow_resolution);
+
 
 		PointLight* p = point_lights->back();
+
+		//Set default color to the maximum
 		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
+
+		
+		//For each face
 		for (U8 i = 0; i < NUM_OF_LAYERS; i++){
 
+			//Bind the correct cube face, and clear it
 			m_fbo_shadow->bind_face(camera_directions[i].CubemapFace);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			//Get light position, with correct z axis
 			glm::vec3 correct_position = glm::vec3(p->position.x, p->position.y, -p->position.z);
-			glm::mat4 trans_matrix = glm::translate(glm::mat4(1.0f),correct_position);
-			glm::mat4 rot_matrix = glm::lookAt(correct_position, correct_position + camera_directions[i].Target, camera_directions[i].Up);
-			glm::mat4 view_matrix = rot_matrix ;
-			glm::mat4 proj_matrix = Camera3D::generate_perspective_matrix(45, 256, 256, 0.1, 1000);
-			glm::mat4 light_VP_matrix = proj_matrix * view_matrix;
-			
-	
 
+			//Get view matrix of the light. This is both translate and rotate matrix
+			glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + camera_directions[i].Target, camera_directions[i].Up);
+			
+			//Multiply view by the standard projection matrix for cubemaps (precalculated)
+			glm::mat4 light_VP_matrix = m_fbo_shadow->point_shadow_projection_matrix * view_matrix;// proj_matrix * view_matrix;
+			
+			//Send Vp matrix and world light position to shader, then render
 			m_point_shadow_program->use();
 			glUniformMatrix4fv(m_point_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &light_VP_matrix[0][0]);
-			glUniform3f(m_point_shadow_program->getUniformLocation("light_world_pos"), correct_position.x,correct_position.y,correct_position.z);
+			glUniform3f(m_point_shadow_program->getUniformLocation("light_world_pos"), p->position.x, p->position.y,p->position.z);
 			batch->render_batch();
 			m_point_shadow_program->unuse();
 
+			//Blit for debugging purposes, to be disabled
 			m_fbo_shadow->blit_to_debug(i);
 		}
-		glClearColor(0, 0, 0, 0);
 
-		//m_fbo_shadow->blit_to_debug();
-	//	glm::mat4 V_matrix = glm::translate(glm::mat4(1.0), point_lights->back()->position);
-	//	glm::mat4 light_VP_matrix = glm::lookAt(point_lights->back()->position,)
+		//Restore clear color and viewport
+		glClearColor(0, 0, 0, 0);
+		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 
 	}
