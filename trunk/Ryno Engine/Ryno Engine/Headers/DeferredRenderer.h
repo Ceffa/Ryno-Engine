@@ -78,7 +78,6 @@ namespace Ryno{
 		glm::mat4 MVP_camera;
 		glm::mat4 inverse_P_matrix;
 		glm::mat4 inverse_VP_matrix;
-		glm::mat4 inverse_V_matrix;
 
 		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 
 

@@ -19,7 +19,7 @@ uniform samplerCube shadow_cube;
 //Inverse matrix to rebuild position from depth
 uniform mat4 inverse_P_matrix;
 uniform mat4 inverse_VP_matrix;
-uniform mat4 inverse_V_matrix;
+uniform mat4 V_matrix;
 //All the point light uniforms
 uniform PointLight point_light;
 //Screen size uniforms
@@ -42,6 +42,7 @@ void main(){
 	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
 	vec3 world_position = position_world_space.xyz / position_world_space.w;
 
+	vec4 view_world_pos = V_matrix * vec4(point_light.position_and_attenuation.xyz, 1);
 
 	//Color directly from g buffer
 	vec4 g_RGBF = texture(g_color_tex, uv_coords);
@@ -53,7 +54,7 @@ void main(){
 	vec3 g_normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
 
 	//Important vectors
-	vec3 not_normal_ligth_dir = point_light.position_and_attenuation.xyz - g_position;
+	vec3 not_normal_ligth_dir = view_world_pos.xyz - g_position;
 	vec3 light_dir = normalize(not_normal_ligth_dir);
 	vec3 view_dir = normalize(-g_position);
 	vec3 half_dir = normalize(light_dir + view_dir);
@@ -72,19 +73,19 @@ void main(){
 	
 	//shadows
 	float visibility = min(1.0, diffuse_final.x + 1);
-	float bias = 0.005;// *tan(acos(dotNL));
+	float bias = 0.5;// *tan(acos(dotNL));
 
-	
-	vec4 world_light_position = inverse_V_matrix * vec4(point_light.position_and_attenuation.xyz, 1);
-	vec3 light_direction = world_position - world_light_position.xyz;
+
+	vec3 world_light_position = point_light.position_and_attenuation.xyz;
+	vec3 light_direction = world_position - world_light_position;
 	
 	float sampled_depth = texture(shadow_cube, light_direction).x;
-	float current_depth = length(light_direction) ;
+	float current_depth = length(light_direction) - bias;
 	
-	visibility = 1;
-	if (sampled_depth < current_depth - bias) visibility = 0;
+
+	if (sampled_depth < current_depth ) visibility = 0;
 		
 
     //fragment color
-	frag_color = visibility *(1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
+	frag_color = visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
 }

@@ -56,7 +56,6 @@ namespace Ryno{
 		//Calculate camera matrix once and for all
 		inverse_P_matrix = glm::inverse(m_camera->get_P_matrix());
 		inverse_VP_matrix = glm::inverse(m_camera->get_VP_matrix());
-		inverse_V_matrix = glm::inverse(m_camera->get_V_matrix());
 
 
 
@@ -88,7 +87,7 @@ namespace Ryno{
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
-		glDisable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		
 		//Set viewportto cubemap size (because the next rendering will not be at fullscreen)
@@ -223,7 +222,7 @@ namespace Ryno{
 		point_light->send_uniforms(m_camera);
 		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
 		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
-		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_V_matrix"), 1, GL_FALSE, &inverse_V_matrix[0][0]);
+		glUniformMatrix4fv(point_light->program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
 		glUniformMatrix4fv(point_light->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
 		m_simple_drawer->draw(m_bounding_box);
 		point_light->program->unuse();
