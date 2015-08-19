@@ -54,7 +54,11 @@ namespace Ryno{
 	void DeferredRenderer::init_frame(){
 
 		//Calculate camera matrix once and for all
-		inverse_P = glm::inverse(m_camera->get_projection_matrix());
+		inverse_P_matrix = glm::inverse(m_camera->get_P_matrix());
+		inverse_VP_matrix = glm::inverse(m_camera->get_VP_matrix());
+		inverse_V_matrix = glm::inverse(m_camera->get_V_matrix());
+
+
 
 		//Setup the two fbos for this frame
 		m_fbo_deferred->start_frame();
@@ -73,8 +77,8 @@ namespace Ryno{
 		
 		program->use();
 		//Setup geometry program
-		glUniformMatrix4fv(program->getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_view_matrix()[0][0]);
-		glUniformMatrix4fv(program->getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_camera_matrix()[0][0]);
+		glUniformMatrix4fv(program->getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
+		glUniformMatrix4fv(program->getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_VP_matrix()[0][0]);
 		batch->render_batch();
 		program->unuse();
 	}
@@ -85,6 +89,7 @@ namespace Ryno{
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glDisable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
 		
 		//Set viewportto cubemap size (because the next rendering will not be at fullscreen)
 		glViewport(0, 0, m_fbo_shadow->cube_shadow_resolution, m_fbo_shadow->cube_shadow_resolution);
@@ -187,7 +192,7 @@ namespace Ryno{
 		F32 size = point_light->calculate_max_radius();
 		glm::vec3 temp_pos = point_light->position;
 		temp_pos.z *= -1;
-		MVP_camera = m_camera->get_camera_matrix() * glm::scale(glm::translate(glm::mat4(1.0f),temp_pos ), glm::vec3(size, size, size));
+		MVP_camera = m_camera->get_VP_matrix() * glm::scale(glm::translate(glm::mat4(1.0f),temp_pos ), glm::vec3(size, size, size));
 		
 		m_null_program->use();
 		glUniformMatrix4fv(m_null_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
@@ -216,7 +221,9 @@ namespace Ryno{
 
 		point_light->program->use();
 		point_light->send_uniforms(m_camera);
-		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P[0][0]);
+		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
+		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_V_matrix"), 1, GL_FALSE, &inverse_V_matrix[0][0]);
 		glUniformMatrix4fv(point_light->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
 		m_simple_drawer->draw(m_bounding_box);
 		point_light->program->unuse();
@@ -240,7 +247,6 @@ namespace Ryno{
 		
 		glDisable(GL_DEPTH_TEST);
 
-		directional_light->program->use();
 		static const glm::mat4 bias(
 			0.5, 0.0, 0.0, 0.0,
 			0.0, 0.5, 0.0, 0.0,
@@ -253,11 +259,9 @@ namespace Ryno{
 		glm::mat4 view_mat = glm::lookAt(inv_dir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		glm::mat4 final_mat = bias * ortho_mat * view_mat;
 
-		
+		directional_light->program->use();
 		glUniformMatrix4fv(directional_light->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &final_mat[0][0]);
-
-		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P[0][0]);
-		glm::mat4 inverse_VP_matrix = glm::inverse(m_camera->get_camera_matrix());
+		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
 		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
 
 		
@@ -303,7 +307,7 @@ namespace Ryno{
 		m_skybox_program->use();
 
 		//Remove translation from VP matrix
-		glm::mat4 no_trans_VP = m_camera->get_projection_matrix() *  glm::mat4(glm::mat3(m_camera->get_view_matrix()));
+		glm::mat4 no_trans_VP = m_camera->get_P_matrix() *  glm::mat4(glm::mat3(m_camera->get_V_matrix()));
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_camera->skybox);

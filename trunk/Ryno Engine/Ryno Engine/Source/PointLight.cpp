@@ -11,7 +11,7 @@ namespace Ryno{
 
 	glm::vec3 PointLight::move_to_view_space(Camera3D* camera){
 	
-		return glm::vec3(camera->get_view_matrix()*
+		return glm::vec3(camera->get_V_matrix()*
 			glm::vec4(position.x, position.y, -position.z, 1));
 
 	}

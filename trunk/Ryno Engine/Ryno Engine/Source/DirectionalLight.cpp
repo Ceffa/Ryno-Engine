@@ -10,7 +10,7 @@ namespace Ryno{
 
 	glm::vec3 DirectionalLight::move_to_view_space(Camera3D* camera){
 		
-		return glm::vec3(glm::transpose(glm::inverse(camera->get_view_matrix()))*
+		return glm::vec3(glm::transpose(glm::inverse(camera->get_V_matrix()))*
 			glm::vec4(direction.pitch,direction.yaw,-direction.roll,0));
 	}
 

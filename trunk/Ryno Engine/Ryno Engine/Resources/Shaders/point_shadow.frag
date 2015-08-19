@@ -8,7 +8,6 @@ layout(location = 0) out float color;
 
 void main() {
 	
-	vec3 distance_vector = world_pos - light_world_pos;
-	float distance = length(distance_vector);
-	color = distance/500.0;
+
+	color = length(world_pos - light_world_pos);
 }

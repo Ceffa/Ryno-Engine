@@ -18,6 +18,8 @@ uniform samplerCube shadow_cube;
 
 //Inverse matrix to rebuild position from depth
 uniform mat4 inverse_P_matrix;
+uniform mat4 inverse_VP_matrix;
+uniform mat4 inverse_V_matrix;
 //All the point light uniforms
 uniform PointLight point_light;
 //Screen size uniforms
@@ -35,8 +37,11 @@ void main(){
 	//Rebuild position from depth
 	float depth = texture(g_depth_tex, uv_coords).r *2.0-1.0;
 	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
-	vec4 position_world_space = inverse_P_matrix * position_screen_space;
-	vec3 g_position = position_world_space.xyz / position_world_space.w;
+	vec4 position_view_space = inverse_P_matrix * position_screen_space;
+	vec3 g_position = position_view_space.xyz / position_view_space.w;
+	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
+	vec3 world_position = position_world_space.xyz / position_world_space.w;
+
 
 	//Color directly from g buffer
 	vec4 g_RGBF = texture(g_color_tex, uv_coords);
@@ -65,10 +70,21 @@ void main(){
 	vec3 diffuse_final = max(0, dot(g_normal, light_dir)) * diff_color;
 	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.000001), point_light.specular.w);
 	
-	//Shadows
-	float visibility = texture(shadow_cube, vec3(0,0,0)).x;
+	//shadows
+	float visibility = min(1.0, diffuse_final.x + 1);
+	float bias = 0.005;// *tan(acos(dotNL));
 
+	
+	vec4 world_light_position = inverse_V_matrix * vec4(point_light.position_and_attenuation.xyz, 1);
+	vec3 light_direction = world_position - world_light_position.xyz;
+	
+	float sampled_depth = texture(shadow_cube, light_direction).x;
+	float current_depth = length(light_direction) ;
+	
+	visibility = 1;
+	if (sampled_depth < current_depth - bias) visibility = 0;
+		
 
     //fragment color
-	frag_color = visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
+	frag_color = visibility *(1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
 }

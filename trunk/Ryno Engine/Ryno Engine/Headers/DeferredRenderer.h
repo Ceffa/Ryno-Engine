@@ -76,7 +76,9 @@ namespace Ryno{
 		TextureManager* m_texture_manager;
 		Model* m_bounding_box, *m_fullscreen_quad, *m_cube_box;
 		glm::mat4 MVP_camera;
-		glm::mat4 inverse_P;
+		glm::mat4 inverse_P_matrix;
+		glm::mat4 inverse_VP_matrix;
+		glm::mat4 inverse_V_matrix;
 
 		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 
 
