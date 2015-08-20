@@ -23,9 +23,8 @@ namespace Ryno{
 		U32 m_shadow_texture;
 		U32 m_shadow_cube;
 
-		glm::mat4 point_shadow_projection_matrix;
 
-		U32 cube_shadow_resolution = 1000;
+		U32 cube_shadow_resolution = 512;
 	private:
 		void bind_fbo();
 

@@ -14,9 +14,9 @@ namespace Ryno{
 
 	Camera3D::Camera3D(U32 w, U32 h) :width(w), height(h), yaw(0), pitch(0)
 	{
-		projection_matrix = generate_perspective_matrix(45, w, h, .1f, 10000.0f);
+		P_matrix = generate_P_matrix(60, w, h, .1f, 10000.0f);
 
-		ortho_matrix = glm::ortho<float>(-500, 500, -500, 500, -500,500);
+		O_matrix = glm::ortho<float>(-500, 500, -500, 500, -500,500);
 
 	
 	}
@@ -24,21 +24,21 @@ namespace Ryno{
 
 	}
 
-	glm::mat4 Camera3D::generate_perspective_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far){
-		return glm::perspective(angle,width/(F32) height, near, far);
+	glm::mat4 Camera3D::generate_P_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far){
+		return glm::perspective((F32)(angle * M_PI / 180.0),width/(F32) height, near, far);
 	}
 
 
-	void Camera3D::generate_camera_matrix(){
+	void Camera3D::generate_VP_matrix(){
 		
 		//I ignore the scale.
 		//I get the rotation from the pitch and yaw, and i make it faster with quaternions.
 		//Finally i translate by the position 
-		view_matrix = glm::translate(
+		V_matrix = glm::translate(
 			glm::toMat4(glm::quat(glm::vec3(pitch, 0, 0)) * glm::quat(glm::vec3(0, yaw, 0))),
 			glm::vec3(-position.x, -position.y, position.z)
 			); 
-		camera_matrix = projection_matrix * view_matrix;
+		VP_matrix = P_matrix * V_matrix;
 						
 	
 	}

@@ -73,13 +73,12 @@ void main(){
 	
 	//shadows
 	float visibility = min(1.0, diffuse_final.x + 1);
-	float bias = 0.5;// *tan(acos(dotNL));
+	float bias = 0.0005;
 
 
 	vec3 world_light_position = point_light.position_and_attenuation.xyz;
 	vec3 light_direction = world_position - world_light_position;
-	
-	float sampled_depth = texture(shadow_cube, light_direction).x;
+	float sampled_depth = texture(shadow_cube, light_direction).r;
 	float current_depth = length(light_direction) - bias;
 	
 
@@ -87,5 +86,6 @@ void main(){
 		
 
     //fragment color
-	frag_color = visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
+	//frag_color = vec3(sampled_depth,1.0,1.0)/500.0 +   (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
+	frag_color =visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
 }

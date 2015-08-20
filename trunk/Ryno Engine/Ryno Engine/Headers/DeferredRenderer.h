@@ -39,17 +39,15 @@ namespace Ryno{
 		//Skybox pass. Not sure where to use yet
 		void skybox_pass();
 
-		//Shadow pass for point lights
-		void point_shadow_pass(std::vector<PointLight*>* point_lights, Batch3DShadow* batch);
+		
 
-		//Apply point lights
-		void point_light_pass(std::vector<PointLight*>* point_lights);
+		//Pass for point lights
+		void point_light_pass(std::vector<PointLight*>* point_lights, Batch3DShadow* batch);
 
-		//Shadow pass for directional light only
-		void directional_shadow_pass(DirectionalLight* directional_light, Batch3DShadow* batch);
+		//Pass for directional lights
+		void directional_lighting_pass(DirectionalLight* directional_light, Batch3DShadow* batch);
 
-		//Apply diretional light
-		void directional_light_pass(DirectionalLight* directional_light);
+		
 
 
 		//Print on screen the result of the whole deferred rendering
@@ -60,12 +58,21 @@ namespace Ryno{
 
 
 	private:
-		//Stencil pass for point lights only.
-		//Call for each light inside the light pass
-		void stencil_pass(PointLight* point_light);
 
-		//Renders point light inside it's bounding sphere
-		void light_pass(PointLight* point_light);
+		//Shadow subpass for point light
+		void point_shadow_subpass(PointLight* p, Batch3DShadow* batch);
+
+		//Stencil subpass for point light
+		void point_stencil_subpass(PointLight* point_light);
+
+		//Lighting subpass for point light
+		void point_lighting_subpass(PointLight* point_light);
+
+		//Shadow subpass for directional light 
+		void directional_shadow_subpass(DirectionalLight* directional_light, Batch3DShadow* batch);
+
+		//Lighting subpass for directional light
+		void directional_lighting_pass(DirectionalLight* directional_light);
 
 		Camera3D* m_camera;
 		FBO_Deferred* m_fbo_deferred;

@@ -11,14 +11,14 @@ namespace Ryno{
 
 	glm::vec3 PointLight::move_to_view_space(Camera3D* camera){
 	
-		return glm::vec3(//camera->get_V_matrix()*
+		return glm::vec3(camera->get_V_matrix()*
 			glm::vec4(position.x, position.y, -position.z, 1));
 
 	}
 
 	void PointLight::send_uniforms(Camera3D* camera){
 
-		glm::vec3 view_space_pos = move_to_view_space(camera);
+		glm::vec3 view_space_pos = glm::vec3(position.x, position.y, -position.z);
 
 		glUniform4f(program->getUniformLocation("point_light.position_and_attenuation"), view_space_pos.x, view_space_pos.y, view_space_pos.z,attenuation);
 		glUniform4f(program->getUniformLocation("point_light.diffuse"), diffuse_color.r/256.0f ,diffuse_color.g/256.0f,diffuse_color.b/256.0f,diffuse_intensity);
@@ -27,7 +27,7 @@ namespace Ryno{
 	}
 
 
-	F32 PointLight::calculate_max_radius()
+	void PointLight::calculate_max_radius()
 	{
 		//Get the max radius as the max between the specular and the diffuse one
 		F32 max_diffuse = fmax(fmax(diffuse_color.r, diffuse_color.g), diffuse_color.b);
@@ -39,6 +39,6 @@ namespace Ryno{
 		F32 max_value = fmax(diffuse_intensity* max_diffuse / attenuation, specular_intensity*max_specular / attenuation);
 
 
-		return sqrt(max_value);
+		max_radius = sqrt(max_value);
 	}
 }

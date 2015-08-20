@@ -11,17 +11,17 @@ namespace Ryno{
 		Camera3D(U32 w, U32 h);
 		~Camera3D();
 
-		void generate_camera_matrix();
 		void move_forward(F32 speed);
 		void move_right(F32 speed);
 		void move_back(F32 speed);
 		void move_left(F32 speed);
 		void rotate(F32 y, F32 p);
-		glm::mat4 get_VP_matrix() const { return camera_matrix; }
-		glm::mat4 get_V_matrix() const { return view_matrix; }
-		glm::mat4 get_ortho_matrix() const { return ortho_matrix; }
-		glm::mat4 get_P_matrix() const { return projection_matrix; }
-		static glm::mat4 generate_perspective_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far);
+		glm::mat4 get_VP_matrix() const { return VP_matrix; }
+		glm::mat4 get_V_matrix() const { return V_matrix; }
+		glm::mat4 get_O_matrix() const { return O_matrix; }
+		glm::mat4 get_P_matrix() const { return P_matrix; }
+		void generate_VP_matrix();
+		static glm::mat4 generate_P_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far);
 
 		
 		I32 width;
@@ -31,10 +31,10 @@ namespace Ryno{
 		U32 skybox;
 	
 	private:
-		glm::mat4 view_matrix;
-		glm::mat4 camera_matrix;
-		glm::mat4 projection_matrix;
-		glm::mat4 ortho_matrix;
+		glm::mat4 V_matrix;
+		glm::mat4 VP_matrix;
+		glm::mat4 P_matrix;
+		glm::mat4 O_matrix;
 
 				
 

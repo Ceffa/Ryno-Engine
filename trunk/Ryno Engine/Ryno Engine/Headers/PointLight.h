@@ -14,9 +14,9 @@ namespace Ryno{
 
 		void send_uniforms(Camera3D* camera) override;
 
-		F32 calculate_max_radius();
+		void calculate_max_radius();
 		
-
+		F32 max_radius;
 		glm::vec3 position;
 		F32 attenuation; //exp
 		

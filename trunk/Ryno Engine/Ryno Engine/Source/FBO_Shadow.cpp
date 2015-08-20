@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <Glm/gtx/transform.hpp>
+#define NINETY_DEGREES 1.57079632679489661923
 
 namespace Ryno {
 
@@ -59,7 +60,6 @@ namespace Ryno {
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, cube_shadow_resolution, cube_shadow_resolution, 0, GL_RED, GL_FLOAT, NULL);
 		}
 
-		point_shadow_projection_matrix =  glm::perspective(90.0, 1.0, 0.1, 1000.0);
 		
 
 		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
@@ -123,7 +123,7 @@ namespace Ryno {
 		bind_fbo();
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_shadow_cube, 0);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cube_face, m_shadow_cube, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cube_face, m_shadow_cube, 0);
 		
 	}
 
@@ -142,15 +142,22 @@ void FBO_Shadow::blit_to_debug(U8 face_index)
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 
-	U8 w = face_index % 2;
-	U8 h = face_index / 2;
+	static glm::vec4 coords[6]{
+			glm::vec4(2.0 / 4.0, 3.0 / 4.0, 4.0 / 6.0, 5.0 / 6.0),
+			glm::vec4(0.0 / 4.0, 1.0 / 4.0, 4.0 / 6.0, 5.0 / 6.0),
+			glm::vec4(1.0 / 4.0, 2.0 / 4.0, 5.0 / 6.0, 6.0 / 6.0),
+			glm::vec4(1.0 / 4.0, 2.0 / 4.0, 3.0 / 6.0, 4.0 / 6.0),
+			glm::vec4(3.0 / 4.0, 4.0 / 4.0, 4.0 / 6.0, 5.0 / 6.0),
+			glm::vec4(1.0 / 4.0, 2.0 / 4.0, 4.0 / 6.0, 5.0 / 6.0)
+
+	};
 
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 	glBlitFramebuffer(0, 0, cube_shadow_resolution, cube_shadow_resolution,
-		 WINDOW_WIDTH / 2 + w * WINDOW_WIDTH / 4,
-		 h * WINDOW_HEIGHT / 3,
-		 3 * WINDOW_WIDTH / 4 + w * WINDOW_WIDTH/4 ,
-		 WINDOW_HEIGHT / 3 + h * WINDOW_HEIGHT / 3,
+		coords[face_index].x * WINDOW_WIDTH,
+		coords[face_index].z * WINDOW_HEIGHT,
+		coords[face_index].y * WINDOW_WIDTH,
+		coords[face_index].w * WINDOW_HEIGHT,
 		 GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }
 

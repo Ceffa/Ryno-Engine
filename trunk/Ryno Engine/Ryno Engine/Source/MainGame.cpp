@@ -46,7 +46,7 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading skyboxes
-		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon");
+		m_camera->skybox = m_texture_manager->loadCubeMap("day");
 
 		CPUProfiler::next_time();
 
@@ -126,21 +126,28 @@ namespace Ryno{
 		left->rotate(10, 0, 0);
 		left->model.set_tiling(1,1);
 		m_game_objects.push_back(left);
-		/*
+		
 
-		GameObject* right = new GameObject();
+	/*	GameObject* right = new GameObject();
 		right->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
-		right->scale = glm::vec3(200, 50, 50);
+		right->scale = glm::vec3(500, 500, 50);
 		right->model.set_tiling(4,1);
-		right->position = glm::vec3(-100, 50, 200);
+		right->position = glm::vec3(0, 250, 250);
 
-		m_game_objects.push_back(right);*/
+		m_game_objects.push_back(right);
+		GameObject* a = new GameObject();
+		a->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
+		a->scale = glm::vec3(50, 500, 500);
+		a->model.set_tiling(4, 1);
+		a->position = glm::vec3(250, 250, 0);
+
+		m_game_objects.push_back(a);*/
 
 		go1 = new GameObject();
 		go1->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
-		go1->scale = glm::vec3(50, 200, 50);
+		go1->scale = glm::vec3(10, 100, 10);
 		go1->model.set_tiling(1,4);
-		go1->position = glm::vec3(0,100,0);
+		go1->position = glm::vec3(0,50,0);
 
 		m_game_objects.push_back(go1);
 
@@ -148,7 +155,7 @@ namespace Ryno{
 		go2->model.set_mesh_texture_normal(sphere_model, texture_wood, normal_map_wood);
 		go2->scale = glm::vec3(20, 20, 20);
 		go2->model.set_tiling(1, 1);
-		go2->position = glm::vec3(100, 50, 200);
+		go2->position = glm::vec3(-100, 50, 40);
 
 		m_game_objects.push_back(go2);
 
@@ -168,15 +175,15 @@ namespace Ryno{
 
 			
 
-		for (int j = 0; j < 1; j++){
-			float conv = j * 3.14159265358979323846 / 180.0f * 20;
-			U8 r = 255;
-			U8 g = 200;
-			U8 b = 100;
-			p = new PointLight(100 * cos(conv), 10, 100 * sin(conv));
+		for (int j = 0; j < 5; j++){
+			float conv = j * 3.14159265358979323846 / 180.0f * 72;
+			U8 r = 100;
+			U8 g = 255;
+			U8 b = 255;
+			p = new PointLight(30 * cos(conv), 10, 30 * sin(conv));
 
 			p->set_diffuse_color(r, g, b);
-			p->diffuse_intensity = 10;
+			p->diffuse_intensity = 20;
 			p->attenuation = .1;
 			p->specular_intensity = 50;
 			p->set_specular_color(r, g, b);
@@ -187,18 +194,18 @@ namespace Ryno{
 			bl->model.set_color_and_flatness(220 + 35 * r / 255, 220 + 35 * g / 255, 220 + 35 * b / 255, 255);
 			bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
 			bl->scale = glm::vec3(10, 10, 10);
-			bl->position = glm::vec3(100 * cos(conv), 10, 100 * sin(conv));
+			bl->position = glm::vec3(30 * cos(conv), 10, 30 * sin(conv));
 			spheres.push_back(bl);
 
 		}
 
 		
 		l = new DirectionalLight(-.6,.6,.2);
-		l->diffuse_intensity = .2;
+		l->diffuse_intensity = .1;
 		l->set_diffuse_color(100,200,255);
-		l->specular_intensity =.2;
+		l->specular_intensity =.1;
 		l->set_specular_color(100, 200, 255);
-		l->ambient_intensity = .07;
+		l->ambient_intensity = .02;
 		l->set_ambient_color(100, 200, 255);
 		l->program = &m_program_dir;
 		CPUProfiler::end_time();
@@ -231,57 +238,57 @@ namespace Ryno{
 		
 		if (m_input_manager.is_key_down(SDLK_LEFT)){
 			for (PointLight* l : point_lights){
-				l->position.x -= 1;
+				l->position.x -= 3;
 
 			}
 			for (GameObject* s : spheres){
-				s->position.x -= 1;
+				s->position.x -= 3;
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_RIGHT)){
 			for (PointLight* l : point_lights){
-				l->position.x += 1;
+				l->position.x += 3;
 
 			}
 			for (GameObject* s : spheres){
-				s->position.x += 1;
+				s->position.x += 3;
 			}
 		}
 
 		if (m_input_manager.is_key_down(SDLK_n)){
 			for (PointLight* l : point_lights){
-				l->position.z -= 1;
+				l->position.z -= 3;
 
 			}
 			for (GameObject* s : spheres){
-				s->position.z -= 1;
+				s->position.z -= 3;
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_m)){
 			for (PointLight* l : point_lights){
-				l->position.z += 1;
+				l->position.z += 3;
 
 			}
 			for (GameObject* s : spheres){
-				s->position.z+=1;
+				s->position.z += 3;
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_UP)){
 			for (PointLight* l : point_lights){
-				l->position.y += 1;
+				l->position.y += 3;
 
 			}
 			for (GameObject* s : spheres){
-				s->position.y += 1;
+				s->position.y += 3;
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_DOWN)){
 			for (PointLight* l : point_lights){
-				l->position.y -= 1;
+				l->position.y -= 3;
 
 			}
 			for (GameObject* s : spheres){
-				s->position.y -= 1;
+				s->position.y -= 3;
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_o)){
@@ -333,8 +340,10 @@ namespace Ryno{
 			s->generate_model_matrix();
 		}
 
+
+
 		//generate camera matrix
-		m_camera->generate_camera_matrix();
+		m_camera->generate_VP_matrix();
 
 		
 
@@ -366,11 +375,11 @@ namespace Ryno{
 		m_shadow_batch3d->end();
 
 
-		m_deferred_renderer->point_shadow_pass(&point_lights, m_shadow_batch3d);
-		m_deferred_renderer->point_light_pass(&point_lights);
+		//m_deferred_renderer->point_shadow_pass(point_lights.back(), m_shadow_batch3d);
 
-		m_deferred_renderer->directional_shadow_pass(l, m_shadow_batch3d);
-		m_deferred_renderer->directional_light_pass(l);
+		m_deferred_renderer->point_light_pass(&point_lights, m_shadow_batch3d);
+
+		m_deferred_renderer->directional_lighting_pass(l, m_shadow_batch3d);
 
 		m_deferred_renderer->skybox_pass();
 
