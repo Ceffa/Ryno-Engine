@@ -72,7 +72,7 @@ namespace Ryno{
 		void directional_shadow_subpass(DirectionalLight* directional_light, Batch3DShadow* batch);
 
 		//Lighting subpass for directional light
-		void directional_lighting_pass(DirectionalLight* directional_light);
+		void directional_lighting_subpass(DirectionalLight* directional_light);
 
 		Camera3D* m_camera;
 		FBO_Deferred* m_fbo_deferred;

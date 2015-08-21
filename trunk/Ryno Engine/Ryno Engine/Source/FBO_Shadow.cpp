@@ -32,7 +32,7 @@ namespace Ryno {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadow_texture, 0);
-		
+
 
 		//// Create the frame buffer textures
 		//glGenTextures(1, &m_shadow_cube);
@@ -53,11 +53,11 @@ namespace Ryno {
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 
 
 		for (U8 i = 0; i < 6; i++) {
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, cube_shadow_resolution, cube_shadow_resolution, 0, GL_RED, GL_FLOAT, NULL);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT32, cube_shadow_resolution, cube_shadow_resolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 		}
 
 		
@@ -95,6 +95,7 @@ namespace Ryno {
 	void FBO_Shadow::bind_for_shadow_map_pass(){
 
 		bind_fbo();
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadow_texture, 0);
 
 		//Draw only depth
 		glDrawBuffer(GL_NONE);
@@ -121,9 +122,9 @@ namespace Ryno {
 	void FBO_Shadow::bind_face(GLenum cube_face)
 	{	
 		bind_fbo();
-		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glDrawBuffer(GL_NONE);
 		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_shadow_cube, 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cube_face, m_shadow_cube, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, cube_face, m_shadow_cube, 0);
 		
 	}
 

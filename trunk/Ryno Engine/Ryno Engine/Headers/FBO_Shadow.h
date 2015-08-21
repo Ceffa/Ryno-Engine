@@ -24,7 +24,7 @@ namespace Ryno{
 		U32 m_shadow_cube;
 
 
-		U32 cube_shadow_resolution = 512;
+		U32 cube_shadow_resolution = 400;
 	private:
 		void bind_fbo();
 

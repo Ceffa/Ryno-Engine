@@ -2,7 +2,7 @@
 
 //Structures
 
-//4-byte aligned baby!
+//4-byte aligned
 struct PointLight{
 	vec4 position_and_attenuation; //Needs to be divided
 	vec4 diffuse;
@@ -14,7 +14,7 @@ struct PointLight{
 uniform sampler2D g_color_tex;
 uniform sampler2D g_normal_tex;
 uniform sampler2D g_depth_tex;
-uniform samplerCube shadow_cube;
+uniform samplerCubeShadow shadow_cube;
 
 //Inverse matrix to rebuild position from depth
 uniform mat4 inverse_P_matrix;
@@ -26,9 +26,25 @@ uniform PointLight point_light;
 uniform int screen_width;
 uniform int screen_height;
 
+//Max fov of the light, to reconstruct depth correctly
+uniform float max_fov;
 
 out vec3 frag_color;
 
+
+//This function generate a depth value from the direction vector, so that it can be compared 
+//with the depth value in the shadow cube
+
+float vector_to_depth(vec3 light_vec, float n, float f)
+{
+	vec3 AbsVec = abs(light_vec);
+	float LocalZcomp = max(AbsVec.x, max(AbsVec.y, AbsVec.z));
+
+
+
+	float NormZComp = (f + n) / (f - n) - (2 * f*n) / (f - n) / LocalZcomp;
+	return (NormZComp + 1.0) * 0.5;
+}
 
 void main(){
 	//Get uvs of the current fragment
@@ -71,21 +87,25 @@ void main(){
 	vec3 diffuse_final = max(0, dot(g_normal, light_dir)) * diff_color;
 	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.000001), point_light.specular.w);
 	
-	//shadows
-	float visibility = min(1.0, diffuse_final.x + 1);
-	float bias = 0.0005;
+	//**SHADOWS**//
+
+	//float visibility = min(1.0, diffuse_final.x + 1);
+	//float bias = 0.001;
 
 
 	vec3 world_light_position = point_light.position_and_attenuation.xyz;
 	vec3 light_direction = world_position - world_light_position;
-	float sampled_depth = texture(shadow_cube, light_direction).r;
-	float current_depth = length(light_direction) - bias;
+
+	//This sampling with a vec4 automatically compares the sampled value with the forth parameter (i think).
+	//So the result is the visibility
+	float current_depth = vector_to_depth(light_direction, 1.0, max_fov);
+	float visibility = texture(shadow_cube, vec4(light_direction, current_depth));
 	
 
-	if (sampled_depth < current_depth ) visibility = 0;
 		
 
     //fragment color
-	//frag_color = vec3(sampled_depth,1.0,1.0)/500.0 +   (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
-	frag_color =visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
+	frag_color = visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
 }
+
+
