@@ -16,8 +16,7 @@ namespace Ryno{
 		void bind_for_shadow_map_pass();
 		void bind_for_directional_light_pass();
 		void bind_for_point_light_pass();
-		void bind_face(GLenum cube_face);
-		void blit_to_debug(U8 face_index);
+		void bind_for_point_shadow_pass();
 
 		U32 m_fbo;
 		U32 m_shadow_texture;

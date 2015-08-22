@@ -1,17 +1,15 @@
 #version 430
 
 layout(location = 0) in vec3 in_Position;
-layout(location = 4) in mat4 in_M;
+layout(location = 1) in mat4 in_M;
 
-uniform mat4 light_VP;
-//out vec3 world_pos;
-
+out vec3 pos;
 
 void main()
 {
-	vec4 temp_world_pos = in_M * vec4(in_Position, 1.0);
-	gl_Position = light_VP * temp_world_pos;
-	//world_pos = temp_world_pos.xyz ;
+	vec4 pos_temp = in_M * vec4(in_Position, 1.0);
+	pos = pos_temp.xyz;
+	gl_Position = pos_temp;
 }
 
 

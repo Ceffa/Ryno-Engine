@@ -119,12 +119,12 @@ namespace Ryno {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_shadow_cube);
 	}
 
-	void FBO_Shadow::bind_face(GLenum cube_face)
+	void FBO_Shadow::bind_for_point_shadow_pass()
 	{	
 		bind_fbo();
 		glDrawBuffer(GL_NONE);
-		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_shadow_cube, 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, cube_face, m_shadow_cube, 0);
+		//Bind all cubemap, the geometry shader will take care of the faces
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_shadow_cube, 0);
 		
 	}
 
@@ -138,29 +138,6 @@ void FBO_Shadow::bind_fbo()
 	}
 
 
-void FBO_Shadow::blit_to_debug(U8 face_index)
-{
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
-
-	static glm::vec4 coords[6]{
-			glm::vec4(2.0 / 4.0, 3.0 / 4.0, 4.0 / 6.0, 5.0 / 6.0),
-			glm::vec4(0.0 / 4.0, 1.0 / 4.0, 4.0 / 6.0, 5.0 / 6.0),
-			glm::vec4(1.0 / 4.0, 2.0 / 4.0, 5.0 / 6.0, 6.0 / 6.0),
-			glm::vec4(1.0 / 4.0, 2.0 / 4.0, 3.0 / 6.0, 4.0 / 6.0),
-			glm::vec4(3.0 / 4.0, 4.0 / 4.0, 4.0 / 6.0, 5.0 / 6.0),
-			glm::vec4(1.0 / 4.0, 2.0 / 4.0, 4.0 / 6.0, 5.0 / 6.0)
-
-	};
-
-	glReadBuffer(GL_COLOR_ATTACHMENT0);
-	glBlitFramebuffer(0, 0, cube_shadow_resolution, cube_shadow_resolution,
-		coords[face_index].x * WINDOW_WIDTH,
-		coords[face_index].z * WINDOW_HEIGHT,
-		coords[face_index].y * WINDOW_WIDTH,
-		coords[face_index].w * WINDOW_HEIGHT,
-		 GL_COLOR_BUFFER_BIT, GL_LINEAR);
-}
 
 
 

@@ -18,7 +18,7 @@ namespace Ryno{
 		separate these steps.
 		@Param name of the shader
 		*/
-		void create(const std::string& name);
+		void create(const std::string& name, bool geom, bool vert, bool frag);
 
 
 		/**
@@ -72,7 +72,9 @@ namespace Ryno{
 	private:
 
 		//local enum to differentiate the shader type
-		enum  ShadersIndex{ VERT, FRAG };
+		enum  ShadersIndex{ VERT, GEOM, FRAG };
+
+		bool is_shader_present[3];
 
 		//local enum to identify the different operations on a shader
 		enum  OperationIndex{ CREATE, COMPILE, LINK };
@@ -81,8 +83,8 @@ namespace Ryno{
 		U32 m_attr_no;
 		//id of the glsl program
 		U32 m_program_id;
-		//the two ids of the two shaders
-		U32 m_shader_ids[2];
+		//the ids of the shaders
+		U32 m_shader_ids[3];
 
 		std::string shader_name;
 

@@ -1,7 +1,7 @@
 #version 430
 
 layout(location = 0) in vec3 in_Position;
-layout(location = 4) in mat4 in_M;
+layout(location = 1) in mat4 in_M;
 
 uniform mat4 light_VP;
 

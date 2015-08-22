@@ -9,7 +9,10 @@
 
 
 namespace Ryno{
-	void GLSLProgram::create(const std::string& name){
+	void GLSLProgram::create(const std::string& name, bool vert, bool geom, bool frag){
+		is_shader_present[VERT] = vert;
+		is_shader_present[GEOM] = geom;
+		is_shader_present[FRAG] = frag;
 		init();
 		load_shaders(name);
 		compile_shaders();
@@ -19,28 +22,43 @@ namespace Ryno{
 	void GLSLProgram::init(){
 		m_program_id = 0;
 		m_attr_no = 0;
+	
 		m_shader_ids[VERT] = 0;
+		m_shader_ids[GEOM] = 0;
 		m_shader_ids[FRAG] = 0;
+
 		m_program_id = glCreateProgram();
 	}
 
 	void GLSLProgram::destroy(){
-		glDetachShader(m_program_id, m_shader_ids[VERT]);
-		glDetachShader(m_program_id, m_shader_ids[FRAG]);
+
+		for (U8 i = VERT; i < VERT + 3; i++){
+			if (is_shader_present[i]){
+				glDetachShader(m_program_id, m_shader_ids[i]);
+				glDeleteShader(m_shader_ids[i]);
+			}
+		}
 		glDeleteProgram(m_program_id);
-		glDeleteShader(m_shader_ids[VERT]);
-		glDeleteShader(m_shader_ids[FRAG]);
+
 	}
 	void GLSLProgram::load_shaders(const std::string& name){
 		shader_name = name;
+		static std::string extensions[3]{".vert", ".geom", ".frag"};
 
-		load_shader(VERT, "Resources/Shaders/" + name + ".vert");
-		load_shader(FRAG, "Resources/Shaders/" + name + ".frag");
+		for (U8 i = VERT; i < VERT + 3; i++){
+			if (is_shader_present[i])
+				load_shader((ShadersIndex)i , "Resources/Shaders/" + name + extensions[i-VERT]);
+		}
+		
 	}
 
 	void GLSLProgram::load_shader(ShadersIndex index, const std::string& path){
 
-		m_shader_ids[index] = glCreateShader(index == VERT ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
+		switch (index){
+		case VERT:	m_shader_ids[VERT] = glCreateShader(GL_VERTEX_SHADER); break;
+		case GEOM:	m_shader_ids[GEOM] = glCreateShader(GL_GEOMETRY_SHADER); break;
+		case FRAG:	m_shader_ids[FRAG] = glCreateShader(GL_FRAGMENT_SHADER); break;
+		}
 
 		if (check_create_errors(index) < 0) {
 			destroy();
@@ -58,8 +76,10 @@ namespace Ryno{
 
 
 	void GLSLProgram::compile_shaders(){
-		compile_shader(VERT);
-		compile_shader(FRAG);
+		for (U8 i = VERT; i < VERT + 3; i++){
+			if (is_shader_present[i])
+				compile_shader((ShadersIndex) i);
+		}
 	}
 
 	void GLSLProgram::compile_shader(ShadersIndex index){
@@ -94,8 +114,10 @@ namespace Ryno{
 	}
 	void GLSLProgram::link_shaders(){
 
-		glAttachShader(m_program_id, m_shader_ids[VERT]);
-		glAttachShader(m_program_id, m_shader_ids[FRAG]);
+		for (U8 i = VERT; i < VERT + 3; i++)
+			if (is_shader_present[i])
+				glAttachShader(m_program_id, m_shader_ids[i]);
+
 		glLinkProgram(m_program_id);
 		if (check_link_errors() < 0) {
 			destroy();
@@ -143,9 +165,8 @@ namespace Ryno{
 
 		//simply check if glShaderSource returns a shader id
 		if (!m_shader_ids[index]){
-			std::string fatal_error_mex = (index == FRAG ? "Fragment" : "Vertex");
-			fatal_error_mex += " Shader Failed to be created.";
-			Log::FatalError(fatal_error_mex.c_str());
+		
+			Log::FatalError("Shader Failed to be created.");
 			return -1;
 		}
 		return 0;
@@ -166,7 +187,7 @@ namespace Ryno{
 
 			glGetShaderInfoLog(m_shader_ids[index], max_length, &max_length, log);
 
-			Log::FatalError("Problem compiling " + (index == VERT) ? "Vertex shader\n" : "Fragment shader\n", log);
+			Log::FatalError("Problem compiling shader.\n", log);
 			free(log);
 			return -1;
 		}
@@ -190,7 +211,7 @@ namespace Ryno{
 			/* Notice that glGetProgramInfoLog, not glGetShaderInfoLog. */
 			glGetProgramInfoLog(m_program_id, max_length, &max_length, log);
 
-			Log::FatalError("Problem linking program\n", log);
+			Log::FatalError("Problem linking program.\n", log);
 			free(log);
 			return -1;
 		}

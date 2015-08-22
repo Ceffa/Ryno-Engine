@@ -139,16 +139,16 @@ namespace Ryno {
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		
 		
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, 0);
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, (void*)(4 * 4));
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, (void*)(8 * 4));
-		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, (void*)(12 * 4));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, 0);
+		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, (void*)(4 * 4));
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, (void*)(8 * 4));
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, (void*)(12 * 4));
 		
 
+		glVertexAttribDivisor(1, 1);
+		glVertexAttribDivisor(2, 1);
+		glVertexAttribDivisor(3, 1);
 		glVertexAttribDivisor(4, 1);
-		glVertexAttribDivisor(5, 1);
-		glVertexAttribDivisor(6, 1);
-		glVertexAttribDivisor(7, 1);
 	
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -176,10 +176,10 @@ namespace Ryno {
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 
 		//enable M matrix
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
 		glEnableVertexAttribArray(4);
-		glEnableVertexAttribArray(5);
-		glEnableVertexAttribArray(6);
-		glEnableVertexAttribArray(7);
 
 	}
 

@@ -29,16 +29,16 @@ namespace Ryno{
 		m_fbo_deferred = new FBO_Deferred(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_fbo_shadow = new FBO_Shadow(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_null_program = new GLSLProgram();
-		m_null_program->create("null");
+		m_null_program->create("null",1,0,1);
 		m_skybox_program = new GLSLProgram();
-		m_skybox_program->create("skybox");
+		m_skybox_program->create("skybox",1,0,1);
 		m_directional_shadow_program = new GLSLProgram();
-		m_directional_shadow_program->create("directional_shadow");
+		m_directional_shadow_program->create("directional_shadow",1,0,1);
 		m_point_shadow_program = new GLSLProgram();
-		m_point_shadow_program->create("point_shadow");
+		m_point_shadow_program->create("point_shadow",1,1,1);
 
 		m_blit_program = new GLSLProgram();
-		m_blit_program->create("blit");
+		m_blit_program->create("blit",1,0,1);
 		m_blit_program->use();
 		glUniform1i(m_blit_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_blit_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
@@ -111,43 +111,42 @@ namespace Ryno{
 
 		//Set viewport to cubemap size (because the next rendering will not be at fullscreen)
 		glViewport(0, 0, m_fbo_shadow->cube_shadow_resolution, m_fbo_shadow->cube_shadow_resolution);
+		
+		//Bind the whole cubemap, the geometry shader will take care of the faces
+		m_fbo_shadow->bind_for_point_shadow_pass();
+		glClear(GL_DEPTH_BUFFER_BIT);
 
-	
+		//Get light position, with correct z axis
+		glm::vec3 correct_position = glm::vec3(p->position.x, p->position.y, -p->position.z);
 
+		glm::mat4 light_VP_matrices[NUM_OF_LAYERS];
+		glm::mat4 point_shadow_projection_matrix = glm::perspective(HALF_PI, 1.0, 1.0, (F64)p->max_radius);
 
-		//For each face
+		
 		for (U8 i = 0; i < NUM_OF_LAYERS; i++){
-
-			//Bind the correct cube face, and clear it
-			m_fbo_shadow->bind_face(camera_directions[i].CubemapFace);
-			glClear(GL_DEPTH_BUFFER_BIT);
-
-			//Get light position, with correct z axis
-			glm::vec3 correct_position = glm::vec3(p->position.x, p->position.y, -p->position.z);
-
+		
 			//Get view matrix of the light. This is both translate and rotate matrix
 			glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + camera_directions[i].Target, camera_directions[i].Up);
 
 			p->calculate_max_radius();
 
-			glm::mat4 point_shadow_projection_matrix = glm::perspective(HALF_PI, 1.0, 1.0, (F64)p->max_radius);
-
-
 			//Multiply view by a perspective matrix large as the light radius
-			glm::mat4 light_VP_matrix = point_shadow_projection_matrix * view_matrix;// proj_matrix * view_matrix;
-
-			//Send Vp matrix and world light position to shader, then render
-			m_point_shadow_program->use();
-			glUniformMatrix4fv(m_point_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &light_VP_matrix[0][0]);
-			batch->render_batch();
-			m_point_shadow_program->unuse();
-
-			//Blit for debugging purposes, to be disabled
-			//m_fbo_shadow->blit_to_debug(i);
+			light_VP_matrices[i] = point_shadow_projection_matrix * view_matrix;
 		}
 
-		//Restore clear color and viewport
-		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+		//Send Vp matrix and world light position to shader, then render
+		m_point_shadow_program->use();
+
+		glUniformMatrix4fv(m_point_shadow_program->getUniformLocation("projection_matrices"),6,GL_FALSE,&light_VP_matrices[0][0][0]);
+
+		batch->render_batch();
+		m_point_shadow_program->unuse();
+
+		
+
+	//Restore clear color and viewport
+	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 
 	}

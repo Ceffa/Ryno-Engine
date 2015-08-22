@@ -61,10 +61,10 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//initialize programs
-		m_program_geometry.create("geometry");
-		m_program_dir.create("dir_light");
-		m_program_point.create("point_light");
-		m_program_flat.create("flat");
+		m_program_geometry.create("geometry",1,0,1);
+		m_program_dir.create("dir_light",1,0,1);
+		m_program_point.create("point_light",1,0,1);
+		m_program_flat.create("flat",1,0,1);
 
 		m_program_geometry.use();
 		glUniform1i(m_program_geometry.getUniformLocation("texture_sampler"), 0);
