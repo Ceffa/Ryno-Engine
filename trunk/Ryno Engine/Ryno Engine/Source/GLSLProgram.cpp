@@ -16,7 +16,6 @@ namespace Ryno{
 		init();
 		load_shaders(name);
 		compile_shaders();
-		bind_attributes();
 		link_shaders();
 	}
 	void GLSLProgram::init(){
@@ -91,27 +90,9 @@ namespace Ryno{
 		}
 	}
 
-	void GLSLProgram::bind_attributes(){
-		std::string path = "Resources/Shaders/" + shader_name + ".meta";
 
-		std::ifstream meta_file;
-		meta_file.open(path, std::ifstream::in);
 
-		std::string s;
-		while (1){
-			std::getline(meta_file, s);
-			if (s.length() == 0)
-				break;
-
-			add_attribute(s.c_str());
-		}
-		meta_file.close();
-	}
-
-	void GLSLProgram::add_attribute(const C* attributeName){
-
-		glBindAttribLocation(m_program_id, m_attr_no++, attributeName);
-	}
+	
 	void GLSLProgram::link_shaders(){
 
 		for (U8 i = VERT; i < VERT + 3; i++)

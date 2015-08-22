@@ -14,7 +14,7 @@ namespace Ryno{
 		/**
 		This function create a new GLSLProgram, it loads the shaders and everything else.
 		After this call, the GLSLProgram could be used.
-		Use init, load_shaders, compile_shaders, bind_attributes and link_shaders to
+		Use init, load_shaders, compile_shaders and link_shaders to
 		separate these steps.
 		@Param name of the shader
 		*/
@@ -36,12 +36,6 @@ namespace Ryno{
 		*/
 		void compile_shaders();
 
-		/**
-		Scan the meta file to bind the attributes that will be used.
-		Provide the ordered list of attributes in the meta file.
-		I should later automatize this process.
-		*/
-		void bind_attributes();
 
 		/**
 		Attach shaders to this program, and then link it
@@ -122,7 +116,6 @@ namespace Ryno{
 		U8 check_link_errors();
 
 
-		void add_attribute(const C* attributeName);
 
 
 
