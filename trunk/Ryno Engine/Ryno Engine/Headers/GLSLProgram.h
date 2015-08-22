@@ -79,7 +79,7 @@ namespace Ryno{
 		U32 m_program_id;
 		//the ids of the shaders
 		U32 m_shader_ids[3];
-
+		
 		std::string shader_name;
 
 		/**

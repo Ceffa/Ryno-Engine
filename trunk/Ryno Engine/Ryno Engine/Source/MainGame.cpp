@@ -106,7 +106,7 @@ namespace Ryno{
 		GameObject* base = new GameObject();
 		base->model.set_color_and_flatness(255, 255, 255, 0);
 		base->model.set_mesh_texture_normal(cube_mesh, texture_bricks, normal_map_bricks);
-		base->scale = glm::vec3(500, 10, 500);
+		base->scale = glm::vec3(800, 10, 800);
 		base->model.set_tiling(8, 8);
 		base->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(base);
@@ -158,15 +158,15 @@ namespace Ryno{
 
 
 
-		for (I8 i = -1; i < 2; i++){
-			for (I8 j = -1; j < 2; j++){
+		for (I8 i = 0; i < 1; i++){
+			for (I8 j = 0; j <1; j++){
 				U8 r = 255;
-				U8 g = 150;
+				U8 g = 0;
 				U8 b = 0;
 				p = new PointLight(175 * i, 10, 175 * j);
 
 				p->set_diffuse_color(r, g, b);
-				p->diffuse_intensity = 10;
+				p->diffuse_intensity = 10000;
 				p->attenuation = .1;
 				p->specular_intensity = 50;
 				p->set_specular_color(r, g, b);
@@ -174,9 +174,9 @@ namespace Ryno{
 				point_lights.push_back(p);
 				bl = new GameObject();
 				bl->model.cast_shadows = false;
-				bl->model.set_color_and_flatness(220 + 35 * r / 255, 220 + 35 * g / 255, 220 + 35 * b / 255, 255);
+				bl->model.set_color_and_flatness(0,0,0, 255);
 				bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
-				bl->scale = glm::vec3(10, 10, 10);
+				bl->scale = glm::vec3(50, 50, 50);
 				bl->position = glm::vec3(175 * i, 10, 175 * j);
 				spheres.push_back(bl);
 
@@ -189,20 +189,20 @@ namespace Ryno{
 
 				GameObject* n = new GameObject();
 				n->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
-				n->scale = glm::vec3(5, 50, 5);
+				n->scale = glm::vec3(5, 100, 5);
 				n->model.set_tiling(1, 4);
-				n->position = glm::vec3(50 * i, 25, 50*j);
+				n->position = glm::vec3(50 * i, 50, 50*j);
 
 				m_game_objects.push_back(n);
 			}
 		}
 
 		l = new DirectionalLight(-.6, .6, .2);
-		l->diffuse_intensity = .15;
+		l->diffuse_intensity = .0;
 		l->set_diffuse_color(255, 200, 0);
-		l->specular_intensity = .15;
+		l->specular_intensity = .0;
 		l->set_specular_color(255, 200, 0);
-		l->ambient_intensity = .08;
+		l->ambient_intensity = .00;
 		l->set_ambient_color(255, 200, 0);
 		l->program = &m_program_dir;
 		CPUProfiler::end_time();
