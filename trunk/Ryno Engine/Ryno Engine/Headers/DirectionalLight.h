@@ -18,13 +18,13 @@ namespace Ryno{
 
 	class DirectionalLight : public AbstractLight{
 	public:
-		DirectionalLight(){}
-		DirectionalLight(F32 p, F32 y, F32 r);
+		DirectionalLight();
 		~DirectionalLight(){}
 
-		glm::vec3 move_to_view_space(Camera3D* camera) override;
+		glm::vec3 move_to_view_space(Camera3D* camera);
 		
 		void send_uniforms(Camera3D* camera) override;
+		void get_uniforms_locations() override;
 
 		void set_direction(F32 p, F32 y, F32 r);
 
@@ -35,6 +35,13 @@ namespace Ryno{
 		ColorRGB ambient_color;
 		F32 ambient_intensity;
 		Direction direction;
+
+		struct location{
+			I32 direction;
+			I32 diffuse;
+			I32 specular;
+			I32 ambient;
+		} locations;
 	
 	};
 

@@ -2,9 +2,6 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include <GLM/gtx/quaternion.hpp>
-#define M_HALF_PI 1.57079632679489661923
-#define M_PI 3.14159265358979323846
-#define M_PI_2 6.28318530717958647692
 
 namespace Ryno{
 

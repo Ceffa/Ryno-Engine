@@ -6,6 +6,7 @@
 #include <vector>
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 #include "FBO_Deferred.h"
 #include "FBO_Shadow.h"
 #include "SimpleDrawer.h"
@@ -44,6 +45,9 @@ namespace Ryno{
 		//Pass for point lights
 		void point_light_pass(std::vector<PointLight*>* point_lights, Batch3DShadow* batch);
 
+		//Pass for spot lights
+		void spot_light_pass(std::vector<SpotLight*>* spot_lights, Batch3DShadow* batch);
+
 		//Pass for directional lights
 		void directional_lighting_pass(DirectionalLight* directional_light, Batch3DShadow* batch);
 
@@ -68,6 +72,15 @@ namespace Ryno{
 		//Lighting subpass for point light
 		void point_lighting_subpass(PointLight* point_light);
 
+		//Shadow subpass for spot light
+		void spot_shadow_subpass(SpotLight* p, Batch3DShadow* batch);
+
+		//Stencil subpass for spot light
+		void spot_stencil_subpass(SpotLight* spot_light);
+
+		//Lighting subpass for spot light
+		void spot_lighting_subpass(SpotLight* spot_light);
+
 		//Shadow subpass for directional light 
 		void directional_shadow_subpass(DirectionalLight* directional_light, Batch3DShadow* batch);
 
@@ -78,16 +91,16 @@ namespace Ryno{
 		FBO_Deferred* m_fbo_deferred;
 		FBO_Shadow* m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
-		GLSLProgram* m_null_program, *m_skybox_program, *m_directional_shadow_program, *m_point_shadow_program, *m_blit_program;
+		GLSLProgram* m_null_program, *m_skybox_program, *m_directional_shadow_program, *m_spot_shadow_program, *m_point_shadow_program, *m_blit_program;
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
 		Model* m_bounding_box, *m_fullscreen_quad, *m_cube_box;
 		glm::mat4 MVP_camera;
 		glm::mat4 inverse_P_matrix;
 		glm::mat4 inverse_VP_matrix;
+		glm::mat4 spot_VP_matrix;
 
 		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 
-
 		
 
 	};

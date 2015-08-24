@@ -32,6 +32,7 @@ namespace Ryno{
 		
 	//	glEnable(GL_MULTISAMPLE);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe
+
 		SDL_GL_SetSwapInterval(0); //disable vsync
 
 	

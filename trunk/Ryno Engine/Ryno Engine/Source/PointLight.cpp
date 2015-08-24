@@ -3,29 +3,26 @@
 namespace Ryno{
 
 
-	PointLight::PointLight(F32 x, F32 y, F32 z) {
-		position = glm::vec3(x, y, z);
-		attenuation = 0;
+	PointLight::PointLight() {
 	}
 	
 
-	glm::vec3 PointLight::move_to_view_space(Camera3D* camera){
-	
-		return glm::vec3(camera->get_V_matrix()*
-			glm::vec4(position.x, position.y, -position.z, 1));
-
-	}
 
 	void PointLight::send_uniforms(Camera3D* camera){
 
-		glm::vec3 view_space_pos = glm::vec3(position.x, position.y, -position.z);
-
-		glUniform4f(program->getUniformLocation("point_light.position_and_attenuation"), view_space_pos.x, view_space_pos.y, view_space_pos.z,attenuation);
-		glUniform4f(program->getUniformLocation("point_light.diffuse"), diffuse_color.r/256.0f ,diffuse_color.g/256.0f,diffuse_color.b/256.0f,diffuse_intensity);
-		glUniform4f(program->getUniformLocation("point_light.specular"), specular_color.r/256.0f, specular_color.g/256.0f, specular_color.b/256.0f,specular_intensity);
+		glUniform4f(locations.position, position.x, position.y, -position.z,attenuation);
+		glUniform4f(locations.diffuse, diffuse_color.r/256.0f ,diffuse_color.g/256.0f,diffuse_color.b/256.0f,diffuse_intensity);
+		glUniform4f(locations.specular, specular_color.r/256.0f, specular_color.g/256.0f, specular_color.b/256.0f,specular_intensity);
 
 	}
 
+
+	void PointLight::get_uniforms_locations()
+	{
+		locations.position = program->getUniformLocation("point_light.position_and_attenuation");
+		locations.diffuse = program->getUniformLocation("point_light.diffuse");
+		locations.specular = program->getUniformLocation("point_light.specular");
+	}
 
 	void PointLight::calculate_max_radius()
 	{

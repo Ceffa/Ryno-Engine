@@ -11,7 +11,7 @@ struct DirectionalLight{
 uniform sampler2D g_color_tex;
 uniform sampler2D g_normal_tex;
 uniform sampler2D g_depth_tex;
-uniform sampler2D shadow_tex;
+uniform sampler2DShadow shadow_tex;
 
 //Inverse projection matrix to get position from depth
 uniform mat4 inverse_P_matrix;
@@ -68,27 +68,17 @@ void main(){
 	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.0001), dir_light.specular.w) ;
 	vec3 amb_final = dir_light.ambient.xyz * dir_light.ambient.w;
 
-	//shadows
-	float visibility = min(1.0, diffuse_final.x+1);
-	float bias = 0.0005;// *tan(acos(dotNL));
 
-	vec2 poissonDisk[4] = vec2[](
-		vec2(-0.94201624, -0.39906216),
-		vec2(0.94558609, -0.76890725),
-		vec2(-0.094184101, -0.92938870),
-		vec2(0.34495938, 0.29387760)
-		);
 
-	float shad;
-	float dep;
-	for (int i = 0; i < 4; i++){
-		shad = texture(shadow_tex, position_light_ortho_matrix_norm.xy + poissonDisk[i] / 700.0).x;
-		dep = position_light_ortho_matrix_norm.z - bias;
-		if ( shad < dep){
+	
 
-			visibility -= 0.1;
-		}
-	}
+
+	//SHADOWS
+	float shadow_strenght = .5;
+	float shad = texture(shadow_tex, vec3(position_light_ortho_matrix_norm.xy, position_light_ortho_matrix_norm.z));
+	float visibility = min (shad + shadow_strenght, 1.0);
+	
+	
 	
 	//fragment color
 	frag_color = g_flatness * g_color + (1.0 - g_flatness)*g_color *(amb_final + visibility *( diffuse_final + specular_final));

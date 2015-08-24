@@ -30,9 +30,11 @@ namespace Ryno{
 		Model* sphere_box_model;
 
 		std::vector<PointLight*> point_lights;
+		std::vector<SpotLight*> spot_lights;
+
 		DirectionalLight* l;
 		DeferredRenderer* m_deferred_renderer;
-		GLSLProgram m_program_geometry, m_program_dir, m_program_point, m_program_flat;
+		GLSLProgram m_program_geometry, m_program_dir, m_program_point, m_program_spot, m_program_flat;
 
 		GLuint vao, vbo;
 

@@ -13,17 +13,24 @@ namespace Ryno{
 		void init(U32 width, U32 height);
 
 		void start_frame();
-		void bind_for_shadow_map_pass();
-		void bind_for_directional_light_pass();
-		void bind_for_point_light_pass();
+		
 		void bind_for_point_shadow_pass();
+		void bind_for_point_lighting_pass();
+		void bind_for_spot_shadow_pass();
+		void bind_for_spot_lighting_pass();
+		void bind_for_directional_shadow_pass();
+		void bind_for_directional_lighting_pass();
 
 		U32 m_fbo;
-		U32 m_shadow_texture;
-		U32 m_shadow_cube;
+		U32 m_directional_texture;
+		U32 m_spot_texture;
+		U32 m_point_cube;
 
 
-		U32 cube_shadow_resolution = 256;
+		U16 point_resolution = 512;
+		U16 spot_resolution = 1024;
+		U16 directional_resolution = 1600;
+
 	private:
 		void bind_fbo();
 

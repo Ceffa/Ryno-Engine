@@ -4,10 +4,7 @@
 #include <GLM/gtx/string_cast.hpp>
 #include <iostream>
 #include <math.h>
-//Mathematical constants
-#define M_HALF_PI 1.57079632679489661923
-#define M_PI 3.14159265358979323846
-#define M_PI_2 6.28318530717958647692
+
 
 
 namespace Ryno{

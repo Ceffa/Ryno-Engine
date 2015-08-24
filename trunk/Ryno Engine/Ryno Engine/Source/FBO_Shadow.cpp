@@ -23,31 +23,30 @@ namespace Ryno {
 		glGenFramebuffers(1, &m_fbo);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
-		// Create the frame buffer textures
-		glGenTextures(1, &m_shadow_texture);
-		glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, nullptr);
+		// Create the directional textures
+		glGenTextures(1, &m_directional_texture);
+		glBindTexture(GL_TEXTURE_2D, m_directional_texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, directional_resolution, directional_resolution, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, nullptr);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadow_texture, 0);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_directional_texture, 0);
 
+		// Create the directional textures
+		glGenTextures(1, &m_spot_texture);
+		glBindTexture(GL_TEXTURE_2D, m_spot_texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, spot_resolution, spot_resolution, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, nullptr);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_spot_texture, 0);
 
-		//// Create the frame buffer textures
-		//glGenTextures(1, &m_shadow_cube);
-		//glBindTexture(GL_TEXTURE_2D, m_shadow_cube);
-		//glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, nullptr);
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_shadow_cube, 0);
-		
 		
 		// Create the cube map
-		glGenTextures(1, &m_shadow_cube);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_shadow_cube);
+		glGenTextures(1, &m_point_cube);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_point_cube);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -57,7 +56,7 @@ namespace Ryno {
 
 
 		for (U8 i = 0; i < 6; i++) {
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT16, cube_shadow_resolution, cube_shadow_resolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT16, point_resolution, point_resolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 		}
 
 		
@@ -92,10 +91,10 @@ namespace Ryno {
 
 	
 
-	void FBO_Shadow::bind_for_shadow_map_pass(){
+	void FBO_Shadow::bind_for_directional_shadow_pass(){
 
 		bind_fbo();
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadow_texture, 0);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_directional_texture, 0);
 
 		//Draw only depth
 		glDrawBuffer(GL_NONE);
@@ -103,30 +102,48 @@ namespace Ryno {
 
 		}
 
-	void FBO_Shadow::bind_for_directional_light_pass(){
+	void FBO_Shadow::bind_for_directional_lighting_pass(){
 
 		//bind shadow map so it can be used in the lighting shader
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, m_shadow_texture);
-	}
-
-
-
-	void FBO_Shadow::bind_for_point_light_pass()
-	{
-		//bind shadow map so it can be used in the lighting shader
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_shadow_cube);
+		glBindTexture(GL_TEXTURE_2D, m_directional_texture);
 	}
 
 	void FBO_Shadow::bind_for_point_shadow_pass()
-	{	
+	{
 		bind_fbo();
 		glDrawBuffer(GL_NONE);
 		//Bind all cubemap, the geometry shader will take care of the faces
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_shadow_cube, 0);
-		
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_point_cube, 0);
+
 	}
+
+	void FBO_Shadow::bind_for_point_lighting_pass()
+	{
+		//bind shadow map so it can be used in the lighting shader
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_point_cube);
+	}
+
+
+	void FBO_Shadow::bind_for_spot_shadow_pass()
+	{
+		bind_fbo();
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_spot_texture, 0);
+
+		//Draw only depth
+		glDrawBuffer(GL_NONE);
+	}
+
+	void FBO_Shadow::bind_for_spot_lighting_pass()
+	{
+		//bind shadow map so it can be used in the lighting shader
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, m_spot_texture);
+	}
+
+	
+	
 
 void FBO_Shadow::bind_fbo()
 	{

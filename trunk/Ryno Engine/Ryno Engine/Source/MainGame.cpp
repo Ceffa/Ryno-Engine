@@ -62,8 +62,10 @@ namespace Ryno{
 
 		//initialize programs
 		m_program_geometry.create("geometry",1,0,1);
-		m_program_dir.create("dir_light",1,0,1);
-		m_program_point.create("point_light",1,0,1);
+		m_program_dir.create("lighting_directional",1,0,1);
+		m_program_point.create("lighting_point",1,0,1);
+		m_program_spot.create("lighting_spot", 1, 0, 1);
+
 		m_program_flat.create("flat",1,0,1);
 
 		m_program_geometry.use();
@@ -78,6 +80,14 @@ namespace Ryno{
 		glUniform1i(m_program_dir.getUniformLocation("g_normal_tex"), 1);
 		glUniform1i(m_program_dir.getUniformLocation("g_depth_tex"), 2);
 		glUniform1i(m_program_dir.getUniformLocation("shadow_tex"), 3);
+
+		m_program_spot.use();
+		glUniform1i(m_program_spot.getUniformLocation("screen_width"), WINDOW_WIDTH);
+		glUniform1i(m_program_spot.getUniformLocation("screen_height"), WINDOW_HEIGHT);
+		glUniform1i(m_program_spot.getUniformLocation("g_color_tex"), 0);
+		glUniform1i(m_program_spot.getUniformLocation("g_normal_tex"), 1);
+		glUniform1i(m_program_spot.getUniformLocation("g_depth_tex"), 2);
+		glUniform1i(m_program_spot.getUniformLocation("shadow_tex"), 3);
 
 
 
@@ -149,8 +159,8 @@ namespace Ryno{
 		//build light
 
 		GameObject* bl;
-		PointLight* p;
-
+		//PointLight* p;
+		SpotLight* p;
 
 
 
@@ -163,15 +173,17 @@ namespace Ryno{
 				U8 r = 255;
 				U8 g = 0;
 				U8 b = 0;
-				p = new PointLight(175 * i, 10, 175 * j);
+				p = new SpotLight();
+				p->set_direction(0, 1, 0);
+				p->set_position(175 * i, 10, 175 * j);
 
 				p->set_diffuse_color(r, g, b);
-				p->diffuse_intensity = 10000;
-				p->attenuation = .1;
-				p->specular_intensity = 50;
+				p->diffuse_intensity = 300;
+				p->attenuation = .005;
+				p->specular_intensity = 100;
 				p->set_specular_color(r, g, b);
-				p->program = &m_program_point;
-				point_lights.push_back(p);
+				p->set_program(&m_program_spot);
+				spot_lights.push_back(p);
 				bl = new GameObject();
 				bl->model.cast_shadows = false;
 				bl->model.set_color_and_flatness(0,0,0, 255);
@@ -197,14 +209,15 @@ namespace Ryno{
 			}
 		}
 
-		l = new DirectionalLight(-.6, .6, .2);
-		l->diffuse_intensity = .0;
+		l = new DirectionalLight();
+		l->set_direction(-.6, .6, .2);
+		l->diffuse_intensity = .2;
 		l->set_diffuse_color(255, 200, 0);
-		l->specular_intensity = .0;
+		l->specular_intensity = .2;
 		l->set_specular_color(255, 200, 0);
-		l->ambient_intensity = .00;
+		l->ambient_intensity = .05;
 		l->set_ambient_color(255, 200, 0);
-		l->program = &m_program_dir;
+		l->set_program(&m_program_dir);
 		CPUProfiler::end_time();
 		CPUProfiler::print_time();
 
@@ -372,10 +385,11 @@ namespace Ryno{
 		m_shadow_batch3d->end();
 
 
-		//m_deferred_renderer->point_shadow_pass(point_lights.back(), m_shadow_batch3d);
 
-		m_deferred_renderer->point_light_pass(&point_lights, m_shadow_batch3d);
+		//m_deferred_renderer->point_light_pass(&point_lights, m_shadow_batch3d);
 
+		m_deferred_renderer->spot_light_pass(&spot_lights, m_shadow_batch3d);
+		
 		m_deferred_renderer->directional_lighting_pass(l, m_shadow_batch3d);
 
 		m_deferred_renderer->skybox_pass();

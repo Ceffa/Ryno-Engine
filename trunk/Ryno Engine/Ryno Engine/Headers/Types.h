@@ -19,3 +19,9 @@ Custom types definitions
 #define F64 double
 #define C char
 
+
+//Other useful stuff
+#define M_HALF_PI 1.57079632679489661923
+#define M_PI 3.14159265358979323846
+#define M_PI_2 6.28318530717958647692
+

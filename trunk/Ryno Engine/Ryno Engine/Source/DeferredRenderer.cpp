@@ -33,9 +33,11 @@ namespace Ryno{
 		m_skybox_program = new GLSLProgram();
 		m_skybox_program->create("skybox",1,0,1);
 		m_directional_shadow_program = new GLSLProgram();
-		m_directional_shadow_program->create("directional_shadow",1,0,1);
+		m_directional_shadow_program->create("shadow_directional",1,0,1);
 		m_point_shadow_program = new GLSLProgram();
-		m_point_shadow_program->create("point_shadow",1,1,1);
+		m_point_shadow_program->create("shadow_point",1,1,1);
+		m_spot_shadow_program = new GLSLProgram();
+		m_spot_shadow_program->create("shadow_spot", 1, 0, 1);
 
 		m_blit_program = new GLSLProgram();
 		m_blit_program->create("blit",1,0,1);
@@ -101,6 +103,24 @@ namespace Ryno{
 
 
 	}
+
+	void DeferredRenderer::spot_light_pass(std::vector<SpotLight*>* spot_lights, Batch3DShadow* batch)
+	{
+		for (SpotLight* p : *spot_lights){
+			spot_shadow_subpass(p, batch);
+			spot_stencil_subpass(p);
+			spot_lighting_subpass(p);
+
+		}
+
+	}
+
+	void DeferredRenderer::directional_lighting_pass(DirectionalLight* directional_light, Batch3DShadow* batch)
+	{
+		directional_shadow_subpass(directional_light, batch);
+		directional_lighting_subpass(directional_light);
+	}
+
 	void DeferredRenderer::point_shadow_subpass(PointLight* p, Batch3DShadow* batch)
 	{
 		//Enable depth testing and writing
@@ -110,7 +130,7 @@ namespace Ryno{
 		glCullFace(GL_FRONT);
 
 		//Set viewport to cubemap size (because the next rendering will not be at fullscreen)
-		glViewport(0, 0, m_fbo_shadow->cube_shadow_resolution, m_fbo_shadow->cube_shadow_resolution);
+		glViewport(0, 0, m_fbo_shadow->point_resolution, m_fbo_shadow->point_resolution);
 		
 		//Bind the whole cubemap, the geometry shader will take care of the faces
 		m_fbo_shadow->bind_for_point_shadow_pass();
@@ -183,7 +203,7 @@ namespace Ryno{
 	void DeferredRenderer::point_lighting_subpass(PointLight* point_light){
 
 		m_fbo_deferred->bind_for_light_pass();
-		m_fbo_shadow->bind_for_point_light_pass();
+		m_fbo_shadow->bind_for_point_lighting_pass();
 
 		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 
@@ -221,15 +241,109 @@ namespace Ryno{
 	
 
 
-	void DeferredRenderer::directional_lighting_pass(DirectionalLight* directional_light, Batch3DShadow* batch)
+	void DeferredRenderer::spot_shadow_subpass(SpotLight* s, Batch3DShadow* batch)
 	{
-		directional_shadow_subpass(directional_light, batch);
-		directional_lighting_subpass(directional_light);
+		//Enable depth testing and writing
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+		//Set viewport to cubemap size (because the next rendering will not be at fullscreen)
+		glViewport(0, 0, m_fbo_shadow->spot_resolution, m_fbo_shadow->spot_resolution);
+
+		//Bind the whole cubemap, the geometry shader will take care of the faces
+		m_fbo_shadow->bind_for_spot_shadow_pass();
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		//Get light position, with correct z axis
+		glm::vec3 correct_position = glm::vec3(s->position.x, s->position.y, -s->position.z);
+		glm::vec3 correct_direction = glm::vec3(s->direction.x, s->direction.y, -s->direction.z);
+
+		s->calculate_max_radius();
+		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + correct_direction, glm::vec3(0, 1, 0));
+		glm::mat4 projection_matrix = glm::perspective(s->cutoff *  M_PI, 1.0, 1.0, (F64)s->max_radius);
+
+
+		//Multiply view by a perspective matrix large as the light radius
+		spot_VP_matrix = projection_matrix * view_matrix;
+		
+
+		//Send Vp matrix and world light position to shader, then render
+		m_spot_shadow_program->use();
+
+		glUniformMatrix4fv(m_spot_shadow_program->getUniformLocation("in_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
+
+		batch->render_batch();
+		m_spot_shadow_program->unuse();
+
+
+
+		//Restore clear color and viewport
+		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
+
+	void DeferredRenderer::spot_stencil_subpass(SpotLight* spot_light)
+	{
+		m_fbo_deferred->bind_for_stencil_pass();
+		glEnable(GL_STENCIL_TEST);
+
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+		glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glStencilFunc(GL_ALWAYS, 0, 0);
+
+		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+
+		glm::vec3 temp_pos = glm::vec3(spot_light->position.x, spot_light->position.y, -spot_light->position.z);
+		MVP_camera = m_camera->get_VP_matrix() * glm::scale(glm::translate(glm::mat4(1.0f), temp_pos), glm::vec3(spot_light->max_radius));
+
+		m_null_program->use();
+		glUniformMatrix4fv(m_null_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
+		m_simple_drawer->draw(m_bounding_box);
+		m_null_program->unuse();
+	}
+
+	void DeferredRenderer::spot_lighting_subpass(SpotLight* spot_light)
+	{
+		m_fbo_deferred->bind_for_light_pass();
+		m_fbo_shadow->bind_for_spot_lighting_pass();
+
+		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+		spot_light->program->use();
+		spot_light->send_uniforms(m_camera);
+		glUniform1f(spot_light->program->getUniformLocation("max_fov"), spot_light->max_radius);
+		glUniformMatrix4fv(spot_light->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
+
+		glUniformMatrix4fv(spot_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
+		glUniformMatrix4fv(spot_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+		glUniformMatrix4fv(spot_light->program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
+		glUniformMatrix4fv(spot_light->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
+		m_simple_drawer->draw(m_bounding_box);
+		spot_light->program->unuse();
+
+		glCullFace(GL_BACK);
+		glDisable(GL_BLEND);
+		glDisable(GL_STENCIL_TEST);
+	}
+
+	
 
 	void DeferredRenderer::directional_shadow_subpass(DirectionalLight* directional_light, Batch3DShadow* batch){
 
-		m_fbo_shadow->bind_for_shadow_map_pass();
+		m_fbo_shadow->bind_for_directional_shadow_pass();
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_CULL_FACE);
@@ -244,10 +358,14 @@ namespace Ryno{
 		glm::mat4 view_mat = glm::lookAt(inv_dir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		glm::mat4 final_mat = ortho_mat * view_mat;
 
+		glViewport(0, 0, m_fbo_shadow->directional_resolution, m_fbo_shadow->directional_resolution);
+
 		m_directional_shadow_program->use();
 		glUniformMatrix4fv(m_directional_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &final_mat[0][0]);
 		batch->render_batch();
 		m_directional_shadow_program->unuse();
+
+		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 
 
@@ -257,7 +375,7 @@ namespace Ryno{
 	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* directional_light)
 	{
 		m_fbo_deferred->bind_for_light_pass();
-		m_fbo_shadow->bind_for_directional_light_pass();
+		m_fbo_shadow->bind_for_directional_lighting_pass();
 
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
