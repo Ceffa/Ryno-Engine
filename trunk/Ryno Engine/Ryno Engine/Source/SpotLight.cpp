@@ -6,7 +6,7 @@ namespace Ryno{
 	SpotLight::SpotLight() {
 	
 		direction = glm::vec3(0, 1, 0);
-		cutoff = .5f;
+		cutoff = .1f;
 		attenuation = 0;
 	}
 	

@@ -89,8 +89,7 @@ void main(){
 	
 	//**SHADOWS**//
 
-	//float visibility = min(1.0, diffuse_final.x + 1);
-	//float bias = 0.001;
+
 
 
 	vec3 world_light_position = point_light.position_and_attenuation.xyz;

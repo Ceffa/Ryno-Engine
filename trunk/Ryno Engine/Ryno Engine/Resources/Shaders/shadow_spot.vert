@@ -2,7 +2,8 @@
 
 layout(location = 0) in vec3 in_Position;
 layout(location = 1) in mat4 in_M;
-layout(location = 2) in mat4 in_VP;
+
+uniform mat4 in_VP;
 
 
 void main()

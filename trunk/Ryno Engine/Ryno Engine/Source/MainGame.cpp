@@ -116,7 +116,7 @@ namespace Ryno{
 		GameObject* base = new GameObject();
 		base->model.set_color_and_flatness(255, 255, 255, 0);
 		base->model.set_mesh_texture_normal(cube_mesh, texture_bricks, normal_map_bricks);
-		base->scale = glm::vec3(800, 10, 800);
+		base->scale = glm::vec3(2000, 10, 2000);
 		base->model.set_tiling(8, 8);
 		base->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(base);
@@ -174,9 +174,9 @@ namespace Ryno{
 				U8 g = 0;
 				U8 b = 0;
 				p = new SpotLight();
-				p->set_direction(0, 1, 0);
+				p->set_direction(.4,-1,0);
 				p->set_position(175 * i, 10, 175 * j);
-
+				p->cutoff = 0.4f;
 				p->set_diffuse_color(r, g, b);
 				p->diffuse_intensity = 300;
 				p->attenuation = .005;
@@ -247,7 +247,7 @@ namespace Ryno{
 	
 		
 		if (m_input_manager.is_key_down(SDLK_LEFT)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				l->position.x -= 3;
 
 			}
@@ -256,7 +256,7 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_RIGHT)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				l->position.x += 3;
 
 			}
@@ -266,7 +266,7 @@ namespace Ryno{
 		}
 
 		if (m_input_manager.is_key_down(SDLK_n)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				l->position.z -= 3;
 
 			}
@@ -275,7 +275,7 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_m)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				l->position.z += 3;
 
 			}
@@ -284,7 +284,7 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_UP)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				l->position.y += 3;
 
 			}
@@ -293,7 +293,7 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_DOWN)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				l->position.y -= 3;
 
 			}
@@ -302,27 +302,27 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_o)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				
 				l->diffuse_intensity += 1;
 				
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_p)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				if (l->diffuse_intensity > 0)
 				l->diffuse_intensity -= 1;
 
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_k)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				l->specular_intensity += 3;
 
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_l)){
-			for (PointLight* l : point_lights){
+			for (SpotLight* l : spot_lights){
 				if (l->specular_intensity > 0)
 				l->specular_intensity -= 3;
 

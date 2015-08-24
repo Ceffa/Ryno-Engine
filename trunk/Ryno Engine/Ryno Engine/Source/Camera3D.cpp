@@ -13,7 +13,7 @@ namespace Ryno{
 	{
 		P_matrix = generate_P_matrix(60, w, h, .1f, 10000.0f);
 
-		O_matrix = glm::ortho<float>(-500, 500, -500, 500, -500,500);
+		O_matrix = glm::ortho<float>(-2000, 2000, -2000, 2000, -2000,2000);
 
 	
 	}

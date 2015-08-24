@@ -53,6 +53,13 @@ namespace Ryno{
 		m_bounding_box->mesh = m_mesh_manager->load_mesh("bound_sphere");
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square");
 
+		bias = glm::mat4(
+			0.5, 0.0, 0.0, 0.0,
+			0.0, 0.5, 0.0, 0.0,
+			0.0, 0.0, 0.5, 0.0,
+			0.5, 0.5, 0.5, 1.0
+			);
+
 	}
 
 	void DeferredRenderer::init_frame(){
@@ -258,11 +265,11 @@ namespace Ryno{
 
 		//Get light position, with correct z axis
 		glm::vec3 correct_position = glm::vec3(s->position.x, s->position.y, -s->position.z);
-		glm::vec3 correct_direction = glm::vec3(s->direction.x, s->direction.y, -s->direction.z);
-
+		glm::vec3 correct_direction =glm::normalize(glm::vec3(s->direction.x, s->direction.y, -s->direction.z));
+		
 		s->calculate_max_radius();
 		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + correct_direction, glm::vec3(0, 1, 0));
-		glm::mat4 projection_matrix = glm::perspective(s->cutoff *  M_PI, 1.0, 1.0, (F64)s->max_radius);
+		glm::mat4 projection_matrix = glm::perspective(s->cutoff *  M_PI_2, 1.0, 1.0, (F64)s->max_radius);
 
 
 		//Multiply view by a perspective matrix large as the light radius
@@ -321,16 +328,17 @@ namespace Ryno{
 
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
-
+	
 		spot_light->program->use();
 		spot_light->send_uniforms(m_camera);
-		glUniform1f(spot_light->program->getUniformLocation("max_fov"), spot_light->max_radius);
-		glUniformMatrix4fv(spot_light->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
-
+		glm::mat4 biased_light_VP_matrix = bias * spot_VP_matrix;
+		glUniformMatrix4fv(spot_light->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &biased_light_VP_matrix[0][0]);
 		glUniformMatrix4fv(spot_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
 		glUniformMatrix4fv(spot_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
 		glUniformMatrix4fv(spot_light->program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
 		glUniformMatrix4fv(spot_light->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
+		//glUniform1f(spot_light->program->getUniformLocation("max_fov"), spot_light->max_radius);
+
 		m_simple_drawer->draw(m_bounding_box);
 		spot_light->program->unuse();
 
@@ -356,14 +364,15 @@ namespace Ryno{
 		inv_dir.z *= -1;
 		glm::mat4 ortho_mat = m_camera->get_O_matrix();
 		glm::mat4 view_mat = glm::lookAt(inv_dir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-		glm::mat4 final_mat = ortho_mat * view_mat;
+		directional_light_VP = ortho_mat * view_mat;
 
 		glViewport(0, 0, m_fbo_shadow->directional_resolution, m_fbo_shadow->directional_resolution);
 
 		m_directional_shadow_program->use();
-		glUniformMatrix4fv(m_directional_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &final_mat[0][0]);
+		glUniformMatrix4fv(m_directional_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &directional_light_VP[0][0]);
 		batch->render_batch();
 		m_directional_shadow_program->unuse();
+
 
 		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -382,20 +391,12 @@ namespace Ryno{
 
 		glDisable(GL_DEPTH_TEST);
 
-		static const glm::mat4 bias(
-			0.5, 0.0, 0.0, 0.0,
-			0.0, 0.5, 0.0, 0.0,
-			0.0, 0.0, 0.5, 0.0,
-			0.5, 0.5, 0.5, 1.0
-			);
-		glm::vec3 inv_dir = directional_light->direction.to_vec3();
-		inv_dir.z *= -1;
-		glm::mat4 ortho_mat = m_camera->get_O_matrix();
-		glm::mat4 view_mat = glm::lookAt(inv_dir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-		glm::mat4 final_mat = bias * ortho_mat * view_mat;
+		
+		
+		glm::mat4 dir_light_VPB = bias * directional_light_VP;
 
 		directional_light->program->use();
-		glUniformMatrix4fv(directional_light->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &final_mat[0][0]);
+		glUniformMatrix4fv(directional_light->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &dir_light_VPB[0][0]);
 		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
 		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
 

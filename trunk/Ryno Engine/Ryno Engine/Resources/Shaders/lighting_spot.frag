@@ -35,6 +35,8 @@ uniform float max_fov;
 out vec3 frag_color;
 
 
+
+
 //This function generate a depth value from the direction vector, so that it can be compared 
 //with the depth value in the shadow cube
 
@@ -60,8 +62,12 @@ void main(){
 	vec3 g_position = position_view_space.xyz / position_view_space.w;
 
 	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
+
 	vec4 position_light_MVP_matrix = light_VP_matrix * position_world_space;
 	vec3 position_light_MVP_matrix_norm = position_light_MVP_matrix.xyz / position_light_MVP_matrix.w;
+
+	vec3 fragment_position_world = position_world_space.xyz / position_world_space.w;
+	vec3 world_position = position_world_space.xyz / position_world_space.w;
 
 	vec4 view_world_pos = V_matrix * vec4(spot_light.position_and_attenuation.xyz, 1);
 
@@ -92,12 +98,25 @@ void main(){
 	vec3 diffuse_final = max(0, dot(g_normal, light_dir)) * diff_color;
 	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.000001), spot_light.specular.w);
 	
-	//**SHADOWS**//
+
 
 	//SHADOWS
+	float shadow_strenght = .5;
 	float visibility = texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z));
 	
+
 	
+	//CONE CUTOFF (with smoothing to the edges, because I CAN
+
+	float actual_cutoff = dot(normalize(fragment_position_world - spot_light.position_and_attenuation.xyz), spot_light.direction_and_cutoff.xyz);
+	float required_cutoff = 1.0 - spot_light.direction_and_cutoff.w;
+
+
+	if (actual_cutoff < (required_cutoff * 0.75))
+		visibility = 0;
+	else if (actual_cutoff < required_cutoff)
+		visibility *= mix(0, 1, (actual_cutoff - required_cutoff * 0.75) / (required_cutoff * 0.25));
+
 
 		
 
