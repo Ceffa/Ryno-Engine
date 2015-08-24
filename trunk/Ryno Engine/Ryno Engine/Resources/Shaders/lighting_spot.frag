@@ -62,12 +62,12 @@ void main(){
 	vec3 g_position = position_view_space.xyz / position_view_space.w;
 
 	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
+	vec3 world_position = position_world_space.xyz / position_world_space.w;
 
 	vec4 position_light_MVP_matrix = light_VP_matrix * position_world_space;
 	vec3 position_light_MVP_matrix_norm = position_light_MVP_matrix.xyz / position_light_MVP_matrix.w;
 
 	vec3 fragment_position_world = position_world_space.xyz / position_world_space.w;
-	vec3 world_position = position_world_space.xyz / position_world_space.w;
 
 	vec4 view_world_pos = V_matrix * vec4(spot_light.position_and_attenuation.xyz, 1);
 
@@ -101,7 +101,6 @@ void main(){
 
 
 	//SHADOWS
-	float shadow_strenght = .5;
 	float visibility = texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z));
 	
 
@@ -112,11 +111,11 @@ void main(){
 	float required_cutoff = 1.0 - spot_light.direction_and_cutoff.w;
 
 
-	if (actual_cutoff < (required_cutoff * 0.75))
+	if (actual_cutoff < required_cutoff)
 		visibility = 0;
-	else if (actual_cutoff < required_cutoff)
-		visibility *= mix(0, 1, (actual_cutoff - required_cutoff * 0.75) / (required_cutoff * 0.25));
-
+	/*else if (actual_cutoff < required_cutoff)
+		visibility *= mix(0, 1, (actual_cutoff - required_cutoff * 0.9) / (required_cutoff * 0.1));
+*/
 
 		
 

@@ -14,8 +14,9 @@ namespace Ryno{
 	
 	void SpotLight::send_uniforms(Camera3D* camera){
 
+		glm::vec3 norm_dir = glm::normalize(direction);
 		glUniform4f(locations.position, position.x, position.y, -position.z, attenuation);
-		glUniform4f(locations.direction, direction.x, direction.y, -direction.z, cutoff);
+		glUniform4f(locations.direction, norm_dir.x, norm_dir.y, -norm_dir.z , cutoff);
 		glUniform4f(locations.diffuse, diffuse_color.r / 256.0f, diffuse_color.g / 256.0f, diffuse_color.b / 256.0f, diffuse_intensity);
 		glUniform4f(locations.specular, specular_color.r/256.0f, specular_color.g/256.0f, specular_color.b/256.0f,specular_intensity);
 

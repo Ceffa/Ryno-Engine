@@ -171,15 +171,15 @@ namespace Ryno{
 		for (I8 i = 0; i < 1; i++){
 			for (I8 j = 0; j <1; j++){
 				U8 r = 255;
-				U8 g = 0;
+				U8 g = 200;
 				U8 b = 0;
 				p = new SpotLight();
-				p->set_direction(.4,-1,0);
+				p->set_direction(.4,-1,.8);
 				p->set_position(175 * i, 10, 175 * j);
-				p->cutoff = 0.4f;
+				p->cutoff = .5f;//no more then 0.5
 				p->set_diffuse_color(r, g, b);
 				p->diffuse_intensity = 300;
-				p->attenuation = .005;
+				p->attenuation = .01;
 				p->specular_intensity = 100;
 				p->set_specular_color(r, g, b);
 				p->set_program(&m_program_spot);
@@ -326,6 +326,22 @@ namespace Ryno{
 				if (l->specular_intensity > 0)
 				l->specular_intensity -= 3;
 
+			}
+		}
+
+		if (m_input_manager.is_key_down(SDLK_1)){
+			for (SpotLight* l : spot_lights){
+				l->cutoff -= 0.01;
+				if (l->cutoff < 0.01)
+					l->cutoff = 0.01;
+			}
+		}
+
+		if (m_input_manager.is_key_down(SDLK_2)){
+			for (SpotLight* l : spot_lights){
+				l->cutoff += 0.01;
+				if (l->cutoff > .5)
+					l->cutoff = 0.5;
 			}
 		}
 

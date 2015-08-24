@@ -269,7 +269,7 @@ namespace Ryno{
 		
 		s->calculate_max_radius();
 		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + correct_direction, glm::vec3(0, 1, 0));
-		glm::mat4 projection_matrix = glm::perspective(s->cutoff *  M_PI_2, 1.0, 1.0, (F64)s->max_radius);
+		glm::mat4 projection_matrix = glm::perspective( std::min((F64)2*acos(s->cutoff),M_PI * 0.7) , 1.0, 1.0, (F64)s->max_radius);
 
 
 		//Multiply view by a perspective matrix large as the light radius
