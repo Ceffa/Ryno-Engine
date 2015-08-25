@@ -49,9 +49,9 @@ namespace Ryno{
 		m_bounding_box = new Model();
 		m_fullscreen_quad = new Model();
 		m_cube_box = new Model();
-		m_cube_box->mesh = m_mesh_manager->load_mesh("simple_cube");
-		m_bounding_box->mesh = m_mesh_manager->load_mesh("bound_sphere");
-		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square");
+		m_cube_box->mesh = m_mesh_manager->load_mesh("simple_cube",false);
+		m_bounding_box->mesh = m_mesh_manager->load_mesh("bound_sphere",false);
+		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false);
 
 		bias = glm::mat4(
 			0.5, 0.0, 0.0, 0.0,
@@ -195,7 +195,10 @@ namespace Ryno{
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
 		glm::vec3 temp_pos = glm::vec3(point_light->position.x, point_light->position.y, -point_light->position.z);
-		MVP_camera = m_camera->get_VP_matrix() * glm::scale(glm::translate(glm::mat4(1.0f), temp_pos), glm::vec3(point_light->max_radius));
+		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(point_light->max_radius));
+		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f),temp_pos);
+
+		MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box;
 		
 		m_null_program->use();
 		glUniformMatrix4fv(m_null_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
@@ -305,7 +308,7 @@ namespace Ryno{
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
 		glm::vec3 temp_pos = glm::vec3(spot_light->position.x, spot_light->position.y, -spot_light->position.z);
-		MVP_camera = m_camera->get_VP_matrix() * glm::scale(glm::translate(glm::mat4(1.0f), temp_pos), glm::vec3(spot_light->max_radius));
+
 
 		m_null_program->use();
 		glUniformMatrix4fv(m_null_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);

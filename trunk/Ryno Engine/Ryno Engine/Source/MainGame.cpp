@@ -37,10 +37,8 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading models
-		cube_mesh = m_mesh_manager->load_mesh("cube");
-		bound_sphere = m_mesh_manager->load_mesh("bound_sphere");
-		I32 sphere_model = m_mesh_manager->load_mesh("sphere");
-		square_model = m_mesh_manager->load_mesh("square");
+		cube_mesh = m_mesh_manager->load_mesh("cube",1);
+		I32 sphere_model = m_mesh_manager->load_mesh("sphere",1);
 
 		CPUProfiler::next_time();
 
@@ -167,18 +165,18 @@ namespace Ryno{
 				p->set_position(0, 10, 0);
 				p->cutoff = .5f;//no more then 0.5
 				p->set_diffuse_color(255, 200, 0);
-				p->diffuse_intensity = 50;
+				p->diffuse_intensity = 0;
 				p->attenuation = .001;
-				p->specular_intensity = 10;
+				p->specular_intensity = 0;
 				p->set_specular_color(255, 200, 0);
 				p->set_program(&m_program_spot);
 				spot_lights.push_back(p);
 
 				s = new PointLight();
-				s->set_position(800, 10, 800);
+				s->set_position(0, 10, 0);
 				s->set_diffuse_color(255, 200, 0);
 				s->diffuse_intensity = 30;
-				s->attenuation = .001;
+				s->attenuation = .1;
 				s->specular_intensity = 10;
 				s->set_specular_color(255, 200, 0);
 				s->set_program(&m_program_point);

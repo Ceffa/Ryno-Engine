@@ -26,7 +26,7 @@ namespace Ryno{
 	public:
 		
 		static MeshManager* get_instance();
-		I32 load_mesh(const std::string& name);
+		I32 load_mesh(const std::string& name, bool has_uvs);
 		Mesh* get_mesh(I32 mesh_number);
 
 	private:

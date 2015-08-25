@@ -61,8 +61,8 @@ namespace Ryno {
 
 		//Enable the attrib arrays
 		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 
 		
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
