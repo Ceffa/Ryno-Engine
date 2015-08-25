@@ -18,11 +18,8 @@ namespace Ryno{
 			position.y = y;
 			position.z = z;
 		};
-		void set_direction(F32 p, F32 y, F32 r){
-			direction.x = p;
-			direction.y = y;
-			direction.z = r;
-		};
+		void set_direction(F32 _pitch, F32 _yaw);
+
 
 		void calculate_max_radius();
 		
@@ -30,6 +27,7 @@ namespace Ryno{
 		glm::vec3 position;
 		F32 attenuation; //exp
 		glm::vec3 direction;
+		F32 pitch, yaw;
 		F32 cutoff; //Angle of the cone
 
 		struct location{

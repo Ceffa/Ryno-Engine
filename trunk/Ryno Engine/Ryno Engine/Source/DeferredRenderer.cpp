@@ -265,10 +265,10 @@ namespace Ryno{
 
 		//Get light position, with correct z axis
 		glm::vec3 correct_position = glm::vec3(s->position.x, s->position.y, -s->position.z);
-		glm::vec3 correct_direction =glm::normalize(glm::vec3(s->direction.x, s->direction.y, -s->direction.z));
+		
 		
 		s->calculate_max_radius();
-		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + correct_direction, glm::vec3(0, 1, 0));
+		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + s->direction, glm::vec3(0, 1, 0));
 		glm::mat4 projection_matrix = glm::perspective( std::min((F64)2*acos(s->cutoff),M_PI * 0.7) , 1.0, 1.0, (F64)s->max_radius);
 
 
@@ -360,8 +360,7 @@ namespace Ryno{
 
 
 		//generate light_VP matrix
-		glm::vec3 inv_dir = directional_light->direction.to_vec3();
-		inv_dir.z *= -1;
+		glm::vec3 inv_dir = directional_light->direction;
 		glm::mat4 ortho_mat = m_camera->get_O_matrix();
 		glm::mat4 view_mat = glm::lookAt(inv_dir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		directional_light_VP = ortho_mat * view_mat;

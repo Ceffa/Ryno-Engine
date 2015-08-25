@@ -28,7 +28,7 @@ namespace Ryno{
 
 
 		U16 point_resolution = 512;
-		U16 spot_resolution = 1024;
+		U16 spot_resolution = 812;
 		U16 directional_resolution = 1600;
 
 	private:

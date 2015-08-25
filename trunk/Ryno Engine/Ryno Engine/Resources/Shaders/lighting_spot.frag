@@ -101,6 +101,7 @@ void main(){
 
 
 	//SHADOWS
+	float bias = 0.001;
 	float visibility = texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z));
 	
 
@@ -111,16 +112,17 @@ void main(){
 	float required_cutoff = 1.0 - spot_light.direction_and_cutoff.w;
 
 
+	
+	
 	if (actual_cutoff < required_cutoff)
 		visibility = 0;
-	/*else if (actual_cutoff < required_cutoff)
-		visibility *= mix(0, 1, (actual_cutoff - required_cutoff * 0.9) / (required_cutoff * 0.1));
-*/
+	else if (actual_cutoff < required_cutoff * 1.1)
+		visibility *= mix(0,1, (  actual_cutoff - required_cutoff) / (required_cutoff * 0.1));
 
 		
 
     //fragment color
-	frag_color = visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
+	frag_color =  visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
 }
 
 

@@ -5,7 +5,7 @@ namespace Ryno{
 
 	SpotLight::SpotLight() {
 	
-		direction = glm::vec3(0, 1, 0);
+		set_direction(0, 0);
 		cutoff = .1f;
 		attenuation = 0;
 	}
@@ -14,9 +14,8 @@ namespace Ryno{
 	
 	void SpotLight::send_uniforms(Camera3D* camera){
 
-		glm::vec3 norm_dir = glm::normalize(direction);
 		glUniform4f(locations.position, position.x, position.y, -position.z, attenuation);
-		glUniform4f(locations.direction, norm_dir.x, norm_dir.y, -norm_dir.z , cutoff);
+		glUniform4f(locations.direction, direction.x, direction.y, direction.z , cutoff);
 		glUniform4f(locations.diffuse, diffuse_color.r / 256.0f, diffuse_color.g / 256.0f, diffuse_color.b / 256.0f, diffuse_intensity);
 		glUniform4f(locations.specular, specular_color.r/256.0f, specular_color.g/256.0f, specular_color.b/256.0f,specular_intensity);
 
@@ -30,6 +29,19 @@ namespace Ryno{
 		locations.diffuse = program->getUniformLocation("spot_light.diffuse");
 		locations.specular = program->getUniformLocation("spot_light.specular");
 
+	}
+
+	
+
+	void SpotLight::set_direction(F32 _pitch, F32 _yaw)
+	{
+		
+		pitch = -_pitch * DEG_TO_RAD - M_PI;
+		yaw = -_yaw * DEG_TO_RAD - M_HALF_PI;
+		
+
+		direction = glm::normalize(glm::vec3(cos(yaw)*cos(pitch), sin(pitch), sin(-yaw)*cos(pitch)));
+		
 	}
 
 	void SpotLight::calculate_max_radius()

@@ -25,7 +25,6 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading graphics
-		U32 texture_metal = m_texture_manager->loadPNG("metal");
 		U32 white = m_texture_manager->loadPNG("white_pixel");
 		U32 white_normal = m_texture_manager->loadPNG("normal_pixel");
 		U32 texture_bricks = m_texture_manager->loadPNG("pack/177");
@@ -116,7 +115,7 @@ namespace Ryno{
 		GameObject* base = new GameObject();
 		base->model.set_color_and_flatness(255, 255, 255, 0);
 		base->model.set_mesh_texture_normal(cube_mesh, texture_bricks, normal_map_bricks);
-		base->scale = glm::vec3(2000, 10, 2000);
+		base->scale = glm::vec3(1000, 10, 1000);
 		base->model.set_tiling(8, 8);
 		base->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(base);
@@ -160,64 +159,83 @@ namespace Ryno{
 
 		GameObject* bl;
 		//PointLight* p;
-		SpotLight* p;
+		
 
 
-
-
-
-
-
-		for (I8 i = 0; i < 1; i++){
-			for (I8 j = 0; j <1; j++){
-				U8 r = 255;
-				U8 g = 200;
-				U8 b = 0;
+	
 				p = new SpotLight();
-				p->set_direction(.4,-1,.8);
-				p->set_position(175 * i, 10, 175 * j);
+				p->set_position(0, 10, 0);
 				p->cutoff = .5f;//no more then 0.5
-				p->set_diffuse_color(r, g, b);
-				p->diffuse_intensity = 300;
-				p->attenuation = .01;
-				p->specular_intensity = 100;
-				p->set_specular_color(r, g, b);
+				p->set_diffuse_color(255, 200, 0);
+				p->diffuse_intensity = 50;
+				p->attenuation = .001;
+				p->specular_intensity = 10;
+				p->set_specular_color(255, 200, 0);
 				p->set_program(&m_program_spot);
 				spot_lights.push_back(p);
-				bl = new GameObject();
-				bl->model.cast_shadows = false;
-				bl->model.set_color_and_flatness(0,0,0, 255);
-				bl->model.set_mesh_texture_normal(sphere_model, white, white_normal);
-				bl->scale = glm::vec3(50, 50, 50);
-				bl->position = glm::vec3(175 * i, 10, 175 * j);
-				spheres.push_back(bl);
+
+				s = new PointLight();
+				s->set_position(800, 10, 800);
+				s->set_diffuse_color(255, 200, 0);
+				s->diffuse_intensity = 30;
+				s->attenuation = .001;
+				s->specular_intensity = 10;
+				s->set_specular_color(255, 200, 0);
+				s->set_program(&m_program_point);
+				point_lights.push_back(s);
+				
+				l = new DirectionalLight();
+				l->set_direction(-45, 45);
+				l->diffuse_intensity = .3;
+				l->set_diffuse_color(255, 200, 0);
+				l->specular_intensity = .0;
+				l->set_specular_color(255, 200, 0);
+				l->ambient_intensity = .05;
+				l->set_ambient_color(255, 200, 0);
+				l->set_program(&m_program_dir);
 
 
-			}
-		}
-
-		for (I8 i = -5; i < 6; i++){
-			for (I8 j = -5; j < 6; j++){
+		
+		for (I8 i = 2; i < 4; i++){
+			for (I8 j = 2; j < 4; j++){
 
 				GameObject* n = new GameObject();
 				n->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
-				n->scale = glm::vec3(5, 100, 5);
+				n->scale = glm::vec3(10, 150, 10);
 				n->model.set_tiling(1, 4);
-				n->position = glm::vec3(50 * i, 50, 50*j);
+				n->position = glm::vec3(-500, 0, -500) +  glm::vec3(80 * i, 75, 80 * j);
 
 				m_game_objects.push_back(n);
 			}
 		}
 
-		l = new DirectionalLight();
-		l->set_direction(-.6, .6, .2);
-		l->diffuse_intensity = .2;
-		l->set_diffuse_color(255, 200, 0);
-		l->specular_intensity = .2;
-		l->set_specular_color(255, 200, 0);
-		l->ambient_intensity = .05;
-		l->set_ambient_color(255, 200, 0);
-		l->set_program(&m_program_dir);
+		for (I8 i = 2; i < 4; i++){
+			for (I8 j = 2; j < 4; j++){
+
+				GameObject* n = new GameObject();
+				n->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
+				n->scale = glm::vec3(10, 150, 10);
+				n->model.set_tiling(1, 4);
+				n->position =glm::vec3(-200,0,-200)+ glm::vec3(80 * i, 75, 80 * j);
+
+				m_game_objects.push_back(n);
+			}
+		}
+
+		for (I8 i = 2; i < 4; i++){
+			for (I8 j = 2; j < 4; j++){
+
+				GameObject* n = new GameObject();
+				n->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
+				n->scale = glm::vec3(10, 150, 10);
+				n->model.set_tiling(1, 4);
+				n->position = glm::vec3(100, 0,100) + glm::vec3(80 * i, 75, 80 * j);
+
+				m_game_objects.push_back(n);
+			}
+		}
+
+	
 		CPUProfiler::end_time();
 		CPUProfiler::print_time();
 
@@ -251,6 +269,10 @@ namespace Ryno{
 				l->position.x -= 3;
 
 			}
+			for (PointLight* l : point_lights){
+				l->position.x -= 3;
+
+			}
 			for (GameObject* s : spheres){
 				s->position.x -= 3;
 			}
@@ -260,22 +282,45 @@ namespace Ryno{
 				l->position.x += 3;
 
 			}
+			for (PointLight* l : point_lights){
+				l->position.x += 3;
+
+			}
 			for (GameObject* s : spheres){
 				s->position.x += 3;
 			}
 		}
+		if (m_input_manager.is_key_down(SDLK_b)){
+			static float a = 0;
+			static float b = 0;
+			a += 0.5;
+			b += 0.5;
+			std::cout << b << std::endl;
+			l->set_direction(-45,b);
+			p->set_direction(-45, b);
+		}
+
 
 		if (m_input_manager.is_key_down(SDLK_n)){
 			for (SpotLight* l : spot_lights){
 				l->position.z -= 3;
 
 			}
+			for (PointLight* l : point_lights){
+				l->position.z -= 3;
+
+			}
+
 			for (GameObject* s : spheres){
 				s->position.z -= 3;
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_m)){
 			for (SpotLight* l : spot_lights){
+				l->position.z += 3;
+
+			}
+			for (PointLight* l : point_lights){
 				l->position.z += 3;
 
 			}
@@ -288,6 +333,10 @@ namespace Ryno{
 				l->position.y += 3;
 
 			}
+			for (PointLight* l : point_lights){
+				l->position.y += 3;
+
+			}
 			for (GameObject* s : spheres){
 				s->position.y += 3;
 			}
@@ -297,6 +346,11 @@ namespace Ryno{
 				l->position.y -= 3;
 
 			}
+			for (PointLight* l : point_lights){
+				l->position.y -= 3;
+
+			}
+
 			for (GameObject* s : spheres){
 				s->position.y -= 3;
 			}
@@ -307,11 +361,20 @@ namespace Ryno{
 				l->diffuse_intensity += 1;
 				
 			}
+			for (PointLight* l : point_lights){
+				l->diffuse_intensity += 1;
+
+			}
 		}
 		if (m_input_manager.is_key_down(SDLK_p)){
 			for (SpotLight* l : spot_lights){
 				if (l->diffuse_intensity > 0)
 				l->diffuse_intensity -= 1;
+
+			}
+			for (PointLight* l : point_lights){
+				if (l->diffuse_intensity > 0)
+					l->diffuse_intensity -= 1;
 
 			}
 		}
@@ -320,11 +383,20 @@ namespace Ryno{
 				l->specular_intensity += 3;
 
 			}
+			for (PointLight* l : point_lights){
+				l->specular_intensity += 3;
+
+			}
 		}
 		if (m_input_manager.is_key_down(SDLK_l)){
 			for (SpotLight* l : spot_lights){
 				if (l->specular_intensity > 0)
 				l->specular_intensity -= 3;
+
+			}
+			for (PointLight* l : point_lights){
+				if (l->specular_intensity > 0)
+					l->specular_intensity -= 3;
 
 			}
 		}
@@ -402,7 +474,7 @@ namespace Ryno{
 
 
 
-		//m_deferred_renderer->point_light_pass(&point_lights, m_shadow_batch3d);
+		m_deferred_renderer->point_light_pass(&point_lights, m_shadow_batch3d);
 
 		m_deferred_renderer->spot_light_pass(&spot_lights, m_shadow_batch3d);
 		

@@ -13,7 +13,7 @@ namespace Ryno{
 	glm::vec3 DirectionalLight::move_to_view_space(Camera3D* camera){
 		
 		return glm::vec3(glm::transpose(glm::inverse(camera->get_V_matrix()))*
-			glm::vec4(direction.pitch,direction.yaw,-direction.roll,0));
+			glm::vec4(direction,0));
 	}
 
 	void DirectionalLight::send_uniforms(Camera3D* camera){
@@ -35,8 +35,16 @@ namespace Ryno{
 
 	}
 
-	void DirectionalLight::set_direction(F32 p, F32 y, F32 r){
-		direction.set_direction(p, y, r);
+	void DirectionalLight::set_direction(F32 p, F32 y){
+		
+			
+		pitch = -p * DEG_TO_RAD - M_PI;
+		yaw = -y * DEG_TO_RAD - M_HALF_PI;
+
+
+		direction =  -glm::normalize(glm::vec3(cos(yaw)*cos(pitch), sin(pitch), sin(-yaw)*cos(pitch)));
+		
+		
 	}
 
 	void DirectionalLight::set_ambient_color(U8 r, U8 g, U8 b){
