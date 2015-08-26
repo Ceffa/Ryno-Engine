@@ -162,12 +162,12 @@ namespace Ryno{
 
 	
 				p = new SpotLight();
-				p->set_position(0, 10, 0);
-				p->cutoff = .5f;//no more then 0.5
+				p->set_position(300, 10, 300);
+				p->cutoff = 60;//no more then 0.5
 				p->set_diffuse_color(255, 200, 0);
-				p->diffuse_intensity = 0;
-				p->attenuation = .001;
-				p->specular_intensity = 0;
+				p->diffuse_intensity = 30;
+				p->attenuation = .1;
+				p->specular_intensity = 10;
 				p->set_specular_color(255, 200, 0);
 				p->set_program(&m_program_spot);
 				spot_lights.push_back(p);
@@ -177,18 +177,18 @@ namespace Ryno{
 				s->set_diffuse_color(255, 200, 0);
 				s->diffuse_intensity = 30;
 				s->attenuation = .1;
-				s->specular_intensity = 10;
+				s->specular_intensity = 1;
 				s->set_specular_color(255, 200, 0);
 				s->set_program(&m_program_point);
 				point_lights.push_back(s);
 				
 				l = new DirectionalLight();
 				l->set_direction(-45, 45);
-				l->diffuse_intensity = .3;
+				l->diffuse_intensity = 0.1;
 				l->set_diffuse_color(255, 200, 0);
-				l->specular_intensity = .0;
+				l->specular_intensity = .1;
 				l->set_specular_color(255, 200, 0);
-				l->ambient_intensity = .05;
+				l->ambient_intensity = .1;
 				l->set_ambient_color(255, 200, 0);
 				l->set_program(&m_program_dir);
 
@@ -293,9 +293,9 @@ namespace Ryno{
 			static float b = 0;
 			a += 0.5;
 			b += 0.5;
-			std::cout << b << std::endl;
+			
 			l->set_direction(-45,b);
-			p->set_direction(-45, b);
+			p->set_direction(0,b);
 		}
 
 
@@ -401,17 +401,17 @@ namespace Ryno{
 
 		if (m_input_manager.is_key_down(SDLK_1)){
 			for (SpotLight* l : spot_lights){
-				l->cutoff -= 0.01;
-				if (l->cutoff < 0.01)
-					l->cutoff = 0.01;
+				l->cutoff -= 1;
+				if (l->cutoff < 5)
+					l->cutoff = 5;
 			}
 		}
 
 		if (m_input_manager.is_key_down(SDLK_2)){
 			for (SpotLight* l : spot_lights){
-				l->cutoff += 0.01;
-				if (l->cutoff > .5)
-					l->cutoff = 0.5;
+				l->cutoff += 1;
+				if (l->cutoff > 60)
+					l->cutoff = 60;
 			}
 		}
 

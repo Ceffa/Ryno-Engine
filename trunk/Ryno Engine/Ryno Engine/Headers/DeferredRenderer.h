@@ -67,7 +67,7 @@ namespace Ryno{
 		void point_shadow_subpass(PointLight* p, Batch3DShadow* batch);
 
 		//Stencil subpass for point light
-		void point_stencil_subpass(PointLight* point_light);
+		//void point_stencil_subpass(PointLight* point_light);
 
 		//Lighting subpass for point light
 		void point_lighting_subpass(PointLight* point_light);
@@ -76,7 +76,7 @@ namespace Ryno{
 		void spot_shadow_subpass(SpotLight* p, Batch3DShadow* batch);
 
 		//Stencil subpass for spot light
-		void spot_stencil_subpass(SpotLight* spot_light);
+		//void spot_stencil_subpass(SpotLight* spot_light);
 
 		//Lighting subpass for spot light
 		void spot_lighting_subpass(SpotLight* spot_light);
@@ -94,7 +94,7 @@ namespace Ryno{
 		GLSLProgram* m_null_program, *m_skybox_program, *m_directional_shadow_program, *m_spot_shadow_program, *m_point_shadow_program, *m_blit_program;
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
-		Model* m_bounding_box, *m_fullscreen_quad, *m_cube_box;
+		Model* m_bounding_sphere, *m_fullscreen_quad, *m_cube_box, *m_bounding_pyramid;
 		glm::mat4 MVP_camera;
 		glm::mat4 inverse_P_matrix;
 		glm::mat4 inverse_VP_matrix;

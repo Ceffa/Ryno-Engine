@@ -104,7 +104,7 @@ void main(){
 		
 
     //fragment color
-	frag_color = vec3(0,0,1) + visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
+	frag_color =  visibility *  (1.0 - g_flatness) * g_color * (specular_final + diffuse_final) / attenuation;
 }
 
 

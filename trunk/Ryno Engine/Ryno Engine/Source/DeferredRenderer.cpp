@@ -46,11 +46,14 @@ namespace Ryno{
 		glUniform1i(m_blit_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
 		glUniform1i(m_blit_program->getUniformLocation("source_buffer"), 0);
 
-		m_bounding_box = new Model();
+		m_bounding_sphere = new Model();
+		m_bounding_pyramid = new Model();
 		m_fullscreen_quad = new Model();
 		m_cube_box = new Model();
 		m_cube_box->mesh = m_mesh_manager->load_mesh("simple_cube",false);
-		m_bounding_box->mesh = m_mesh_manager->load_mesh("bound_sphere",false);
+		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere",false);
+		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false);
+
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false);
 
 		bias = glm::mat4(
@@ -103,7 +106,7 @@ namespace Ryno{
 
 		for (PointLight* p : *point_lights){
 			point_shadow_subpass(p,batch);
-			point_stencil_subpass(p);
+			//point_stencil_subpass(p);
 			point_lighting_subpass(p);
 
 		}
@@ -115,7 +118,7 @@ namespace Ryno{
 	{
 		for (SpotLight* p : *spot_lights){
 			spot_shadow_subpass(p, batch);
-			spot_stencil_subpass(p);
+			//spot_stencil_subpass(p);
 			spot_lighting_subpass(p);
 
 		}
@@ -177,68 +180,73 @@ namespace Ryno{
 
 
 	}
-	//Stencil pass for point lights only.
-	//Call for each light inside the light pass
-	void DeferredRenderer::point_stencil_subpass(PointLight* point_light){
+	////Stencil pass for point lights only.
+	////Call for each light inside the light pass
+	//void DeferredRenderer::point_stencil_subpass(PointLight* point_light){
 
-		
-		m_fbo_deferred->bind_for_stencil_pass();
-		glEnable(GL_STENCIL_TEST);
+	//	
+	//	m_fbo_deferred->bind_for_stencil_pass();
+	//	glEnable(GL_STENCIL_TEST);
 
-		glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_CULL_FACE);
-		glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glStencilFunc(GL_ALWAYS, 0, 0);
+	//	glDepthMask(GL_TRUE);
+	//	glEnable(GL_DEPTH_TEST);
+	//	glDisable(GL_CULL_FACE);
+	//	glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//	glStencilFunc(GL_ALWAYS, 0, 0);
 
-		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
-		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+	//	glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+	//	glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
-		glm::vec3 temp_pos = glm::vec3(point_light->position.x, point_light->position.y, -point_light->position.z);
-		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(point_light->max_radius));
-		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f),temp_pos);
+	//	glm::vec3 temp_pos = glm::vec3(point_light->position.x, point_light->position.y, -point_light->position.z);
+	//	glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(point_light->max_radius));
+	//	glm::mat4 trans_box = glm::translate(glm::mat4(1.0f),temp_pos);
 
-		MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box;
-		
-		m_null_program->use();
-		glUniformMatrix4fv(m_null_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
-		m_simple_drawer->draw(m_bounding_box);
-		m_null_program->unuse();
-	}
+	//	MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box;
+	//	
+	//	m_null_program->use();
+	//	glUniformMatrix4fv(m_null_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
+	//	m_simple_drawer->draw(m_bounding_sphere);
+	//	m_null_program->unuse();
+	//}
 
 
 	
 
 	//Renders point lights inside it's bounding sphere
-	void DeferredRenderer::point_lighting_subpass(PointLight* point_light){
+	void DeferredRenderer::point_lighting_subpass(PointLight* p){
 
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_point_lighting_pass();
 
-		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+		//glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 
 		glDisable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_ONE, GL_ONE);
 
-		glEnable(GL_CULL_FACE);
+		glDisable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		point_light->program->use();
-		point_light->send_uniforms(m_camera);
-		glUniform1f(point_light->program->getUniformLocation("max_fov"),point_light->max_radius);
-		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
-		glUniformMatrix4fv(point_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
-		glUniformMatrix4fv(point_light->program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
-		glUniformMatrix4fv(point_light->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
-		m_simple_drawer->draw(m_bounding_box);
-		point_light->program->unuse();
+		glm::vec3 temp_pos = glm::vec3(p->position.x, p->position.y, -p->position.z);
+		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(p->max_radius));
+		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), temp_pos);
+
+		MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box;
+
+		p->program->use();
+		p->send_uniforms(m_camera);
+		glUniform1f(p->program->getUniformLocation("max_fov"),p->max_radius);
+		glUniformMatrix4fv(p->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
+		glUniformMatrix4fv(p->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+		glUniformMatrix4fv(p->program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
+		glUniformMatrix4fv(p->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
+		m_simple_drawer->draw(m_bounding_sphere);
+		p->program->unuse();
 
 		glCullFace(GL_BACK);
 		glDisable(GL_BLEND);
-		glDisable(GL_STENCIL_TEST);
+		//glDisable(GL_STENCIL_TEST);
 
 	}
 
@@ -293,7 +301,7 @@ namespace Ryno{
 		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
 
-	void DeferredRenderer::spot_stencil_subpass(SpotLight* spot_light)
+	/*void DeferredRenderer::spot_stencil_subpass(SpotLight* spot_light)
 	{
 		m_fbo_deferred->bind_for_stencil_pass();
 		glEnable(GL_STENCIL_TEST);
@@ -301,7 +309,6 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
-		glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glStencilFunc(GL_ALWAYS, 0, 0);
 
 		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
@@ -312,16 +319,16 @@ namespace Ryno{
 
 		m_null_program->use();
 		glUniformMatrix4fv(m_null_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
-		m_simple_drawer->draw(m_bounding_box);
+		m_simple_drawer->draw(m_bounding_pyramid);
 		m_null_program->unuse();
-	}
+	}*/
 
-	void DeferredRenderer::spot_lighting_subpass(SpotLight* spot_light)
+	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
 	{
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_spot_lighting_pass();
 
-		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+		//glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
@@ -332,22 +339,32 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 	
-		spot_light->program->use();
-		spot_light->send_uniforms(m_camera);
+		glm::vec3 temp_pos = glm::vec3(s->position.x, s->position.y, -s->position.z);
+		float width = s->max_radius * sin(s->cutoff * DEG_TO_RAD) / sin(90*DEG_TO_RAD);
+		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(width, width, s->max_radius));
+		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), temp_pos);
+		glm::mat4 rot_x_box = glm::rotate(s->pitch, glm::vec3(-1, 0, 0));
+		glm::mat4 rot_y_box = glm::rotate(s->yaw, glm::vec3(0,-1, 0));
+
+		MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box * rot_x_box * rot_y_box;
+
+
+		s->program->use();
+		s->send_uniforms(m_camera);
 		glm::mat4 biased_light_VP_matrix = bias * spot_VP_matrix;
-		glUniformMatrix4fv(spot_light->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &biased_light_VP_matrix[0][0]);
-		glUniformMatrix4fv(spot_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
-		glUniformMatrix4fv(spot_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
-		glUniformMatrix4fv(spot_light->program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
-		glUniformMatrix4fv(spot_light->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
+		glUniformMatrix4fv(s->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &biased_light_VP_matrix[0][0]);
+		glUniformMatrix4fv(s->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
+		glUniformMatrix4fv(s->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+		glUniformMatrix4fv(s->program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
+		glUniformMatrix4fv(s->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
 		//glUniform1f(spot_light->program->getUniformLocation("max_fov"), spot_light->max_radius);
 
-		m_simple_drawer->draw(m_bounding_box);
-		spot_light->program->unuse();
+		m_simple_drawer->draw(m_bounding_pyramid);
+		s->program->unuse();
 
 		glCullFace(GL_BACK);
 		glDisable(GL_BLEND);
-		glDisable(GL_STENCIL_TEST);
+		//glDisable(GL_STENCIL_TEST);
 	}
 
 	
@@ -478,7 +495,7 @@ namespace Ryno{
 	void DeferredRenderer::destroy(){
 		delete m_fbo_deferred;
 		delete m_fbo_shadow;
-		delete m_bounding_box;
+		delete m_bounding_sphere;
 		delete m_fullscreen_quad;
 		m_null_program->destroy();
 		m_blit_program->destroy();

@@ -109,7 +109,7 @@ void main(){
 	//CONE CUTOFF (with smoothing to the edges, because I CAN
 
 	float actual_cutoff = dot(normalize(fragment_position_world - spot_light.position_and_attenuation.xyz), spot_light.direction_and_cutoff.xyz);
-	float required_cutoff = 1.0 - spot_light.direction_and_cutoff.w;
+	float required_cutoff = spot_light.direction_and_cutoff.w;
 
 
 	
