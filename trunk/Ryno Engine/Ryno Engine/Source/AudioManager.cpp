@@ -46,15 +46,17 @@ namespace Ryno{
 		}
 	}
 
-	Sound AudioManager::load_sound(const std::string& file_path){
+	Sound AudioManager::load_sound(const std::string& file_path, LocationOfResource loc){
 
 		Sound sound;
+		static const std::string middle_path = "Resources/Sounds/";
+
 	
 		//check if already cached
 		auto it = m_sound_map.find(file_path);
 		if (it == m_sound_map.end()){
 			//if not load
-			Mix_Chunk* chunk = Mix_LoadWAV(std::string("Resources/Sounds/" + file_path).c_str()); //despite name load everything
+			Mix_Chunk* chunk = Mix_LoadWAV(std::string(BASE_PATHS[loc] + middle_path + file_path).c_str()); //despite name load everything
 			if (chunk == nullptr)
 				Log::FatalError("Mix_LoadWAV failed: " + std::string(Mix_GetError()));
 			//insert it in map
@@ -70,14 +72,14 @@ namespace Ryno{
 
 	}
 
-	Music AudioManager::load_music(const std::string& file_path){
+	Music AudioManager::load_music(const std::string& file_path, LocationOfResource loc){
 		Music music;
-
+		static const std::string middle_path = "Resources/Music/";
 		//check if already cached
 		auto it = m_music_map.find(file_path);
 		if (it == m_music_map.end()){
 			//if not load
-			Mix_Music* mus = Mix_LoadMUS(std::string("Resources/Music/" + file_path).c_str()); //despite name load everything
+			Mix_Music* mus = Mix_LoadMUS(std::string(BASE_PATHS[loc] +  middle_path + file_path).c_str()); //despite name load everything
 			if (mus == nullptr)
 				Log::FatalError("Mix_LoadMus failed: " + std::string(Mix_GetError()));
 			//insert it in map

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "Global.h"
 #include "GLSLProgram.h"
 namespace Ryno{
 	class FBO_Deferred

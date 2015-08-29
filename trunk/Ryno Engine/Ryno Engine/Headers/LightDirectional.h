@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "Global.h"
 #include "Structures.h"
 #include "Camera3D.h"
 #include <GLM\glm.hpp>

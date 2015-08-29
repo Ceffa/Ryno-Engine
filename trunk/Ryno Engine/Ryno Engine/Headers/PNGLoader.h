@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "Types.h"
+#include "Global.h"
 
 namespace Ryno{
 	class PNGLoader{

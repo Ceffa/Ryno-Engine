@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "Global.h"
 #include "Model.h"
 #include "MeshManager.h"
 #include <GLM/glm.hpp>

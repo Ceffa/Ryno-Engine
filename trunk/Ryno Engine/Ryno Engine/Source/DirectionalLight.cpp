@@ -38,11 +38,11 @@ namespace Ryno{
 	void DirectionalLight::set_direction(F32 p, F32 y){
 		
 			
-		pitch = -p * DEG_TO_RAD - M_PI;
-		yaw = -y * DEG_TO_RAD - M_HALF_PI;
+		pitch = -p * DEG_TO_RAD;
+		yaw = y * DEG_TO_RAD - M_HALF_PI;
 
 
-		direction =  -glm::normalize(glm::vec3(cos(yaw)*cos(pitch), sin(pitch), sin(-yaw)*cos(pitch)));
+		direction = glm::normalize(glm::vec3(cos(yaw)*cos(pitch), sin(pitch), sin(yaw)*cos(pitch)));
 		
 		
 	}

@@ -1,6 +1,6 @@
 #pragma once
 #include <unordered_map>
-#include "Types.h"
+#include "Global.h"
 #include "Global.h"
 #include <GLM/glm.hpp>
 #include <GLM/gtx/string_cast.hpp>

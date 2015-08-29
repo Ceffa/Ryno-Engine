@@ -2,7 +2,7 @@
 #include <SDL/SDL_mixer.h>
 #include <string>
 #include <map>
-#include "Types.h"
+#include "Global.h"
 
 
 namespace Ryno{
@@ -38,8 +38,8 @@ namespace Ryno{
 
 		void init();
 		void destroy();
-		Sound load_sound(const std::string& file_path);
-		Music load_music(const std::string& file_path);
+		Sound load_sound(const std::string& file_path, LocationOfResource loc);
+		Music load_music(const std::string& file_path, LocationOfResource loc);
 
 
 

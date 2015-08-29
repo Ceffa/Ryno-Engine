@@ -2,7 +2,7 @@
 
 #include <string>
 #include <GL/glew.h>
-#include "Types.h"
+#include "Global.h"
 #include <vector>
 #include "DirectionalLight.h"
 #include "PointLight.h"

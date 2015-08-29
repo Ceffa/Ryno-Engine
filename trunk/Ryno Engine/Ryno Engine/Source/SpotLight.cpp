@@ -6,7 +6,7 @@ namespace Ryno{
 	SpotLight::SpotLight() {
 	
 		set_direction(0, 0);
-		cutoff = .1f;
+		cutoff = 0;
 		attenuation = 0;
 	}
 	
@@ -36,11 +36,11 @@ namespace Ryno{
 	void SpotLight::set_direction(F32 _pitch, F32 _yaw)
 	{
 		
-		pitch = -_pitch * DEG_TO_RAD - M_PI;
-		yaw = -_yaw * DEG_TO_RAD - M_HALF_PI;
+		pitch = -_pitch * DEG_TO_RAD;
+		yaw = _yaw * DEG_TO_RAD - M_HALF_PI;
 		
 
-		direction = glm::normalize(glm::vec3(cos(yaw)*cos(pitch), sin(pitch), sin(-yaw)*cos(pitch)));
+		direction = glm::normalize(glm::vec3(cos(yaw)*cos(pitch), sin(pitch), sin(yaw)*cos(pitch)));
 		
 	}
 

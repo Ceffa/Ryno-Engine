@@ -17,8 +17,11 @@ namespace Ryno{
 	
 
 
-	U32 TextureManager::loadPNG(const std::string& name){
-		std::string path = "Resources/Textures/2D/" + name + ".png";
+	U32 TextureManager::loadPNG(const std::string& name, LocationOfResource loc){
+		
+		static const std::string middle_path = "Resources/Textures/2D/";
+
+		std::string path = BASE_PATHS[loc] + middle_path + name + ".png";
 		GLTexture texture = {};
 
 
@@ -56,17 +59,19 @@ namespace Ryno{
 
 	}
 
-	U32 TextureManager::loadCubeMap(const std::string& name){
+	U32 TextureManager::loadCubeMap(const std::string& name, LocationOfResource loc){
+
 
 		U32 texture_id;
 		glGenTextures(1, &(texture_id));
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+		static const std::string middle_path = "Resources/Textures/3D/";
 
-		static std::string pieces[6]{"pos_x", "neg_x", "pos_y", "neg_y", "pos_z", "neg_z"};
+		static const std::string pieces[6]{"pos_x", "neg_x", "pos_y", "neg_y", "pos_z", "neg_z"};
 		
 		for (U8 i = 0; i < 6; i++){
-			std::string path = "Resources/Textures/3D/" + name + "/"+name+"_"+pieces[i]+".png";
+			std::string path = BASE_PATHS[loc] + middle_path + name + "/"+name+"_"+pieces[i]+".png";
 			GLTexture texture = {};
 
 

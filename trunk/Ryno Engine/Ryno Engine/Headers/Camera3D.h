@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.h"
+#include "Global.h"
 #include <GLM/glm.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include <GLM/gtx/quaternion.hpp>

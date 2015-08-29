@@ -25,31 +25,31 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading graphics
-		U32 white = m_texture_manager->loadPNG("white_pixel");
-		U32 white_normal = m_texture_manager->loadPNG("normal_pixel");
-		U32 texture_bricks = m_texture_manager->loadPNG("pack/177");
-		U32 normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm");
-		U32 texture_red_wall = m_texture_manager->loadPNG("pack/178");
-		U32 normal_map_red_wall = m_texture_manager->loadPNG("pack/178_norm");
-		U32 texture_wood = m_texture_manager->loadPNG("pack/196");
-		U32 normal_map_wood = m_texture_manager->loadPNG("pack/196_norm");
+		U32 white = m_texture_manager->loadPNG("white_pixel",GAME_FOLDER);
+		U32 white_normal = m_texture_manager->loadPNG("normal_pixel", GAME_FOLDER);
+		U32 texture_bricks = m_texture_manager->loadPNG("pack/177", GAME_FOLDER);
+		U32 normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm", GAME_FOLDER);
+		U32 texture_red_wall = m_texture_manager->loadPNG("pack/178", GAME_FOLDER);
+		U32 normal_map_red_wall = m_texture_manager->loadPNG("pack/178_norm", GAME_FOLDER);
+		U32 texture_wood = m_texture_manager->loadPNG("pack/196", GAME_FOLDER);
+		U32 normal_map_wood = m_texture_manager->loadPNG("pack/196_norm", GAME_FOLDER);
 
 		CPUProfiler::next_time();
 
 		//loading models
-		cube_mesh = m_mesh_manager->load_mesh("cube",1);
-		I32 sphere_model = m_mesh_manager->load_mesh("sphere",1);
+		cube_mesh = m_mesh_manager->load_mesh("cube", 1, GAME_FOLDER);
+		I32 sphere_model = m_mesh_manager->load_mesh("sphere", 1, GAME_FOLDER);
 
 		CPUProfiler::next_time();
 
 		//loading skyboxes
-		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon");
+		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon", GAME_FOLDER);
 
 		CPUProfiler::next_time();
 
 		//loading audio
-		sound = m_audio_manager.load_sound("stomp.wav");
-		music = m_audio_manager.load_music("cthulhu.ogg");
+		sound = m_audio_manager.load_sound("stomp.wav", GAME_FOLDER);
+		music = m_audio_manager.load_music("cthulhu.ogg", GAME_FOLDER);
 		sound.set_volume(0.0f);
 		music.set_volume(0.0f);
 		music.play();
@@ -162,7 +162,8 @@ namespace Ryno{
 
 	
 				p = new SpotLight();
-				p->set_position(300, 10, 300);
+				p->set_position(0, 10, 0);
+				p->set_direction(0, 0);
 				p->cutoff = 60;//no more then 0.5
 				p->set_diffuse_color(255, 200, 0);
 				p->diffuse_intensity = 30;
@@ -173,7 +174,7 @@ namespace Ryno{
 				spot_lights.push_back(p);
 
 				s = new PointLight();
-				s->set_position(0, 10, 0);
+				s->set_position(100, 10, 100);
 				s->set_diffuse_color(255, 200, 0);
 				s->diffuse_intensity = 30;
 				s->attenuation = .1;
@@ -184,7 +185,7 @@ namespace Ryno{
 				
 				l = new DirectionalLight();
 				l->set_direction(-45, 45);
-				l->diffuse_intensity = 0.1;
+				l->diffuse_intensity = 0.5;
 				l->set_diffuse_color(255, 200, 0);
 				l->specular_intensity = .1;
 				l->set_specular_color(255, 200, 0);
@@ -295,7 +296,7 @@ namespace Ryno{
 			b += 0.5;
 			
 			l->set_direction(-45,b);
-			p->set_direction(0,b);
+			p->set_direction(-45,b);
 		}
 
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "Global.h"
 #include "Structures.h"
 #include "Model.h"
 #include "Camera3D.h"

@@ -20,9 +20,11 @@ namespace Ryno{
 		return meshes[mesh_number-1];
 	}
 
-	I32 MeshManager::load_mesh(const std::string& name, bool has_uvs)
+	I32 MeshManager::load_mesh(const std::string& name, bool has_uvs, LocationOfResource loc)
 	{
-		const std::string& path = "Resources/Models/" + name + ".obj";
+		static const std::string middle_path = "Resources/Models/";
+
+		const std::string& path = BASE_PATHS[loc] + middle_path + name + ".obj";
 
 		std::vector< U32 > vertexIndices, uvIndices, normalIndices;
 		std::vector< glm::vec3 > temp_vertices;

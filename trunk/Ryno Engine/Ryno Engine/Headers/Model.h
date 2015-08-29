@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <GLM\glm.hpp>
-#include "Types.h"
+#include "Global.h"
 #include "TextureManager.h"
 #include "Structures.h"
 

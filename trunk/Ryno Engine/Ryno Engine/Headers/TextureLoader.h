@@ -3,7 +3,7 @@
 #include <string> 
 #include <fstream>
 #include <vector>
-#include "Types.h"
+#include "Global.h"
 
 
 namespace Ryno{

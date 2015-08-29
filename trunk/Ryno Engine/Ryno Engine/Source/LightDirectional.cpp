@@ -8,7 +8,7 @@ namespace Ryno{
 
 	glm::vec3 LightDirectional::get_view_space_direction(Camera3D* camera){
 		roll -= roll;
-		glm::vec4 rotated_dir = glm::transpose(glm::inverse(camera->get_view_matrix()))*glm::vec4(pitch,yaw,roll,0);
+		glm::vec4 rotated_dir = glm::transpose(glm::inverse(camera->get_V_matrix()))*glm::vec4(pitch,yaw,roll,0);
 		return glm::vec3(rotated_dir.x, rotated_dir.y, rotated_dir.z);
 	}
 

@@ -50,11 +50,11 @@ namespace Ryno{
 		m_bounding_pyramid = new Model();
 		m_fullscreen_quad = new Model();
 		m_cube_box = new Model();
-		m_cube_box->mesh = m_mesh_manager->load_mesh("simple_cube",false);
-		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere",false);
-		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false);
+		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube",false,ENGINE_FOLDER);
+		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere",false,ENGINE_FOLDER);
+		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false,ENGINE_FOLDER);
 
-		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false);
+		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false,ENGINE_FOLDER);
 
 		bias = glm::mat4(
 			0.5, 0.0, 0.0, 0.0,
@@ -225,7 +225,7 @@ namespace Ryno{
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_ONE, GL_ONE);
 
-		glDisable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
 		glm::vec3 temp_pos = glm::vec3(p->position.x, p->position.y, -p->position.z);
@@ -280,7 +280,7 @@ namespace Ryno{
 		
 		s->calculate_max_radius();
 		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + s->direction, glm::vec3(0, 1, 0));
-		glm::mat4 projection_matrix = glm::perspective( std::min((F64)2*acos(s->cutoff),M_PI * 0.7) , 1.0, 1.0, (F64)s->max_radius);
+		glm::mat4 projection_matrix = glm::perspective((F64)2 * s->cutoff , 1.0, 1.0, (F64)s->max_radius);
 
 
 		//Multiply view by a perspective matrix large as the light radius
@@ -337,16 +337,16 @@ namespace Ryno{
 		glBlendFunc(GL_ONE, GL_ONE);
 
 		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
+		glCullFace(GL_BACK);
 	
 		glm::vec3 temp_pos = glm::vec3(s->position.x, s->position.y, -s->position.z);
-		float width = s->max_radius * sin(s->cutoff * DEG_TO_RAD) / sin(90*DEG_TO_RAD);
-		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(width, width, s->max_radius));
+		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
+		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(s->max_radius ,width, width ));
 		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), temp_pos);
-		glm::mat4 rot_x_box = glm::rotate(s->pitch, glm::vec3(-1, 0, 0));
+		glm::mat4 rot_x_box = glm::rotate(s->pitch, glm::vec3(1, 0, 0));
 		glm::mat4 rot_y_box = glm::rotate(s->yaw, glm::vec3(0,-1, 0));
 
-		MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box * rot_x_box * rot_y_box;
+		MVP_camera = m_camera->get_VP_matrix() * trans_box * rot_x_box * rot_y_box  * scale_box;
 
 
 		s->program->use();
@@ -362,7 +362,6 @@ namespace Ryno{
 		m_simple_drawer->draw(m_bounding_pyramid);
 		s->program->unuse();
 
-		glCullFace(GL_BACK);
 		glDisable(GL_BLEND);
 		//glDisable(GL_STENCIL_TEST);
 	}

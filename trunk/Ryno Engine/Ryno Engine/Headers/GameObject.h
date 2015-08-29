@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.h"
+#include "Global.h"
 #include "Model.h"
 
 namespace Ryno{

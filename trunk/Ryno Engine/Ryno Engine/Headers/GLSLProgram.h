@@ -3,13 +3,16 @@
 #include <string>
 #include <GL/glew.h>
 #include <GL/gl.h>
-#include "Types.h"
+#include "Global.h"
 #include <array>
 namespace Ryno{
 	class GLSLProgram
 	{
 
 	public:
+
+		GLSLProgram(){}
+		~GLSLProgram(){}
 
 		/**
 		This function create a new GLSLProgram, it loads the shaders and everything else.
@@ -29,7 +32,7 @@ namespace Ryno{
 		/**
 		Load both shaders
 		*/
-		void load_shaders(const std::string& name);
+		void load_shaders(const std::string& name, LocationOfResource b);
 
 		/**
 		Compile both Vertex and Fragment shader.

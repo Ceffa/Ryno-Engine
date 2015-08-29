@@ -14,7 +14,7 @@ namespace Ryno{
 		is_shader_present[GEOM] = geom;
 		is_shader_present[FRAG] = frag;
 		init();
-		load_shaders(name);
+		load_shaders(name,ENGINE_FOLDER);
 		compile_shaders();
 		link_shaders();
 	}
@@ -40,13 +40,15 @@ namespace Ryno{
 		glDeleteProgram(m_program_id);
 
 	}
-	void GLSLProgram::load_shaders(const std::string& name){
+	void GLSLProgram::load_shaders(const std::string& name, LocationOfResource loc){
 		shader_name = name;
 		static std::string extensions[3]{".vert", ".geom", ".frag"};
+		static const std::string middle_path = "Resources/Shaders/";
+
 
 		for (U8 i = VERT; i < VERT + 3; i++){
 			if (is_shader_present[i])
-				load_shader((ShadersIndex)i , "Resources/Shaders/" + name + extensions[i-VERT]);
+				load_shader((ShadersIndex)i , BASE_PATHS[loc] + middle_path + name + extensions[i-VERT]);
 		}
 		
 	}

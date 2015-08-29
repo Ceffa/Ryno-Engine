@@ -10,12 +10,12 @@ namespace Ryno{
 		color.r = 255;
 		color.g = 255;
 		color.b = 255;
-		color.a = 255;
+		color.f = 255;
 	}
 	
 
 	glm::vec3 LightPoint::get_view_space_position(Camera3D* camera){
-		glm::vec4 pos = camera->get_view_matrix()*glm::vec4(x, y, -z, 1);
+		glm::vec4 pos = camera->get_V_matrix()*glm::vec4(x, y, -z, 1);
 		return glm::vec3(pos.x, pos.y, pos.z);
 	}
 

@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "Structures.h"
-#include "Types.h"
+#include "Global.h"
 
 
 namespace Ryno{
@@ -26,7 +26,7 @@ namespace Ryno{
 	public:
 		
 		static MeshManager* get_instance();
-		I32 load_mesh(const std::string& name, bool has_uvs);
+		I32 load_mesh(const std::string& name, bool has_uvs, LocationOfResource loc);
 		Mesh* get_mesh(I32 mesh_number);
 
 	private:

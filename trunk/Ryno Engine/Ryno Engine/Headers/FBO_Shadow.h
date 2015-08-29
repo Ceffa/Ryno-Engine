@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "Global.h"
 #include "GLSLProgram.h"
 #include <GLM/glm.hpp>
 namespace Ryno{
