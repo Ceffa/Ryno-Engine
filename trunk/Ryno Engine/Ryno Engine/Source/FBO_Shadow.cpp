@@ -23,16 +23,7 @@ namespace Ryno {
 		glGenFramebuffers(1, &m_fbo);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
 
-		// Create the directional textures
-		glGenTextures(1, &m_directional_texture);
-		glBindTexture(GL_TEXTURE_2D, m_directional_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, directional_resolution, directional_resolution, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, nullptr);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_directional_texture, 0);
-
+	
 		// Create the directional textures
 		glGenTextures(1, &m_spot_texture);
 		glBindTexture(GL_TEXTURE_2D, m_spot_texture);
@@ -41,7 +32,21 @@ namespace Ryno {
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_spot_texture, 0);
+
+		// Create the directional textures
+		glGenTextures(1, &m_directional_texture);
+		glBindTexture(GL_TEXTURE_2D, m_directional_texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, directional_resolution, directional_resolution, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, nullptr);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_directional_texture, 0);
 
 		
 		// Create the cube map
@@ -63,10 +68,7 @@ namespace Ryno {
 
 		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 
-		// Disable writes to the color buffer
-		glDrawBuffer(GL_NONE);
-		// Disable reads from the color buffer
-		glReadBuffer(GL_NONE);
+	
 	
 		//Check if ok
 		GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);

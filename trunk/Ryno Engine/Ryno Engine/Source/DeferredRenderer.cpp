@@ -2,6 +2,8 @@
 
 #include <GLM/glm.hpp>
 #include <GLM/gtx/transform.hpp>
+#include <GLM/gtx/string_cast.hpp>
+
 #define PI 3.14159265359
 #define HALF_PI 1.57079632679489661923
 
@@ -180,34 +182,7 @@ namespace Ryno{
 
 
 	}
-	////Stencil pass for point lights only.
-	////Call for each light inside the light pass
-	//void DeferredRenderer::point_stencil_subpass(PointLight* point_light){
-
-	//	
-	//	m_fbo_deferred->bind_for_stencil_pass();
-	//	glEnable(GL_STENCIL_TEST);
-
-	//	glDepthMask(GL_TRUE);
-	//	glEnable(GL_DEPTH_TEST);
-	//	glDisable(GL_CULL_FACE);
-	//	glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//	glStencilFunc(GL_ALWAYS, 0, 0);
-
-	//	glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
-	//	glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
-
-	//	glm::vec3 temp_pos = glm::vec3(point_light->position.x, point_light->position.y, -point_light->position.z);
-	//	glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(point_light->max_radius));
-	//	glm::mat4 trans_box = glm::translate(glm::mat4(1.0f),temp_pos);
-
-	//	MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box;
-	//	
-	//	m_null_program->use();
-	//	glUniformMatrix4fv(m_null_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
-	//	m_simple_drawer->draw(m_bounding_sphere);
-	//	m_null_program->unuse();
-	//}
+	
 
 
 	
@@ -244,7 +219,6 @@ namespace Ryno{
 		m_simple_drawer->draw(m_bounding_sphere);
 		p->program->unuse();
 
-		glCullFace(GL_BACK);
 		glDisable(GL_BLEND);
 		//glDisable(GL_STENCIL_TEST);
 
@@ -261,6 +235,7 @@ namespace Ryno{
 
 	void DeferredRenderer::spot_shadow_subpass(SpotLight* s, Batch3DShadow* batch)
 	{
+		
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -280,7 +255,7 @@ namespace Ryno{
 		
 		s->calculate_max_radius();
 		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + s->direction, glm::vec3(0, 1, 0));
-		glm::mat4 projection_matrix = glm::perspective((F64)2 * s->cutoff , 1.0, 1.0, (F64)s->max_radius);
+		glm::mat4 projection_matrix = glm::perspective( s->cutoff*2 * DEG_TO_RAD, 1.0, 1.0, (F64)s->max_radius);
 
 
 		//Multiply view by a perspective matrix large as the light radius
@@ -301,27 +276,7 @@ namespace Ryno{
 		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
 
-	/*void DeferredRenderer::spot_stencil_subpass(SpotLight* spot_light)
-	{
-		m_fbo_deferred->bind_for_stencil_pass();
-		glEnable(GL_STENCIL_TEST);
 
-		glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_CULL_FACE);
-		glStencilFunc(GL_ALWAYS, 0, 0);
-
-		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
-		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
-
-		glm::vec3 temp_pos = glm::vec3(spot_light->position.x, spot_light->position.y, -spot_light->position.z);
-
-
-		m_null_program->use();
-		glUniformMatrix4fv(m_null_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
-		m_simple_drawer->draw(m_bounding_pyramid);
-		m_null_program->unuse();
-	}*/
 
 	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
 	{
@@ -337,16 +292,15 @@ namespace Ryno{
 		glBlendFunc(GL_ONE, GL_ONE);
 
 		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+		glCullFace(GL_FRONT);
 	
 		glm::vec3 temp_pos = glm::vec3(s->position.x, s->position.y, -s->position.z);
 		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
-		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(s->max_radius ,width, width ));
+		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(s->max_radius, s->max_radius, s->max_radius));
 		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), temp_pos);
-		glm::mat4 rot_x_box = glm::rotate(s->pitch, glm::vec3(1, 0, 0));
-		glm::mat4 rot_y_box = glm::rotate(s->yaw, glm::vec3(0,-1, 0));
-
-		MVP_camera = m_camera->get_VP_matrix() * trans_box * rot_x_box * rot_y_box  * scale_box;
+		glm::mat4 rot_box = glm::toMat4(glm::quat(glm::vec3(0, -s->yaw -M_HALF_PI,0)) * glm::quat(glm::vec3(s->pitch,0, 0)));
+	
+		MVP_camera = m_camera->get_VP_matrix() * trans_box * rot_box  * scale_box;
 
 
 		s->program->use();

@@ -1,4 +1,4 @@
-#version 330
+#version 430
 
 uniform sampler2D source_buffer;
 uniform int screen_width;

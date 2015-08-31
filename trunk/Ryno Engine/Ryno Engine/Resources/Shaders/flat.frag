@@ -1,4 +1,4 @@
-#version 330
+#version 430
 
 in vec3 middle_color;
 out vec3 out_color;

@@ -1,4 +1,4 @@
-#version 330
+#version 430
 
 in vec3 coords_3d;
 out vec3 frag_color;

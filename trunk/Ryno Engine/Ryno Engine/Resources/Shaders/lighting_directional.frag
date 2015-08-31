@@ -1,4 +1,4 @@
-#version 330
+#version 430
 
 struct DirectionalLight{
 	vec4 diffuse;	//Intensity in alpha

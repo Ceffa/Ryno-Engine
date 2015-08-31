@@ -1,4 +1,4 @@
-#version 330
+#version 430
 
 //Structures
 
@@ -101,8 +101,8 @@ void main(){
 
 
 	//SHADOWS
-	float bias = 0.001;
-	float visibility = texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z));
+	float bias = 0.0005;
+	float visibility =  texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z-bias));
 	
 
 	

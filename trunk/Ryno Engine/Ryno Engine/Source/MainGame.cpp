@@ -168,7 +168,7 @@ namespace Ryno{
 				p->set_diffuse_color(255, 200, 0);
 				p->diffuse_intensity = 30;
 				p->attenuation = .1;
-				p->specular_intensity = 10;
+				p->specular_intensity = 1;
 				p->set_specular_color(255, 200, 0);
 				p->set_program(&m_program_spot);
 				spot_lights.push_back(p);
@@ -296,7 +296,7 @@ namespace Ryno{
 			b += 0.5;
 			
 			l->set_direction(-45,b);
-			p->set_direction(-45,b);
+			p->set_direction(b,b);
 		}
 
 

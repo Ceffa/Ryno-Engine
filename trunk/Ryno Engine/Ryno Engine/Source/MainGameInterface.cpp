@@ -16,7 +16,6 @@ namespace Ryno{
 		}
 
 		SDL_ShowCursor(GL_FALSE);
-	
 
 		SDL_GLContext gl_context;
 		if ((gl_context = SDL_GL_CreateContext(m_window)) = nullptr){
