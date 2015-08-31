@@ -296,7 +296,7 @@ namespace Ryno{
 	
 		glm::vec3 temp_pos = glm::vec3(s->position.x, s->position.y, -s->position.z);
 		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
-		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(s->max_radius, s->max_radius, s->max_radius));
+		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(width, s->max_radius, width));
 		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), temp_pos);
 		glm::mat4 rot_box = glm::toMat4(glm::quat(glm::vec3(0, -s->yaw -M_HALF_PI,0)) * glm::quat(glm::vec3(s->pitch,0, 0)));
 	
