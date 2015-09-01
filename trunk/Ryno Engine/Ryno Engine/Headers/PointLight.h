@@ -10,9 +10,7 @@ namespace Ryno{
 		PointLight();
 		~PointLight(){}
 
-		void send_uniforms(Camera3D* camera) override;
-		void get_uniforms_locations() override;
-
+	
 		void set_position(F32 x, F32 y, F32 z){
 			position.x = x;
 			position.y = y;

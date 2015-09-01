@@ -35,10 +35,6 @@ namespace Ryno{
 		DirectionalLight* l;
 		SpotLight* p;
 		PointLight* s;
-		DeferredRenderer* m_deferred_renderer;
-		GLSLProgram m_program_geometry, m_program_dir, m_program_point, m_program_spot, m_program_flat;
-
-		GLuint vao, vbo;
-
+	
 	};
 }

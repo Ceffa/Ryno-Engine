@@ -10,7 +10,6 @@
 #include "TimeManager.h"
 #include "InputManager.h"
 #include "AudioManager.h"
-#include "SimpleDrawer.h"
 #include "Log.h"
 //other
 #include "Global.h"
@@ -19,6 +18,8 @@
 #include "Batch3DGeometry.h"
 #include "Batch3DShadow.h"
 #include "Camera3D.h"
+#include "SimpleDrawer.h"
+#include "DeferredRenderer.h"
 
 
 namespace Ryno{
@@ -63,6 +64,8 @@ namespace Ryno{
 		TextureManager* m_texture_manager;
 		MeshManager* m_mesh_manager;
 		SimpleDrawer* m_simple_drawer;
+		DeferredRenderer* m_deferred_renderer;
+
 		Camera3D* m_camera;
 		GameState m_game_state;
 		SDL_Window* m_window;

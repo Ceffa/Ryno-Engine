@@ -14,13 +14,10 @@ namespace Ryno{
 	void MainGame::start(){
 		CPUProfiler::begin();
 		CPUProfiler::start_time();
+
 		//initializations
-		m_simple_drawer = SimpleDrawer::get_instance();
 		m_camera->position = glm::vec4(0, 30, -50, 1);
-		m_geometry_batch3d->init(m_camera);
-		m_shadow_batch3d->init(m_camera);
-		m_deferred_renderer = new DeferredRenderer();
-		m_deferred_renderer->init(m_camera);
+		
 
 		CPUProfiler::next_time();
 
@@ -57,48 +54,7 @@ namespace Ryno{
 
 		CPUProfiler::next_time();
 
-		//initialize programs
-		m_program_geometry.create("geometry",1,0,1);
-		m_program_dir.create("lighting_directional",1,0,1);
-		m_program_point.create("lighting_point",1,0,1);
-		m_program_spot.create("lighting_spot", 1, 0, 1);
-
-		m_program_flat.create("flat",1,0,1);
-
-		m_program_geometry.use();
-		glUniform1i(m_program_geometry.getUniformLocation("texture_sampler"), 0);
-		glUniform1i(m_program_geometry.getUniformLocation("normal_map_sampler"), 1);
-		m_program_geometry.unuse();
-
-		m_program_dir.use();
-		glUniform1i(m_program_dir.getUniformLocation("screen_width"), WINDOW_WIDTH);
-		glUniform1i(m_program_dir.getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(m_program_dir.getUniformLocation("g_color_tex"), 0);
-		glUniform1i(m_program_dir.getUniformLocation("g_normal_tex"), 1);
-		glUniform1i(m_program_dir.getUniformLocation("g_depth_tex"), 2);
-		glUniform1i(m_program_dir.getUniformLocation("shadow_tex"), 3);
-
-		m_program_spot.use();
-		glUniform1i(m_program_spot.getUniformLocation("screen_width"), WINDOW_WIDTH);
-		glUniform1i(m_program_spot.getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(m_program_spot.getUniformLocation("g_color_tex"), 0);
-		glUniform1i(m_program_spot.getUniformLocation("g_normal_tex"), 1);
-		glUniform1i(m_program_spot.getUniformLocation("g_depth_tex"), 2);
-		glUniform1i(m_program_spot.getUniformLocation("shadow_tex"), 3);
-
-
-
-		m_program_point.use();
-		glUniform1i(m_program_point.getUniformLocation("screen_width"), WINDOW_WIDTH);
-		glUniform1i(m_program_point.getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(m_program_point.getUniformLocation("g_color_tex"), 0);
-		glUniform1i(m_program_point.getUniformLocation("g_normal_tex"), 1);
-		glUniform1i(m_program_point.getUniformLocation("g_depth_tex"), 2);
-		glUniform1i(m_program_point.getUniformLocation("shadow_cube"), 3);
-
-
-
-		m_program_point.unuse();
+		
 
 
 
@@ -170,7 +126,6 @@ namespace Ryno{
 				p->attenuation = .1;
 				p->specular_intensity = 1;
 				p->set_specular_color(255, 200, 0);
-				p->set_program(&m_program_spot);
 				spot_lights.push_back(p);
 
 				s = new PointLight();
@@ -180,7 +135,6 @@ namespace Ryno{
 				s->attenuation = .1;
 				s->specular_intensity = 1;
 				s->set_specular_color(255, 200, 0);
-				s->set_program(&m_program_point);
 				point_lights.push_back(s);
 				
 				l = new DirectionalLight();
@@ -191,7 +145,6 @@ namespace Ryno{
 				l->set_specular_color(255, 200, 0);
 				l->ambient_intensity = .1;
 				l->set_ambient_color(255, 200, 0);
-				l->set_program(&m_program_dir);
 
 
 		
@@ -460,7 +413,7 @@ namespace Ryno{
 		m_geometry_batch3d->end();
 
 	
-		m_deferred_renderer->geometry_pass(m_geometry_batch3d, &m_program_geometry);
+		m_deferred_renderer->geometry_pass(m_geometry_batch3d);
 
 
 		//shadow batch
@@ -493,10 +446,7 @@ namespace Ryno{
 	}
 
 	void MainGame::end(){
-		m_program_geometry.destroy();
-		m_program_dir.destroy();
-		m_program_point.destroy();
-		m_program_flat.destroy();
+	
 		m_deferred_renderer->destroy();
 	}
 }

@@ -24,40 +24,112 @@ namespace Ryno{
 	//Initialize deferred rendering
 	void DeferredRenderer::init(Camera3D* camera){
 
+		//GENERAL SETUP
 		m_camera = camera;
 		m_mesh_manager = MeshManager::get_instance();
 		m_texture_manager = TextureManager::get_instance();
 		m_simple_drawer = SimpleDrawer::get_instance();
 		m_fbo_deferred = new FBO_Deferred(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_fbo_shadow = new FBO_Shadow(WINDOW_WIDTH, WINDOW_HEIGHT);
-		m_null_program = new GLSLProgram();
-		m_null_program->create("null",1,0,1);
-		m_skybox_program = new GLSLProgram();
-		m_skybox_program->create("skybox",1,0,1);
-		m_directional_shadow_program = new GLSLProgram();
-		m_directional_shadow_program->create("shadow_directional",1,0,1);
+
+		//PROGRAMS SETUP
+		//Geometry program
+
+		m_geometry_program = new GLSLProgram();
+		m_geometry_program->create("geometry", 1, 0, 1);
+		m_geometry_program->use();
+		glUniform1i(m_geometry_program->getUniformLocation("texture_sampler"), 0);
+		glUniform1i(m_geometry_program->getUniformLocation("normal_map_sampler"), 1);
+		m_geometry_program->unuse();
+
+		//Point shadow program
 		m_point_shadow_program = new GLSLProgram();
-		m_point_shadow_program->create("shadow_point",1,1,1);
+		m_point_shadow_program->create("shadow_point", 1, 1, 1);
+	
+		//Point light program
+		m_point_lighting_program = new GLSLProgram();
+		m_point_lighting_program->create("lighting_point", 1, 0, 1);
+		m_point_lighting_program->use();
+		glUniform1i(m_point_lighting_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
+		glUniform1i(m_point_lighting_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
+		glUniform1i(m_point_lighting_program->getUniformLocation("g_color_tex"), 0);
+		glUniform1i(m_point_lighting_program->getUniformLocation("g_normal_tex"), 1);
+		glUniform1i(m_point_lighting_program->getUniformLocation("g_depth_tex"), 2);
+		glUniform1i(m_point_lighting_program->getUniformLocation("shadow_cube"), 3);
+		point_uni_loc.position = m_point_lighting_program->getUniformLocation("point_light.position_and_attenuation");
+		point_uni_loc.diffuse = m_point_lighting_program->getUniformLocation("point_light.diffuse");
+		point_uni_loc.specular = m_point_lighting_program->getUniformLocation("point_light.specular");
+		m_point_lighting_program->unuse();
+
+		//Spot shadow program
 		m_spot_shadow_program = new GLSLProgram();
 		m_spot_shadow_program->create("shadow_spot", 1, 0, 1);
 
+		//Spot lighting program
+		m_spot_lighting_program = new GLSLProgram();
+		m_spot_lighting_program->create("lighting_spot", 1, 0, 1);
+		m_spot_lighting_program->use();
+		glUniform1i(m_spot_lighting_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
+		glUniform1i(m_spot_lighting_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
+		glUniform1i(m_spot_lighting_program->getUniformLocation("g_color_tex"), 0);
+		glUniform1i(m_spot_lighting_program->getUniformLocation("g_normal_tex"), 1);
+		glUniform1i(m_spot_lighting_program->getUniformLocation("g_depth_tex"), 2);
+		glUniform1i(m_spot_lighting_program->getUniformLocation("shadow_tex"), 3);
+		spot_uni_loc.position = m_spot_lighting_program->getUniformLocation("spot_light.position_and_attenuation");
+		spot_uni_loc.direction = m_spot_lighting_program->getUniformLocation("spot_light.direction_and_cutoff");
+		spot_uni_loc.diffuse = m_spot_lighting_program->getUniformLocation("spot_light.diffuse");
+		spot_uni_loc.specular = m_spot_lighting_program->getUniformLocation("spot_light.specular");
+		m_spot_lighting_program->unuse();
+
+		//Directional shadow program
+		m_directional_shadow_program = new GLSLProgram();
+		m_directional_shadow_program->create("shadow_directional", 1, 0, 1);
+	
+		//Directional light program
+		m_directional_lighting_program = new GLSLProgram();
+		m_directional_lighting_program->create("lighting_directional", 1, 0, 1);
+		m_directional_lighting_program->use();
+		glUniform1i(m_directional_lighting_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
+		glUniform1i(m_directional_lighting_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
+		glUniform1i(m_directional_lighting_program->getUniformLocation("g_color_tex"), 0);
+		glUniform1i(m_directional_lighting_program->getUniformLocation("g_normal_tex"), 1);
+		glUniform1i(m_directional_lighting_program->getUniformLocation("g_depth_tex"), 2);
+		glUniform1i(m_directional_lighting_program->getUniformLocation("shadow_tex"), 3);
+		directional_uni_loc.direction = m_directional_lighting_program->getUniformLocation("dir_light.direction");
+		directional_uni_loc.diffuse = m_directional_lighting_program->getUniformLocation("dir_light.diffuse");
+		directional_uni_loc.specular = m_directional_lighting_program->getUniformLocation("dir_light.specular");
+		directional_uni_loc.ambient = m_directional_lighting_program->getUniformLocation("dir_light.ambient");
+		m_directional_lighting_program->unuse();
+
+
+		//Skybox program 
+		m_skybox_program = new GLSLProgram();
+		m_skybox_program->create("skybox",1,0,1);
+		
+		//Blit program
 		m_blit_program = new GLSLProgram();
 		m_blit_program->create("blit",1,0,1);
 		m_blit_program->use();
 		glUniform1i(m_blit_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_blit_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
 		glUniform1i(m_blit_program->getUniformLocation("source_buffer"), 0);
+		m_blit_program->unuse();
 
+
+		//MODEL LOADING
 		m_bounding_sphere = new Model();
+		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE_FOLDER);
+
 		m_bounding_pyramid = new Model();
+		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE_FOLDER);
+
 		m_fullscreen_quad = new Model();
+		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE_FOLDER);
+
 		m_cube_box = new Model();
 		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube",false,ENGINE_FOLDER);
-		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere",false,ENGINE_FOLDER);
-		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false,ENGINE_FOLDER);
 
-		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false,ENGINE_FOLDER);
-
+		//BIAS MATRIX
 		bias = glm::mat4(
 			0.5, 0.0, 0.0, 0.0,
 			0.0, 0.5, 0.0, 0.0,
@@ -82,7 +154,7 @@ namespace Ryno{
 	}
 
 	//Call before drawing geometry
-	void DeferredRenderer::geometry_pass(Batch3DGeometry* batch, GLSLProgram* program){
+	void DeferredRenderer::geometry_pass(Batch3DGeometry* batch){
 
 		m_fbo_deferred->bind_for_geometry_pass();
 
@@ -90,12 +162,12 @@ namespace Ryno{
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		program->use();
-		//Setup geometry program
-		glUniformMatrix4fv(program->getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
-		glUniformMatrix4fv(program->getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_VP_matrix()[0][0]);
+		m_geometry_program->use();
+		//Setup geometry m_geometry_program
+		glUniformMatrix4fv(m_geometry_program->getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
+		glUniformMatrix4fv(m_geometry_program->getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_VP_matrix()[0][0]);
 		batch->render_batch();
-		program->unuse();
+		m_geometry_program->unuse();
 	}
 
 	
@@ -209,15 +281,20 @@ namespace Ryno{
 
 		MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box;
 
-		p->program->use();
-		p->send_uniforms(m_camera);
-		glUniform1f(p->program->getUniformLocation("max_fov"),p->max_radius);
-		glUniformMatrix4fv(p->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
-		glUniformMatrix4fv(p->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
-		glUniformMatrix4fv(p->program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
-		glUniformMatrix4fv(p->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
+		m_point_lighting_program->use();
+		//SEND POINT LIGHT UNIFORMS
+		glUniform4f(point_uni_loc.position, p->position.x, p->position.y, -p->position.z, p->attenuation);
+		glUniform4f(point_uni_loc.diffuse, p->diffuse_color.r / 256.0f, p->diffuse_color.g / 256.0f, p->diffuse_color.b / 256.0f, p->diffuse_intensity);
+		glUniform4f(point_uni_loc.specular, p->specular_color.r / 256.0f, p->specular_color.g / 256.0f, p->specular_color.b / 256.0f, p->specular_intensity);
+		
+		//SEND OTHER UNIFORMS
+		glUniform1f(m_point_lighting_program->getUniformLocation("max_fov"), p->max_radius);
+		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
+		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
+		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
 		m_simple_drawer->draw(m_bounding_sphere);
-		p->program->unuse();
+		m_point_lighting_program->unuse();
 
 		glDisable(GL_BLEND);
 		//glDisable(GL_STENCIL_TEST);
@@ -283,7 +360,6 @@ namespace Ryno{
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_spot_lighting_pass();
 
-		//glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
@@ -303,21 +379,25 @@ namespace Ryno{
 		MVP_camera = m_camera->get_VP_matrix() * trans_box * rot_box  * scale_box;
 
 
-		s->program->use();
-		s->send_uniforms(m_camera);
+		m_spot_lighting_program->use();
+		//SEND SPOT LIGHT UNIFORMS
+		glUniform4f(spot_uni_loc.position, s->position.x, s->position.y, -s->position.z, s->attenuation);
+		glUniform4f(spot_uni_loc.direction, s->direction.x, s->direction.y, s->direction.z, cos(s->cutoff * DEG_TO_RAD));
+		glUniform4f(spot_uni_loc.diffuse, s->diffuse_color.r / 256.0f, s->diffuse_color.g / 256.0f, s->diffuse_color.b / 256.0f, s->diffuse_intensity);
+		glUniform4f(spot_uni_loc.specular, s->specular_color.r / 256.0f, s->specular_color.g / 256.0f, s->specular_color.b / 256.0f, s->specular_intensity);
+
+		//SEND OTHER UNIFORMS
 		glm::mat4 biased_light_VP_matrix = bias * spot_VP_matrix;
-		glUniformMatrix4fv(s->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &biased_light_VP_matrix[0][0]);
-		glUniformMatrix4fv(s->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
-		glUniformMatrix4fv(s->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
-		glUniformMatrix4fv(s->program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
-		glUniformMatrix4fv(s->program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
-		//glUniform1f(spot_light->program->getUniformLocation("max_fov"), spot_light->max_radius);
+		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &biased_light_VP_matrix[0][0]);
+		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
+		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
+		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
 
 		m_simple_drawer->draw(m_bounding_pyramid);
-		s->program->unuse();
+		m_spot_lighting_program->unuse();
 
 		glDisable(GL_BLEND);
-		//glDisable(GL_STENCIL_TEST);
 	}
 
 	
@@ -353,7 +433,7 @@ namespace Ryno{
 	}
 
 	//Apply diretional light
-	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* directional_light)
+	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* d)
 	{
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_directional_lighting_pass();
@@ -367,26 +447,33 @@ namespace Ryno{
 		
 		glm::mat4 dir_light_VPB = bias * directional_light_VP;
 
-		directional_light->program->use();
-		glUniformMatrix4fv(directional_light->program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &dir_light_VPB[0][0]);
-		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
-		glUniformMatrix4fv(directional_light->program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+		glm::vec3 dir_in_view_space = glm::vec3(glm::transpose(glm::inverse(m_camera->get_V_matrix()))*
+			glm::vec4(d->direction, 0));
 
+		m_directional_lighting_program->use();
+		//SEND DIR LIGHT UNIFORMS
+		glUniform3f(directional_uni_loc.direction, dir_in_view_space.x, dir_in_view_space.y, dir_in_view_space.z);
+		glUniform4f(directional_uni_loc.diffuse, d->diffuse_color.r / 256.0f, d->diffuse_color.g / 256.0f, d->diffuse_color.b / 256.0f, d->diffuse_intensity);
+		glUniform4f(directional_uni_loc.specular, d->specular_color.r / 256.0f, d->specular_color.g / 256.0f, d->specular_color.b / 256.0f, d->specular_intensity);
+		glUniform4f(directional_uni_loc.ambient, d->ambient_color.r / 256.0f, d->ambient_color.g / 256.0f, d->ambient_color.b / 256.0f, d->ambient_intensity);
 
+		//SEND OTHER UNIFORMS
+		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &dir_light_VPB[0][0]);
+		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
+		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
 
 
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_ONE, GL_ONE);
 
-		directional_light->send_uniforms(m_camera);
 		m_simple_drawer->draw(m_fullscreen_quad);
 
 		glDisable(GL_BLEND);
 
 
 		//The draw is done, unuse the program
-		directional_light->program->unuse();
+		m_directional_lighting_program->unuse();
 	}
 
 	void DeferredRenderer::skybox_pass(){
@@ -450,9 +537,20 @@ namespace Ryno{
 		delete m_fbo_shadow;
 		delete m_bounding_sphere;
 		delete m_fullscreen_quad;
-		m_null_program->destroy();
 		m_blit_program->destroy();
+		m_geometry_program->destroy();
+		m_skybox_program->destroy();
 		m_directional_shadow_program->destroy();
+		m_directional_lighting_program->destroy();
+		m_point_shadow_program->destroy();
+		m_point_lighting_program->destroy();
+		m_spot_shadow_program->destroy();
+		m_spot_lighting_program->destroy();
+		m_directional_shadow_program->destroy();
+		m_directional_lighting_program->destroy();
+
+
+
 	}
 
 

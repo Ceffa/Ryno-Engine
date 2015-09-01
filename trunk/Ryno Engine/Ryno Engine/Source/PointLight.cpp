@@ -8,22 +8,7 @@ namespace Ryno{
 	
 
 
-	void PointLight::send_uniforms(Camera3D* camera){
-
-		glUniform4f(locations.position, position.x, position.y, -position.z,attenuation);
-		glUniform4f(locations.diffuse, diffuse_color.r/256.0f ,diffuse_color.g/256.0f,diffuse_color.b/256.0f,diffuse_intensity);
-		glUniform4f(locations.specular, specular_color.r/256.0f, specular_color.g/256.0f, specular_color.b/256.0f,specular_intensity);
-
-	}
-
-
-	void PointLight::get_uniforms_locations()
-	{
-		locations.position = program->getUniformLocation("point_light.position_and_attenuation");
-		locations.diffuse = program->getUniformLocation("point_light.diffuse");
-		locations.specular = program->getUniformLocation("point_light.specular");
-	}
-
+	
 	void PointLight::calculate_max_radius()
 	{
 		//Get the max radius as the max between the specular and the diffuse one

@@ -11,11 +11,8 @@ namespace Ryno{
 		DirectionalLight();
 		~DirectionalLight(){}
 
-		glm::vec3 move_to_view_space(Camera3D* camera);
 		
-		void send_uniforms(Camera3D* camera) override;
-		void get_uniforms_locations() override;
-
+	
 		void set_direction(F32 p, F32 y);
 
 		void set_ambient_color(U8 r, U8 g, U8 b);

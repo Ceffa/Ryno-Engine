@@ -45,10 +45,19 @@ namespace Ryno{
 		m_time_manager.init(60);
 		m_input_manager.init(m_window);
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
+
 		m_geometry_batch3d = new Batch3DGeometry();
 		m_shadow_batch3d = new Batch3DShadow();
+		m_geometry_batch3d->init(m_camera);
+		m_shadow_batch3d->init(m_camera);
+
 	    m_texture_manager = TextureManager::get_instance();
 		m_mesh_manager = MeshManager::get_instance();
+		m_deferred_renderer = new DeferredRenderer();
+		m_deferred_renderer->init(m_camera);
+		m_simple_drawer = SimpleDrawer::get_instance();
+		
+		
 				
 	}
 

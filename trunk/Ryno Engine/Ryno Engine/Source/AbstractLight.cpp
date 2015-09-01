@@ -2,12 +2,7 @@
 
 namespace Ryno{
 
-	void AbstractLight::set_program(GLSLProgram* _program)
-	{
-		program = _program;
-		get_uniforms_locations();
-	}
-
+	
 	void AbstractLight::set_diffuse_color(U8 r, U8 g, U8 b){
 		diffuse_color.set_color(r, g, b);
 	}

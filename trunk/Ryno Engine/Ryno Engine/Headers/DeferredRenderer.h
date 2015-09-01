@@ -24,6 +24,26 @@ namespace Ryno{
 		glm::vec3 Up;
 	};
 
+	struct directional_uniforms_locations{
+		I32 direction;
+		I32 diffuse;
+		I32 specular;
+		I32 ambient;
+	} ;
+
+	struct point_uniforms_locations{
+		I32 position;
+		I32 diffuse;
+		I32 specular;
+	};
+
+	struct spot_uniforms_locations{
+		I32 position;
+		I32 direction;
+		I32 diffuse;
+		I32 specular;
+	};
+
 	
 	
 	class DeferredRenderer{
@@ -35,7 +55,7 @@ namespace Ryno{
 		void init_frame();
 
 		//Call before drawing geometry
-		void geometry_pass(Batch3DGeometry* batch, GLSLProgram* program);
+		void geometry_pass(Batch3DGeometry* batch);
 
 		//Skybox pass. Not sure where to use yet
 		void skybox_pass();
@@ -91,7 +111,9 @@ namespace Ryno{
 		FBO_Deferred* m_fbo_deferred;
 		FBO_Shadow* m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
-		GLSLProgram* m_null_program, *m_skybox_program, *m_directional_shadow_program, *m_spot_shadow_program, *m_point_shadow_program, *m_blit_program;
+		GLSLProgram *m_skybox_program, *m_directional_shadow_program, *m_spot_shadow_program, *m_point_shadow_program, *m_blit_program
+			, *m_geometry_program, *m_directional_lighting_program, *m_point_lighting_program, *m_spot_lighting_program, *m_flat_program;
+		
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
 		Model* m_bounding_sphere, *m_fullscreen_quad, *m_cube_box, *m_bounding_pyramid;
@@ -102,6 +124,9 @@ namespace Ryno{
 		glm::mat4 directional_light_VP;
 		glm::mat4 bias;
 		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 
+		spot_uniforms_locations spot_uni_loc;
+		point_uniforms_locations point_uni_loc;
+		directional_uniforms_locations directional_uni_loc;
 		
 
 	};
