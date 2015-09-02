@@ -51,13 +51,16 @@ namespace Ryno{
 
 		virtual void draw() = 0;
 
-		virtual void end() = 0;
+		void end();
 
 		void exit_game();
 
 
 		U32 vao, vbo;
 
+
+		SDL_Joystick *game_controller;
+	
 		AudioManager m_audio_manager;
 		InputManager m_input_manager;
 		TimeManager m_time_manager;

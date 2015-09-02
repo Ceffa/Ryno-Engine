@@ -197,26 +197,26 @@ namespace Ryno{
 	
 	void MainGame::input(){
 
-		if (m_input_manager.is_key_down(SDLK_d)){
+		if (m_input_manager.is_key_down(SDLK_d, KEYBOARD)){
 			m_camera->move_right(3.0f);
 
 		}
-		if (m_input_manager.is_key_down(SDLK_a)){
+		if (m_input_manager.is_key_down(SDLK_a, KEYBOARD)){
 			m_camera->move_left(3.0f);
 		}
-		if (m_input_manager.is_key_down(SDLK_w) || m_input_manager.is_key_down(SDL_BUTTON_LEFT)){
+		if (m_input_manager.is_key_down(SDLK_w, KEYBOARD) || m_input_manager.is_key_down(SDL_BUTTON_LEFT, MOUSE)){
 			m_camera->move_forward(3.0f);
 		}
-		if (m_input_manager.is_key_down(SDLK_s) || m_input_manager.is_key_down(SDL_BUTTON_RIGHT)){
+		if (m_input_manager.is_key_down(SDLK_s, KEYBOARD) || m_input_manager.is_key_down(SDL_BUTTON_RIGHT, MOUSE)){
 			m_camera->move_back(3.0f);
 		}
-		if (m_input_manager.is_key_pressed(SDLK_c)){
+		if (m_input_manager.is_key_pressed(SDLK_c, KEYBOARD)){
 			swap_curve = !swap_curve;
 		}
 	
 	
 		
-		if (m_input_manager.is_key_down(SDLK_LEFT)){
+		if (m_input_manager.is_key_down(SDLK_LEFT, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				l->position.x -= 3;
 
@@ -229,7 +229,7 @@ namespace Ryno{
 				s->position.x -= 3;
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_RIGHT)){
+		if (m_input_manager.is_key_down(SDLK_RIGHT, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				l->position.x += 3;
 
@@ -242,7 +242,7 @@ namespace Ryno{
 				s->position.x += 3;
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_b)){
+		if (m_input_manager.is_key_down(SDLK_b, KEYBOARD)){
 			static float a = 0;
 			static float b = 0;
 			a += 0.5;
@@ -253,7 +253,7 @@ namespace Ryno{
 		}
 
 
-		if (m_input_manager.is_key_down(SDLK_n)){
+		if (m_input_manager.is_key_down(SDLK_n, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				l->position.z -= 3;
 
@@ -267,7 +267,7 @@ namespace Ryno{
 				s->position.z -= 3;
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_m)){
+		if (m_input_manager.is_key_down(SDLK_m, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				l->position.z += 3;
 
@@ -280,7 +280,7 @@ namespace Ryno{
 				s->position.z += 3;
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_UP)){
+		if (m_input_manager.is_key_down(SDLK_UP, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				l->position.y += 3;
 
@@ -293,7 +293,7 @@ namespace Ryno{
 				s->position.y += 3;
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_DOWN)){
+		if (m_input_manager.is_key_down(SDLK_DOWN, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				l->position.y -= 3;
 
@@ -307,7 +307,7 @@ namespace Ryno{
 				s->position.y -= 3;
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_o)){
+		if (m_input_manager.is_key_down(SDL_CONTROLLER_BUTTON_B, CONTROLLER)){
 			for (SpotLight* l : spot_lights){
 				
 				l->diffuse_intensity += 1;
@@ -318,7 +318,7 @@ namespace Ryno{
 
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_p)){
+		if (m_input_manager.is_key_down(SDLK_p, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				if (l->diffuse_intensity > 0)
 				l->diffuse_intensity -= 1;
@@ -330,7 +330,7 @@ namespace Ryno{
 
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_k)){
+		if (m_input_manager.is_key_down(SDLK_k, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				l->specular_intensity += 3;
 
@@ -340,7 +340,7 @@ namespace Ryno{
 
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_l)){
+		if (m_input_manager.is_key_down(SDLK_l, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				if (l->specular_intensity > 0)
 				l->specular_intensity -= 3;
@@ -353,7 +353,7 @@ namespace Ryno{
 			}
 		}
 
-		if (m_input_manager.is_key_down(SDLK_1)){
+		if (m_input_manager.is_key_down(SDLK_1, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				l->cutoff -= 1;
 				if (l->cutoff < 5)
@@ -361,7 +361,7 @@ namespace Ryno{
 			}
 		}
 
-		if (m_input_manager.is_key_down(SDLK_2)){
+		if (m_input_manager.is_key_down(SDLK_2, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				l->cutoff += 1;
 				if (l->cutoff > 60)
@@ -370,8 +370,14 @@ namespace Ryno{
 		}
 
 
+
 		glm::vec2 mouse_coords = m_input_manager.get_mouse_movement();
-		m_camera->rotate(.005f* mouse_coords.x, .005f* mouse_coords.y);
+		m_camera->rotate(0.005f * mouse_coords.x, 0.005f* mouse_coords.y);
+		glm::vec2 rotation_view = m_input_manager.get_controller_RX_coords();
+		m_camera->rotate(0.05f * rotation_view.x, 0.05f* rotation_view.y);
+		glm::vec2 direction = m_input_manager.get_controller_LX_coords();
+		m_camera->move_forward(5.0f * -direction.y);
+		m_camera->move_right(5.0f * direction.x);
 
 	}
 
@@ -446,7 +452,8 @@ namespace Ryno{
 	}
 
 	void MainGame::end(){
-	
-		m_deferred_renderer->destroy();
+		
+		MainGameInterface::end();
+		
 	}
 }

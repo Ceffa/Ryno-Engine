@@ -15,7 +15,16 @@ namespace Ryno{
 			Log::FatalError("Failed to create SDL window: ", SDL_GetError());
 		}
 
+		//MOUSE INITIALIZATIONS
 		SDL_ShowCursor(GL_FALSE);
+
+		//JOYSTICK INITIALIZATIONS
+		SDL_Joystick *joy;
+		if (SDL_NumJoysticks() > 0){
+			joy = SDL_JoystickOpen(0);
+			SDL_JoystickEventState(SDL_ENABLE);
+		}
+
 
 		SDL_GLContext gl_context;
 		if ((gl_context = SDL_GL_CreateContext(m_window)) = nullptr){
@@ -79,6 +88,12 @@ namespace Ryno{
 		exit_game();
 
 
+	}
+
+	void MainGameInterface::end()
+	{
+		SDL_JoystickClose(game_controller);
+		m_deferred_renderer->destroy();
 	}
 
 	void MainGameInterface::exit_game(){

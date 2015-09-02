@@ -1,4 +1,7 @@
 #include "InputManager.h"
+#include <iostream>
+#include <string>
+
 
 namespace Ryno {
 
@@ -33,21 +36,36 @@ namespace Ryno {
 
 				break;
 			case SDL_KEYDOWN:
-				key_press(evnt.key.keysym.sym);
+				key_press(evnt.key.keysym.sym , KEYBOARD);
 				break;
 			case SDL_KEYUP:
-				key_release(evnt.key.keysym.sym);
+				key_release(evnt.key.keysym.sym , KEYBOARD);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				key_press(evnt.button.button);
+				key_press(evnt.button.button , MOUSE);
 				break;
 			case SDL_MOUSEBUTTONUP:
-				key_release(evnt.button.button);
+				key_release(evnt.button.button , MOUSE);
 				break;
-		
+			case SDL_JOYBUTTONDOWN:  /* Handle Joystick Button Presses */
+				key_press(evnt.jbutton.button , CONTROLLER);
+				break;
+			case SDL_JOYBUTTONUP:  /* Handle Joystick Button Presses */
+				key_release(evnt.jbutton.button , CONTROLLER);
+				break;
+			case SDL_JOYAXISMOTION:
+				
+				switch (evnt.jaxis.axis){
+				case 0: set_controller_axis_coord(&m_controller_LX_coords.x, evnt.jaxis.value); break;
+				case 1: set_controller_axis_coord(&m_controller_LX_coords.y, evnt.jaxis.value); break;
+				case 2: set_controller_axis_coord(&m_controller_RX_coords.x, evnt.jaxis.value); break;
+				case 5: set_controller_axis_coord(&m_controller_RX_coords.y, evnt.jaxis.value); break;
+				}
+				
+					
 			}
 		}
-		if (is_key_pressed(SDLK_ESCAPE))exit = !exit;
+		if (is_key_pressed(SDLK_ESCAPE,KEYBOARD))exit = !exit;
 		if(!exit)SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
 
 		return Input::OK;
@@ -62,14 +80,15 @@ namespace Ryno {
 		
 	}
 
-	void InputManager::key_press(U32 keyID) {
+	void InputManager::key_press(U32 keyID, InputDevice device) {
 		// Here we are treating _keyMap as an associative array.
 		// if keyID doesn't already exist in _keyMap, it will get added
-		m_key_map[keyID] = true;
+		std::cout << keyID << std::endl;
+		m_key_map[keyID + device] = true;
 	}
 
-	void InputManager::key_release(U32 keyID) {
-		m_key_map[keyID] = false;
+	void InputManager::key_release(U32 keyID, InputDevice device) {
+		m_key_map[keyID+device] = false;
 	}
 
 	void InputManager::set_mouse_coords(F32 x, F32 y) {
@@ -80,11 +99,19 @@ namespace Ryno {
 
 	
 
-	U8 InputManager::is_key_down(U32 keyID) {
+	void InputManager::set_controller_axis_coord(F32* axis, I32 value)
+	{
+		
+		*axis = abs(value) <  CONTROLLER_DEADZONE ? 0 : (F32)value / (F32)CONTROLLER_RANGE;
+		
+	}
+
+
+	U8 InputManager::is_key_down(U32 keyID, InputDevice device) {
 		// We dont want to use the associative array approach here
 		// because we don't want to create a key if it doesnt exist.
 		// So we do it manually
-		auto it = m_key_map.find(keyID);
+		auto it = m_key_map.find(keyID + device);
 		if (it != m_key_map.end()) {
 			// Found the key
 			return it->second;
@@ -95,19 +122,19 @@ namespace Ryno {
 		}
 	}
 
-	U8 InputManager::is_key_pressed(U32 keyID) {
+	U8 InputManager::is_key_pressed(U32 keyID,InputDevice device) {
 		// Check if it is pressed this frame, and wasn't pressed last frame
-		if (is_key_down(keyID) == true && was_key_down(keyID) == false) {
+		if (is_key_down(keyID,device) == true && was_key_down(keyID,device) == false) {
 			return true;
 		}
 		return false;
 	}
 
-	U8 InputManager::was_key_down(U32 keyID) {
+	U8 InputManager::was_key_down(U32 keyID, InputDevice device) {
 		// We dont want to use the associative array approach here
 		// because we don't want to create a key if it doesnt exist.
 		// So we do it manually
-		auto it = m_previous_key_map.find(keyID);
+		auto it = m_previous_key_map.find(keyID + device);
 		if (it != m_previous_key_map.end()) {
 			// Found the key
 			return it->second;

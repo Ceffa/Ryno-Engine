@@ -44,11 +44,18 @@ namespace Ryno{
 	void Camera3D::move_forward(F32 speed){
 		position += speed* glm::vec4(sin(yaw), -sin(pitch), cos(yaw),0);
 		
+	}
+
+	void Camera3D::move_relative_to_view(F32 speed, glm::vec2 coords){
 		
+		F32 total_speed = sqrt(coords.x * coords.x + coords.y * coords.y);
+		move_forward(speed * -coords.y / total_speed);
+		move_right(speed * coords.x / total_speed);
 
 	}
+
 	void Camera3D::move_right(F32 speed){
-		position += speed* glm::vec4(cos(yaw),0,-sin(yaw),0);
+		position += speed* glm::vec4(cos(yaw), 0, -sin(yaw), 0);
 
 	}
 	void Camera3D::move_back(F32 speed){

@@ -13,7 +13,7 @@ namespace Ryno{
 		void input() override;
 		void update() override;
 		void draw() override;
-		void end() override;
+		void end();
 		
 		bool swap_curve = false;
 		bool just_played = false;
