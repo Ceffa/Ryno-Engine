@@ -16,7 +16,7 @@ namespace Ryno{
 		CPUProfiler::start_time();
 
 		//initializations
-		m_camera->position = glm::vec4(0, 30, -50, 1);
+		m_camera->position = glm::vec4(0,150,-500, 1);
 		
 
 		CPUProfiler::next_time();
@@ -26,16 +26,16 @@ namespace Ryno{
 		U32 white_normal = m_texture_manager->loadPNG("normal_pixel", GAME_FOLDER);
 		U32 texture_bricks = m_texture_manager->loadPNG("pack/177", GAME_FOLDER);
 		U32 normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm", GAME_FOLDER);
-		U32 texture_red_wall = m_texture_manager->loadPNG("pack/178", GAME_FOLDER);
-		U32 normal_map_red_wall = m_texture_manager->loadPNG("pack/178_norm", GAME_FOLDER);
-		U32 texture_wood = m_texture_manager->loadPNG("pack/196", GAME_FOLDER);
-		U32 normal_map_wood = m_texture_manager->loadPNG("pack/196_norm", GAME_FOLDER);
-
+		U32 at = m_texture_manager->loadPNG("pack/196", GAME_FOLDER);
+		U32 an = m_texture_manager->loadPNG("pack/196_norm", GAME_FOLDER);
+		U32 bt = m_texture_manager->loadPNG("pack/161", GAME_FOLDER);
+		U32 bn = m_texture_manager->loadPNG("pack/161_norm", GAME_FOLDER);
 		CPUProfiler::next_time();
 
 		//loading models
 		cube_mesh = m_mesh_manager->load_mesh("cube", 1, GAME_FOLDER);
 		I32 sphere_model = m_mesh_manager->load_mesh("sphere", 1, GAME_FOLDER);
+		I32 cone_mesh = m_mesh_manager->load_mesh("cone", 1, GAME_FOLDER);
 
 		CPUProfiler::next_time();
 
@@ -65,46 +65,55 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//Build the environnement
-		//Build the environnement
-		GameObject* base = new GameObject();
-		base->model.set_color_and_flatness(255, 255, 255, 0);
-		base->model.set_mesh_texture_normal(cube_mesh, texture_bricks, normal_map_bricks);
-		base->scale = glm::vec3(1000, 10, 1000);
-		base->model.set_tiling(8, 8);
-		base->position = glm::vec3(0, 0, 0);
-		m_game_objects.push_back(base);
 
-		/*GameObject* back = new GameObject();
-		back->model.set_mesh_texture_normal(sphere_model, texture_bricks, normal_map_bricks);
-		back->scale = glm::vec3(50, 50, 50);
-		back->model.set_tiling(1, 1);
-		back->position = glm::vec3(0, 70, 100);
-
-		m_game_objects.push_back(back);
-
-		GameObject* left = new GameObject();
-		left->model.set_mesh_texture_normal(cube_mesh, texture_red_wall, normal_map_red_wall);
-		left->scale = glm::vec3(40,40,40);
-		left->position = glm::vec3(-200,25,120);
-		left->rotate(10, 0, 0);
-		left->model.set_tiling(1,1);
-		m_game_objects.push_back(left);
-
-		GameObject* right = new GameObject();
-		right->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
-		right->scale = glm::vec3(200, 50, 50);
-		right->model.set_tiling(4,1);
-		right->position = glm::vec3(-100, 50, 200);
-
-		m_game_objects.push_back(right);*/
-
-		/*go1 = new GameObject();
-		go1->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
-		go1->scale = glm::vec3(50, 200, 50);
-		go1->model.set_tiling(1, 4);
-		go1->position = glm::vec3(0, 100, 0);
-
-		m_game_objects.push_back(go1);*/
+		//Cone
+		GameObject* go = new GameObject();
+		go->model->set_color_and_flatness(255, 255, 255, 0);
+		go->model->set_texture_normal(bt, bn);
+		go->model->mesh = cone_mesh;
+		go->scale = glm::vec3(100,100,100);
+		go->position = glm::vec3(0, 55, 0);
+		m_game_objects.push_back(go);
+		//Base
+		go = new GameObject(go);
+		go->scale = glm::vec3(400, 10, 400);
+		go->model->mesh = cube_mesh;
+		go->model->set_tiling(3, 3);
+		go->position = glm::vec3(0, 0, 0);
+		m_game_objects.push_back(go);
+		////Back
+		//go = new GameObject(go);
+		//go->scale = glm::vec3(400,200,10);
+		//go->model->set_texture_normal(at, an);
+		//go->model->set_tiling(4,2);
+		//go->position = glm::vec3(0,105, -200);
+		//m_game_objects.push_back(go);
+		//Left
+		go = new GameObject(go);
+		go->scale = glm::vec3(10, 200, 400);
+		go->position = glm::vec3(-200, 105, 0);
+		m_game_objects.push_back(go);
+		//Right
+		go = new GameObject(go);
+		go->scale = glm::vec3(10, 200, 400);
+		go->position = glm::vec3(200, 105, 0);
+		m_game_objects.push_back(go);
+		//Front
+		go = new GameObject(go);
+		go->scale = glm::vec3(400, 200, 10);
+		go->position = glm::vec3(0, 105, 200);
+		m_game_objects.push_back(go);
+		//Roof
+		go = new GameObject(go);
+		go->scale = glm::vec3(400, 10, 400);
+		go->position = glm::vec3(0, 205, 0);
+		m_game_objects.push_back(go);
+		//Sphere
+		go = new GameObject(go);
+		go->scale = glm::vec3(100,100,100);
+		go->model->mesh = sphere_model;
+		go->position = glm::vec3(0, 300, -150);
+		m_game_objects.push_back(go);
 
 
 		CPUProfiler::next_time();
@@ -117,75 +126,71 @@ namespace Ryno{
 
 
 	
-				p = new SpotLight();
-				p->set_position(0, 10, 0);
-				p->set_direction(0, 0);
-				p->cutoff = 60;//no more then 0.5
-				p->set_diffuse_color(255, 200, 0);
-				p->diffuse_intensity = 30;
-				p->attenuation = .1;
-				p->specular_intensity = 1;
-				p->set_specular_color(255, 200, 0);
-				spot_lights.push_back(p);
+		s = new SpotLight();
+		s->set_position(0,190,0);
+		s->set_direction(-90, 0);
+		s->cutoff = 40;
+		s->set_diffuse_color(0,255,0);
+		s->diffuse_intensity = 30;
+		s->attenuation = .001;
+		s->specular_intensity = 1;
+		s->set_specular_color(0,255,0);
+		spot_lights.push_back(s);
 
-				s = new PointLight();
-				s->set_position(100, 10, 100);
-				s->set_diffuse_color(255, 200, 0);
-				s->diffuse_intensity = 30;
-				s->attenuation = .1;
-				s->specular_intensity = 1;
-				s->set_specular_color(255, 200, 0);
-				point_lights.push_back(s);
-				
-				l = new DirectionalLight();
-				l->set_direction(-45, 45);
-				l->diffuse_intensity = 0.5;
-				l->set_diffuse_color(255, 200, 0);
-				l->specular_intensity = .1;
-				l->set_specular_color(255, 200, 0);
-				l->ambient_intensity = .1;
-				l->set_ambient_color(255, 200, 0);
+		p = new PointLight();
+		p->set_position(180, 20, 180);
+		p->set_diffuse_color(255, 80, 0);
+		p->diffuse_intensity = 3;
+		p->attenuation = .001;
+		p->specular_intensity = 1;
+		p->set_specular_color(255, 80, 0);
+		point_lights.push_back(p);
+
+		go = new GameObject(go);
+		go->model->set_color_and_flatness(255, 255, 255, 255);
+		go->model->cast_shadows = false;
+		go->model->set_texture_normal(white, white_normal);
+		go->scale = glm::vec3(25,25,25);
+		go->position = glm::vec3(180, 20, 180);
+		m_game_objects.push_back(go);
+		
+		p = new PointLight(p);
+		p->set_position(-180, 20, 180);
+		point_lights.push_back(p);
+
+		go = new GameObject(go);
+		go->position = glm::vec3(-180, 20, 180);
+		m_game_objects.push_back(go);
+
+		p = new PointLight(p);
+		p->set_position(-180, 20, -180);
+		point_lights.push_back(p);
+
+		go = new GameObject(go);
+		go->position = glm::vec3(-180, 20, -180);
+		m_game_objects.push_back(go);
+
+		p = new PointLight(p);
+		p->set_position(180, 20, -180);
+		point_lights.push_back(p);
+
+		go = new GameObject(go);
+		go->position = glm::vec3(180, 20, -180);
+		m_game_objects.push_back(go);
+
+
+		l = new DirectionalLight();
+		l->set_direction(-45, 180);
+		l->diffuse_intensity = 0.2;
+		l->set_diffuse_color(255, 255, 200);
+		l->specular_intensity = .05;
+		l->set_specular_color(255, 255, 200);
+		l->ambient_intensity = .05;
+		l->set_ambient_color(255, 255, 200);
 
 
 		
-		for (I8 i = 2; i < 4; i++){
-			for (I8 j = 2; j < 4; j++){
-
-				GameObject* n = new GameObject();
-				n->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
-				n->scale = glm::vec3(10, 150, 10);
-				n->model.set_tiling(1, 4);
-				n->position = glm::vec3(-500, 0, -500) +  glm::vec3(80 * i, 75, 80 * j);
-
-				m_game_objects.push_back(n);
-			}
-		}
-
-		for (I8 i = 2; i < 4; i++){
-			for (I8 j = 2; j < 4; j++){
-
-				GameObject* n = new GameObject();
-				n->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
-				n->scale = glm::vec3(10, 150, 10);
-				n->model.set_tiling(1, 4);
-				n->position =glm::vec3(-200,0,-200)+ glm::vec3(80 * i, 75, 80 * j);
-
-				m_game_objects.push_back(n);
-			}
-		}
-
-		for (I8 i = 2; i < 4; i++){
-			for (I8 j = 2; j < 4; j++){
-
-				GameObject* n = new GameObject();
-				n->model.set_mesh_texture_normal(cube_mesh, texture_wood, normal_map_wood);
-				n->scale = glm::vec3(10, 150, 10);
-				n->model.set_tiling(1, 4);
-				n->position = glm::vec3(100, 0,100) + glm::vec3(80 * i, 75, 80 * j);
-
-				m_game_objects.push_back(n);
-			}
-		}
+	
 
 	
 		CPUProfiler::end_time();
@@ -210,13 +215,11 @@ namespace Ryno{
 		if (m_input_manager.is_key_down(SDLK_s, KEYBOARD) || m_input_manager.is_key_down(SDL_BUTTON_RIGHT, MOUSE)){
 			m_camera->move_back(3.0f);
 		}
-		if (m_input_manager.is_key_pressed(SDLK_c, KEYBOARD)){
-			swap_curve = !swap_curve;
-		}
+		
 	
 	
 		
-		if (m_input_manager.is_key_down(SDLK_LEFT, KEYBOARD)){
+		if (m_input_manager.is_key_down(SDLK_LEFT, KEYBOARD) || m_input_manager.is_key_down(SDL_CONTROLLER_BUTTON_DPAD_LEFT, CONTROLLER)){
 			for (SpotLight* l : spot_lights){
 				l->position.x -= 3;
 
@@ -248,8 +251,8 @@ namespace Ryno{
 			a += 0.5;
 			b += 0.5;
 			
-			l->set_direction(-45,b);
-			p->set_direction(b,b);
+			l->set_direction(-45,180);
+			
 		}
 
 
@@ -307,7 +310,7 @@ namespace Ryno{
 				s->position.y -= 3;
 			}
 		}
-		if (m_input_manager.is_key_down(SDL_CONTROLLER_BUTTON_B, CONTROLLER)){
+		if (m_input_manager.is_key_down(SDL_CONTROLLER_BUTTON_Y, CONTROLLER)){
 			for (SpotLight* l : spot_lights){
 				
 				l->diffuse_intensity += 1;
@@ -332,23 +335,23 @@ namespace Ryno{
 		}
 		if (m_input_manager.is_key_down(SDLK_k, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
-				l->specular_intensity += 3;
+				l->specular_intensity += .3;
 
 			}
 			for (PointLight* l : point_lights){
-				l->specular_intensity += 3;
+				l->specular_intensity += .3;
 
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_l, KEYBOARD)){
 			for (SpotLight* l : spot_lights){
 				if (l->specular_intensity > 0)
-				l->specular_intensity -= 3;
+				l->specular_intensity -= .3;
 
 			}
 			for (PointLight* l : point_lights){
 				if (l->specular_intensity > 0)
-					l->specular_intensity -= 3;
+					l->specular_intensity -= .3;
 
 			}
 		}
@@ -413,9 +416,9 @@ namespace Ryno{
 		//geometry batch
 		m_geometry_batch3d->begin();
 		for (GameObject* o : m_game_objects)
-			m_geometry_batch3d->draw(&(o->model));
+			m_geometry_batch3d->draw(o->model);
 		for (GameObject* o : spheres)
-			m_geometry_batch3d->draw(&(o->model));
+			m_geometry_batch3d->draw(o->model);
 		m_geometry_batch3d->end();
 
 	
@@ -425,9 +428,9 @@ namespace Ryno{
 		//shadow batch
 		m_shadow_batch3d->begin();
 		for (GameObject* o : m_game_objects)
-			m_shadow_batch3d->draw(&(o->model));
+			m_shadow_batch3d->draw(o->model);
 		for (GameObject* o : spheres)
-			m_shadow_batch3d->draw(&(o->model));
+			m_shadow_batch3d->draw(o->model);
 		m_shadow_batch3d->end();
 
 

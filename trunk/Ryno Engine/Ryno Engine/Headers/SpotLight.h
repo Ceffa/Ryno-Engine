@@ -7,7 +7,8 @@ namespace Ryno{
 
 	class SpotLight : public AbstractLight{
 	public:
-		SpotLight();
+		SpotLight(){}
+		SpotLight(const SpotLight *s);
 		~SpotLight(){}
 
 	

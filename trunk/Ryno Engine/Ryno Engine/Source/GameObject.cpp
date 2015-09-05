@@ -5,11 +5,20 @@
 
 namespace Ryno{
 
-	GameObject::GameObject() :yaw(0), pitch(0), roll(0){}
+	GameObject::GameObject() :yaw(0), pitch(0), roll(0){
+		model = new Model();
+	}
+	GameObject::GameObject(const GameObject *go)
+	{
+		
+		*this = *go;
+		model = new Model(go->model);
+		
+	}
 
 	void GameObject::generate_model_matrix(){
 	
-		model.model_matrix = glm::scale(
+		model->model_matrix = glm::scale(
 			//Translate matrix
 			glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, -position.z)) *
 			//Rotation matrix built from three quaternions

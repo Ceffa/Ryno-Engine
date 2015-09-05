@@ -2,14 +2,12 @@
 
 namespace Ryno{
 
+	
 
-	SpotLight::SpotLight() {
-	
-		set_direction(0, 0);
-		cutoff = 0;
-		attenuation = 0;
+	SpotLight::SpotLight(const SpotLight *s)
+	{
+		*this = *s;
 	}
-	
 
 	
 

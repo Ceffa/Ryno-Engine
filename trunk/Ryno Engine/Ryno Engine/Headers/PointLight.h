@@ -7,7 +7,8 @@ namespace Ryno{
 
 	class PointLight : public AbstractLight{
 	public:
-		PointLight();
+		PointLight(){}
+		PointLight(const PointLight *p);
 		~PointLight(){}
 
 	

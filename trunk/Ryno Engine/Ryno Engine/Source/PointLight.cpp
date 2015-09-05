@@ -3,7 +3,10 @@
 namespace Ryno{
 
 
-	PointLight::PointLight() {
+
+	PointLight::PointLight(const PointLight *p)
+	{
+		*this = *p;
 	}
 	
 

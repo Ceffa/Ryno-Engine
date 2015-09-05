@@ -8,14 +8,19 @@ namespace Ryno{
 	public:
 		GameObject();
 		~GameObject(){}
+		GameObject(const GameObject *go);
 
-		Model model;
+		Model* model;
 		glm::vec3 position;
 		glm::vec3 scale;
 		F32 yaw, pitch, roll;
+
 		
 		void rotate(F32 y, F32 p, F32 r);
 		void generate_model_matrix();
+
+		
 	};
+
 
 }

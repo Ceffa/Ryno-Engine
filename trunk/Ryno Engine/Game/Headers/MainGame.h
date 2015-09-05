@@ -33,8 +33,8 @@ namespace Ryno{
 		std::vector<SpotLight*> spot_lights;
 
 		DirectionalLight* l;
-		SpotLight* p;
-		PointLight* s;
+		SpotLight* s;
+		PointLight* p;
 	
 	};
 }

@@ -10,6 +10,17 @@ namespace Ryno{
 		normal_map = -1;
 		set_tiling(1, 1);
 	}
+
+	
+
+
+
+	Model::Model(const Model *m)
+	{
+		
+		*this = *m;
+	}
+
 	void Model::set_color(U8 r, U8 g, U8 b){
 		color.set_color(r, g, b);
 	}
@@ -27,8 +38,7 @@ namespace Ryno{
 		tiling.set(u, v);
 	}
 
-	void Model::set_mesh_texture_normal(I32 m, I32 t, I32 n){
-		mesh = m;
+	void Model::set_texture_normal(I32 t, I32 n){
 		texture = t;
 		normal_map = n;
 	}

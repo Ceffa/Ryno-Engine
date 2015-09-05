@@ -59,7 +59,7 @@ namespace Ryno {
 				case 0: set_controller_axis_coord(&m_controller_LX_coords.x, evnt.jaxis.value); break;
 				case 1: set_controller_axis_coord(&m_controller_LX_coords.y, evnt.jaxis.value); break;
 				case 2: set_controller_axis_coord(&m_controller_RX_coords.x, evnt.jaxis.value); break;
-				case 5: set_controller_axis_coord(&m_controller_RX_coords.y, evnt.jaxis.value); break;
+				case 3: set_controller_axis_coord(&m_controller_RX_coords.y, evnt.jaxis.value); break;
 				}
 				
 					
@@ -83,7 +83,6 @@ namespace Ryno {
 	void InputManager::key_press(U32 keyID, InputDevice device) {
 		// Here we are treating _keyMap as an associative array.
 		// if keyID doesn't already exist in _keyMap, it will get added
-		std::cout << keyID << std::endl;
 		m_key_map[keyID + device] = true;
 	}
 
