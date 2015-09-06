@@ -54,7 +54,7 @@ namespace Ryno {
 		for (I32 i = 0; i < models_size; i++){
 			input_instances[i].color = m_models[i]->color;
 			input_instances[i].m = m_models[i]->model_matrix;
-			input_instances[i].tiling = m_models[i]->tiling.get_vec_2();
+			input_instances[i].tiling = m_models[i]->tiling;
 
 		}
 		
@@ -64,7 +64,7 @@ namespace Ryno {
 			return;
 
 		U32 vertex_offset = 0;
-		U32 mvp_offset = 0;
+		U32 instance_offset = 0;
 		
 
 		//For each mesh...
@@ -80,10 +80,10 @@ namespace Ryno {
 			{
 				if (cg != 0){
 					vertex_offset += m_render_batches.back().num_vertices;
-					mvp_offset += m_render_batches.back().num_instances;
+					instance_offset += m_render_batches.back().num_instances;
 				}
 					
-				m_render_batches.emplace_back(vertex_offset, mvp_offset, mesh_size, 1, m_models[cg]->texture, m_models[cg]->normal_map, m_models[cg]->mesh);
+				m_render_batches.emplace_back(vertex_offset, instance_offset, mesh_size, 1, m_models[cg]->texture, m_models[cg]->normal_map, m_models[cg]->mesh);
 				
 				
 			}
@@ -167,12 +167,12 @@ namespace Ryno {
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		
 		
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, 0);
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, (void*)(4 * 4));
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, (void*)(8 * 4));
-		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, (void*)(12 * 4));
-		glVertexAttribPointer(8, 2, GL_FLOAT, GL_FALSE, sizeof(F32) * 19, (void*)(16 * 4));
-		glVertexAttribPointer(9, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(F32) * 19, (void*)(18 * 4));
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)offsetof(InputInstanceGeometry, m));
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)(offsetof(InputInstanceGeometry, m) + 16));
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)(offsetof(InputInstanceGeometry, m) + 32));
+		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)(offsetof(InputInstanceGeometry, m) + 48));
+		glVertexAttribPointer(8, 2, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)offsetof(InputInstanceGeometry, tiling));
+		glVertexAttribPointer(9, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(InputInstanceGeometry), (void*)offsetof(InputInstanceGeometry, color));
 
 		glVertexAttribDivisor(4, 1);
 		glVertexAttribDivisor(5, 1);

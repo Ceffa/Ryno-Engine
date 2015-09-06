@@ -114,9 +114,10 @@ namespace Ryno {
 	void FBO_Shadow::bind_for_point_shadow_pass()
 	{
 		bind_fbo();
-		glDrawBuffer(GL_NONE);
 		//Bind all cubemap, the geometry shader will take care of the faces
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_point_cube, 0);
+		glDrawBuffer(GL_NONE);
+
 
 	}
 

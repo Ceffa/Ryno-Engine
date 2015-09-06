@@ -7,13 +7,7 @@
 
 
 namespace Ryno{
-	struct Vertex3D{
-		Vertex3D(){}
-		glm::vec3 position;
-		glm::vec2 uv;
-		glm::vec3 normal;
-		glm::vec3 tangent;
-	};
+	
 	struct Mesh{
 	
 		std::vector<Vertex3D> vertices;

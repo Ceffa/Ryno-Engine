@@ -30,6 +30,8 @@ namespace Ryno{
 		U32 an = m_texture_manager->loadPNG("pack/196_norm", GAME_FOLDER);
 		U32 bt = m_texture_manager->loadPNG("pack/161", GAME_FOLDER);
 		U32 bn = m_texture_manager->loadPNG("pack/161_norm", GAME_FOLDER);
+		U32 solaire = m_texture_manager->loadPNG("solaire", GAME_FOLDER);
+
 		CPUProfiler::next_time();
 
 		//loading models
@@ -69,14 +71,28 @@ namespace Ryno{
 		//Cone
 		GameObject* go = new GameObject();
 		go->model->set_color_and_flatness(255, 255, 255, 0);
-		go->model->set_texture_normal(bt, bn);
+		go->model->set_texture_normal(white, white_normal);
 		go->model->mesh = cone_mesh;
 		go->scale = glm::vec3(100,100,100);
 		go->position = glm::vec3(0, 55, 0);
 		m_game_objects.push_back(go);
+		
+	
+		go = new GameObject(go);
+		go->scale = glm::vec3(20, 20, 20);
+		go->position = glm::vec3(-150, 15, -170);
+		m_game_objects.push_back(go);
+
+		go = new GameObject(go);
+		go->position = glm::vec3(150, 15, -170);
+		m_game_objects.push_back(go);
+
+
 		//Base
 		go = new GameObject(go);
 		go->scale = glm::vec3(400, 10, 400);
+		go->model->set_texture_normal(bt, bn);
+
 		go->model->mesh = cube_mesh;
 		go->model->set_tiling(3, 3);
 		go->position = glm::vec3(0, 0, 0);
@@ -133,7 +149,7 @@ namespace Ryno{
 		s->set_diffuse_color(0,255,0);
 		s->diffuse_intensity = 30;
 		s->attenuation = .001;
-		s->specular_intensity = 1;
+		s->specular_intensity = 10;
 		s->set_specular_color(0,255,0);
 		spot_lights.push_back(s);
 
@@ -142,7 +158,7 @@ namespace Ryno{
 		p->set_diffuse_color(255, 80, 0);
 		p->diffuse_intensity = 3;
 		p->attenuation = .001;
-		p->specular_intensity = 1;
+		p->specular_intensity = 10;
 		p->set_specular_color(255, 80, 0);
 		point_lights.push_back(p);
 
@@ -180,7 +196,7 @@ namespace Ryno{
 
 
 		l = new DirectionalLight();
-		l->set_direction(-45, 180);
+		l->set_direction(-65, 150);
 		l->diffuse_intensity = 0.2;
 		l->set_diffuse_color(255, 255, 200);
 		l->specular_intensity = .05;
@@ -189,7 +205,15 @@ namespace Ryno{
 		l->set_ambient_color(255, 255, 200);
 
 
-		
+		Sprite* sp = new Sprite();
+		sp->angle = 0;
+		sp->color.set_color_and_alpha(255, 255, 255, 255);
+		sp->texture = solaire;
+		sp->scale = glm::vec2(0.1,0.2);
+		sp->tiling = glm::vec2(1, 1);
+		sp->position = glm::vec2(0.05,0.9);
+		sp->angle = 0;
+		m_sprites.push_back(sp);
 	
 
 	
@@ -398,6 +422,11 @@ namespace Ryno{
 
 			s->generate_model_matrix();
 		}
+		for (Sprite* s : m_sprites){
+
+			s->generate_model_matrix();
+
+		}
 
 
 
@@ -434,20 +463,35 @@ namespace Ryno{
 		m_shadow_batch3d->end();
 
 
-
+		m_deferred_renderer->spot_light_pass(&spot_lights, m_shadow_batch3d);
 		m_deferred_renderer->point_light_pass(&point_lights, m_shadow_batch3d);
 
-		m_deferred_renderer->spot_light_pass(&spot_lights, m_shadow_batch3d);
 		
 		m_deferred_renderer->directional_lighting_pass(l, m_shadow_batch3d);
 
 		m_deferred_renderer->skybox_pass();
 
+		//hud batch
+		m_sprite_batch2d->begin();
+		for (Sprite* s : m_sprites)
+			m_sprite_batch2d->draw(s);
+		m_sprite_batch2d->end();
+
+
+
+		m_deferred_renderer->draw_HUD_pass(m_sprite_batch2d);
 		m_deferred_renderer->final_pass();
+
+		
+		
+
 
 		
 		//Finally swap windows
 		SDL_GL_SwapWindow(m_window);
+
+		
+
 		
 	
 	

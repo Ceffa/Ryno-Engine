@@ -8,17 +8,6 @@
 namespace Ryno{
 
 	
-	struct UV{
-		void set(U32 _u, U32 _v){
-			u = _u;
-			v = _v;
-		}
-		glm::vec2 get_vec_2(){
-			return glm::vec2(u, v);
-		}
-		U32 u;
-		U32 v;
-	};
 	
 	class Model{
 	public:
@@ -26,7 +15,7 @@ namespace Ryno{
 		~Model(){}
 		Model(const Model *m);
 		void set_color(U8 r, U8 g, U8 b);
-		void set_flatness(U8 f);
+		void set_alpha(U8 f);
 		void set_color_and_flatness(U8 r, U8 g, U8 b, U8 f);
 			
 		void set_tiling(U32 u, U32 v);
@@ -35,7 +24,7 @@ namespace Ryno{
 		glm::mat4 model_matrix;
 		U32 texture,normal_map;
 		I32 mesh;
-		UV tiling;
+		glm::vec2 tiling;
 		ColorRGBA color;  //Alpha is flatness
 		bool cast_shadows = true;
 		

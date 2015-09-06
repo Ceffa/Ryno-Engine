@@ -10,7 +10,7 @@ namespace Ryno{
 		color.r = 255;
 		color.g = 255;
 		color.b = 255;
-		color.f = 255;
+		color.a = 255;
 	}
 	
 

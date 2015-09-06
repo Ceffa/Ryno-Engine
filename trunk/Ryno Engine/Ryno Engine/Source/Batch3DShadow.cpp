@@ -98,10 +98,10 @@ namespace Ryno {
 		}
 		I32 total_vertices = m_render_batches.back().vertex_offset + m_render_batches.back().num_vertices;
 		I32 cv = 0;
-		vertices.resize(total_vertices);
+		vertices_positions.resize(total_vertices);
 		for (RenderBatchShadow rb : m_render_batches){
 			for (Vertex3D v : m_mesh_manager->get_mesh(rb.mesh)->vertices){
-				vertices[cv++] = v;
+				vertices_positions[cv++] = v.position;
 			}
 		}
 
@@ -127,7 +127,7 @@ namespace Ryno {
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
 		//Tell vbo how to use the data it will receive
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, position));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12, 0);
 
 
 		//Create instanced vbo
@@ -139,10 +139,10 @@ namespace Ryno {
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		
 		
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, 0);
-		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, (void*)(4 * 4));
-		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, (void*)(8 * 4));
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(F32) * 16, (void*)(12 * 4));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceShadow),(void*)offsetof(InputInstanceShadow, m));
+		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceShadow), (void*)(offsetof(InputInstanceShadow, m) + 16));
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceShadow), (void*)(offsetof(InputInstanceShadow, m) + 32));
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceShadow), (void*)(offsetof(InputInstanceShadow, m) + 48));
 		
 
 		glVertexAttribDivisor(1, 1);
@@ -191,8 +191,8 @@ namespace Ryno {
 
 		//i can bind the vbo, orphan it, pass the new data, and unbind it.
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), nullptr, GL_STATIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex3D), vertices.data());
+		glBufferData(GL_ARRAY_BUFFER, vertices_positions.size() * sizeof(glm::vec3), nullptr, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices_positions.size() * sizeof(glm::vec3), vertices_positions.data());
 
 		enable_attributes();
 

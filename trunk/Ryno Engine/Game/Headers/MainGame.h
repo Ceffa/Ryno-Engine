@@ -3,6 +3,7 @@
 #include "PointLight.h"
 #include "DeferredRenderer.h"
 #include "DirectionalLight.h"
+#include <Sprite.h>
 
 namespace Ryno{
 	class MainGame : public MainGameInterface
@@ -23,6 +24,8 @@ namespace Ryno{
 		Music music;
 		std::vector<GameObject*> m_game_objects;
 		std::vector<GameObject*> spheres;
+		std::vector<Sprite*> m_sprites;
+
 		GameObject* ball, *go1, *go2, *go3;
 		I32 square_model;
 		I32 bound_sphere;

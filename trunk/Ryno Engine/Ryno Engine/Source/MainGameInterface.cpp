@@ -57,6 +57,9 @@ namespace Ryno{
 
 		m_geometry_batch3d = new Batch3DGeometry();
 		m_shadow_batch3d = new Batch3DShadow();
+		m_sprite_batch2d = new Batch2DSprite();
+
+		m_sprite_batch2d->init();
 		m_geometry_batch3d->init(m_camera);
 		m_shadow_batch3d->init(m_camera);
 

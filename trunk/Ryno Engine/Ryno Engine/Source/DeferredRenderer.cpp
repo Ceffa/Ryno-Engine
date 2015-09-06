@@ -115,6 +115,12 @@ namespace Ryno{
 		glUniform1i(m_blit_program->getUniformLocation("source_buffer"), 0);
 		m_blit_program->unuse();
 
+		//Sprite program
+		m_sprite_program = new GLSLProgram();
+		m_sprite_program->create("sprite", 1, 0, 1);
+		m_sprite_program->use();
+		glUniform1i(m_sprite_program->getUniformLocation("m_texture"), 0);
+		m_sprite_program->unuse();
 
 		//MODEL LOADING
 		m_bounding_sphere = new Model();
@@ -158,6 +164,7 @@ namespace Ryno{
 
 		m_fbo_deferred->bind_for_geometry_pass();
 
+		glDisable(GL_CULL_FACE);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -205,6 +212,8 @@ namespace Ryno{
 		directional_lighting_subpass(directional_light);
 	}
 
+	
+
 	void DeferredRenderer::point_shadow_subpass(PointLight* p, Batch3DShadow* batch)
 	{
 		//Enable depth testing and writing
@@ -218,12 +227,17 @@ namespace Ryno{
 		
 		//Bind the whole cubemap, the geometry shader will take care of the faces
 		m_fbo_shadow->bind_for_point_shadow_pass();
+
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
 		glm::vec3 correct_position = glm::vec3(p->position.x, p->position.y, -p->position.z);
 
 		glm::mat4 light_VP_matrices[NUM_OF_LAYERS];
+
+
+		p->calculate_max_radius();
+
 		glm::mat4 point_shadow_projection_matrix = glm::perspective(HALF_PI, 1.0, 1.0, (F64)p->max_radius);
 
 		
@@ -232,7 +246,6 @@ namespace Ryno{
 			//Get view matrix of the light. This is both translate and rotate matrix
 			glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + camera_directions[i].Target, camera_directions[i].Up);
 
-			p->calculate_max_radius();
 
 			//Multiply view by a perspective matrix large as the light radius
 			light_VP_matrices[i] = point_shadow_projection_matrix * view_matrix;
@@ -265,9 +278,9 @@ namespace Ryno{
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_point_lighting_pass();
 
-		//glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 
 		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_ONE, GL_ONE);
@@ -297,7 +310,6 @@ namespace Ryno{
 		m_point_lighting_program->unuse();
 
 		glDisable(GL_BLEND);
-		//glDisable(GL_STENCIL_TEST);
 
 	}
 
@@ -438,11 +450,15 @@ namespace Ryno{
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_directional_lighting_pass();
 
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
 		glDisable(GL_DEPTH_TEST);
-
+		glDepthMask(GL_FALSE);
 		
 		
 		glm::mat4 dir_light_VPB = bias * directional_light_VP;
@@ -463,17 +479,14 @@ namespace Ryno{
 		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
 
 
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_ONE, GL_ONE);
+		
 
 		m_simple_drawer->draw(m_fullscreen_quad);
 
-		glDisable(GL_BLEND);
-
-
 		//The draw is done, unuse the program
 		m_directional_lighting_program->unuse();
+
+		glDisable(GL_BLEND);
 	}
 
 	void DeferredRenderer::skybox_pass(){
@@ -521,10 +534,28 @@ namespace Ryno{
 
 
 
+	void DeferredRenderer::draw_HUD_pass(Batch2DSprite* batch)
+	{
+
+		m_fbo_deferred->bind_for_HUD_pass();
+
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		m_sprite_program->use();
+		batch->render_batch();
+		m_sprite_program->unuse();
+		glDisable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+
+	}
 
 	//Print on screen the result of the whole deferred rendering
 	void DeferredRenderer::final_pass(){
-		m_fbo_deferred->bind_for_final_pass();
+		m_fbo_deferred->bind_for_final_rendering_pass();
 
 	
 	}
@@ -538,6 +569,7 @@ namespace Ryno{
 		delete m_bounding_sphere;
 		delete m_fullscreen_quad;
 		m_blit_program->destroy();
+		m_sprite_program->destroy();
 		m_geometry_program->destroy();
 		m_skybox_program->destroy();
 		m_directional_shadow_program->destroy();

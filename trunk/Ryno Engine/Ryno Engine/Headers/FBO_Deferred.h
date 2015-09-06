@@ -22,7 +22,9 @@ namespace Ryno{
 		void bind_for_stencil_pass();
 		void bind_for_light_pass();
 		void bind_for_skybox_pass();
-		void bind_for_final_pass();
+		void bind_for_final_rendering_pass();
+		void bind_for_HUD_pass();
+
 	
 		U32 m_fbo;
 		U32 m_textures[FRAME_NUM_TEXTURES];

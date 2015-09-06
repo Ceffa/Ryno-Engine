@@ -38,7 +38,7 @@ namespace Ryno{
 	protected:
 		
 		
-		std::vector<Vertex3D> vertices;
+		std::vector<glm::vec3> vertices_positions; //just position instead of whole vertex
 		std::vector<InputInstanceShadow> input_instances;
 		std::vector<RenderBatchShadow> m_render_batches;
 		

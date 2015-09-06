@@ -119,9 +119,6 @@ namespace Ryno {
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, m_textures[i]);
 		}
-
-	/*	glActiveTexture(GL_TEXTURE0 + FRAME_NUM_TEXTURES);
-		glBindTexture(GL_TEXTURE_2D, m_depth_texture);*/
 		
 	}
 
@@ -135,28 +132,10 @@ namespace Ryno {
 
 	}
 
-	void FBO_Deferred::bind_for_final_pass()
+	void FBO_Deferred::bind_for_final_rendering_pass()
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
-	
-
-		/*glReadBuffer(GL_COLOR_ATTACHMENT0);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			 WINDOW_WIDTH / 3, WINDOW_HEIGHT / 2, 2 * WINDOW_WIDTH / 3, WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-		glReadBuffer(GL_COLOR_ATTACHMENT1);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			2*WINDOW_WIDTH / 3, WINDOW_HEIGHT / 2, WINDOW_WIDTH , WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-		glReadBuffer(GL_COLOR_ATTACHMENT2);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			0, 0, WINDOW_WIDTH / 3, WINDOW_HEIGHT / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-		
-	
-		glReadBuffer(GL_COLOR_ATTACHMENT4);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			2*WINDOW_WIDTH / 3, 0,  WINDOW_WIDTH , WINDOW_HEIGHT / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);*/
 	
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
 		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
@@ -166,6 +145,12 @@ namespace Ryno {
 
 
 	 
+	void FBO_Deferred::bind_for_HUD_pass()
+	{
+		bind_fbo();
+		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+	}
+
 	void FBO_Deferred::bind_fbo()
 	{
 		I32 old_fbo;

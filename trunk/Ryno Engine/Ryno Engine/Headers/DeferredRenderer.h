@@ -14,6 +14,8 @@
 #include "GLSLProgram.h"
 #include "Batch3DGeometry.h"
 #include "Batch3DShadow.h"
+#include "Batch2DSprite.h"
+
 #define NUM_OF_LAYERS 6
 namespace Ryno{
 
@@ -71,6 +73,8 @@ namespace Ryno{
 		//Pass for directional lights
 		void directional_lighting_pass(DirectionalLight* directional_light, Batch3DShadow* batch);
 
+		//HUD pass
+		void draw_HUD_pass(Batch2DSprite* batch);
 		
 
 
@@ -112,7 +116,8 @@ namespace Ryno{
 		FBO_Shadow* m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
 		GLSLProgram *m_skybox_program, *m_directional_shadow_program, *m_spot_shadow_program, *m_point_shadow_program, *m_blit_program
-			, *m_geometry_program, *m_directional_lighting_program, *m_point_lighting_program, *m_spot_lighting_program, *m_flat_program;
+			, *m_geometry_program, *m_directional_lighting_program, *m_point_lighting_program, *m_spot_lighting_program, *m_flat_program,
+			*m_sprite_program;
 		
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;

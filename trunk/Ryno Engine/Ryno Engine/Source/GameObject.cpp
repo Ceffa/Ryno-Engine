@@ -5,7 +5,7 @@
 
 namespace Ryno{
 
-	GameObject::GameObject() :yaw(0), pitch(0), roll(0){
+	GameObject::GameObject(){
 		model = new Model();
 	}
 	GameObject::GameObject(const GameObject *go)

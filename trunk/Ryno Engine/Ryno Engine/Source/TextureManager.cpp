@@ -1,5 +1,5 @@
 #include "TextureManager.h"
-#include "PNGLoader.h"
+#include "lodepng.h"
 #include "Log.h"
 #include <iostream>
 
@@ -25,16 +25,12 @@ namespace Ryno{
 		GLTexture texture = {};
 
 
-		std::vector<U8> out;
-		U64 width, height;
-		std::vector<U8> in;
-		if (!read_file_to_buffer(path,in)){
-			Log::FatalError("Failed to load file to buffer.");
-		}
-
+		std::vector<unsigned char> out;
+		unsigned width, height;
+		
 		
 
-		I32 error_code = PNGLoader::decodePNG(out,width, height, in.data(), in.size());
+		I32 error_code = lodepng::decode(out, width, height, path.c_str());
 		if (error_code != 0){
 			Log::FatalError("Decoding png failed: Errorcode: " + error_code);
 		}
@@ -75,16 +71,13 @@ namespace Ryno{
 			GLTexture texture = {};
 
 
-			std::vector<U8> out;
-			U64 width, height;
-			std::vector<U8> in;
-			if (!read_file_to_buffer(path, in)){
-				Log::FatalError("Failed to load file to buffer.");
-			}
+			std::vector<unsigned char> out;
+			unsigned width, height;
+			
 
 
 
-			I32 error_code = PNGLoader::decodePNG(out, width, height, in.data(), in.size());
+			I32 error_code = lodepng::decode(out, width, height, path.c_str());
 			if (error_code != 0){
 				Log::FatalError("Decoding png failed: Errorcode: " + error_code);
 			}

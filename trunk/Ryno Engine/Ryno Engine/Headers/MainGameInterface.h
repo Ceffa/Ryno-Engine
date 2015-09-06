@@ -17,6 +17,8 @@
 #include "GameObject.h"
 #include "Batch3DGeometry.h"
 #include "Batch3DShadow.h"
+#include "Batch2DSprite.h"
+
 #include "Camera3D.h"
 #include "SimpleDrawer.h"
 #include "DeferredRenderer.h"
@@ -74,6 +76,8 @@ namespace Ryno{
 		SDL_Window* m_window;
 		Batch3DGeometry* m_geometry_batch3d;
 		Batch3DShadow* m_shadow_batch3d;
+		Batch2DSprite* m_sprite_batch2d;
+
 
 	};
 }

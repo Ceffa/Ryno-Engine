@@ -1,5 +1,5 @@
 #pragma once
-#include <GLm/glm.hpp>
+#include <GLM/glm.hpp>
 #include "Global.h"
 
 namespace Ryno{
@@ -23,35 +23,46 @@ namespace Ryno{
 
 	struct ColorRGBA{
 
-			ColorRGBA() : r(0), g(0), b(0), f(0){}
-			ColorRGBA(U8 R, U8 G, U8 B, U8 F) : r(R), g(G), b(B), f(F){}
+			ColorRGBA() : r(0), g(0), b(0), a(0){}
+			ColorRGBA(U8 R, U8 G, U8 B, U8 A) : r(R), g(G), b(B), a(A){}
 			void set_color(U8 _r, U8 _g, U8 _b){
 				r = _r;
 				g = _g;
 				b = _b;
 			}
-			void set_flatness(U8 _f){
-				f = _f;
+			void set_alpha(U8 _a){
+				a = _a;
 			}
 
-			void set_color_and_flatness(U8 _r, U8 _g, U8 _b, U8 _f){
+			void set_color_and_alpha(U8 _r, U8 _g, U8 _b, U8 _a){
 				set_color(_r, _g, _b);
-				set_flatness(_f);
+				set_alpha(_a);
 			}
 			glm::vec4 to_vec4(){
-				return glm::vec4(r, g, b, f);
+				return glm::vec4(r, g, b, a);
 			}
 			glm::vec3 to_vec3(){
 				return glm::vec3(r, g, b);
 			}
 
-			U8 r; U8 g; U8 b; U8 f;
-
-
-		
-
+			U8 r; U8 g; U8 b; U8 a;
+			
+	};
+	struct Vertex3D{
+		glm::vec3 position;
+		glm::vec2 uv;
+		glm::vec3 normal;
+		glm::vec3 tangent;
 	};
 
+	struct Vertex2D{
+		Vertex2D(F32 x, F32 y, F32 u, F32 v){
+			position = glm::vec2(x, y);
+			uv = glm::vec2(u, v);
+		}
+		glm::vec2 position;
+		glm::vec2 uv;
+	};
 
 
 }
