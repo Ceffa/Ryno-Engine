@@ -31,6 +31,7 @@ namespace Ryno{
 		U32 bt = m_texture_manager->loadPNG("pack/161", GAME_FOLDER);
 		U32 bn = m_texture_manager->loadPNG("pack/161_norm", GAME_FOLDER);
 		U32 solaire = m_texture_manager->loadPNG("solaire", GAME_FOLDER);
+		U32 sun = m_texture_manager->loadPNG("sun", GAME_FOLDER);
 
 		CPUProfiler::next_time();
 
@@ -213,6 +214,20 @@ namespace Ryno{
 		sp->tiling = glm::vec2(1, 1);
 		sp->position = glm::vec2(0.05,0.9);
 		sp->angle = 0;
+		m_sprites.push_back(sp);
+		
+
+
+		sp = new Sprite(sp);
+		sp->position = glm::vec2(0.15, 0.9);
+		m_sprites.push_back(sp);
+		sp = new Sprite(sp);
+		sp->texture = sun;
+		sp->scale = glm::vec2(0.2, 0.2);
+		sp->position = glm::vec2(0.30, 0.9);
+		m_sprites.push_back(sp);
+		sp = new Sprite(sp);
+		sp->position = glm::vec2(0.50, 0.9);
 		m_sprites.push_back(sp);
 	
 
