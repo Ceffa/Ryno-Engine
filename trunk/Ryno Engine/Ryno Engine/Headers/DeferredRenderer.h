@@ -57,24 +57,25 @@ namespace Ryno{
 		void init_frame();
 
 		//Call before drawing geometry
-		void geometry_pass(Batch3DGeometry* batch);
+		void geometry_pass();
 
 		//Skybox pass. Not sure where to use yet
 		void skybox_pass();
 
-		
+		//Fill shadow batches
+		void prepare_for_light_passes();
 
 		//Pass for point lights
-		void point_light_pass(std::vector<PointLight*>* point_lights, Batch3DShadow* batch);
+		void point_light_pass();
 
 		//Pass for spot lights
-		void spot_light_pass(std::vector<SpotLight*>* spot_lights, Batch3DShadow* batch);
+		void spot_light_pass();
 
 		//Pass for directional lights
-		void directional_lighting_pass(DirectionalLight* directional_light, Batch3DShadow* batch);
+		void directional_light_pass();
 
 		//HUD pass
-		void draw_HUD_pass(Batch2DSprite* batch);
+		void draw_HUD_pass();
 		
 
 
@@ -88,7 +89,7 @@ namespace Ryno{
 	private:
 
 		//Shadow subpass for point light
-		void point_shadow_subpass(PointLight* p, Batch3DShadow* batch);
+		void point_shadow_subpass(PointLight* p);
 
 		//Stencil subpass for point light
 		//void point_stencil_subpass(PointLight* point_light);
@@ -97,7 +98,7 @@ namespace Ryno{
 		void point_lighting_subpass(PointLight* point_light);
 
 		//Shadow subpass for spot light
-		void spot_shadow_subpass(SpotLight* p, Batch3DShadow* batch);
+		void spot_shadow_subpass(SpotLight* p);
 
 		//Stencil subpass for spot light
 		//void spot_stencil_subpass(SpotLight* spot_light);
@@ -106,7 +107,7 @@ namespace Ryno{
 		void spot_lighting_subpass(SpotLight* spot_light);
 
 		//Shadow subpass for directional light 
-		void directional_shadow_subpass(DirectionalLight* directional_light, Batch3DShadow* batch);
+		void directional_shadow_subpass(DirectionalLight* directional_light);
 
 		//Lighting subpass for directional light
 		void directional_lighting_subpass(DirectionalLight* directional_light);
@@ -115,9 +116,16 @@ namespace Ryno{
 		FBO_Deferred* m_fbo_deferred;
 		FBO_Shadow* m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
+
+		//PROGRAMS
 		GLSLProgram *m_skybox_program, *m_directional_shadow_program, *m_spot_shadow_program, *m_point_shadow_program, *m_blit_program
 			, *m_geometry_program, *m_directional_lighting_program, *m_point_lighting_program, *m_spot_lighting_program, *m_flat_program,
 			*m_sprite_program;
+
+		//BATCHES
+		Batch3DGeometry* m_geometry_batch3d;
+		Batch3DShadow* m_shadow_batch3d;
+		Batch2DSprite* m_sprite_batch2d;
 		
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;

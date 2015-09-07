@@ -9,7 +9,7 @@ namespace Ryno{
 	class DirectionalLight : public AbstractLight{
 	public:
 		DirectionalLight();
-		~DirectionalLight(){}
+		~DirectionalLight();
 
 		
 	
@@ -24,12 +24,16 @@ namespace Ryno{
 		glm::vec3 direction;
 		F32 pitch, yaw;
 
+		//uniform info
 		struct location{
 			I32 direction;
 			I32 diffuse;
 			I32 specular;
 			I32 ambient;
 		} locations;
+
+		//static list of spot lights
+		static DirectionalLight* directional_light;
 	
 	};
 

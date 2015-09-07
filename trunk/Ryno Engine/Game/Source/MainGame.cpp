@@ -22,16 +22,16 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading graphics
-		U32 white = m_texture_manager->loadPNG("white_pixel",GAME_FOLDER);
-		U32 white_normal = m_texture_manager->loadPNG("normal_pixel", GAME_FOLDER);
-		U32 texture_bricks = m_texture_manager->loadPNG("pack/177", GAME_FOLDER);
-		U32 normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm", GAME_FOLDER);
-		U32 at = m_texture_manager->loadPNG("pack/196", GAME_FOLDER);
-		U32 an = m_texture_manager->loadPNG("pack/196_norm", GAME_FOLDER);
-		U32 bt = m_texture_manager->loadPNG("pack/161", GAME_FOLDER);
-		U32 bn = m_texture_manager->loadPNG("pack/161_norm", GAME_FOLDER);
-		U32 solaire = m_texture_manager->loadPNG("solaire", GAME_FOLDER);
-		U32 sun = m_texture_manager->loadPNG("sun", GAME_FOLDER);
+		Texture white = m_texture_manager->loadPNG("white_pixel",GAME_FOLDER);
+		Texture white_normal = m_texture_manager->loadPNG("normal_pixel", GAME_FOLDER);
+		Texture texture_bricks = m_texture_manager->loadPNG("pack/177", GAME_FOLDER);
+		Texture normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm", GAME_FOLDER);
+		Texture at = m_texture_manager->loadPNG("pack/196", GAME_FOLDER);
+		Texture an = m_texture_manager->loadPNG("pack/196_norm", GAME_FOLDER);
+		Texture bt = m_texture_manager->loadPNG("pack/161", GAME_FOLDER);
+		Texture bn = m_texture_manager->loadPNG("pack/161_norm", GAME_FOLDER);
+		Texture solaire = m_texture_manager->loadPNG("solaire", GAME_FOLDER);
+		Texture sun = m_texture_manager->loadPNG("sun", GAME_FOLDER);
 
 		CPUProfiler::next_time();
 
@@ -43,7 +43,7 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading skyboxes
-		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon", GAME_FOLDER);
+		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon_small", GAME_FOLDER);
 
 		CPUProfiler::next_time();
 
@@ -98,13 +98,7 @@ namespace Ryno{
 		go->model->set_tiling(3, 3);
 		go->position = glm::vec3(0, 0, 0);
 		m_game_objects.push_back(go);
-		////Back
-		//go = new GameObject(go);
-		//go->scale = glm::vec3(400,200,10);
-		//go->model->set_texture_normal(at, an);
-		//go->model->set_tiling(4,2);
-		//go->position = glm::vec3(0,105, -200);
-		//m_game_objects.push_back(go);
+		
 		//Left
 		go = new GameObject(go);
 		go->scale = glm::vec3(10, 200, 400);
@@ -143,7 +137,7 @@ namespace Ryno{
 
 
 	
-		s = new SpotLight();
+		SpotLight* s = new SpotLight();
 		s->set_position(0,190,0);
 		s->set_direction(-90, 0);
 		s->cutoff = 40;
@@ -152,16 +146,14 @@ namespace Ryno{
 		s->attenuation = .001;
 		s->specular_intensity = 10;
 		s->set_specular_color(0,255,0);
-		spot_lights.push_back(s);
 
-		p = new PointLight();
+		PointLight* p = new PointLight();
 		p->set_position(180, 20, 180);
 		p->set_diffuse_color(255, 80, 0);
 		p->diffuse_intensity = 3;
 		p->attenuation = .001;
 		p->specular_intensity = 10;
 		p->set_specular_color(255, 80, 0);
-		point_lights.push_back(p);
 
 		go = new GameObject(go);
 		go->model->set_color_and_flatness(255, 255, 255, 255);
@@ -173,7 +165,6 @@ namespace Ryno{
 		
 		p = new PointLight(p);
 		p->set_position(-180, 20, 180);
-		point_lights.push_back(p);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(-180, 20, 180);
@@ -181,7 +172,6 @@ namespace Ryno{
 
 		p = new PointLight(p);
 		p->set_position(-180, 20, -180);
-		point_lights.push_back(p);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(-180, 20, -180);
@@ -189,14 +179,13 @@ namespace Ryno{
 
 		p = new PointLight(p);
 		p->set_position(180, 20, -180);
-		point_lights.push_back(p);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(180, 20, -180);
 		m_game_objects.push_back(go);
 
 
-		l = new DirectionalLight();
+		DirectionalLight* l = new DirectionalLight();
 		l->set_direction(-65, 150);
 		l->diffuse_intensity = 0.2;
 		l->set_diffuse_color(255, 255, 200);
@@ -209,25 +198,29 @@ namespace Ryno{
 		Sprite* sp = new Sprite();
 		sp->angle = 0;
 		sp->color.set_color_and_alpha(255, 255, 255, 255);
-		sp->texture = solaire;
-		sp->scale = glm::vec2(0.1,0.2);
+		sp->set_texture(solaire);
+		sp->position = glm::vec2(0, 1);
+		sp->anchor_point = TOP_LEFT;
+		sp->scale = glm::vec2(200, 200);
 		sp->tiling = glm::vec2(1, 1);
-		sp->position = glm::vec2(0.05,0.9);
 		sp->angle = 0;
 		m_sprites.push_back(sp);
-		
-
 
 		sp = new Sprite(sp);
-		sp->position = glm::vec2(0.15, 0.9);
+		sp->position = glm::vec2(1,0);
+		sp->anchor_point = BOTTOM_RIGHT;
 		m_sprites.push_back(sp);
+
 		sp = new Sprite(sp);
-		sp->texture = sun;
-		sp->scale = glm::vec2(0.2, 0.2);
-		sp->position = glm::vec2(0.30, 0.9);
+		sp->set_texture(sun);
+		sp->scale = glm::vec2(200,200);
+		sp->position = glm::vec2(1,1);
+		sp->anchor_point = TOP_RIGHT;
 		m_sprites.push_back(sp);
+
 		sp = new Sprite(sp);
-		sp->position = glm::vec2(0.50, 0.9);
+		sp->position = glm::vec2(0,0);
+		sp->anchor_point = BOTTOM_LEFT;
 		m_sprites.push_back(sp);
 	
 
@@ -259,11 +252,11 @@ namespace Ryno{
 	
 		
 		if (m_input_manager.is_key_down(SDLK_LEFT, KEYBOARD) || m_input_manager.is_key_down(SDL_CONTROLLER_BUTTON_DPAD_LEFT, CONTROLLER)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.x -= 3;
 
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				l->position.x -= 3;
 
 			}
@@ -272,11 +265,11 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_RIGHT, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.x += 3;
 
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				l->position.x += 3;
 
 			}
@@ -290,17 +283,17 @@ namespace Ryno{
 			a += 0.5;
 			b += 0.5;
 			
-			l->set_direction(-45,180);
+			DirectionalLight::directional_light->set_direction(-45,180);
 			
 		}
 
 
 		if (m_input_manager.is_key_down(SDLK_n, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.z -= 3;
 
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				l->position.z -= 3;
 
 			}
@@ -310,11 +303,11 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_m, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.z += 3;
 
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				l->position.z += 3;
 
 			}
@@ -323,11 +316,11 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_UP, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.y += 3;
 
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				l->position.y += 3;
 
 			}
@@ -336,11 +329,11 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_DOWN, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.y -= 3;
 
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				l->position.y -= 3;
 
 			}
@@ -350,45 +343,45 @@ namespace Ryno{
 			}
 		}
 		if (m_input_manager.is_key_down(SDL_CONTROLLER_BUTTON_Y, CONTROLLER)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				
 				l->diffuse_intensity += 1;
 				
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				l->diffuse_intensity += 1;
 
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_p, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				if (l->diffuse_intensity > 0)
 				l->diffuse_intensity -= 1;
 
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				if (l->diffuse_intensity > 0)
 					l->diffuse_intensity -= 1;
 
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_k, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				l->specular_intensity += .3;
 
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				l->specular_intensity += .3;
 
 			}
 		}
 		if (m_input_manager.is_key_down(SDLK_l, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				if (l->specular_intensity > 0)
 				l->specular_intensity -= .3;
 
 			}
-			for (PointLight* l : point_lights){
+			for (PointLight* l : PointLight::point_lights){
 				if (l->specular_intensity > 0)
 					l->specular_intensity -= .3;
 
@@ -396,7 +389,7 @@ namespace Ryno{
 		}
 
 		if (m_input_manager.is_key_down(SDLK_1, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				l->cutoff -= 1;
 				if (l->cutoff < 5)
 					l->cutoff = 5;
@@ -404,7 +397,7 @@ namespace Ryno{
 		}
 
 		if (m_input_manager.is_key_down(SDLK_2, KEYBOARD)){
-			for (SpotLight* l : spot_lights){
+			for (SpotLight* l : SpotLight::spot_lights){
 				l->cutoff += 1;
 				if (l->cutoff > 60)
 					l->cutoff = 60;
@@ -456,53 +449,15 @@ namespace Ryno{
 	void MainGame::draw(){
 
 		m_deferred_renderer->init_frame();
-
-		//geometry batch
-		m_geometry_batch3d->begin();
-		for (GameObject* o : m_game_objects)
-			m_geometry_batch3d->draw(o->model);
-		for (GameObject* o : spheres)
-			m_geometry_batch3d->draw(o->model);
-		m_geometry_batch3d->end();
-
-	
-		m_deferred_renderer->geometry_pass(m_geometry_batch3d);
-
-
-		//shadow batch
-		m_shadow_batch3d->begin();
-		for (GameObject* o : m_game_objects)
-			m_shadow_batch3d->draw(o->model);
-		for (GameObject* o : spheres)
-			m_shadow_batch3d->draw(o->model);
-		m_shadow_batch3d->end();
-
-
-		m_deferred_renderer->spot_light_pass(&spot_lights, m_shadow_batch3d);
-		m_deferred_renderer->point_light_pass(&point_lights, m_shadow_batch3d);
-
-		
-		m_deferred_renderer->directional_lighting_pass(l, m_shadow_batch3d);
-
+		m_deferred_renderer->geometry_pass();
+		m_deferred_renderer->prepare_for_light_passes();
+		m_deferred_renderer->spot_light_pass();
+		m_deferred_renderer->point_light_pass();
+		m_deferred_renderer->directional_light_pass();
 		m_deferred_renderer->skybox_pass();
-
-		//hud batch
-		m_sprite_batch2d->begin();
-		for (Sprite* s : m_sprites)
-			m_sprite_batch2d->draw(s);
-		m_sprite_batch2d->end();
-
-
-
-		m_deferred_renderer->draw_HUD_pass(m_sprite_batch2d);
+		m_deferred_renderer->draw_HUD_pass();
 		m_deferred_renderer->final_pass();
 
-		
-		
-
-
-		
-		//Finally swap windows
 		SDL_GL_SwapWindow(m_window);
 
 		

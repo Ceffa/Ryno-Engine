@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include "Global.h"
+#include "Structures.h"
 
 
 namespace Ryno{
@@ -15,8 +16,8 @@ namespace Ryno{
 	class TextureManager{
 	public:
 		static TextureManager* get_instance();
-		U32 loadPNG(const std::string& name, LocationOfResource loc);
-		U32 loadCubeMap(const std::string& name, LocationOfResource loc);
+		Texture loadPNG(const std::string& name, LocationOfResource loc);
+		Texture loadCubeMap(const std::string& name, LocationOfResource loc);
 	private:
 		TextureManager::TextureManager();
 		U8 read_file_to_buffer(const std::string& f_path, std::vector<U8>& buffer);

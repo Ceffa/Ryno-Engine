@@ -3,10 +3,18 @@
 namespace Ryno{
 
 
-	DirectionalLight::DirectionalLight(){
+	DirectionalLight* DirectionalLight::directional_light;
 
+	DirectionalLight::DirectionalLight()
+	{
+		if (directional_light)
+			delete directional_light;
+		directional_light = this;
+	}
 
-	
+	DirectionalLight::~DirectionalLight()
+	{
+		
 	}
 	
 

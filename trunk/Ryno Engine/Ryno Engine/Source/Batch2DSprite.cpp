@@ -68,14 +68,14 @@ namespace Ryno {
 
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
-			if (cg == 0	|| m_sprites[cg]->texture != m_sprites[cg - 1]->texture)
+			if (cg == 0	|| m_sprites[cg]->get_texture_id() != m_sprites[cg - 1]->get_texture_id())
 				
 			{
 				if (cg != 0){
 					instance_offset += m_render_batches.back().num_instances;
 				}
 					
-				m_render_batches.emplace_back(1, m_sprites[cg]->texture);
+				m_render_batches.emplace_back(1, m_sprites[cg]->get_texture_id());
 				
 				
 			}
@@ -211,7 +211,7 @@ namespace Ryno {
 
 	U8 Batch2DSprite::compare_models(Sprite* a, Sprite* b){
 	
-		return a->texture < b->texture;
+		return a->get_texture_id() < b->get_texture_id();
 	}
 
 

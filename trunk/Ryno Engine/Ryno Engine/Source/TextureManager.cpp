@@ -2,7 +2,6 @@
 #include "lodepng.h"
 #include "Log.h"
 #include <iostream>
-
 namespace Ryno{
 
 
@@ -17,12 +16,11 @@ namespace Ryno{
 	
 
 
-	U32 TextureManager::loadPNG(const std::string& name, LocationOfResource loc){
+	Texture TextureManager::loadPNG(const std::string& name, LocationOfResource loc){
 		
 		static const std::string middle_path = "Resources/Textures/2D/";
 
 		std::string path = BASE_PATHS[loc] + middle_path + name + ".png";
-		GLTexture texture = {};
 
 
 		std::vector<unsigned char> out;
@@ -35,11 +33,11 @@ namespace Ryno{
 			Log::FatalError("Decoding png failed: Errorcode: " + error_code);
 		}
 		
-		texture.width = width;
-		texture.height = height;
-		U32 texture_id;
-		glGenTextures(1, &(texture_id));
-		glBindTexture(GL_TEXTURE_2D, texture_id);
+		Texture t;
+		t.width = width;
+		t.height = height;
+		glGenTextures(1, &(t.id));
+		glBindTexture(GL_TEXTURE_2D, t.id);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(out[0]));
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -51,28 +49,28 @@ namespace Ryno{
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 
-		return texture_id;
+		return t;
 
 	}
 
-	U32 TextureManager::loadCubeMap(const std::string& name, LocationOfResource loc){
+	Texture TextureManager::loadCubeMap(const std::string& name, LocationOfResource loc){
 
-
-		U32 texture_id;
-		glGenTextures(1, &(texture_id));
+		Texture t;
+		
+		glGenTextures(1, &(t.id));
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, t.id);
 		static const std::string middle_path = "Resources/Textures/3D/";
 
 		static const std::string pieces[6]{"pos_x", "neg_x", "pos_y", "neg_y", "pos_z", "neg_z"};
 		
+		unsigned width, height;
+
 		for (U8 i = 0; i < 6; i++){
 			std::string path = BASE_PATHS[loc] + middle_path + name + "/"+name+"_"+pieces[i]+".png";
-			GLTexture texture = {};
 
 
 			std::vector<unsigned char> out;
-			unsigned width, height;
 			
 
 
@@ -82,8 +80,7 @@ namespace Ryno{
 				Log::FatalError("Decoding png failed: Errorcode: " + error_code);
 			}
 
-			texture.width = width;
-			texture.height = height;
+			
 
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(out[0]));
 
@@ -96,7 +93,9 @@ namespace Ryno{
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
-		return texture_id;
+		t.width = width;
+		t.height = height;
+		return t;
 
 	}
 

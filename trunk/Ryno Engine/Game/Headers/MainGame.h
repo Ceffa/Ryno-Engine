@@ -32,12 +32,7 @@ namespace Ryno{
 		I32 cube_mesh;
 		Model* sphere_box_model;
 
-		std::vector<PointLight*> point_lights;
-		std::vector<SpotLight*> spot_lights;
-
-		DirectionalLight* l;
-		SpotLight* s;
-		PointLight* p;
+		
 	
 	};
 }

@@ -6,8 +6,7 @@ namespace Ryno{
 
 	Model::Model(){
 		color.set_color_and_alpha(255,255,255,0);
-		texture = -1;
-		normal_map = -1;
+		normal_map.id = -1;
 		set_tiling(1, 1);
 	}
 
@@ -38,7 +37,7 @@ namespace Ryno{
 		tiling = glm::vec2(u, v);
 	}
 
-	void Model::set_texture_normal(I32 t, I32 n){
+	void Model::set_texture_normal(Texture t, Texture n){
 		texture = t;
 		normal_map = n;
 	}

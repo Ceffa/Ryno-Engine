@@ -74,9 +74,7 @@ namespace Ryno{
 		Camera3D* m_camera;
 		GameState m_game_state;
 		SDL_Window* m_window;
-		Batch3DGeometry* m_geometry_batch3d;
-		Batch3DShadow* m_shadow_batch3d;
-		Batch2DSprite* m_sprite_batch2d;
+		
 
 
 	};

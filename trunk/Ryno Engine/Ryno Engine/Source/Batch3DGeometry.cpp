@@ -5,6 +5,7 @@
 #include <GLM/gtx/string_cast.hpp>
 #include "Log.h"
 
+
 namespace Ryno {
 
 	
@@ -74,8 +75,8 @@ namespace Ryno {
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
-				|| m_models[cg]->texture != m_models[cg - 1]->texture
-				|| m_models[cg]->normal_map != m_models[cg - 1]->normal_map
+				|| m_models[cg]->texture.id != m_models[cg - 1]->texture.id
+				|| m_models[cg]->normal_map.id != m_models[cg - 1]->normal_map.id
 				|| m_models[cg]->mesh != m_models[cg - 1]->mesh)
 			{
 				if (cg != 0){
@@ -83,7 +84,7 @@ namespace Ryno {
 					instance_offset += m_render_batches.back().num_instances;
 				}
 					
-				m_render_batches.emplace_back(vertex_offset, instance_offset, mesh_size, 1, m_models[cg]->texture, m_models[cg]->normal_map, m_models[cg]->mesh);
+				m_render_batches.emplace_back(vertex_offset, instance_offset, mesh_size, 1, m_models[cg]->texture.id, m_models[cg]->normal_map.id, m_models[cg]->mesh);
 				
 				
 			}
@@ -236,12 +237,12 @@ namespace Ryno {
 	}
 
 	U8 Batch3DGeometry::compare_models(Model* a, Model* b){
-		if (a->texture == b->texture){
-			if (a->normal_map == b->normal_map)
+		if (a->texture.id == b->texture.id){
+			if (a->normal_map.id == b->normal_map.id)
 				return a->mesh < b->mesh;
-			return a->normal_map < b->normal_map;
+			return a->normal_map.id < b->normal_map.id;
 		}
-		return a->texture < b->texture;
+		return a->texture.id < b->texture.id;
 	}
 
 

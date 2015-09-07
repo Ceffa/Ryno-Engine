@@ -5,15 +5,20 @@
 
 namespace Ryno{
 
+	std::list<GameObject*> GameObject::game_objects;
+
 	GameObject::GameObject(){
 		model = new Model();
+		game_objects.push_back(this);
 	}
 	GameObject::GameObject(const GameObject *go)
 	{
-		
 		*this = *go;
 		model = new Model(go->model);
-		
+		game_objects.push_back(this);
+	}
+	GameObject::~GameObject(){
+		game_objects.remove(this);
 	}
 
 	void GameObject::generate_model_matrix(){

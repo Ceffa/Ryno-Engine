@@ -3,6 +3,7 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include <GLM/gtx/quaternion.hpp>
+#include "Structures.h"
 
 
 namespace Ryno{
@@ -29,7 +30,7 @@ namespace Ryno{
 		I32 height;
 		glm::vec4 position;
 		F32 yaw, pitch;
-		U32 skybox;
+		Texture skybox;
 	
 	private:
 		glm::mat4 V_matrix;

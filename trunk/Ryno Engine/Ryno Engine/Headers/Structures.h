@@ -64,5 +64,11 @@ namespace Ryno{
 		glm::vec2 uv;
 	};
 
+	struct Texture{
+		U32 id;
+		U32 width;
+		U32 height;
+	};
+
 
 }

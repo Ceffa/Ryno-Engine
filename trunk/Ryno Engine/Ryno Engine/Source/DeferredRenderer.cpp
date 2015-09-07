@@ -1,4 +1,5 @@
 #include "DeferredRenderer.h"
+#include "GameObject.h"
 
 #include <GLM/glm.hpp>
 #include <GLM/gtx/transform.hpp>
@@ -31,6 +32,15 @@ namespace Ryno{
 		m_simple_drawer = SimpleDrawer::get_instance();
 		m_fbo_deferred = new FBO_Deferred(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_fbo_shadow = new FBO_Shadow(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+		//BATCHES SETUP
+		m_geometry_batch3d = new Batch3DGeometry();
+		m_shadow_batch3d = new Batch3DShadow();
+		m_sprite_batch2d = new Batch2DSprite();
+
+		m_geometry_batch3d->init(m_camera);
+		m_shadow_batch3d->init(m_camera);
+		m_sprite_batch2d->init();
 
 		//PROGRAMS SETUP
 		//Geometry program
@@ -160,7 +170,15 @@ namespace Ryno{
 	}
 
 	//Call before drawing geometry
-	void DeferredRenderer::geometry_pass(Batch3DGeometry* batch){
+	void DeferredRenderer::geometry_pass()
+	{
+		//Add to geometry batch the game objects
+		m_geometry_batch3d->begin();
+		for (GameObject* go : GameObject::game_objects){
+			go->generate_model_matrix();
+			m_geometry_batch3d->draw(go->model);
+		}
+		m_geometry_batch3d->end();
 
 		m_fbo_deferred->bind_for_geometry_pass();
 
@@ -173,7 +191,7 @@ namespace Ryno{
 		//Setup geometry m_geometry_program
 		glUniformMatrix4fv(m_geometry_program->getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
 		glUniformMatrix4fv(m_geometry_program->getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_VP_matrix()[0][0]);
-		batch->render_batch();
+		m_geometry_batch3d->render_batch();
 		m_geometry_program->unuse();
 	}
 
@@ -182,12 +200,11 @@ namespace Ryno{
 	
 
 	//Apply point lights
-	void DeferredRenderer::point_light_pass(std::vector<PointLight*>* point_lights, Batch3DShadow* batch){		
+	void DeferredRenderer::point_light_pass(){		
 
 
-		for (PointLight* p : *point_lights){
-			point_shadow_subpass(p,batch);
-			//point_stencil_subpass(p);
+		for (PointLight* p : PointLight::point_lights){
+			point_shadow_subpass(p);
 			point_lighting_subpass(p);
 
 		}
@@ -195,26 +212,25 @@ namespace Ryno{
 
 	}
 
-	void DeferredRenderer::spot_light_pass(std::vector<SpotLight*>* spot_lights, Batch3DShadow* batch)
+	void DeferredRenderer::spot_light_pass()
 	{
-		for (SpotLight* p : *spot_lights){
-			spot_shadow_subpass(p, batch);
-			//spot_stencil_subpass(p);
+		for (SpotLight* p : SpotLight::spot_lights){
+			spot_shadow_subpass(p);
 			spot_lighting_subpass(p);
 
 		}
 
 	}
 
-	void DeferredRenderer::directional_lighting_pass(DirectionalLight* directional_light, Batch3DShadow* batch)
+	void DeferredRenderer::directional_light_pass()
 	{
-		directional_shadow_subpass(directional_light, batch);
-		directional_lighting_subpass(directional_light);
+		directional_shadow_subpass(DirectionalLight::directional_light);
+		directional_lighting_subpass(DirectionalLight::directional_light);
 	}
 
 	
 
-	void DeferredRenderer::point_shadow_subpass(PointLight* p, Batch3DShadow* batch)
+	void DeferredRenderer::point_shadow_subpass(PointLight* p)
 	{
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
@@ -257,7 +273,7 @@ namespace Ryno{
 
 		glUniformMatrix4fv(m_point_shadow_program->getUniformLocation("projection_matrices"),6,GL_FALSE,&light_VP_matrices[0][0][0]);
 
-		batch->render_batch();
+		m_shadow_batch3d->render_batch();
 		m_point_shadow_program->unuse();
 
 		
@@ -322,7 +338,7 @@ namespace Ryno{
 	
 
 
-	void DeferredRenderer::spot_shadow_subpass(SpotLight* s, Batch3DShadow* batch)
+	void DeferredRenderer::spot_shadow_subpass(SpotLight* s)
 	{
 		
 		//Enable depth testing and writing
@@ -356,7 +372,7 @@ namespace Ryno{
 
 		glUniformMatrix4fv(m_spot_shadow_program->getUniformLocation("in_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
 
-		batch->render_batch();
+		m_shadow_batch3d->render_batch();
 		m_spot_shadow_program->unuse();
 
 
@@ -414,7 +430,7 @@ namespace Ryno{
 
 	
 
-	void DeferredRenderer::directional_shadow_subpass(DirectionalLight* directional_light, Batch3DShadow* batch){
+	void DeferredRenderer::directional_shadow_subpass(DirectionalLight* directional_light){
 
 		m_fbo_shadow->bind_for_directional_shadow_pass();
 		glEnable(GL_DEPTH_TEST);
@@ -434,7 +450,7 @@ namespace Ryno{
 
 		m_directional_shadow_program->use();
 		glUniformMatrix4fv(m_directional_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &directional_light_VP[0][0]);
-		batch->render_batch();
+		m_shadow_batch3d->render_batch();
 		m_directional_shadow_program->unuse();
 
 
@@ -515,7 +531,7 @@ namespace Ryno{
 		glm::mat4 no_trans_VP = m_camera->get_P_matrix() *  glm::mat4(glm::mat3(m_camera->get_V_matrix()));
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_camera->skybox);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_camera->skybox.id);
 		glUniformMatrix4fv(m_skybox_program->getUniformLocation("no_trans_VP"), 1, GL_FALSE, &no_trans_VP[0][0]);
 		glUniform1i(m_skybox_program->getUniformLocation("cube_map"), 0);
 
@@ -534,8 +550,26 @@ namespace Ryno{
 
 
 
-	void DeferredRenderer::draw_HUD_pass(Batch2DSprite* batch)
+	void DeferredRenderer::prepare_for_light_passes()
 	{
+		//Add to batch the game objects that affects shadows
+		m_shadow_batch3d->begin();
+		for (GameObject* go : GameObject::game_objects){
+			go->generate_model_matrix();
+			m_shadow_batch3d->draw(go->model);
+		}
+		m_shadow_batch3d->end();
+	}
+
+	void DeferredRenderer::draw_HUD_pass()
+	{
+		//Add the HUD elements to the 2D batch
+		m_sprite_batch2d->begin();
+		for (Sprite* s : Sprite::sprites){
+			s->generate_model_matrix();
+			m_sprite_batch2d->draw(s);
+		}
+		m_sprite_batch2d->end();
 
 		m_fbo_deferred->bind_for_HUD_pass();
 
@@ -546,7 +580,7 @@ namespace Ryno{
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		m_sprite_program->use();
-		batch->render_batch();
+		m_sprite_batch2d->render_batch();
 		m_sprite_program->unuse();
 		glDisable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
