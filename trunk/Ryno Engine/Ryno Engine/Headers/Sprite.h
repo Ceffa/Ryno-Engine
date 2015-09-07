@@ -25,7 +25,7 @@ namespace Ryno{
 		glm::mat3 model_matrix;
 		glm::vec2 position;
 		glm::vec2 scale;
-		glm::vec2 ratio;
+		F32 ratio;
 		ColorRGBA color;
 		glm::vec2 tiling;
 		AnchorPoint anchor_point = TOP_LEFT;
