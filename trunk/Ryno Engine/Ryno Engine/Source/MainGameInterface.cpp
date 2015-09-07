@@ -74,6 +74,7 @@ namespace Ryno{
 		while (m_game_state == GameState::Running){
 			m_time_manager.begin_frame();
 			handle_input();
+			m_camera->generate_VP_matrix();
 			update();
 			draw();
 			m_time_manager.end_frame();

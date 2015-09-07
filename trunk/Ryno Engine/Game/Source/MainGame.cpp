@@ -417,32 +417,7 @@ namespace Ryno{
 	}
 
 	void MainGame::update(){
-		time += speed;
-		I32 i = 0;
 		
-
-		for (GameObject* o : m_game_objects){
-		
-			o->generate_model_matrix();
-
-		}
-		for (GameObject* s : spheres){
-
-			s->generate_model_matrix();
-		}
-		for (Sprite* s : m_sprites){
-
-			s->generate_model_matrix();
-
-		}
-
-
-
-		//generate camera matrix
-		m_camera->generate_VP_matrix();
-
-		
-
 
 	}
 
