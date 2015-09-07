@@ -18,6 +18,7 @@ namespace Ryno{
 		U32 get_texture_id() const { return texture.id; };
 		void set_texture(Texture t);
 		void set_ratio(U32 w, U32 h);
+		void restore_image_ratio();
 		void set_default_scale();
 
 		//Sprites data

@@ -69,13 +69,18 @@ namespace Ryno{
 	void Sprite::set_texture(Texture t)
 	{
 		texture = t;
-		set_ratio(t.width,t.height);
+		restore_image_ratio();
+
 	}
 
 	void Sprite::set_ratio(U32 w, U32 h)
 	{
 		ratio = glm::vec2(w / (F32)h, 1);
 		
+	}
+
+	void Sprite::restore_image_ratio(){
+		set_ratio(texture.width, texture.height);
 	}
 
 	
