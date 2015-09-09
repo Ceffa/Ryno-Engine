@@ -5,7 +5,7 @@
 namespace Ryno{
 
 	void Log::Message(const std::string& message) {
-		std::cout << message << std::endl;
+		std::cout<< message << std::endl;
 	}
 
 	void Log::Warning(const std::string& message, const std::string& message2) {

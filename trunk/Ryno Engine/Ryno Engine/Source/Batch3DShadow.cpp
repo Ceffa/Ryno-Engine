@@ -185,9 +185,9 @@ namespace Ryno {
 
 	void Batch3DShadow::render_batch() {
 		
-		I32 draw_calls = 0;
-		bool a = false;
-		
+	
+
+
 		enable_attributes();
 
 		//i can bind the vbo, orphan it, pass the new data, and unbind it.
@@ -204,16 +204,13 @@ namespace Ryno {
 			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(InputInstanceShadow), &input_instances[rb.instance_offset]);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			
-			++draw_calls;
-			
+
+
 			glDrawArraysInstanced(GL_TRIANGLES,rb.vertex_offset ,rb.num_vertices,rb.num_instances);
 		}
 
-		static U32 count = 0;
-		if (count++ == 30){
-			count = 0;
-			//std::cout << "Draw calls: " << draw_calls << std::endl;
-		}
+		
+
 	}
 
 	U8 Batch3DShadow::compare_models(Model* a, Model* b){

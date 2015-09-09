@@ -248,13 +248,16 @@ namespace Ryno {
         return l;
     }
 
-    glm::vec2 Font::measure(const char* s) {
+	glm::vec2 Font::measure(const std::string& s, std::vector<F32>* line_widths) {
         glm::vec2 size(0, _fontHeight);
+		
         float cw = 0;
         for (int si = 0; s[si] != 0; si++) {
             char c = s[si];
             if (s[si] == '\n') {
                 size.y += _fontHeight;
+				std::cout << size.x << std::endl;
+				line_widths->push_back(cw);
                 if (size.x < cw)
                     size.x = cw;
                 cw = 0;
@@ -266,6 +269,7 @@ namespace Ryno {
                 cw += _glyphs[gi].size.x;
             }
         }
+		line_widths->push_back(cw);
         if (size.x < cw)
             size.x = cw;
         return size;
@@ -276,10 +280,12 @@ namespace Ryno {
 		FontGlyph* font_glyph;
 
 		glm::vec2 tp = message->position;
+		std::vector<F32> line_widths;//Size of each line of text
+		glm::vec2 size = measure(message->text, &line_widths);//Global size of the text
+		U32 line_counter = 0;
 
-
-		anchor_x(message, tp);
-		anchor_y(message, tp);
+		anchor_x(message->anchor_point, &tp.x, message->scale.x, size.x, line_widths[0]);
+		anchor_y(message->anchor_point, &tp.y, message->scale.y, size.y);
 
 
 
@@ -289,7 +295,7 @@ namespace Ryno {
 			if (message->text[si] == '\n') {
 				tp.y -= _fontHeight * message->scale.y;
 				tp.x = message->position.x;
-				anchor_x(message, tp);
+				anchor_x(message->anchor_point, &tp.x,message->scale.x, size.x, line_widths[++line_counter]);
 			}
 			else {
 				// Check for correct glyph
@@ -306,7 +312,6 @@ namespace Ryno {
 				font_glyph->texture = t;
 				font_glyph->generate_model_matrix();
 				batch->draw_glyph(font_glyph);
-				std::cout << font_glyph->uv.y << std::endl;
 				tp.x += _glyphs[gi].size.x * message->scale.x;
 			}
 		}
@@ -317,25 +322,31 @@ namespace Ryno {
 
     
 
-	void Font::anchor_y(Text* message, glm::vec2 &tp)
+	void Font::anchor_y(AnchorPoint ap, F32* position, F32 scale, F32 size)
 	{
+
 		// Apply justification on y
-		if (message->anchor_point == TOP_LEFT || message->anchor_point == TOP_MIDDLE || message->anchor_point == TOP_RIGHT) {
-			tp.y -= _fontHeight * message->scale.y / 2.0f;
+		if (ap == TOP_LEFT || ap == TOP_MIDDLE || ap == TOP_RIGHT) {
+			*position -=  _fontHeight * scale /2.0f ;
 		}
-		if (message->anchor_point == BOTTOM_LEFT || message->anchor_point == BOTTOM_MIDDLE || message->anchor_point == BOTTOM_RIGHT) {
-			tp.y += _fontHeight * message->scale.y / 2.0f;
+		else if (ap == BOTTOM_LEFT || ap == BOTTOM_MIDDLE || ap == BOTTOM_RIGHT) {
+			*position += (size - _fontHeight/2.0f)* scale ;
+		}
+		else {
+			*position += (size - _fontHeight)* scale / 2.0f;
 		}
 	}
 
-	void Font::anchor_x(Text* message, glm::vec2 &tp)
+	void Font::anchor_x(AnchorPoint ap, F32* position, F32 scale, F32 size, F32 line_size)
 	{
+		std::cout << "YO" << line_size << std::endl;
+	
 		// Apply justification on X
-		if (message->anchor_point == TOP_MIDDLE || message->anchor_point == CENTER || message->anchor_point == BOTTOM_MIDDLE) {
-			tp.x -= measure(message->text).x * message->scale.x / 2;
+		if (ap == TOP_MIDDLE || ap == CENTER || ap == BOTTOM_MIDDLE) {
+			*position -= line_size * scale / 2;
 		}
-		else if (message->anchor_point == TOP_RIGHT || message->anchor_point == MIDDLE_RIGHT || message->anchor_point == BOTTOM_RIGHT) {
-			tp.x -= measure(message->text).x * message->scale.x;
+		else if (ap == TOP_RIGHT || ap == MIDDLE_RIGHT || ap == BOTTOM_RIGHT) {
+			*position -= line_size * scale;
 		}
 	}
 

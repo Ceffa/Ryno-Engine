@@ -70,7 +70,7 @@ namespace Ryno{
 				fgetc(file);
 				char buffer[100];
 				fgets(buffer, 100, file);
-				//std::cout << std::string(buffer) << std::endl;
+			
 				int matches;
 				if (has_uvs){
 					matches = sscanf(buffer, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);

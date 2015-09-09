@@ -76,16 +76,16 @@ namespace Ryno {
         int getFontHeight() const {
             return _fontHeight;
         }
-        /// Measures the dimensions of the text
-        glm::vec2 measure(const char* s);
+        /// Measures the dimensions of the text and of each line
+		glm::vec2 measure(const std::string& s, std::vector<F32>* line_widths);
 
 		void draw(Batch2DFont* batch, Text* message);
 
 		void anchoring(Text* message, glm::vec2 &tp);
 
-		void anchor_y(Text* message, glm::vec2 &tp);
+		void anchor_y(AnchorPoint ap, F32* position, F32 scale, F32 size);
 
-		void anchor_x(Text* message, glm::vec2 &tp);
+		void anchor_x(AnchorPoint ap, F32* position,F32 scale, F32 size, F32 line_size);
 
 
 

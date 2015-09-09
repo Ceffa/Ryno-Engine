@@ -25,10 +25,19 @@ namespace Ryno {
 		texts.push_back(this);
 
     }
+
+	Text::Text(const Text* t)
+	{
+		*this = *t;
+		text = std::string(t->text);
+		texts.push_back(this);
+	}
    
 
    
 
    
+
+	
 
 }

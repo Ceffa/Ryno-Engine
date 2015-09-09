@@ -34,6 +34,7 @@ namespace Ryno{
 		Texture bn = m_texture_manager->loadPNG("pack/161_norm", GAME_FOLDER);
 		Texture solaire = m_texture_manager->loadPNG("solaire", GAME_FOLDER);
 		Texture sun = m_texture_manager->loadPNG("sun", GAME_FOLDER);
+		Texture doge = m_texture_manager->loadPNG("doge", GAME_FOLDER);
 
 		CPUProfiler::next_time();
 
@@ -197,50 +198,66 @@ namespace Ryno{
 		l->set_ambient_color(255, 255, 200);
 
 
-	/*	Sprite* sp = new Sprite();
+		Sprite* sp = new Sprite();
 		sp->angle = 0;
 		sp->color.set_color_and_alpha(255, 255, 255, 255);
-		sp->set_texture(solaire);
-		sp->position = glm::vec2(0, 1);
-		sp->anchor_point = TOP_LEFT;
+		sp->set_texture(doge);
+		sp->position = glm::vec2(0.25,0.75);
+		sp->anchor_point = CENTER;
 		sp->scale = glm::vec2(200, 200);
 		sp->tiling = glm::vec2(1, 1);
 		sp->angle = 0;
 		m_sprites.push_back(sp);
 
 		sp = new Sprite(sp);
-		sp->position = glm::vec2(1,0);
-		sp->anchor_point = BOTTOM_RIGHT;
+		sp->position = glm::vec2(0.75,0.75);
+		sp->scale = glm::vec2(-200, 200);
 		m_sprites.push_back(sp);
 
 		sp = new Sprite(sp);
-		sp->set_texture(sun);
-		sp->scale = glm::vec2(200,200);
-		sp->position = glm::vec2(1,1);
-		sp->anchor_point = TOP_RIGHT;
+		sp->position = glm::vec2(0.25, 0.25);
+		sp->scale = glm::vec2(200,-200);
 		m_sprites.push_back(sp);
 
 		sp = new Sprite(sp);
-		sp->position = glm::vec2(0,0);
-		sp->anchor_point = BOTTOM_LEFT;
-		m_sprites.push_back(sp);*/
+		sp->position = glm::vec2(0.75, 0.25);
+		sp->scale = glm::vec2(-200,-200);
+		m_sprites.push_back(sp);
 	
-		Font* f = new Font("Roboto-Thin",30);
+		Font* f = new Font("Aaargh",60);
 		Text* t = new Text();
 		t->font = f;
 		t->position = glm::vec2(800,600);
 		t->anchor_point = TOP_RIGHT;
-		t->scale = glm::vec2(1,1);
+		t->scale = glm::vec2(0.5,0.5);
 		t->color = ColorRGBA(255,255,255, 255);
-		t->text = "LE RUSPE Di\n SALVINI!!";
-		t = new Text();
-		t->font = f;
-		t->position = glm::vec2(0, 0);
+		t->text = "Wow\nSuch Doge.\nFormatted!\nWow";
+		
+		t = new Text(t);
+		t->position = glm::vec2(0,600);
+		t->anchor_point = TOP_LEFT;
+		t = new Text(t);
+		t->position = glm::vec2(800, 0);
+		t->anchor_point = BOTTOM_RIGHT;
+		t = new Text(t);
+		t->position = glm::vec2(0,0);
 		t->anchor_point = BOTTOM_LEFT;
-		t->scale = glm::vec2(1, 1);
-		t->color = ColorRGBA(255, 255, 255, 255);
-		t->text = "Proprio \nloro";
-	
+		t = new Text(t);
+		t->position = glm::vec2(400, 600);
+		t->anchor_point = TOP_MIDDLE;
+		t = new Text(t);
+		t->position = glm::vec2(400, 0);
+		t->anchor_point = BOTTOM_MIDDLE;
+		t = new Text(t);
+		t->position = glm::vec2(800,300);
+		t->anchor_point = MIDDLE_RIGHT;
+		t = new Text(t);
+		t->position = glm::vec2(0, 300);
+		t->anchor_point = MIDDLE_LEFT;
+		t = new Text(t);
+		t->position = glm::vec2(400, 300);
+		t->anchor_point = CENTER;
+		
 		CPUProfiler::end_time();
 		CPUProfiler::print_time();
 

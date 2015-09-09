@@ -42,11 +42,12 @@ namespace Ryno {
 
     public:
         Text();
+		Text(const Text* t);
 		~Text();
 
 		Font* font;
 
-		C* text;
+		std::string text;
 		glm::vec2 position;
 		glm::vec2 scale;
 		ColorRGBA color;
