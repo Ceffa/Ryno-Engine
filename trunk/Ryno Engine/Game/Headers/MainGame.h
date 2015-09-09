@@ -22,9 +22,7 @@ namespace Ryno{
 		I64 time = 0;;
 		Sound sound;
 		Music music;
-		std::vector<GameObject*> m_game_objects;
-		std::vector<GameObject*> spheres;
-		std::vector<Sprite*> m_sprites;
+		
 
 		GameObject* ball, *go1, *go2, *go3;
 		I32 square_model;

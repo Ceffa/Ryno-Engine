@@ -79,17 +79,14 @@ namespace Ryno{
 		go->model->mesh = cone_mesh;
 		go->scale = glm::vec3(100,100,100);
 		go->position = glm::vec3(0, 55, 0);
-		m_game_objects.push_back(go);
 		
 	
 		go = new GameObject(go);
 		go->scale = glm::vec3(20, 20, 20);
 		go->position = glm::vec3(-150, 15, -170);
-		m_game_objects.push_back(go);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(150, 15, -170);
-		m_game_objects.push_back(go);
 
 
 		//Base
@@ -100,34 +97,27 @@ namespace Ryno{
 		go->model->mesh = cube_mesh;
 		go->model->set_tiling(3, 3);
 		go->position = glm::vec3(0, 0, 0);
-		m_game_objects.push_back(go);
-		
 		//Left
 		go = new GameObject(go);
 		go->scale = glm::vec3(10, 200, 400);
 		go->position = glm::vec3(-200, 105, 0);
-		m_game_objects.push_back(go);
 		//Right
 		go = new GameObject(go);
 		go->scale = glm::vec3(10, 200, 400);
 		go->position = glm::vec3(200, 105, 0);
-		m_game_objects.push_back(go);
 		//Front
 		go = new GameObject(go);
 		go->scale = glm::vec3(400, 200, 10);
 		go->position = glm::vec3(0, 105, 200);
-		m_game_objects.push_back(go);
 		//Roof
 		go = new GameObject(go);
 		go->scale = glm::vec3(400, 10, 400);
 		go->position = glm::vec3(0, 205, 0);
-		m_game_objects.push_back(go);
 		//Sphere
 		go = new GameObject(go);
 		go->scale = glm::vec3(100,100,100);
 		go->model->mesh = sphere_model;
 		go->position = glm::vec3(0, 300, -150);
-		m_game_objects.push_back(go);
 
 
 		CPUProfiler::next_time();
@@ -164,28 +154,24 @@ namespace Ryno{
 		go->model->set_texture_normal(white, white_normal);
 		go->scale = glm::vec3(25,25,25);
 		go->position = glm::vec3(180, 20, 180);
-		m_game_objects.push_back(go);
 		
 		p = new PointLight(p);
 		p->set_position(-180, 20, 180);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(-180, 20, 180);
-		m_game_objects.push_back(go);
 
 		p = new PointLight(p);
 		p->set_position(-180, 20, -180);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(-180, 20, -180);
-		m_game_objects.push_back(go);
 
 		p = new PointLight(p);
 		p->set_position(180, 20, -180);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(180, 20, -180);
-		m_game_objects.push_back(go);
 
 
 		DirectionalLight* l = new DirectionalLight();
@@ -206,27 +192,23 @@ namespace Ryno{
 		
 		sp->position = glm::vec2(0.25,0.75);
 		sp->anchor_point = CENTER;
-		sp->scale = glm::vec2(300,300);
+		sp->scale = glm::vec2(150,150);
 		sp->tiling = glm::vec2(1, 1);
 		sp->angle = 0;
-		m_sprites.push_back(sp);
 
 		sp = new Sprite(sp);
 		sp->position = glm::vec2(0.75,0.75);
-		sp->scale = glm::vec2(-300, 300);
-		m_sprites.push_back(sp);
+		sp->scale = glm::vec2(-150, 150);
 
 		sp = new Sprite(sp);
 		sp->position = glm::vec2(0.25, 0.25);
-		sp->scale = glm::vec2(300,-300);
-		m_sprites.push_back(sp);
+		sp->scale = glm::vec2(150,-150);
 
 		sp = new Sprite(sp);
 		sp->position = glm::vec2(0.75, 0.25);
-		sp->scale = glm::vec2(-300,-300);
-		m_sprites.push_back(sp);
+		sp->scale = glm::vec2(-150,-150);
 	
-		Font* f = new Font("Aaargh",42);
+		Font* f = new Font("Aaargh",24);
 		Text* t = new Text();
 		t->depth = 1;
 		t->font = f;
@@ -235,7 +217,7 @@ namespace Ryno{
 		t->anchor_point = TOP_RIGHT;
 		t->scale = glm::vec2(1,1);
 		t->color = ColorRGBA(255,255,0, 255);
-		t->text = "So much Doge.\nSuch Text.\nWOW\nWow";
+		t->text = "So much text.\nVery Doge.\nWOW";
 
 		t = new Text(t);
 		t->position = glm::vec2(0, 1);
@@ -248,7 +230,7 @@ namespace Ryno{
 		t = new Text(t);
 		t->position = glm::vec2(1, 0);
 		t->anchor_point = BOTTOM_RIGHT;
-		t->text = "Wow\nNicely aligned.\nSo very Wow.\nMuch Doge";
+		t->text = "Wow\nMuch aligned.\nSo very Wow.";
 
 		t = new Text(t);
 		t->position = glm::vec2(0, 0);
@@ -261,7 +243,7 @@ namespace Ryno{
 		t = new Text(t);
 		t->position = glm::vec2(1, .5);
 		t->anchor_point = MIDDLE_RIGHT;
-		t->text = "Wow\nMuch Formatted\nSo Much Wow.\nVery Doge";
+		t->text = "Much Formatted\nwow\nSo Much Doge.\nVery Wow.";
 		
 		t = new Text(t);
 		t->position = glm::vec2(0, .5);
@@ -305,9 +287,7 @@ namespace Ryno{
 				l->position.x -= 3;
 
 			}
-			for (GameObject* s : spheres){
-				s->position.x -= 3;
-			}
+		
 		}
 		if (m_input_manager.is_key_down(SDLK_RIGHT, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
@@ -318,9 +298,7 @@ namespace Ryno{
 				l->position.x += 3;
 
 			}
-			for (GameObject* s : spheres){
-				s->position.x += 3;
-			}
+		
 		}
 		if (m_input_manager.is_key_down(SDLK_b, KEYBOARD)){
 			static float a = 0;
@@ -343,9 +321,7 @@ namespace Ryno{
 
 			}
 
-			for (GameObject* s : spheres){
-				s->position.z -= 3;
-			}
+		
 		}
 		if (m_input_manager.is_key_down(SDLK_m, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
@@ -356,9 +332,7 @@ namespace Ryno{
 				l->position.z += 3;
 
 			}
-			for (GameObject* s : spheres){
-				s->position.z += 3;
-			}
+		
 		}
 		if (m_input_manager.is_key_down(SDLK_UP, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
@@ -369,9 +343,7 @@ namespace Ryno{
 				l->position.y += 3;
 
 			}
-			for (GameObject* s : spheres){
-				s->position.y += 3;
-			}
+			
 		}
 		if (m_input_manager.is_key_down(SDLK_DOWN, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
@@ -383,9 +355,7 @@ namespace Ryno{
 
 			}
 
-			for (GameObject* s : spheres){
-				s->position.y -= 3;
-			}
+		
 		}
 		if (m_input_manager.is_key_down(SDL_CONTROLLER_BUTTON_Y, CONTROLLER)){
 			for (SpotLight* l : SpotLight::spot_lights){
