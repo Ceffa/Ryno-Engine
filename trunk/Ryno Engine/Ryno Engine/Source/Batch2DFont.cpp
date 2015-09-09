@@ -40,11 +40,11 @@ namespace Ryno {
 	void Batch2DFont::begin() {
 
 		m_render_batches.clear();
-		input_instances.clear();
-		for (FontGlyph *f : FontGlyph::font_glyphs)
-			delete f;
-		FontGlyph::font_glyphs.clear();
 		m_font_glyphs.clear();
+		input_instances.clear();
+		
+		Text::preallocate_memory_for_glyphs();
+
 	}
 
 
@@ -53,10 +53,12 @@ namespace Ryno {
 		//Sort with provided compare function
 		std::stable_sort(m_font_glyphs.begin(), m_font_glyphs.end(), compare_models);
 
+		FontGlyph::current_glyph = 0;
 
 		//Create batches
 		create_render_batches();
 	}
+
 
 	void Batch2DFont::draw_font(Text* sprite_font) {
 		sprite_font->font->draw(this, sprite_font);

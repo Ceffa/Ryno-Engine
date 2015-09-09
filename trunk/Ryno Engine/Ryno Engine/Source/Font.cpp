@@ -24,15 +24,9 @@ int closestPow2(int i) {
 namespace Ryno {
 
 	
-	std::list<FontGlyph*> FontGlyph::font_glyphs;
+	std::vector<FontGlyph> FontGlyph::font_glyphs;
+	U32 FontGlyph::current_glyph;
 
-
-	FontGlyph::FontGlyph(){
-		font_glyphs.push_back(this);
-	}
-	FontGlyph::~FontGlyph(){
-		font_glyphs.remove(this);
-	}
 
 	void FontGlyph::generate_model_matrix()
 	{
@@ -303,7 +297,7 @@ namespace Ryno {
 				if (gi < 0 || gi >= _regLength)
 					gi = _regLength;
 
-				font_glyph = new FontGlyph();
+				font_glyph = &FontGlyph::font_glyphs[FontGlyph::current_glyph++];
 				font_glyph->position = tp;
 				font_glyph->depth = message->depth;
 				font_glyph->scale = _glyphs[gi].size * message->scale;

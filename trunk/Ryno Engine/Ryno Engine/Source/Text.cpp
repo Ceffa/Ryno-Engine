@@ -13,9 +13,20 @@
 namespace Ryno {
 
 
+
+
 	std::list<Text*> Text::texts;
 
-
+	void Text::preallocate_memory_for_glyphs()
+	{
+		FontGlyph::current_glyph = 0;
+		for (Text* s : texts){
+			FontGlyph::current_glyph += s->text.length();
+		}
+		
+		FontGlyph::font_glyphs.resize(FontGlyph::current_glyph);
+		FontGlyph::current_glyph = 0;
+	}
 	
 
 

@@ -55,7 +55,7 @@ namespace Ryno {
 		AnchorPoint anchor_point;
 		
 
-
+		static void preallocate_memory_for_glyphs();
 		static std::list<Text*> texts;
 
 

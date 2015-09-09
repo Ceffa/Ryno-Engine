@@ -15,7 +15,6 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <list>
 #include "Structures.h"
 
 
@@ -38,8 +37,8 @@ namespace Ryno {
 
 
 	public:
-		FontGlyph();
-		~FontGlyph();
+		FontGlyph(){}
+		~FontGlyph(){}
 		void generate_model_matrix();
 		U32 get_texture_id() const { return texture.id; };
 
@@ -51,7 +50,8 @@ namespace Ryno {
 		ColorRGBA color;
 		Texture texture;
 
-		static std::list<FontGlyph*> font_glyphs;
+		static U32 current_glyph;
+		static std::vector<FontGlyph> font_glyphs;
 
 
 	};

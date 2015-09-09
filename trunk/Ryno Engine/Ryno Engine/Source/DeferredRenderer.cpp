@@ -576,6 +576,8 @@ namespace Ryno{
 
 		m_fbo_deferred->bind_for_HUD_pass();
 		glClear(GL_DEPTH_BUFFER_BIT);
+
+
 		//Add the HUD elements to the 2D batch
 		m_sprite_batch2d->begin();
 		for (Sprite* s : Sprite::sprites){
@@ -584,8 +586,10 @@ namespace Ryno{
 		}
 		m_sprite_batch2d->end();
 
+
 		//Add the font elements to the 2D font batch
 		m_font_batch2d->begin();
+
 		for (Text* s : Text::texts){
 			m_font_batch2d->draw_font(s);
 		}
