@@ -4,7 +4,6 @@
 #include <GLM/glm.hpp>
 #include <list>
 
-enum AnchorPoint{TOP_LEFT,TOP_RIGHT,BOTTOM_LEFT, BOTTOM_RIGHT, CENTER};
 
 namespace Ryno{
 

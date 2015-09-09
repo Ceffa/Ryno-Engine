@@ -38,24 +38,33 @@ namespace Ryno{
         switch (anchor_point)
         {
         case TOP_LEFT:
+		case MIDDLE_LEFT:
+		case BOTTOM_LEFT:
             new_x += new_sc_x;
-            new_y -= new_sc_y;
             break;
-        case TOP_RIGHT:
+		case TOP_RIGHT:
+		case MIDDLE_RIGHT:
+		case BOTTOM_RIGHT:
             new_x -= new_sc_x;
-            new_y -= new_sc_y;
             break;
-        case BOTTOM_LEFT:
-            new_x += new_sc_x;
-            new_y += new_sc_y;
-            break;
-        case BOTTOM_RIGHT:
-            new_x -= new_sc_x;
-            new_y += new_sc_y;
-            break;
-        default:
-            break;
+ 
         }
+
+		//Adapt position depending on anchoring point
+		switch (anchor_point)
+		{
+		case TOP_LEFT:
+		case TOP_MIDDLE:
+		case TOP_RIGHT:
+			new_y -= new_sc_y;
+			break;
+		case BOTTOM_LEFT:
+		case BOTTOM_MIDDLE:
+		case BOTTOM_RIGHT:
+			new_y += new_sc_y;
+			break;
+
+		}
 
 
 

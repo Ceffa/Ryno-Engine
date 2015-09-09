@@ -176,12 +176,14 @@ namespace Ryno {
 		I32 draw_calls = 0;
 		bool a = false;
 		
-		//i can bind the vbo, orphan it, pass the new data, and unbind it.
+		enable_attributes();
+
+
+		// orphaning before
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Vertex2D), nullptr, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, 6 * sizeof(Vertex2D), quad_vertices);
 
-		enable_attributes();
 
 		U32 current_instance = 0;
 		U32 number_of_instances = 0;
@@ -197,16 +199,11 @@ namespace Ryno {
 			
 			++draw_calls;
 			
-			glDrawArraysInstanced(GL_TRIANGLES,0 ,18,rb.num_instances);
+			glDrawArraysInstanced(GL_TRIANGLES,0 ,6,rb.num_instances);
 			current_instance++;
 			number_of_instances += rb.num_instances;
 		}
 
-		/*static U32 count = 0;
-		if (count++ == 30){
-			count = 0;
-			std::cout << "Draw calls: " << draw_calls << std::endl;
-		}*/
 	}
 
 	U8 Batch2DSprite::compare_models(Sprite* a, Sprite* b){

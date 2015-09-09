@@ -15,6 +15,8 @@
 #include "Batch3DGeometry.h"
 #include "Batch3DShadow.h"
 #include "Batch2DSprite.h"
+#include "Batch2DFont.h"
+
 
 #define NUM_OF_LAYERS 6
 namespace Ryno{
@@ -120,13 +122,14 @@ namespace Ryno{
 		//PROGRAMS
 		GLSLProgram *m_skybox_program, *m_directional_shadow_program, *m_spot_shadow_program, *m_point_shadow_program, *m_blit_program
 			, *m_geometry_program, *m_directional_lighting_program, *m_point_lighting_program, *m_spot_lighting_program, *m_flat_program,
-			*m_sprite_program;
+			*m_sprite_program, *m_font_program;
 
 		//BATCHES
 		Batch3DGeometry* m_geometry_batch3d;
 		Batch3DShadow* m_shadow_batch3d;
 		Batch2DSprite* m_sprite_batch2d;
-		
+		Batch2DFont* m_font_batch2d;
+
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
 		Model* m_bounding_sphere, *m_fullscreen_quad, *m_cube_box, *m_bounding_pyramid;

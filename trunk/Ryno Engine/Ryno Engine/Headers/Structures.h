@@ -64,11 +64,18 @@ namespace Ryno{
 		glm::vec2 uv;
 	};
 
+
+
 	struct Texture{
 		U32 id;
 		U32 width;
 		U32 height;
 	};
+	enum AnchorPoint{ TOP_LEFT,TOP_MIDDLE,TOP_RIGHT,
+						MIDDLE_LEFT, CENTER,MIDDLE_RIGHT,
+						BOTTOM_LEFT, BOTTOM_MIDDLE, BOTTOM_RIGHT};
+
+
 
 
 }

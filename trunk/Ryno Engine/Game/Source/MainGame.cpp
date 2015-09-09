@@ -1,8 +1,10 @@
 #include "MainGame.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "Text.h"
 #include "GPUProfiler.h"
 #include "CPUProfiler.h"
+#include <string>
 #include <GLM/gtx/transform.hpp>
 
 
@@ -195,7 +197,7 @@ namespace Ryno{
 		l->set_ambient_color(255, 255, 200);
 
 
-		Sprite* sp = new Sprite();
+	/*	Sprite* sp = new Sprite();
 		sp->angle = 0;
 		sp->color.set_color_and_alpha(255, 255, 255, 255);
 		sp->set_texture(solaire);
@@ -221,9 +223,23 @@ namespace Ryno{
 		sp = new Sprite(sp);
 		sp->position = glm::vec2(0,0);
 		sp->anchor_point = BOTTOM_LEFT;
-		m_sprites.push_back(sp);
+		m_sprites.push_back(sp);*/
 	
-
+		Font* f = new Font("Roboto-Thin",30);
+		Text* t = new Text();
+		t->font = f;
+		t->position = glm::vec2(800,600);
+		t->anchor_point = TOP_RIGHT;
+		t->scale = glm::vec2(1,1);
+		t->color = ColorRGBA(255,255,255, 255);
+		t->text = "LE RUSPE Di\n SALVINI!!";
+		t = new Text();
+		t->font = f;
+		t->position = glm::vec2(0, 0);
+		t->anchor_point = BOTTOM_LEFT;
+		t->scale = glm::vec2(1, 1);
+		t->color = ColorRGBA(255, 255, 255, 255);
+		t->text = "Proprio \nloro";
 	
 		CPUProfiler::end_time();
 		CPUProfiler::print_time();

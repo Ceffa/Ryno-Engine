@@ -37,10 +37,13 @@ namespace Ryno{
 		m_geometry_batch3d = new Batch3DGeometry();
 		m_shadow_batch3d = new Batch3DShadow();
 		m_sprite_batch2d = new Batch2DSprite();
+		m_font_batch2d = new Batch2DFont();
 
 		m_geometry_batch3d->init(m_camera);
 		m_shadow_batch3d->init(m_camera);
 		m_sprite_batch2d->init();
+		m_font_batch2d->init();
+
 
 		//PROGRAMS SETUP
 		//Geometry program
@@ -131,6 +134,13 @@ namespace Ryno{
 		m_sprite_program->use();
 		glUniform1i(m_sprite_program->getUniformLocation("m_texture"), 0);
 		m_sprite_program->unuse();
+
+		//Font program
+		m_font_program = new GLSLProgram();
+		m_font_program->create("font", 1, 0, 1);
+		m_font_program->use();
+		glUniform1i(m_font_program->getUniformLocation("m_texture"), 0);
+		m_font_program->unuse();
 
 		//MODEL LOADING
 		m_bounding_sphere = new Model();
@@ -571,6 +581,14 @@ namespace Ryno{
 		}
 		m_sprite_batch2d->end();
 
+		//Add the font elements to the 2D font batch
+		m_font_batch2d->begin();
+		for (Text* s : Text::texts){
+			m_font_batch2d->draw_font(s);
+		}
+		m_font_batch2d->end();
+
+
 		m_fbo_deferred->bind_for_HUD_pass();
 
 		glDisable(GL_DEPTH_TEST);
@@ -582,6 +600,9 @@ namespace Ryno{
 		m_sprite_program->use();
 		m_sprite_batch2d->render_batch();
 		m_sprite_program->unuse();
+		m_font_program->use();
+		m_font_batch2d->render_batch();
+		m_font_program->unuse();
 		glDisable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
 
