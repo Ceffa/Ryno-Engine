@@ -12,6 +12,7 @@ namespace Ryno{
 		glm::mat3 m;
 		glm::vec2 tiling;
 		ColorRGBA color;
+		U8 depth;
 	};
 	class RenderBatch2D{
 	public:

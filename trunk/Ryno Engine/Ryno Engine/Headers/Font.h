@@ -45,6 +45,7 @@ namespace Ryno {
 
 		glm::mat3 model_matrix;
 		glm::vec2 position;
+		U8 depth;
 		glm::vec2 scale;
 		glm::vec4 uv;
 		ColorRGBA color;

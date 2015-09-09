@@ -199,63 +199,75 @@ namespace Ryno{
 
 
 		Sprite* sp = new Sprite();
+		sp->depth = 2;
 		sp->angle = 0;
 		sp->color.set_color_and_alpha(255, 255, 255, 255);
 		sp->set_texture(doge);
+		
 		sp->position = glm::vec2(0.25,0.75);
 		sp->anchor_point = CENTER;
-		sp->scale = glm::vec2(200, 200);
+		sp->scale = glm::vec2(300,300);
 		sp->tiling = glm::vec2(1, 1);
 		sp->angle = 0;
 		m_sprites.push_back(sp);
 
 		sp = new Sprite(sp);
 		sp->position = glm::vec2(0.75,0.75);
-		sp->scale = glm::vec2(-200, 200);
+		sp->scale = glm::vec2(-300, 300);
 		m_sprites.push_back(sp);
 
 		sp = new Sprite(sp);
 		sp->position = glm::vec2(0.25, 0.25);
-		sp->scale = glm::vec2(200,-200);
+		sp->scale = glm::vec2(300,-300);
 		m_sprites.push_back(sp);
 
 		sp = new Sprite(sp);
 		sp->position = glm::vec2(0.75, 0.25);
-		sp->scale = glm::vec2(-200,-200);
+		sp->scale = glm::vec2(-300,-300);
 		m_sprites.push_back(sp);
 	
-		Font* f = new Font("Aaargh",60);
+		Font* f = new Font("Aaargh",42);
 		Text* t = new Text();
+		t->depth = 1;
 		t->font = f;
-		t->position = glm::vec2(800,600);
+		t->position = glm::vec2(1,1);
+
 		t->anchor_point = TOP_RIGHT;
-		t->scale = glm::vec2(0.5,0.5);
-		t->color = ColorRGBA(255,255,255, 255);
-		t->text = "Wow\nSuch Doge.\nFormatted!\nWow";
+		t->scale = glm::vec2(1,1);
+		t->color = ColorRGBA(255,255,0, 255);
+		t->text = "So much Doge.\nSuch Text.\nWOW\nWow";
+
+		t = new Text(t);
+		t->position = glm::vec2(0, 1);
+		t->anchor_point = TOP_LEFT;
+
+		t = new Text(t);
+		t->position = glm::vec2(.5, 1);
+		t->anchor_point = TOP_MIDDLE;
+
+		t = new Text(t);
+		t->position = glm::vec2(1, 0);
+		t->anchor_point = BOTTOM_RIGHT;
+		t->text = "Wow\nNicely aligned.\nSo very Wow.\nMuch Doge";
+
+		t = new Text(t);
+		t->position = glm::vec2(0, 0);
+		t->anchor_point = BOTTOM_LEFT;
+
+		t = new Text(t);
+		t->position = glm::vec2(.5, 0);
+		t->anchor_point = BOTTOM_MIDDLE;
+
+		t = new Text(t);
+		t->position = glm::vec2(1, .5);
+		t->anchor_point = MIDDLE_RIGHT;
+		t->text = "Wow\nMuch Formatted\nSo Much Wow.\nVery Doge";
 		
 		t = new Text(t);
-		t->position = glm::vec2(0,600);
-		t->anchor_point = TOP_LEFT;
-		t = new Text(t);
-		t->position = glm::vec2(800, 0);
-		t->anchor_point = BOTTOM_RIGHT;
-		t = new Text(t);
-		t->position = glm::vec2(0,0);
-		t->anchor_point = BOTTOM_LEFT;
-		t = new Text(t);
-		t->position = glm::vec2(400, 600);
-		t->anchor_point = TOP_MIDDLE;
-		t = new Text(t);
-		t->position = glm::vec2(400, 0);
-		t->anchor_point = BOTTOM_MIDDLE;
-		t = new Text(t);
-		t->position = glm::vec2(800,300);
-		t->anchor_point = MIDDLE_RIGHT;
-		t = new Text(t);
-		t->position = glm::vec2(0, 300);
+		t->position = glm::vec2(0, .5);
 		t->anchor_point = MIDDLE_LEFT;
 		t = new Text(t);
-		t->position = glm::vec2(400, 300);
+		t->position = glm::vec2(.5, .5);
 		t->anchor_point = CENTER;
 		
 		CPUProfiler::end_time();

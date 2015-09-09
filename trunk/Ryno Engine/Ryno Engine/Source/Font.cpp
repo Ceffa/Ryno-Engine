@@ -40,8 +40,8 @@ namespace Ryno {
 		F32 new_sc_x = scale.x / WINDOW_WIDTH;
 		F32 new_sc_y = scale.y / WINDOW_HEIGHT;
 
-		F32 new_x = ((position.x / WINDOW_WIDTH) - 0.5) * 2;
-		F32 new_y = ((position.y / WINDOW_HEIGHT) - 0.5) * 2;
+		F32 new_x = (position.x / WINDOW_WIDTH - 0.5) * 2;
+		F32 new_y = (position.y / WINDOW_HEIGHT - 0.5) * 2;
 
 
 
@@ -256,7 +256,6 @@ namespace Ryno {
             char c = s[si];
             if (s[si] == '\n') {
                 size.y += _fontHeight;
-				std::cout << size.x << std::endl;
 				line_widths->push_back(cw);
                 if (size.x < cw)
                     size.x = cw;
@@ -279,7 +278,8 @@ namespace Ryno {
 
 		FontGlyph* font_glyph;
 
-		glm::vec2 tp = message->position;
+		glm::vec2 position_zero = message->position * glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
+		glm::vec2 tp = position_zero;
 		std::vector<F32> line_widths;//Size of each line of text
 		glm::vec2 size = measure(message->text, &line_widths);//Global size of the text
 		U32 line_counter = 0;
@@ -294,7 +294,7 @@ namespace Ryno {
 			char c = message->text[si];
 			if (message->text[si] == '\n') {
 				tp.y -= _fontHeight * message->scale.y;
-				tp.x = message->position.x;
+				tp.x = position_zero.x;
 				anchor_x(message->anchor_point, &tp.x,message->scale.x, size.x, line_widths[++line_counter]);
 			}
 			else {
@@ -305,6 +305,7 @@ namespace Ryno {
 
 				font_glyph = new FontGlyph();
 				font_glyph->position = tp;
+				font_glyph->depth = message->depth;
 				font_glyph->scale = _glyphs[gi].size * message->scale;
 				font_glyph->color = message->color;
 				font_glyph->uv = _glyphs[gi].uvRect;
@@ -339,7 +340,6 @@ namespace Ryno {
 
 	void Font::anchor_x(AnchorPoint ap, F32* position, F32 scale, F32 size, F32 line_size)
 	{
-		std::cout << "YO" << line_size << std::endl;
 	
 		// Apply justification on X
 		if (ap == TOP_MIDDLE || ap == CENTER || ap == BOTTOM_MIDDLE) {

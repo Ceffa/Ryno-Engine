@@ -83,6 +83,8 @@ namespace Ryno {
 		for (I32 i = 0; i < sprites_number; i++){
 			input_instances[i].color = m_font_glyphs[i]->color;
 			input_instances[i].m = m_font_glyphs[i]->model_matrix;
+			input_instances[i].depth= m_font_glyphs[i]->depth;
+
 		}
 		
 
@@ -130,6 +132,7 @@ namespace Ryno {
 		//Enable all vertex info
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
+
 	
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		//enable M matrix
@@ -137,8 +140,10 @@ namespace Ryno {
 		glEnableVertexAttribArray(3);
 		glEnableVertexAttribArray(4);
 
-		//Enable color
+		//Enable color and depth
 		glEnableVertexAttribArray(5);
+		glEnableVertexAttribArray(6);
+
 	}
 
 
@@ -177,11 +182,15 @@ namespace Ryno {
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(InstanceValuesFont), (void*)(offsetof(InstanceValuesFont, m) + 12));
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(InstanceValuesFont), (void*)(offsetof(InstanceValuesFont, m) + 24));
 		glVertexAttribPointer(5, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(InstanceValuesFont), (void*)offsetof(InstanceValuesFont, color));
+		glVertexAttribPointer(6, 1, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(InstanceValuesFont), (void*)offsetof(InstanceValuesFont, depth));
+
 
 		glVertexAttribDivisor(2, 1);
 		glVertexAttribDivisor(3, 1);
 		glVertexAttribDivisor(4, 1);
 		glVertexAttribDivisor(5, 1);
+		glVertexAttribDivisor(6, 1);
+
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 

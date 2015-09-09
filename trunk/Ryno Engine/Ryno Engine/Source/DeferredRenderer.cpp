@@ -573,6 +573,9 @@ namespace Ryno{
 
 	void DeferredRenderer::draw_HUD_pass()
 	{
+
+		m_fbo_deferred->bind_for_HUD_pass();
+		glClear(GL_DEPTH_BUFFER_BIT);
 		//Add the HUD elements to the 2D batch
 		m_sprite_batch2d->begin();
 		for (Sprite* s : Sprite::sprites){
@@ -589,20 +592,21 @@ namespace Ryno{
 		m_font_batch2d->end();
 
 
-		m_fbo_deferred->bind_for_HUD_pass();
 
-		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
 		glDisable(GL_CULL_FACE);
 
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		m_sprite_program->use();
-		m_sprite_batch2d->render_batch();
-		m_sprite_program->unuse();
 		m_font_program->use();
 		m_font_batch2d->render_batch();
 		m_font_program->unuse();
+		m_sprite_program->use();
+		m_sprite_batch2d->render_batch();
+		m_sprite_program->unuse();
+		
 		glDisable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
 

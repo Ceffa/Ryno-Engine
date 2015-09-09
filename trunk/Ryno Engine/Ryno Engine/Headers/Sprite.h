@@ -23,6 +23,7 @@ namespace Ryno{
 		//Sprites data
 		glm::mat3 model_matrix;
 		glm::vec2 position;
+		U8 depth = 1;
 		glm::vec2 scale;
 		F32 ratio;
 		ColorRGBA color;

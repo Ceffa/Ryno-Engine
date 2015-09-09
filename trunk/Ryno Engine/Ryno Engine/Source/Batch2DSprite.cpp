@@ -52,6 +52,8 @@ namespace Ryno {
 			input_instances[i].color = m_sprites[i]->color;
 			input_instances[i].m = m_sprites[i]->model_matrix;
 			input_instances[i].tiling = m_sprites[i]->tiling;
+			input_instances[i].depth = m_sprites[i]->depth;
+
 
 		}
 		
@@ -104,9 +106,11 @@ namespace Ryno {
 		glEnableVertexAttribArray(3);
 		glEnableVertexAttribArray(4);
 
-		//Enable tiling and color
+		//Enable tiling, color and depth
 		glEnableVertexAttribArray(5);
 		glEnableVertexAttribArray(6);
+		glEnableVertexAttribArray(7);
+
 	}
 
 	void Batch2DSprite::create_vertex_array(){
@@ -142,12 +146,15 @@ namespace Ryno {
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(InstanceValues), (void*)(offsetof(InstanceValues, m) + 24));
 		glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, sizeof(InstanceValues), (void*)offsetof(InstanceValues, tiling));
 		glVertexAttribPointer(6, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(InstanceValues), (void*)offsetof(InstanceValues, color));
+		glVertexAttribPointer(7, 1, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(InstanceValues), (void*)offsetof(InstanceValues, depth));
 
 		glVertexAttribDivisor(2, 1);
 		glVertexAttribDivisor(3, 1);
 		glVertexAttribDivisor(4, 1);
 		glVertexAttribDivisor(5, 1);
 		glVertexAttribDivisor(6, 1);
+		glVertexAttribDivisor(7, 1);
+
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 

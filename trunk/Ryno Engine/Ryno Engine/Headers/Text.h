@@ -49,6 +49,7 @@ namespace Ryno {
 
 		std::string text;
 		glm::vec2 position;
+		U8 depth = 1;
 		glm::vec2 scale;
 		ColorRGBA color;
 		AnchorPoint anchor_point;

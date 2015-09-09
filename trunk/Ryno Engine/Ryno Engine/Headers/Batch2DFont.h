@@ -11,6 +11,7 @@ namespace Ryno{
 	struct InstanceValuesFont {
 		glm::mat3 m;
 		ColorRGBA color;
+		U8 depth;
 	};
 	class RenderBatch2DFont{
 	public:
