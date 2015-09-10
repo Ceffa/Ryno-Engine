@@ -43,6 +43,10 @@ namespace Ryno {
 		text = std::string(t->text);
 		texts.push_back(this);
 	}
+
+	Text::~Text(){
+		texts.remove(this);
+	}
    
 
    

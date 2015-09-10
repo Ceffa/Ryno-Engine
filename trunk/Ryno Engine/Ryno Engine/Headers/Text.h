@@ -12,6 +12,7 @@
 
 
 #include "Font.h"
+#include "ITransform2D.h"
 #include <GLM/glm.hpp>
 #include <map>
 #include <vector>
@@ -36,7 +37,7 @@ namespace Ryno {
 	//Similar to the sprite class
 	
 
-    class Text {
+    class Text : public ITransform2D {
 
 		friend class FontGlyph;
 
@@ -45,19 +46,23 @@ namespace Ryno {
 		Text(const Text* t);
 		~Text();
 
+		//Getter and setter
+		void set_color(U8 r, U8 g, U8 b, U8 a){ color.set_color_and_alpha(r, g, b, a); }
+		ColorRGBA get_color() { return color; }
+		
 		Font* font;
-
+		bool active = true;
 		std::string text;
-		glm::vec2 position;
+		
 		U8 depth = 1;
-		glm::vec2 scale;
-		ColorRGBA color;
 		AnchorPoint anchor_point;
 		
 
 		static void preallocate_memory_for_glyphs();
 		static std::list<Text*> texts;
 
+	protected:
+		ColorRGBA color;
 
 
   

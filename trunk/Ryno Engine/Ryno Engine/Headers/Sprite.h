@@ -1,33 +1,37 @@
 #pragma once
 #include "Global.h"
 #include "Structures.h"
+#include "ITransform2D.h"
 #include <GLM/glm.hpp>
 #include <list>
 
 
 namespace Ryno{
 
-	class Sprite{
+	class Sprite : public ITransform2D{
 	public:
 		Sprite();
 		~Sprite();
 		Sprite(const Sprite *s);
 
 		void generate_model_matrix();
-		U32 get_texture_id() const { return texture.id; };
+
+		//Getter and setter
 		void set_texture(Texture t);
-		void set_ratio(U32 w, U32 h);
-		void restore_image_ratio();
-		void set_default_scale();
+		U32 get_texture_id() const { return texture.id; };
+		Texture get_texture() const { return texture; }
+		void set_tiling(F32 u, F32 v){ tiling.x = u; tiling.y = v; }
+		glm::vec2 get_tiling(){ return tiling; }
+		void set_color(U8 r, U8 g, U8 b, U8 a){ color.set_color_and_alpha(r, g, b, a); }
+		ColorRGBA get_color(){ return color; }
+	
 
 		//Sprites data
 		glm::mat3 model_matrix;
-		glm::vec2 position;
+	
 		U8 depth = 1;
-		glm::vec2 scale;
+		bool active = true;
 		F32 ratio;
-		ColorRGBA color;
-		glm::vec2 tiling;
 		AnchorPoint anchor_point = TOP_LEFT;
 		F32 angle;
 		
@@ -36,6 +40,8 @@ namespace Ryno{
 
 	private:
 		Texture texture;
+		glm::vec2 tiling;
+		ColorRGBA color;
 
 	};
 

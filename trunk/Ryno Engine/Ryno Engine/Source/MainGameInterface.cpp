@@ -52,15 +52,20 @@ namespace Ryno{
 
 		m_audio_manager.init();
 		m_time_manager.init(60);
-		m_input_manager.init(m_window);
+		
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 
 	    m_texture_manager = TextureManager::get_instance();
+		m_input_manager = InputManager::get_instance();
+		m_input_manager->init(m_window);
 		m_mesh_manager = MeshManager::get_instance();
 		m_deferred_renderer = new DeferredRenderer();
 		m_deferred_renderer->init(m_camera);
 		m_simple_drawer = SimpleDrawer::get_instance();
+
+		shell = new Shell();
+		shell->init();
 		
 		
 				
@@ -87,6 +92,22 @@ namespace Ryno{
 
 	}
 
+	void MainGameInterface::draw(){
+
+		m_deferred_renderer->init_frame();
+		m_deferred_renderer->geometry_pass();
+		m_deferred_renderer->prepare_for_light_passes();
+		m_deferred_renderer->spot_light_pass();
+		m_deferred_renderer->point_light_pass();
+		m_deferred_renderer->directional_light_pass();
+		m_deferred_renderer->skybox_pass();
+		m_deferred_renderer->draw_HUD_pass();
+		m_deferred_renderer->final_pass();
+
+		SDL_GL_SwapWindow(m_window);
+
+	}
+
 	void MainGameInterface::end()
 	{
 		SDL_JoystickClose(game_controller);
@@ -99,9 +120,16 @@ namespace Ryno{
 	}	
 
 	void MainGameInterface::handle_input(){
-		m_input_manager.update();
-		if (m_input_manager.get_input() == Input::EXIT_REQUEST)
+
+		//Reads input from user
+		m_input_manager->update();
+		//Exits if requested
+		if (m_input_manager->get_input() == Input::EXIT_REQUEST)
 			m_game_state = GameState::Exit;
+
+		//Process console inputs
+		shell->process_input();
+		//Process user inputs
 		input();
 	}
 

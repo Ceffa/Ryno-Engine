@@ -50,7 +50,7 @@ namespace Ryno {
 	}
 
 
-	Font::Font(std::string font, U32 size, C cs, C ce) {
+	Font::Font(std::string font, U32 size,LocationOfResource loc, C cs, C ce) {
 
 	
         // Initialize SDL_ttf
@@ -58,7 +58,9 @@ namespace Ryno {
             TTF_Init();
         }
 
-		font = "Resources/Fonts/" + font + ".ttf";
+		static const std::string middle_path = "Resources/Fonts/";
+
+		font = BASE_PATHS[loc] + middle_path + font + ".ttf";
         TTF_Font* f = TTF_OpenFont(font.c_str(), size);
         if (f == nullptr) {
             fprintf(stderr, "Failed to open TTF font %s\n", font);
@@ -272,14 +274,15 @@ namespace Ryno {
 
 		FontGlyph* font_glyph;
 
-		glm::vec2 position_zero = message->position * glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
+		glm::vec2 position_zero = message->get_position() * glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
 		glm::vec2 tp = position_zero;
 		std::vector<F32> line_widths;//Size of each line of text
 		glm::vec2 size = measure(message->text, &line_widths);//Global size of the text
 		U32 line_counter = 0;
 
-		anchor_x(message->anchor_point, &tp.x, message->scale.x, size.x, line_widths[0]);
-		anchor_y(message->anchor_point, &tp.y, message->scale.y, size.y);
+		glm::vec2 message_scale = message->get_scale();
+		anchor_x(message->anchor_point, &tp.x, message_scale.x, size.x, line_widths[0]);
+		anchor_y(message->anchor_point, &tp.y, message_scale.y, size.y);
 
 
 
@@ -287,9 +290,9 @@ namespace Ryno {
 		for (int si = 0; message->text[si] != 0; si++) {
 			char c = message->text[si];
 			if (message->text[si] == '\n') {
-				tp.y -= _fontHeight * message->scale.y;
+				tp.y -= _fontHeight * message_scale.y;
 				tp.x = position_zero.x;
-				anchor_x(message->anchor_point, &tp.x,message->scale.x, size.x, line_widths[++line_counter]);
+				anchor_x(message->anchor_point, &tp.x, message_scale.x, size.x, line_widths[++line_counter]);
 			}
 			else {
 				// Check for correct glyph
@@ -298,16 +301,16 @@ namespace Ryno {
 					gi = _regLength;
 
 				font_glyph = &FontGlyph::font_glyphs[FontGlyph::current_glyph++];
-				font_glyph->position = tp;
+				font_glyph->set_position(tp);
 				font_glyph->depth = message->depth;
-				font_glyph->scale = _glyphs[gi].size * message->scale;
-				font_glyph->color = message->color;
+				font_glyph->set_scale(_glyphs[gi].size * message_scale);
+				font_glyph->color = message->get_color();
 				font_glyph->uv = _glyphs[gi].uvRect;
 				font_glyph->uv.y = 1.0f - font_glyph->uv.y;
 				font_glyph->texture = t;
 				font_glyph->generate_model_matrix();
 				batch->draw_glyph(font_glyph);
-				tp.x += _glyphs[gi].size.x * message->scale.x;
+				tp.x += _glyphs[gi].size.x * message_scale.x;
 			}
 		}
 

@@ -20,8 +20,8 @@ namespace Ryno{
 
 
 	public:
-		InputManager();
 		~InputManager();
+		static InputManager* get_instance();
 
 		void init(SDL_Window* window);
 		Input get_input();
@@ -35,6 +35,8 @@ namespace Ryno{
 			return m_mouse_coords - glm::vec2(WINDOW_WIDTH/2.0f,WINDOW_HEIGHT/2.0f);
 		}
 
+
+
 		void set_controller_axis_coord(F32* axis, I32 value);
 		
 
@@ -45,8 +47,11 @@ namespace Ryno{
 		glm::vec2 m_mouse_coords;
 		glm::vec2 m_controller_LX_coords;
 		glm::vec2 m_controller_RX_coords;
+		std::string frame_text;
 
 	private:
+		InputManager();
+
 		SDL_Window* m_window;
 		U8 was_key_down(U32 key, InputDevice device);
 		std::unordered_map<U32, U8> m_key_map;

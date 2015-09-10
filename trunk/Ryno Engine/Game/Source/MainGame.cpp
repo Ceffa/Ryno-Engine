@@ -127,9 +127,6 @@ namespace Ryno{
 		GameObject* bl;
 		//PointLight* p;
 		
-
-
-	
 		SpotLight* s = new SpotLight();
 		s->set_position(0,190,0);
 		s->set_direction(-90, 0);
@@ -184,73 +181,29 @@ namespace Ryno{
 		l->set_ambient_color(255, 255, 200);
 
 
-		Sprite* sp = new Sprite();
-		sp->depth = 2;
+		/*Sprite* sp = new Sprite();
+		sp->depth = 20;
 		sp->angle = 0;
-		sp->color.set_color_and_alpha(255, 255, 255, 255);
+		sp->set_color(255, 255, 255, 255);
 		sp->set_texture(doge);
-		
-		sp->position = glm::vec2(0.25,0.75);
+		sp->set_position(0.25,0.75);
 		sp->anchor_point = CENTER;
-		sp->scale = glm::vec2(150,150);
-		sp->tiling = glm::vec2(1, 1);
+		sp->set_scale(150, 150);
+		sp->set_tiling(1, 1);
 		sp->angle = 0;
 
-		sp = new Sprite(sp);
-		sp->position = glm::vec2(0.75,0.75);
-		sp->scale = glm::vec2(-150, 150);
 
-		sp = new Sprite(sp);
-		sp->position = glm::vec2(0.25, 0.25);
-		sp->scale = glm::vec2(150,-150);
-
-		sp = new Sprite(sp);
-		sp->position = glm::vec2(0.75, 0.25);
-		sp->scale = glm::vec2(-150,-150);
-	
-		Font* f = new Font("Aaargh",24);
+		Font* f = new Font("Aaargh",24, GAME_FOLDER);
 		Text* t = new Text();
-		t->depth = 1;
+		t->depth = 10;
 		t->font = f;
-		t->position = glm::vec2(1,1);
-
+		t->set_position(1,1);
 		t->anchor_point = TOP_RIGHT;
-		t->scale = glm::vec2(1,1);
-		t->color = ColorRGBA(255,255,0, 255);
-		t->text = "So much text.\nVery Doge.\nWOW";
+		t->set_scale(1,1);
+		t->set_color(255,255,0, 255);
+		t->text = "So much text.\nVery Doge.\nWOW";*/
 
-		t = new Text(t);
-		t->position = glm::vec2(0, 1);
-		t->anchor_point = TOP_LEFT;
-
-		t = new Text(t);
-		t->position = glm::vec2(.5, 1);
-		t->anchor_point = TOP_MIDDLE;
-
-		t = new Text(t);
-		t->position = glm::vec2(1, 0);
-		t->anchor_point = BOTTOM_RIGHT;
-		t->text = "Wow\nMuch aligned.\nSo very Wow.";
-
-		t = new Text(t);
-		t->position = glm::vec2(0, 0);
-		t->anchor_point = BOTTOM_LEFT;
-
-		t = new Text(t);
-		t->position = glm::vec2(.5, 0);
-		t->anchor_point = BOTTOM_MIDDLE;
-
-		t = new Text(t);
-		t->position = glm::vec2(1, .5);
-		t->anchor_point = MIDDLE_RIGHT;
-		t->text = "Much Formatted\nwow\nSo Much Doge.\nVery Wow.";
 		
-		t = new Text(t);
-		t->position = glm::vec2(0, .5);
-		t->anchor_point = MIDDLE_LEFT;
-		t = new Text(t);
-		t->position = glm::vec2(.5, .5);
-		t->anchor_point = CENTER;
 		
 		CPUProfiler::end_time();
 		CPUProfiler::print_time();
@@ -261,24 +214,24 @@ namespace Ryno{
 	
 	void MainGame::input(){
 
-		if (m_input_manager.is_key_down(SDLK_d, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_d, KEYBOARD)){
 			m_camera->move_right(3.0f);
 
 		}
-		if (m_input_manager.is_key_down(SDLK_a, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_a, KEYBOARD)){
 			m_camera->move_left(3.0f);
 		}
-		if (m_input_manager.is_key_down(SDLK_w, KEYBOARD) || m_input_manager.is_key_down(SDL_BUTTON_LEFT, MOUSE)){
+		if (m_input_manager->is_key_down(SDLK_w, KEYBOARD) || m_input_manager->is_key_down(SDL_BUTTON_LEFT, MOUSE)){
 			m_camera->move_forward(3.0f);
 		}
-		if (m_input_manager.is_key_down(SDLK_s, KEYBOARD) || m_input_manager.is_key_down(SDL_BUTTON_RIGHT, MOUSE)){
+		if (m_input_manager->is_key_down(SDLK_s, KEYBOARD) || m_input_manager->is_key_down(SDL_BUTTON_RIGHT, MOUSE)){
 			m_camera->move_back(3.0f);
 		}
 		
 	
 	
 		
-		if (m_input_manager.is_key_down(SDLK_LEFT, KEYBOARD) || m_input_manager.is_key_down(SDL_CONTROLLER_BUTTON_DPAD_LEFT, CONTROLLER)){
+		if (m_input_manager->is_key_down(SDLK_LEFT, KEYBOARD) || m_input_manager->is_key_down(SDL_CONTROLLER_BUTTON_DPAD_LEFT, CONTROLLER)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.x -= 3;
 
@@ -289,7 +242,7 @@ namespace Ryno{
 			}
 		
 		}
-		if (m_input_manager.is_key_down(SDLK_RIGHT, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.x += 3;
 
@@ -300,7 +253,7 @@ namespace Ryno{
 			}
 		
 		}
-		if (m_input_manager.is_key_down(SDLK_b, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_b, KEYBOARD)){
 			static float a = 0;
 			static float b = 0;
 			a += 0.5;
@@ -311,7 +264,7 @@ namespace Ryno{
 		}
 
 
-		if (m_input_manager.is_key_down(SDLK_n, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_n, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.z -= 3;
 
@@ -323,7 +276,7 @@ namespace Ryno{
 
 		
 		}
-		if (m_input_manager.is_key_down(SDLK_m, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_m, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.z += 3;
 
@@ -334,7 +287,7 @@ namespace Ryno{
 			}
 		
 		}
-		if (m_input_manager.is_key_down(SDLK_UP, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_UP, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.y += 3;
 
@@ -345,7 +298,7 @@ namespace Ryno{
 			}
 			
 		}
-		if (m_input_manager.is_key_down(SDLK_DOWN, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_DOWN, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				l->position.y -= 3;
 
@@ -357,7 +310,7 @@ namespace Ryno{
 
 		
 		}
-		if (m_input_manager.is_key_down(SDL_CONTROLLER_BUTTON_Y, CONTROLLER)){
+		if (m_input_manager->is_key_down(SDL_CONTROLLER_BUTTON_Y, CONTROLLER)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				
 				l->diffuse_intensity += 1;
@@ -368,7 +321,7 @@ namespace Ryno{
 
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_p, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_p, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				if (l->diffuse_intensity > 0)
 				l->diffuse_intensity -= 1;
@@ -380,7 +333,7 @@ namespace Ryno{
 
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_k, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_k, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				l->specular_intensity += .3;
 
@@ -390,7 +343,7 @@ namespace Ryno{
 
 			}
 		}
-		if (m_input_manager.is_key_down(SDLK_l, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_l, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				if (l->specular_intensity > 0)
 				l->specular_intensity -= .3;
@@ -403,7 +356,7 @@ namespace Ryno{
 			}
 		}
 
-		if (m_input_manager.is_key_down(SDLK_1, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_1, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				l->cutoff -= 1;
 				if (l->cutoff < 5)
@@ -411,7 +364,7 @@ namespace Ryno{
 			}
 		}
 
-		if (m_input_manager.is_key_down(SDLK_2, KEYBOARD)){
+		if (m_input_manager->is_key_down(SDLK_2, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 				l->cutoff += 1;
 				if (l->cutoff > 60)
@@ -421,11 +374,11 @@ namespace Ryno{
 
 
 
-		glm::vec2 mouse_coords = m_input_manager.get_mouse_movement();
+		glm::vec2 mouse_coords = m_input_manager->get_mouse_movement();
 		m_camera->rotate(0.005f * mouse_coords.x, 0.005f* mouse_coords.y);
-		glm::vec2 rotation_view = m_input_manager.get_controller_RX_coords();
+		glm::vec2 rotation_view = m_input_manager->get_controller_RX_coords();
 		m_camera->rotate(0.05f * rotation_view.x, 0.05f* rotation_view.y);
-		glm::vec2 direction = m_input_manager.get_controller_LX_coords();
+		glm::vec2 direction = m_input_manager->get_controller_LX_coords();
 		m_camera->move_forward(5.0f * -direction.y);
 		m_camera->move_right(5.0f * direction.x);
 
@@ -436,31 +389,7 @@ namespace Ryno{
 
 	}
 
-	void MainGame::draw(){
-
-		m_deferred_renderer->init_frame();
-		m_deferred_renderer->geometry_pass();
-		m_deferred_renderer->prepare_for_light_passes();
-		m_deferred_renderer->spot_light_pass();
-		m_deferred_renderer->point_light_pass();
-		m_deferred_renderer->directional_light_pass();
-		m_deferred_renderer->skybox_pass();
-		m_deferred_renderer->draw_HUD_pass();
-		m_deferred_renderer->final_pass();
-
-		SDL_GL_SwapWindow(m_window);
-
-		
-
-		
-	
 	
 
-	}
-
-	void MainGame::end(){
-		
-		MainGameInterface::end();
-		
-	}
+	
 }

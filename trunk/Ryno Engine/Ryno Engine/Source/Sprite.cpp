@@ -8,8 +8,8 @@ namespace Ryno{
 
     Sprite::Sprite(){
 
-        sprites.push_back(this);
-        scale = glm::vec2(1, 1);
+		sprites.push_back(this);
+		set_scale(1, 1);
     }
     Sprite::Sprite(const Sprite *s)
     {
@@ -78,20 +78,12 @@ namespace Ryno{
     void Sprite::set_texture(Texture t)
     {
         texture = t;
-        restore_image_ratio();
+		ratio = t.width / (F32)t.height;
 
     }
 
-    void Sprite::set_ratio(U32 w, U32 h)
-    {
-        ratio = w / (F32)h;
 
-    }
-
-    void Sprite::restore_image_ratio(){
-        set_ratio(texture.width, texture.height);
-    }
-
+	
 
 
 }

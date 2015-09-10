@@ -16,6 +16,7 @@
 #include <vector>
 #include <string>
 #include "Structures.h"
+#include "ITransform2D.h"
 
 
 namespace Ryno {
@@ -33,25 +34,26 @@ namespace Ryno {
 #define FIRST_PRINTABLE_CHAR ((C)32)
 #define LAST_PRINTABLE_CHAR ((C)126)
 
-	class FontGlyph{
+	class FontGlyph : public ITransform2D{
 
 
 	public:
 		FontGlyph(){}
 		~FontGlyph(){}
 		void generate_model_matrix();
+
 		U32 get_texture_id() const { return texture.id; };
+		void set_color(U8 r, U8 g, U8 b, U8 a){ color.set_color_and_alpha(r, g, b, a); }
+		ColorRGBA get_color() { return color; }
 
 		glm::mat3 model_matrix;
-		glm::vec2 position;
 		U8 depth;
-		glm::vec2 scale;
 		glm::vec4 uv;
-		ColorRGBA color;
 		Texture texture;
 
 		static U32 current_glyph;
 		static std::vector<FontGlyph> font_glyphs;
+		ColorRGBA color;
 
 
 	};
@@ -62,9 +64,9 @@ namespace Ryno {
 		friend class FontGlyph;
 
     public:
-		Font(std::string font, U32 size, C cs, C ce);
-		Font(std::string font, U32 size) :
-			Font(font, size, FIRST_PRINTABLE_CHAR, LAST_PRINTABLE_CHAR) {
+		Font(std::string font, U32 size, LocationOfResource loc, C cs, C ce);
+		Font(std::string font, U32 size, LocationOfResource loc) :
+			Font(font, size,loc, FIRST_PRINTABLE_CHAR, LAST_PRINTABLE_CHAR) {
         }
 
 		Texture t;

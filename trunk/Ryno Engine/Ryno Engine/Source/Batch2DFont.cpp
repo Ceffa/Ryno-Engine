@@ -61,7 +61,8 @@ namespace Ryno {
 
 
 	void Batch2DFont::draw_font(Text* sprite_font) {
-		sprite_font->font->draw(this, sprite_font);
+		if (sprite_font->active)
+			sprite_font->font->draw(this, sprite_font);
 
 	}
 

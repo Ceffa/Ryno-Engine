@@ -32,7 +32,8 @@ namespace Ryno {
 
 	void Batch2DSprite::draw(Sprite* sprite) {
 
-		m_sprites.push_back(sprite);
+		if (sprite->active)
+			m_sprites.push_back(sprite);
 
 	}
 
@@ -49,9 +50,9 @@ namespace Ryno {
 		//Adds model matrix and other stuff to the final instance array.
 		//One for each instance. 
 		for (I32 i = 0; i < sprites_number; i++){
-			input_instances[i].color = m_sprites[i]->color;
+			input_instances[i].color = m_sprites[i]->get_color();
 			input_instances[i].m = m_sprites[i]->model_matrix;
-			input_instances[i].tiling = m_sprites[i]->tiling;
+			input_instances[i].tiling = m_sprites[i]->get_tiling();
 			input_instances[i].depth = m_sprites[i]->depth;
 
 

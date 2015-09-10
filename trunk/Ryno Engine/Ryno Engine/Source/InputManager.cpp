@@ -15,6 +15,12 @@ namespace Ryno {
 	{
 	}
 
+	InputManager* InputManager::get_instance(){
+		static InputManager instance;//only at the beginning
+		return &instance;
+	}
+
+
 	void InputManager::init(SDL_Window* window){
 		m_window = window;
 		SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
@@ -23,7 +29,12 @@ namespace Ryno {
 
 	Input InputManager::get_input(){
 		static bool exit = false;
+
+		frame_text.resize(0);
+
 		SDL_Event evnt;
+		SDL_StartTextInput();
+
 		//Will keep looping until there are no more events to process
 		while (SDL_PollEvent(&evnt)) {
 			switch (evnt.type) {
@@ -34,6 +45,9 @@ namespace Ryno {
 
 				set_mouse_coords((F32)evnt.motion.x, (F32)evnt.motion.y);
 
+				break;
+			case SDL_TEXTINPUT:
+				frame_text += evnt.text.text;
 				break;
 			case SDL_KEYDOWN:
 				key_press(evnt.key.keysym.sym , KEYBOARD);
@@ -65,6 +79,9 @@ namespace Ryno {
 					
 			}
 		}
+
+		SDL_StopTextInput();
+
 		if (is_key_pressed(SDLK_ESCAPE,KEYBOARD))exit = !exit;
 		if(!exit)SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
 
