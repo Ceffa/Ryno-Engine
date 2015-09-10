@@ -23,6 +23,7 @@ namespace Ryno {
 		background->anchor_point = BOTTOM_LEFT;
 		background->set_texture(background_texture);
 		background->set_position(0, 0);
+		background->angle = 0;
 		background->set_scale(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
 		background->set_color(0, 0, 0, 240);
 		background->depth = 5;
@@ -149,7 +150,7 @@ namespace Ryno {
 		if (command.compare("hide")==0)
 			hide();
 
-		else if (command.compare("shellcolor") == 0){
+		else if (command.compare("textcolor") == 0){
 			
 			//read args
 			I32 args[3];
@@ -169,12 +170,36 @@ namespace Ryno {
 
 		}
 
+		else if (command.compare("shellcolor") == 0){
+
+			//read args
+			I32 args[3];
+
+			for (U8 i = 0; i < 3; i++){
+				args[i] = int_argument();
+				if (args[i] == ERROR_INT){
+					print_message("argument(s) is not an int."); return;
+				}
+				else if (args[i] == MISSING_INT){
+					print_message("missing argument(s)."); return;
+				}
+			}
+
+			background->set_color(args[0], args[1], args[2], 240);
+
+		}
+
 		else if (command.compare("echo") == 0){
 			std::string s = string_argument();
 			if (s.empty()){
 				print_message("missing argument(s)."); return;
 			}
 			print_message(s);
+		}
+
+		else if (command.compare("fuckyou") == 0){
+			
+			print_message("fuck you too.");
 		}
 
 		else
