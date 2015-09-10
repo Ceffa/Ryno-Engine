@@ -114,10 +114,11 @@ namespace Ryno {
 
 		std::string command;
 		bool read_command = false;
+		input = lines[0]->text;
 		C c;
 		for (U32 i = path_size; i < line_0_size; i++){
 
-			c = lines[0]->text[i];
+			c = input[i];
 
 			if (!read_command){
 				if (c == '\\')
@@ -136,8 +137,10 @@ namespace Ryno {
 			
 		}
 		//Even if no space is after
-		if (read_command)
+		if (read_command){
+			parse_from = line_0_size;
 			parse_command(command);
+		}
 	}
 
 
@@ -201,10 +204,9 @@ namespace Ryno {
 		std::string argument;
 		bool still_spaces = true;
 		C c;
-
 		for (; parse_from < line_0_size; parse_from++){
 			
-			c = lines[0]->text[parse_from];
+			c = input[parse_from];
 			if (c == ' ')
 			{
 				if (!still_spaces) return argument;

@@ -30,6 +30,7 @@ namespace Ryno{
 		Font* font;
 		Text* lines[SHELL_NUM_LINES];
 		std::string shell_path = "Ryno> ";
+		std::string input;
 		U8 path_size;
 		U32 line_0_size;
 		U32 parse_from;
