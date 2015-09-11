@@ -24,6 +24,8 @@ namespace Ryno{
 		static void rotate_lines();
 
 		static bool active;
+		static bool request_exit;
+
 
 	protected:
 		static DeferredRenderer* deferred_renderer;
@@ -37,7 +39,6 @@ namespace Ryno{
 		static U8 path_size;
 		static U32 line_0_size;
 		static U32 parse_from;
-
 	
 
 	private:

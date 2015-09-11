@@ -10,6 +10,7 @@ namespace Ryno {
 
 	//STATIC FIELDS
 	bool Shell::active = true;
+	bool Shell::request_exit = false;
 	std::string Shell::shell_path = "Ryno> ";
 	DeferredRenderer* Shell::deferred_renderer;
 	InputManager* Shell::input_manager;
@@ -28,7 +29,7 @@ namespace Ryno {
 	{
 
 		input_manager = InputManager::get_instance();
-		path_size = shell_path.size();
+		path_size = (U8)shell_path.size();
 		deferred_renderer = DeferredRenderer::get_instance();
 		//Load textures
 		TextureManager* texture_manager = TextureManager::get_instance();
@@ -55,17 +56,17 @@ namespace Ryno {
 		lines[0]->anchor_point = BOTTOM_LEFT;
 		lines[0]->font = font;
 		lines[0]->text = shell_path;
-		lines[0]->set_scale(0.7,0.7);
+		lines[0]->set_scale(0.7f,0.7f);
 		lines[0]->depth = 4;
 		lines[0]->set_color(255, 255, 255, 255);
-		lines[0]->set_position(0.005, .005);
+		lines[0]->set_position(0.005f, .005f);
 		lines[0]->use = SHELL;
 
 
 		for (U8 i = 1; i < SHELL_NUM_LINES; i++)
 		{
 			lines[i] = new Text(lines[0]);
-			lines[i]->set_position(0.005, .005 + 0.5 * i / SHELL_NUM_LINES);
+			lines[i]->set_position(0.005f, .005f + 0.5f * i / SHELL_NUM_LINES);
 			lines[i]->text = shell_path;
 			
 		}
@@ -113,7 +114,7 @@ namespace Ryno {
 		if (!active)
 			return;
 
-		line_0_size = lines[0]->text.size();
+		line_0_size = (U32)lines[0]->text.size();
 
 		if (input_manager->is_key_pressed(SDLK_RETURN, KEYBOARD)){
 			parse_input();
@@ -221,6 +222,10 @@ namespace Ryno {
 		else if (command.compare("fuckyou") == 0){
 			
 			print_message("well, fuck you too.");
+		}
+		else if (command.compare("exit") == 0){
+
+			request_exit = true;
 		}
 
 		else if (command.compare("nopl") == 0){

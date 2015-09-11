@@ -123,7 +123,7 @@ namespace Ryno{
 		//Reads input from user
 		m_input_manager->update();
 		//Exits if requested
-		if (m_input_manager->get_input() == Input::EXIT_REQUEST)
+		if (m_input_manager->get_input() == Input::EXIT_REQUEST || Shell::request_exit)
 			m_game_state = GameState::Exit;
 
 		//Process console inputs
