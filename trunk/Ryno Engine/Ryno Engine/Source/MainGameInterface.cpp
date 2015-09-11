@@ -60,12 +60,11 @@ namespace Ryno{
 		m_input_manager = InputManager::get_instance();
 		m_input_manager->init(m_window);
 		m_mesh_manager = MeshManager::get_instance();
-		m_deferred_renderer = new DeferredRenderer();
+		m_deferred_renderer = DeferredRenderer::get_instance();
 		m_deferred_renderer->init(m_camera);
 		m_simple_drawer = SimpleDrawer::get_instance();
 
-		shell = new Shell();
-		shell->init();
+		Shell::init();
 		
 		
 				
@@ -128,7 +127,7 @@ namespace Ryno{
 			m_game_state = GameState::Exit;
 
 		//Process console inputs
-		shell->process_input();
+		Shell::process_input();
 		//Process user inputs
 		input();
 	}

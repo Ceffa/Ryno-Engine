@@ -15,6 +15,7 @@ uniform sampler2D g_color_tex;
 uniform sampler2D g_normal_tex;
 uniform sampler2D g_depth_tex;
 uniform samplerCubeShadow shadow_cube;
+uniform int shadows_enabled;
 
 //Inverse matrix to rebuild position from depth
 uniform mat4 inverse_P_matrix;
@@ -88,18 +89,16 @@ void main(){
 	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.000001), point_light.specular.w);
 	
 	//**SHADOWS**//
+	float visibility = 1.0f;
+	if (shadows_enabled > 0.5){
+		vec3 world_light_position = point_light.position_and_attenuation.xyz;
+		vec3 light_direction = world_position - world_light_position;
 
-
-
-
-	vec3 world_light_position = point_light.position_and_attenuation.xyz;
-	vec3 light_direction = world_position - world_light_position;
-
-	//This sampling with a vec4 automatically compares the sampled value with the forth parameter (i think).
-	//So the result is the visibility
-	float current_depth = vector_to_depth(light_direction, 1.0, max_fov);
-	float visibility = texture(shadow_cube, vec4(light_direction, current_depth));
-	
+		//This sampling with a vec4 automatically compares the sampled value with the forth parameter (i think).
+		//So the result is the visibility
+		float current_depth = vector_to_depth(light_direction, 1.0, max_fov);
+		visibility = texture(shadow_cube, vec4(light_direction, current_depth));
+	}
 
 		
 

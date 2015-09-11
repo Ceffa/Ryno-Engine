@@ -8,6 +8,8 @@
 
 namespace Ryno{
 
+	
+
 	class Sprite : public ITransform2D{
 	public:
 		Sprite();
@@ -31,6 +33,7 @@ namespace Ryno{
 	
 		U8 depth = 1;
 		bool active = true;
+		Use use = HUD;
 		F32 ratio;
 		AnchorPoint anchor_point = TOP_LEFT;
 		F32 angle;

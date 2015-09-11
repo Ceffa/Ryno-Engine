@@ -1,5 +1,6 @@
 #include "DeferredRenderer.h"
 #include "GameObject.h"
+#include "Shell.h"
 
 #include <GLM/glm.hpp>
 #include <GLM/gtx/transform.hpp>
@@ -11,6 +12,11 @@
 
 namespace Ryno{
 
+
+	DeferredRenderer* DeferredRenderer::get_instance(){
+		static DeferredRenderer instance;//only at the beginning
+		return &instance;
+	}
 	const CameraDirection DeferredRenderer::camera_directions[NUM_OF_LAYERS]=
 	{
 		{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
@@ -21,8 +27,10 @@ namespace Ryno{
 		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f) }
 	};
 
+	DeferredRenderer::DeferredRenderer()
+	{
 
-	//Initialize deferred rendering
+	}
 	void DeferredRenderer::init(Camera3D* camera){
 
 		//GENERAL SETUP
@@ -165,6 +173,7 @@ namespace Ryno{
 
 	}
 
+
 	void DeferredRenderer::init_frame(){
 
 		//Calculate camera matrix once and for all
@@ -179,14 +188,18 @@ namespace Ryno{
 
 	}
 
-	//Call before drawing geometry
+
 	void DeferredRenderer::geometry_pass()
 	{
+		
+
 		//Add to geometry batch the game objects
 		m_geometry_batch3d->begin();
-		for (GameObject* go : GameObject::game_objects){
-			go->generate_model_matrix();
-			m_geometry_batch3d->draw(go->model);
+		if (geometry_enabled){
+			for (GameObject* go : GameObject::game_objects){
+				go->generate_model_matrix();
+				m_geometry_batch3d->draw(go->model);
+			}
 		}
 		m_geometry_batch3d->end();
 
@@ -204,12 +217,8 @@ namespace Ryno{
 		m_geometry_batch3d->render_batch();
 		m_geometry_program->unuse();
 	}
-
 	
 
-	
-
-	//Apply point lights
 	void DeferredRenderer::point_light_pass(){		
 
 
@@ -222,6 +231,7 @@ namespace Ryno{
 
 	}
 
+
 	void DeferredRenderer::spot_light_pass()
 	{
 		for (SpotLight* p : SpotLight::spot_lights){
@@ -232,16 +242,19 @@ namespace Ryno{
 
 	}
 
+
 	void DeferredRenderer::directional_light_pass()
 	{
 		directional_shadow_subpass(DirectionalLight::directional_light);
 		directional_lighting_subpass(DirectionalLight::directional_light);
-	}
+	}	
 
-	
 
 	void DeferredRenderer::point_shadow_subpass(PointLight* p)
 	{
+
+		if (!point_shadow_enabled)
+			return;
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -295,12 +308,10 @@ namespace Ryno{
 	}
 	
 
-
-	
-
-	//Renders point lights inside it's bounding sphere
 	void DeferredRenderer::point_lighting_subpass(PointLight* p){
 
+		if (!point_light_enabled)
+			return;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_point_lighting_pass();
 
@@ -332,6 +343,8 @@ namespace Ryno{
 		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
 		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
 		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
+		glUniform1i(m_point_lighting_program->getUniformLocation("shadows_enabled"), point_shadow_enabled);
+
 		m_simple_drawer->draw(m_bounding_sphere);
 		m_point_lighting_program->unuse();
 
@@ -339,18 +352,11 @@ namespace Ryno{
 
 	}
 
-
 	
-
-
-	
-
-	
-
-
 	void DeferredRenderer::spot_shadow_subpass(SpotLight* s)
 	{
-		
+		if (!spot_shadow_enabled)
+			return;
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -392,9 +398,11 @@ namespace Ryno{
 	}
 
 
-
 	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
 	{
+
+		if (!spot_light_enabled)
+			return;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_spot_lighting_pass();
 
@@ -431,17 +439,19 @@ namespace Ryno{
 		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
 		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("V_matrix"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
 		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
+		glUniform1i(m_spot_lighting_program->getUniformLocation("shadows_enabled"), spot_shadow_enabled);
 
 		m_simple_drawer->draw(m_bounding_pyramid);
 		m_spot_lighting_program->unuse();
 
 		glDisable(GL_BLEND);
 	}
-
 	
 
 	void DeferredRenderer::directional_shadow_subpass(DirectionalLight* directional_light){
 
+		if (!directional_shadow_enabled)
+			return;
 		m_fbo_shadow->bind_for_directional_shadow_pass();
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -470,9 +480,11 @@ namespace Ryno{
 
 	}
 
-	//Apply diretional light
+
 	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* d)
 	{
+		if (!directional_light_enabled)
+			return;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_directional_lighting_pass();
 
@@ -503,6 +515,7 @@ namespace Ryno{
 		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &dir_light_VPB[0][0]);
 		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
 		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+		glUniform1i(m_directional_lighting_program->getUniformLocation("shadows_enabled"), directional_shadow_enabled);
 
 
 		
@@ -515,7 +528,10 @@ namespace Ryno{
 		glDisable(GL_BLEND);
 	}
 
+
 	void DeferredRenderer::skybox_pass(){
+		if (!skybox_enabled)
+			return;
 		m_fbo_deferred->bind_for_skybox_pass();
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
@@ -559,7 +575,6 @@ namespace Ryno{
 	}
 
 
-
 	void DeferredRenderer::prepare_for_light_passes()
 	{
 		//Add to batch the game objects that affects shadows
@@ -571,6 +586,7 @@ namespace Ryno{
 		m_shadow_batch3d->end();
 	}
 
+
 	void DeferredRenderer::draw_HUD_pass()
 	{
 
@@ -580,10 +596,14 @@ namespace Ryno{
 
 		//Add the HUD elements to the 2D batch
 		m_sprite_batch2d->begin();
-		for (Sprite* s : Sprite::sprites){
+		
+		for (Sprite* s : Sprite::sprites)
+		{
+			if (!hud_sprites_enabled && s->use == HUD ) continue;
 			s->generate_model_matrix();
 			m_sprite_batch2d->draw(s);
 		}
+		
 		m_sprite_batch2d->end();
 
 
@@ -591,8 +611,11 @@ namespace Ryno{
 		m_font_batch2d->begin();
 
 		for (Text* s : Text::texts){
+			if (!hud_text_enabled && s->use == HUD)continue;
 			m_font_batch2d->draw_font(s);
 		}
+		
+
 		m_font_batch2d->end();
 
 
@@ -603,27 +626,25 @@ namespace Ryno{
 
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		m_font_program->use();
 		m_font_batch2d->render_batch();
 		m_font_program->unuse();
 		m_sprite_program->use();
 		m_sprite_batch2d->render_batch();
 		m_sprite_program->unuse();
-		
+
 		glDisable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
 
 	}
 
-	//Print on screen the result of the whole deferred rendering
+
 	void DeferredRenderer::final_pass(){
 		m_fbo_deferred->bind_for_final_rendering_pass();
 
 	
 	}
-
-	
 
 
 	void DeferredRenderer::destroy(){

@@ -8,12 +8,28 @@
 
 namespace Ryno {
 
+	//STATIC FIELDS
+	bool Shell::active = true;
+	std::string Shell::shell_path = "Ryno> ";
+	DeferredRenderer* Shell::deferred_renderer;
+	InputManager* Shell::input_manager;
+	Sprite* Shell::background;
+	Font* Shell::font;
+	Text* Shell::lines[SHELL_NUM_LINES];
+
+	std::string Shell::input;
+	U8 Shell::path_size;
+	U32 Shell::line_0_size;
+	U32 Shell::parse_from;
+
+
 
 	void Shell::init()
 	{
 
-		im = InputManager::get_instance();
+		input_manager = InputManager::get_instance();
 		path_size = shell_path.size();
+		deferred_renderer = DeferredRenderer::get_instance();
 		//Load textures
 		TextureManager* texture_manager = TextureManager::get_instance();
 		Texture background_texture = texture_manager->loadPNG("background", ENGINE_FOLDER);
@@ -27,6 +43,9 @@ namespace Ryno {
 		background->set_scale(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
 		background->set_color(0, 0, 0, 240);
 		background->depth = 5;
+		background->use = SHELL;
+
+
 
 		font = new Font("inconsolata", 24, ENGINE_FOLDER);
 
@@ -40,6 +59,7 @@ namespace Ryno {
 		lines[0]->depth = 4;
 		lines[0]->set_color(255, 255, 255, 255);
 		lines[0]->set_position(0.005, .005);
+		lines[0]->use = SHELL;
 
 
 		for (U8 i = 1; i < SHELL_NUM_LINES; i++)
@@ -47,6 +67,7 @@ namespace Ryno {
 			lines[i] = new Text(lines[0]);
 			lines[i]->set_position(0.005, .005 + 0.5 * i / SHELL_NUM_LINES);
 			lines[i]->text = shell_path;
+			
 		}
 
 
@@ -84,7 +105,7 @@ namespace Ryno {
 	{	
 
 		
-		if (im->is_key_pressed(SDLK_TAB, KEYBOARD)){
+		if (input_manager->is_key_pressed(SDLK_TAB, KEYBOARD)){
 			toggle();
 			return;
 		}
@@ -94,17 +115,17 @@ namespace Ryno {
 
 		line_0_size = lines[0]->text.size();
 
-		if (im->is_key_pressed(SDLK_RETURN, KEYBOARD)){
+		if (input_manager->is_key_pressed(SDLK_RETURN, KEYBOARD)){
 			parse_input();
 			rotate_lines();
 		}
-		if (im->is_key_pressed(SDLK_BACKSPACE, KEYBOARD)){
+		if (input_manager->is_key_pressed(SDLK_BACKSPACE, KEYBOARD)){
 			
 			if (line_0_size > path_size)
 				lines[0]->text = lines[0]->text.substr(0, line_0_size - 1);
 		}
 		
-		lines[0]->text += im->frame_text;
+		lines[0]->text += input_manager->frame_text;
 
 
 	}
@@ -199,9 +220,89 @@ namespace Ryno {
 
 		else if (command.compare("fuckyou") == 0){
 			
-			print_message("fuck you too.");
+			print_message("well, fuck you too.");
 		}
 
+		else if (command.compare("nopl") == 0){
+			deferred_renderer->point_light_enabled = false;
+		}
+		else if (command.compare("pl") == 0){
+			deferred_renderer->point_light_enabled = true;
+		}
+		else if (command.compare("nosl") == 0){
+			deferred_renderer->spot_light_enabled = false;
+		}
+		else if (command.compare("sl") == 0){
+			deferred_renderer->spot_light_enabled = true;
+		}
+		else if (command.compare("nodl") == 0){
+			deferred_renderer->directional_light_enabled = false;
+		}
+		else if (command.compare("dl") == 0){
+			deferred_renderer->directional_light_enabled = true;
+		}
+		else if (command.compare("nops") == 0){
+			deferred_renderer->point_shadow_enabled = false;
+		}
+		else if (command.compare("ps") == 0){
+			deferred_renderer->point_shadow_enabled = true;
+		}
+		else if (command.compare("noss") == 0){
+			deferred_renderer->spot_shadow_enabled = false;
+		}
+		else if (command.compare("ss") == 0){
+			deferred_renderer->spot_shadow_enabled = true;
+		}
+		else if (command.compare("nods") == 0){
+			deferred_renderer->directional_shadow_enabled = false;
+		}
+		else if (command.compare("ds") == 0){
+			deferred_renderer->directional_shadow_enabled = true;
+		}
+		else if (command.compare("nosb") == 0){
+			deferred_renderer->skybox_enabled = false;
+		}
+		else if (command.compare("sb") == 0){
+			deferred_renderer->skybox_enabled = true;
+		}
+		else if (command.compare("nohs") == 0){
+			deferred_renderer->hud_sprites_enabled = false;
+		}
+		else if (command.compare("hs") == 0){
+			deferred_renderer->hud_sprites_enabled = true;
+		}
+		else if (command.compare("noht") == 0){
+			deferred_renderer->hud_text_enabled = false;
+		}
+		else if (command.compare("ht") == 0){
+			deferred_renderer->hud_text_enabled = true;
+		}
+		else if (command.compare("nogm") == 0){
+			deferred_renderer->geometry_enabled = false;
+		}
+		else if (command.compare("gm") == 0){
+			deferred_renderer->geometry_enabled = true;
+		}
+		else if (command.compare("nolights") == 0){
+			deferred_renderer->point_light_enabled = false;
+			deferred_renderer->spot_light_enabled = false;
+			deferred_renderer->directional_light_enabled = false;
+
+		}
+		else if (command.compare("lights") == 0){
+			deferred_renderer->point_light_enabled = true;
+			deferred_renderer->spot_light_enabled = true;
+			deferred_renderer->directional_light_enabled = true;
+		}
+		else if (command.compare("nohud") == 0){
+			deferred_renderer->hud_sprites_enabled = false;
+			deferred_renderer->hud_text_enabled = false;
+
+		}
+		else if (command.compare("hud") == 0){
+			deferred_renderer->hud_sprites_enabled = true;
+			deferred_renderer->hud_text_enabled = true;
+		}
 		else
 			print_message("Command not found");
 	}
@@ -215,6 +316,9 @@ namespace Ryno {
 		lines[0]->text = shell_path;
 		
 	}
+
+
+	
 
 	void Shell::print_message(const std::string& message)
 	{

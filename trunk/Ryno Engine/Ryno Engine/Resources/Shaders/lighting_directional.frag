@@ -12,6 +12,7 @@ uniform sampler2D g_color_tex;
 uniform sampler2D g_normal_tex;
 uniform sampler2D g_depth_tex;
 uniform sampler2DShadow shadow_tex;
+uniform int shadows_enabled;
 
 //Inverse projection matrix to get position from depth
 uniform mat4 inverse_P_matrix;
@@ -74,21 +75,24 @@ void main(){
 	
 	//SHADOWS
 
-	vec2 poissonDisk[4] = vec2[](
-		vec2(-0.94201624, -0.39906216),
-		vec2(0.94558609, -0.76890725),
-		vec2(-0.094184101, -0.92938870),
-		vec2(0.34495938, 0.29387760)
-		);
+	float visibility = 1.0f;
+	if (shadows_enabled > 0.5){
+		vec2 poissonDisk[4] = vec2[](
+			vec2(-0.94201624, -0.39906216),
+			vec2(0.94558609, -0.76890725),
+			vec2(-0.094184101, -0.92938870),
+			vec2(0.34495938, 0.29387760)
+			);
 
-	float shadow_strenght =0.1;
-	float bias = 0.0002;
-	
-	float visibility = 1.0;
-	
+		float shadow_strenght = 0.1;
+		float bias = 0.0002;
 
-	for (int i = 0; i < 4; i++){
-		visibility -= (shadow_strenght * (1.0 - texture(shadow_tex, vec3(position_light_ortho_matrix_norm.xy + poissonDisk[i] / 700.0, position_light_ortho_matrix_norm.z - bias))));
+
+
+
+		for (int i = 0; i < 4; i++){
+			visibility -= (shadow_strenght * (1.0 - texture(shadow_tex, vec3(position_light_ortho_matrix_norm.xy + poissonDisk[i] / 700.0, position_light_ortho_matrix_norm.z - bias))));
+		}
 	}
 	
 	

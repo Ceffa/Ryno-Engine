@@ -16,6 +16,7 @@ uniform sampler2D g_color_tex;
 uniform sampler2D g_normal_tex;
 uniform sampler2D g_depth_tex;
 uniform sampler2DShadow shadow_tex;
+uniform int shadows_enabled;
 
 //Inverse matrix to rebuild position from depth
 uniform mat4 inverse_P_matrix;
@@ -101,9 +102,11 @@ void main(){
 
 
 	//SHADOWS
-	float bias = 0.0005;
-	float visibility =  texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z-bias));
-	
+	float visibility = 1.0f;
+	if (shadows_enabled > 0.5){
+		float bias = 0.0005;
+		visibility = texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z - bias));
+	}
 
 	
 	//CONE CUTOFF (with smoothing to the edges, because I CAN

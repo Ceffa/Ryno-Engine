@@ -5,6 +5,7 @@
 #include <SDL/SDL.h>
 #include <GL/glew.h>
 #include "Batch2DFont.h"
+#include "Shell.h"
 #include <GLM/gtx/string_cast.hpp>
 
 

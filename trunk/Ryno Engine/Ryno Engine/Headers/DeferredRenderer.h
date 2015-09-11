@@ -17,7 +17,6 @@
 #include "Batch2DSprite.h"
 #include "Batch2DFont.h"
 
-
 #define NUM_OF_LAYERS 6
 namespace Ryno{
 
@@ -48,10 +47,23 @@ namespace Ryno{
 		I32 specular;
 	};
 
-	
-	
 	class DeferredRenderer{
+		friend class Shell;
 	public:
+		~DeferredRenderer(){}
+		static DeferredRenderer* get_instance();
+
+		bool geometry_enabled = true;
+		bool directional_light_enabled = true;
+		bool directional_shadow_enabled = true;
+		bool point_light_enabled = true;
+		bool point_shadow_enabled = true;
+		bool spot_light_enabled = true;
+		bool spot_shadow_enabled = true;
+		bool skybox_enabled = true;
+		bool hud_sprites_enabled = true;
+		bool hud_text_enabled = true;
+
 
 		//Initialize deferred rendering
 		void init(Camera3D* camera);
@@ -78,7 +90,6 @@ namespace Ryno{
 
 		//HUD pass
 		void draw_HUD_pass();
-		
 
 
 		//Print on screen the result of the whole deferred rendering
@@ -90,20 +101,16 @@ namespace Ryno{
 
 	private:
 
+		DeferredRenderer();
+
 		//Shadow subpass for point light
 		void point_shadow_subpass(PointLight* p);
-
-		//Stencil subpass for point light
-		//void point_stencil_subpass(PointLight* point_light);
 
 		//Lighting subpass for point light
 		void point_lighting_subpass(PointLight* point_light);
 
 		//Shadow subpass for spot light
 		void spot_shadow_subpass(SpotLight* p);
-
-		//Stencil subpass for spot light
-		//void spot_stencil_subpass(SpotLight* spot_light);
 
 		//Lighting subpass for spot light
 		void spot_lighting_subpass(SpotLight* spot_light);
@@ -114,15 +121,25 @@ namespace Ryno{
 		//Lighting subpass for directional light
 		void directional_lighting_subpass(DirectionalLight* directional_light);
 
+	
 		Camera3D* m_camera;
 		FBO_Deferred* m_fbo_deferred;
 		FBO_Shadow* m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
 
 		//PROGRAMS
-		GLSLProgram *m_skybox_program, *m_directional_shadow_program, *m_spot_shadow_program, *m_point_shadow_program, *m_blit_program
-			, *m_geometry_program, *m_directional_lighting_program, *m_point_lighting_program, *m_spot_lighting_program, *m_flat_program,
-			*m_sprite_program, *m_font_program;
+		GLSLProgram *m_skybox_program;
+		GLSLProgram *m_directional_shadow_program;
+		GLSLProgram *m_spot_shadow_program;
+		GLSLProgram *m_point_shadow_program;
+		GLSLProgram *m_blit_program;
+		GLSLProgram *m_geometry_program;
+		GLSLProgram *m_directional_lighting_program;
+		GLSLProgram *m_point_lighting_program;
+		GLSLProgram *m_spot_lighting_program;
+		GLSLProgram *m_flat_program;
+		GLSLProgram *m_sprite_program;
+		GLSLProgram *m_font_program;
 
 		//BATCHES
 		Batch3DGeometry* m_geometry_batch3d;

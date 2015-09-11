@@ -52,6 +52,7 @@ namespace Ryno {
 		
 		Font* font;
 		bool active = true;
+		Use use = HUD;
 		std::string text;
 		
 		U8 depth = 1;

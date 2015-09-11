@@ -1,8 +1,8 @@
 #include <stdint.h>
 
 //Size definitions
-#define WINDOW_WIDTH 800			
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 1366				
+#define WINDOW_HEIGHT 768
 
 //Types definitions
 #define I8	int8_t
@@ -31,5 +31,12 @@ enum LocationOfResource{
 	ENGINE_FOLDER,
 	GAME_FOLDER
 };
+
+enum Use{
+	HUD,
+	SHELL
+};
+
+
 
 static const C* BASE_PATHS[2]{"../Ryno Engine/", ""};

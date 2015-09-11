@@ -71,8 +71,6 @@ namespace Ryno{
 		SimpleDrawer* m_simple_drawer;
 		DeferredRenderer* m_deferred_renderer;
 
-		Shell* shell;
-		
 		Camera3D* m_camera;
 		GameState m_game_state;
 		SDL_Window* m_window;
