@@ -221,7 +221,8 @@ namespace Ryno{
 
 	void DeferredRenderer::point_light_pass(){		
 
-
+		if (!point_light_enabled)
+			return;
 		for (PointLight* p : PointLight::point_lights){
 			point_shadow_subpass(p);
 			point_lighting_subpass(p);
@@ -234,6 +235,8 @@ namespace Ryno{
 
 	void DeferredRenderer::spot_light_pass()
 	{
+		if (!spot_light_enabled)
+			return;
 		for (SpotLight* p : SpotLight::spot_lights){
 			spot_shadow_subpass(p);
 			spot_lighting_subpass(p);
@@ -245,6 +248,8 @@ namespace Ryno{
 
 	void DeferredRenderer::directional_light_pass()
 	{
+		if (!directional_light_enabled)
+			return;
 		directional_shadow_subpass(DirectionalLight::directional_light);
 		directional_lighting_subpass(DirectionalLight::directional_light);
 	}	
@@ -310,8 +315,6 @@ namespace Ryno{
 
 	void DeferredRenderer::point_lighting_subpass(PointLight* p){
 
-		if (!point_light_enabled)
-			return;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_point_lighting_pass();
 
@@ -401,8 +404,6 @@ namespace Ryno{
 	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
 	{
 
-		if (!spot_light_enabled)
-			return;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_spot_lighting_pass();
 
@@ -483,8 +484,6 @@ namespace Ryno{
 
 	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* d)
 	{
-		if (!directional_light_enabled)
-			return;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_directional_lighting_pass();
 

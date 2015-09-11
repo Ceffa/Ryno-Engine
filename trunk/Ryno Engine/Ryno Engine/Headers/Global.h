@@ -1,8 +1,8 @@
 #include <stdint.h>
 
 //Size definitions
-#define WINDOW_WIDTH 1366				
-#define WINDOW_HEIGHT 768
+#define WINDOW_WIDTH 800				
+#define WINDOW_HEIGHT 600
 
 //Types definitions
 #define I8	int8_t

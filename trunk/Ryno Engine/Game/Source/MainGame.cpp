@@ -310,14 +310,14 @@ namespace Ryno{
 
 
 		}
-		if (m_input_manager->is_key_down(SDL_CONTROLLER_BUTTON_Y, CONTROLLER)){
+		if (m_input_manager->is_key_down(SDLK_o, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
 
-				l->diffuse_intensity += 1;
+				l->diffuse_intensity += 0.1f;
 
 			}
 			for (PointLight* l : PointLight::point_lights){
-				l->diffuse_intensity += 1;
+				l->diffuse_intensity += 0.1;
 
 			}
 		}
