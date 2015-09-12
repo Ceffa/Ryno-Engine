@@ -1,5 +1,5 @@
 #include "AudioManager.h"
-#include "Log.h"
+#include <iostream>
 
 namespace Ryno{
 	AudioManager::AudioManager()
@@ -15,16 +15,16 @@ namespace Ryno{
 
 	void AudioManager::init(){
 		if (m_is_initialized){
-			Log::FatalError("Tried to initialize audio engine twice");
+			std::cout << "Tried to initialize audio engine twice" << std::endl;
 
 		}
 		//take bitwise with MIX_INIT_formato
 		if (Mix_Init(MIX_INIT_MP3) == -1){
-			Log::FatalError("SDL_Mixer failed: " + std::string(Mix_GetError()));
+			std::cout << "SDL_Mixer failed: " + std::string(Mix_GetError()) << std::endl;
 		}
 
 		if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024)){
-			Log::FatalError("SDL_Mixer failed: " + std::string(Mix_GetError()));
+			std::cout << "SDL_Mixer failed: " + std::string(Mix_GetError()) << std::endl;
 		}
 
 		m_is_initialized = true;
@@ -58,7 +58,7 @@ namespace Ryno{
 			//if not load
 			Mix_Chunk* chunk = Mix_LoadWAV(std::string(BASE_PATHS[loc] + middle_path + file_path).c_str()); //despite name load everything
 			if (chunk == nullptr)
-				Log::FatalError("Mix_LoadWAV failed: " + std::string(Mix_GetError()));
+				std::cout << "Mix_LoadWAV failed: " + std::string(Mix_GetError()) << std::endl;
 			//insert it in map
 			m_sound_map[file_path] = chunk; //map used as associative array
 			sound.m_chunk = chunk;
@@ -81,7 +81,7 @@ namespace Ryno{
 			//if not load
 			Mix_Music* mus = Mix_LoadMUS(std::string(BASE_PATHS[loc] +  middle_path + file_path).c_str()); //despite name load everything
 			if (mus == nullptr)
-				Log::FatalError("Mix_LoadMus failed: " + std::string(Mix_GetError()));
+				std::cout << "Mix_LoadMus failed: " + std::string(Mix_GetError()) << std::endl;
 			//insert it in map
 			m_music_map[file_path] = mus; //map used as associative array
 			music.m_music = mus;
@@ -97,7 +97,7 @@ namespace Ryno{
 		if (Mix_PlayChannel(-1, m_chunk, loops) == -1){
 			//if all channels are busy, override first one
 			if (Mix_PlayChannel(0, m_chunk, loops) == -1){
-				Log::FatalError("Mix_PlayChannel error: " + std::string(Mix_GetError()));
+				std::cout <<"Mix_PlayChannel error: " + std::string(Mix_GetError()) << std::endl;
 			}
 		}
 	}

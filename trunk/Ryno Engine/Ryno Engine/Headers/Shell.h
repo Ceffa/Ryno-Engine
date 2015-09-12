@@ -5,51 +5,54 @@
 #include "DeferredRenderer.h"
 #include "Sprite.h"
 #include "Text.h"
+#include "Log.h"
+#include "IConsole.h"
 #include <list>
+#include <vector>
 
-#define SHELL_NUM_LINES 15
+#define NUM_LINES 15
+#define HISTORY_LENGTH 50
 
 namespace Ryno{
-	class Shell{
+	class Shell : public IConsole{
 		
 	public:
-		
-		static void init();
-		static void show();
-		static void hide();
-		static void toggle();
-		static void process_input();
-		static void parse_input();
-		static void parse_command(const std::string& command);
-		static void rotate_lines();
+		~Shell(){}
+		static Shell* get_instance();
+		void init();
+		void show() override;
+		void hide() override;
+		void toggle() override;
 
-		static bool active;
-		static bool request_exit;
+		void process_input();
+		void parse_input();
+		void parse_command(const std::string& command);
+		void rotate_lines();
+
+		bool request_exit = false;
 
 
 	protected:
-		static DeferredRenderer* deferred_renderer;
-		static InputManager* input_manager;
-		static Sprite* background;
-		static Font* font;
-		static Text* lines[SHELL_NUM_LINES];
 		
-		static std::string shell_path;
-		static std::string input;
-		static U8 path_size;
-		static U32 line_0_size;
-		static U32 parse_from;
+		DeferredRenderer* deferred_renderer;
+		Log* log;
+		
+		std::string active_line;
+		std::string base_path ="Ryno> ";
+		U8 base_path_size;
+		U32 active_line_size;
+		U32 parse_starting_point;
 	
 
 	private:
-		static void set(bool b);
-		static void print_message(const std::string& message);
-		static std::string get_argument();
-		static std::string string_argument();
-
-		static I32 int_argument();
+		Shell(){}
+		void set(bool b) override;
 		
-
+		void print_message(const std::string& message);
+		std::string get_argument();
+		std::string string_argument();
+		I32 int_argument();
+		
 
 	};
 

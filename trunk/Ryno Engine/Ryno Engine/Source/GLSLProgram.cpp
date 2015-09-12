@@ -1,7 +1,7 @@
 #include "GLSLProgram.h"
 #include "Log.h"
 #include <vector>
-#include <string.h>
+#include <string>
 #include <stdlib.h>
 #include <fstream>
 #include <iostream>
@@ -114,7 +114,7 @@ namespace Ryno{
 	GLint GLSLProgram::getUniformLocation(const std::string& uniformName){
 		GLint location = glGetUniformLocation(m_program_id, uniformName.c_str());
 		if (location == GL_INVALID_INDEX)
-			Log::FatalError("Uniform " + uniformName + " not found in shader.");
+			std::cout << "Uniform " + uniformName + " not found in shader." << std::endl;
 		return location;
 	}
 
@@ -138,7 +138,7 @@ namespace Ryno{
 		file.read(buffer, size + 1);
 		buffer[size] = '\0';
 		if (!buffer)
-			Log::FatalError("Failed to load from file: " + path);
+			std::cout << "Failed to load from file: " + path << std::endl;
 		*c = buffer;
 
 
@@ -149,7 +149,7 @@ namespace Ryno{
 		//simply check if glShaderSource returns a shader id
 		if (!m_shader_ids[index]){
 		
-			Log::FatalError("Shader Failed to be created.");
+			std::cout << "Shader Failed to be created." << std::endl;
 			return -1;
 		}
 		return 0;
@@ -170,7 +170,7 @@ namespace Ryno{
 
 			glGetShaderInfoLog(m_shader_ids[index], max_length, &max_length, log);
 
-			Log::FatalError("Problem compiling shader.\n", log);
+			std::cout << "Problem compiling shader.\n" + std::string(log) << std::endl;
 			free(log);
 			return -1;
 		}
@@ -194,7 +194,7 @@ namespace Ryno{
 			/* Notice that glGetProgramInfoLog, not glGetShaderInfoLog. */
 			glGetProgramInfoLog(m_program_id, max_length, &max_length, log);
 
-			Log::FatalError("Problem linking program.\n", log);
+			std::cout << "Problem linking program.\n" + std::string(log) << std::endl;
 			free(log);
 			return -1;
 		}

@@ -1,6 +1,6 @@
 #include "TextureManager.h"
 #include "lodepng.h"
-#include "Log.h"
+#include <string>
 #include <iostream>
 namespace Ryno{
 
@@ -30,7 +30,7 @@ namespace Ryno{
 
 		I32 error_code = lodepng::decode(out, width, height, path.c_str());
 		if (error_code != 0){
-			Log::FatalError("Decoding png failed: Errorcode: " + error_code);
+			std::cout << "Decoding png failed." << std::endl;
 		}
 		
 		Texture t;
@@ -77,7 +77,7 @@ namespace Ryno{
 
 			I32 error_code = lodepng::decode(out, width, height, path.c_str());
 			if (error_code != 0){
-				Log::FatalError("Decoding png failed: Errorcode: " + error_code);
+				std::cout << "Decoding png failed." << std::endl;
 			}
 
 			

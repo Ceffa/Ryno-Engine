@@ -74,7 +74,7 @@ namespace Ryno {
 		GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
 		if (Status != GL_FRAMEBUFFER_COMPLETE) {
-			Log::FatalError("FB error.");
+			std::cout << "FB error." <<  std::endl;
 	
 		}
 

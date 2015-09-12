@@ -213,7 +213,7 @@ namespace Ryno{
 	}
 	
 	void MainGame::input(){
-		if (!Shell::active){
+		if (!shell->active){
 		if (m_input_manager->is_key_down(SDLK_d, KEYBOARD)){
 			m_camera->move_right(3.0f);
 

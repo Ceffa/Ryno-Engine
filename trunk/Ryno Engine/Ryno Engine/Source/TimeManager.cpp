@@ -1,4 +1,5 @@
 #include "TimeManager.h"
+#include "Log.h"
 #include <SDL/SDL.h>
 #include <iostream>
 
@@ -34,6 +35,8 @@ namespace Ryno{
 		if (frame_count++ == 30) {
 			frame_count = 0;
 			std::cout << current_fps << std::endl;
+			Log::message(current_fps);
+
 		}
 	}
 

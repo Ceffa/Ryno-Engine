@@ -1,36 +1,49 @@
 #pragma once
-#include <string>
 #include "Global.h"
+#include "TextureManager.h"
+#include "InputManager.h"
+#include "DeferredRenderer.h"
+#include "Sprite.h"
+#include "Text.h"
+#include "IConsole.h"
+#include <list>
+
+
+#define NUM_LINES 15
+#define HISTORY_LENGTH 50
 
 namespace Ryno{
-	class Log
-	{
+	class Log : public IConsole{
+		friend class Shell;
 	public:
+		
+		~Log(){}
+		static Log* get_instance();
+		void init();
+		void show() override;
+		void hide() override;
+		void toggle() override;
+		static void message(const std::string& message);
+		static void message(F32 f);
 
-		/**
-		Print a message, like a printf.
-		@Param The message.
-		*/
-		static void Message(const std::string& message);
+		
 
-		/**
-		Print a warning message, but the excecution of the program is not stopped.
-		@Param The warning message.
-		*/
-		static void Warning(const std::string& message, const std::string& message2 = "");
 
-		/**
-		Print an error message, but the excecution of the program is not stopped.
-		@Param The error message.
-		*/
-		static void Error(const std::string& message, const std::string& message2 = "");
 
-		/**
-		Print an error message, and exit with error code.
-		@Param The error message.
-		@Param The error number, 1 by default.
-		*/
-		static void FatalError(const std::string&message, const std::string& message2 = "", U32 error_number = 1);
+	
+	private:
+		Log(){}
+		static Log instance;
+		void set(bool b) override;
+		void refresh();
+		void read_up();
+		void read_down();
+		void read_beginning();
+		void read_end();
+
+		
+
+
 	};
 
 }

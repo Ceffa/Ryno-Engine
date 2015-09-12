@@ -5,14 +5,14 @@ namespace Ryno{
 	void MainGameInterface::init_external_systems(){
 
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-			Log::FatalError("Failed to initialize SDL: ", SDL_GetError());
+			std::cout<<"Failed to initialize SDL: " + std::string(SDL_GetError())<<std::endl;
 		}
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	//	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	//	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
 		if ((m_window = SDL_CreateWindow("Ryno Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL)) == NULL){
-			Log::FatalError("Failed to create SDL window: ", SDL_GetError());
+			std::cout<<"Failed to create SDL window: "+ std::string(SDL_GetError())<<std::endl;
 		}
 
 		//MOUSE INITIALIZATIONS
@@ -28,13 +28,13 @@ namespace Ryno{
 
 		SDL_GLContext gl_context;
 		if ((gl_context = SDL_GL_CreateContext(m_window)) = nullptr){
-			Log::FatalError("Failed to create GL_context: ", SDL_GetError());
+			std::cout<<"Failed to create GL_context: " + std::string(SDL_GetError())<<std::endl;
 		}
 
 		glewExperimental = GLU_TRUE;
 		GLenum error;
 		if ((error = glewInit()) != GLEW_OK){
-			Log::FatalError("Failed to initialize glew.");
+			std::cout << "Failed to initialize glew." << std::endl;
 		}
 
 		
@@ -55,7 +55,10 @@ namespace Ryno{
 		
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-
+		shell = Shell::get_instance();
+		shell->init();
+		log = Log::get_instance();
+		log->init();
 	    m_texture_manager = TextureManager::get_instance();
 		m_input_manager = InputManager::get_instance();
 		m_input_manager->init(m_window);
@@ -64,7 +67,6 @@ namespace Ryno{
 		m_deferred_renderer->init(m_camera);
 		m_simple_drawer = SimpleDrawer::get_instance();
 
-		Shell::init();
 		
 		
 				
@@ -123,11 +125,11 @@ namespace Ryno{
 		//Reads input from user
 		m_input_manager->update();
 		//Exits if requested
-		if (m_input_manager->get_input() == Input::EXIT_REQUEST || Shell::request_exit)
+		if (m_input_manager->get_input() == Input::EXIT_REQUEST || shell->request_exit)
 			m_game_state = GameState::Exit;
 
 		//Process console inputs
-		Shell::process_input();
+		shell->process_input();
 		//Process user inputs
 		input();
 	}

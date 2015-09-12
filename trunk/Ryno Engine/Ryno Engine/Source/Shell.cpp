@@ -8,70 +8,52 @@
 
 namespace Ryno {
 
-	//STATIC FIELDS
-	bool Shell::active = true;
-	bool Shell::request_exit = false;
-	std::string Shell::shell_path = "Ryno> ";
-	DeferredRenderer* Shell::deferred_renderer;
-	InputManager* Shell::input_manager;
-	Sprite* Shell::background;
-	Font* Shell::font;
-	Text* Shell::lines[SHELL_NUM_LINES];
-
-	std::string Shell::input;
-	U8 Shell::path_size;
-	U32 Shell::line_0_size;
-	U32 Shell::parse_from;
 
 
+
+
+	Shell* Shell::get_instance()
+	{
+		static Shell instance;//only at the beginning
+		return &instance;
+	}
 
 	void Shell::init()
 	{
+		IConsole::init();
 
 		input_manager = InputManager::get_instance();
-		path_size = (U8)shell_path.size();
+		base_path_size = (U8)base_path.size();
 		deferred_renderer = DeferredRenderer::get_instance();
-		//Load textures
-		TextureManager* texture_manager = TextureManager::get_instance();
-		Texture background_texture = texture_manager->loadPNG("background", ENGINE_FOLDER);
+		log = Log::get_instance();
 		
-		//Create background
-		background = new Sprite();
 		background->anchor_point = BOTTOM_LEFT;
-		background->set_texture(background_texture);
 		background->set_position(0, 0);
-		background->angle = 0;
-		background->set_scale(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
-		background->set_color(0, 0, 0, 240);
-		background->depth = 5;
-		background->use = SHELL;
 
+		//Create Texts 
 
-
-		font = new Font("inconsolata", 24, ENGINE_FOLDER);
-
-		//Create Texts
+		lines.resize(NUM_LINES);
 
 		lines[0] = new Text();
 		lines[0]->anchor_point = BOTTOM_LEFT;
 		lines[0]->font = font;
-		lines[0]->text = shell_path;
+		lines[0]->text = base_path;
 		lines[0]->set_scale(0.7f,0.7f);
 		lines[0]->depth = 4;
 		lines[0]->set_color(255, 255, 255, 255);
-		lines[0]->set_position(0.005f, .005f);
+		lines[0]->set_position(0.005f, 0);
 		lines[0]->use = SHELL;
 
 
-		for (U8 i = 1; i < SHELL_NUM_LINES; i++)
+		for (U8 i = 1; i < NUM_LINES; i++)
 		{
 			lines[i] = new Text(lines[0]);
-			lines[i]->set_position(0.005f, .005f + 0.5f * i / SHELL_NUM_LINES);
-			lines[i]->text = shell_path;
-			
+			lines[i]->set_position(0.005f, 0.495f * i / NUM_LINES);
 		}
 
-
+		
+		iterator = history.begin();
+		history_length = 0;
 		
 	}
 
@@ -102,28 +84,74 @@ namespace Ryno {
 			show();
 	}
 
+
+	
+
 	void Shell::process_input()
 	{	
 
 		
 		if (input_manager->is_key_pressed(SDLK_TAB, KEYBOARD)){
-			toggle();
+			//hack to toggle log and shell
+			if (!active);
+				log->toggle();
+			if (log->active)
+				toggle();
 			return;
 		}
 
 		if (!active)
 			return;
 
-		line_0_size = (U32)lines[0]->text.size();
+		active_line_size = (U32)lines[0]->text.size();
 
 		if (input_manager->is_key_pressed(SDLK_RETURN, KEYBOARD)){
 			parse_input();
 			rotate_lines();
 		}
+
+		if (input_manager->is_key_down(SDLK_LSHIFT, KEYBOARD) && input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
+			log->read_beginning();
+		}
+		if (input_manager->is_key_down(SDLK_LSHIFT, KEYBOARD) && input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
+			log->read_end();
+		}
+
+		if (input_manager->is_key_down(SDLK_LSHIFT, KEYBOARD) && input_manager->is_key_pressed(SDLK_UP, KEYBOARD)){
+			log->read_up();
+		}
+		else if (input_manager->is_key_pressed(SDLK_UP, KEYBOARD)){
+
+			if (iterator != history.end()){
+				lines[0]->text = base_path + *iterator;
+				iterator++;
+			}
+		}
+		if (input_manager->is_key_down(SDLK_LSHIFT, KEYBOARD) && input_manager->is_key_pressed(SDLK_DOWN, KEYBOARD)){
+			log->read_down();
+		}
+		else if (input_manager->is_key_pressed(SDLK_DOWN, KEYBOARD)){
+			if (iterator == history.begin())
+				lines[0]->text = base_path;
+			else{
+				iterator--;
+				if (iterator == history.begin())
+					lines[0]->text = base_path;
+				else{
+					lines[0]->text = base_path + *(--iterator);
+					iterator++;
+				}
+
+			}
+				
+			
+		}
+
+
 		if (input_manager->is_key_pressed(SDLK_BACKSPACE, KEYBOARD)){
 			
-			if (line_0_size > path_size)
-				lines[0]->text = lines[0]->text.substr(0, line_0_size - 1);
+			if (active_line_size > base_path_size)
+				lines[0]->text = lines[0]->text.substr(0, active_line_size - 1);
 		}
 		
 		lines[0]->text += input_manager->frame_text;
@@ -135,13 +163,28 @@ namespace Ryno {
 	void Shell::parse_input()
 	{
 
+		
+		active_line = lines[0]->text;
+		if (active_line.compare(base_path) == 0)
+			return;
+
+		//Add to history (and remove back of the history if too long
+
+		history.push_front(active_line.substr(base_path_size, active_line.size()));
+		if (history_length < HISTORY_LENGTH)
+			history_length++;
+		else
+			history.pop_back();
+		
+		iterator = history.begin();
+
 		std::string command;
 		bool read_command = false;
-		input = lines[0]->text;
-		C c;
-		for (U32 i = path_size; i < line_0_size; i++){
 
-			c = input[i];
+		C c;
+		for (U32 i = base_path_size; i < active_line_size; i++){
+
+			c = active_line[i];
 
 			if (!read_command){
 				if (c == '\\')
@@ -150,7 +193,7 @@ namespace Ryno {
 			else {
 				if (c == ' '){
 					read_command = false;
-					parse_from = i + 1;
+					parse_starting_point = i + 1;
 					parse_command(command);
 					command.resize(0);
 				}
@@ -161,7 +204,7 @@ namespace Ryno {
 		}
 		//Even if no space is after
 		if (read_command){
-			parse_from = line_0_size;
+			parse_starting_point = active_line_size;
 			parse_command(command);
 		}
 	}
@@ -172,7 +215,7 @@ namespace Ryno {
 		if (command.compare("hide")==0)
 			hide();
 
-		else if (command.compare("textcolor") == 0){
+		else if (command.compare("shelltextcolor") == 0){
 			
 			//read args
 			I32 args[3];
@@ -187,12 +230,30 @@ namespace Ryno {
 				}
 			}
 		
-			for (Text* t : lines)
-			t->set_color(args[0],args[1],args[2],255);
+			set_text_color(args[0], args[1], args[2]);
 
 		}
 
-		else if (command.compare("shellcolor") == 0){
+		else if (command.compare("shellbackcolor") == 0){
+
+			//read args
+			I32 args[4];
+
+			for (U8 i = 0; i < 4; i++){
+				args[i] = int_argument();
+				if (args[i] == ERROR_INT){
+					print_message("argument(s) is not an int."); return;
+				}
+				else if (args[i] == MISSING_INT && i!=3){
+					print_message("missing argument(s)."); return;
+				}
+			}
+			
+			background->set_color(args[0], args[1], args[2], args[3]);
+
+		}
+
+		else if (command.compare("logtextcolor") == 0){
 
 			//read args
 			I32 args[3];
@@ -207,7 +268,26 @@ namespace Ryno {
 				}
 			}
 
-			background->set_color(args[0], args[1], args[2], 240);
+			log->set_text_color(args[0], args[1], args[2]);
+
+		}
+
+		else if (command.compare("logbackcolor") == 0){
+
+			//read args
+			I32 args[4];
+
+			for (U8 i = 0; i < 4; i++){
+				args[i] = int_argument();
+				if (args[i] == ERROR_INT){
+					print_message("argument(s) is not an int."); return;
+				}
+				else if (args[i] == MISSING_INT && i != 3){
+					print_message("missing argument(s)."); return;
+				}
+			}
+
+			log->background->set_color(args[0], args[1], args[2], args[3]);
 
 		}
 
@@ -216,12 +296,32 @@ namespace Ryno {
 			if (s.empty()){
 				print_message("missing argument(s)."); return;
 			}
-			print_message(s);
+			log->message(s);
 		}
 
 		else if (command.compare("fuckyou") == 0){
 			
 			print_message("well, fuck you too.");
+		}
+		else if (command.compare("clearshellhistory") == 0){
+			history.clear();
+			history_length = 0;
+			iterator = history.begin();
+		}
+		else if (command.compare("clearshellscreen") == 0){
+			for (Text* t : lines)
+				t->text = base_path;
+
+		}
+		else if (command.compare("clearloghistory") == 0){
+			log->history.clear();
+			log->history_length = 0;
+			log->iterator = log->history.begin();
+		}
+		else if (command.compare("clearlogscreen") == 0){
+			for (Text* t : log->lines)
+				t->text = "";
+
 		}
 		else if (command.compare("exit") == 0){
 
@@ -314,11 +414,11 @@ namespace Ryno {
 
 	void Shell::rotate_lines()
 	{
-		for (U8 i = SHELL_NUM_LINES-1; i > 0; i--)
+		for (U8 i = NUM_LINES-1; i > 0; i--)
 		{
 			lines[i]->text = lines[i - 1]->text;
 		}
-		lines[0]->text = shell_path;
+		lines[0]->text = base_path;
 		
 	}
 
@@ -338,9 +438,9 @@ namespace Ryno {
 		std::string argument;
 		bool still_spaces = true;
 		C c;
-		for (; parse_from < line_0_size; parse_from++){
+		for (; parse_starting_point < active_line_size; parse_starting_point++){
 			
-			c = input[parse_from];
+			c = active_line[parse_starting_point];
 			if (c == ' ')
 			{
 				if (!still_spaces) return argument;

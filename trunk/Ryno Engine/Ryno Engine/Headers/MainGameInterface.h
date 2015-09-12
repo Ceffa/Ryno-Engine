@@ -23,6 +23,7 @@
 #include "SimpleDrawer.h"
 #include "DeferredRenderer.h"
 #include "Shell.h"
+#include "Log.h"
 
 namespace Ryno{
 	class MainGameInterface
@@ -70,7 +71,8 @@ namespace Ryno{
 		MeshManager* m_mesh_manager;
 		SimpleDrawer* m_simple_drawer;
 		DeferredRenderer* m_deferred_renderer;
-
+		Shell* shell;
+		Log* log;
 		Camera3D* m_camera;
 		GameState m_game_state;
 		SDL_Window* m_window;
