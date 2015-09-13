@@ -15,8 +15,7 @@ namespace Ryno {
 		background = new Sprite();
 		background->set_texture(background_texture);
 		background->angle = 0;
-		background->set_scale(WINDOW_WIDTH / 2.0f, 0.99f * WINDOW_HEIGHT / 2.0f);
-		background->set_color(0, 0, 0, 240);
+		background->set_color(0,0,0,240);
 		background->depth = 5;
 		background->use = SHELL;
 

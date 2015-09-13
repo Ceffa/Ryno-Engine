@@ -22,7 +22,7 @@ namespace Ryno{
 		Music music;
 		
 
-		GameObject* ball, *go1, *go2, *go3;
+		GameObject* spheres[4];
 		I32 square_model;
 		I32 bound_sphere;
 		I32 cube_mesh;

@@ -50,8 +50,8 @@ namespace Ryno{
 
 	void MainGameInterface::init_internal_systems(){
 
-		m_audio_manager.init();
-		m_time_manager.init(60);
+		
+	
 		
 		m_camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -59,6 +59,10 @@ namespace Ryno{
 		shell->init();
 		log = Log::get_instance();
 		log->init();
+		m_audio_manager = AudioManager::get_instance();
+		m_audio_manager->init();
+		m_time_manager = TimeManager::get_instance();
+		m_time_manager->init(60);
 	    m_texture_manager = TextureManager::get_instance();
 		m_input_manager = InputManager::get_instance();
 		m_input_manager->init(m_window);
@@ -77,14 +81,14 @@ namespace Ryno{
 		init_internal_systems();
 		start();
 
-		while (m_game_state == GameState::Running){
-			m_time_manager.begin_frame();
+		while (m_game_state != GameState::Exit){
+			m_time_manager->begin_frame();
 			handle_input();
-			m_camera->generate_VP_matrix();
-			update();
+			if (m_game_state != GameState::Paused) m_camera->generate_VP_matrix();
+			if (m_game_state != GameState::Paused) update();
 			draw();
-			m_time_manager.end_frame();
-			m_time_manager.print_fps();
+			delta_time = m_time_manager->end_frame();
+			if (m_game_state != GameState::Paused) m_time_manager->print_fps();
 
 		}
 		end();
@@ -125,13 +129,24 @@ namespace Ryno{
 		//Reads input from user
 		m_input_manager->update();
 		//Exits if requested
-		if (m_input_manager->get_input() == Input::EXIT_REQUEST || shell->request_exit)
+		if (m_input_manager->get_input() == Input::EXIT_REQUEST){
 			m_game_state = GameState::Exit;
+			return;
+		}
 
 		//Process console inputs
 		shell->process_input();
+
+		 if (shell->request_exit)
+			 m_game_state = GameState::Exit;
+		 else if (shell->request_pause)
+			 m_game_state = GameState::Paused;
+		 else
+			 m_game_state = GameState::Running;
+		 
+
 		//Process user inputs
-		input();
+		if (m_game_state != GameState::Paused) input();
 	}
 
 		

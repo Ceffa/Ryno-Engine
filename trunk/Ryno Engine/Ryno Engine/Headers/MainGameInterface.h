@@ -37,6 +37,7 @@ namespace Ryno{
 		enum GameState
 		{
 			Running,
+			Paused,
 			Exit,
 			None
 		};
@@ -64,9 +65,9 @@ namespace Ryno{
 
 		SDL_Joystick *game_controller;
 	
-		AudioManager m_audio_manager;
+		AudioManager* m_audio_manager;
 		InputManager* m_input_manager;
-		TimeManager m_time_manager;
+		TimeManager* m_time_manager;
 		TextureManager* m_texture_manager;
 		MeshManager* m_mesh_manager;
 		SimpleDrawer* m_simple_drawer;
@@ -76,6 +77,8 @@ namespace Ryno{
 		Camera3D* m_camera;
 		GameState m_game_state;
 		SDL_Window* m_window;
+
+		F32 delta_time=0;
 		
 
 

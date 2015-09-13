@@ -3,14 +3,16 @@
 #include "TextureManager.h"
 #include "InputManager.h"
 #include "DeferredRenderer.h"
+#include "TimeManager.h"
 #include "Sprite.h"
 #include "Text.h"
 #include "Log.h"
 #include "IConsole.h"
+#include "AudioManager.h"
 #include <list>
 #include <vector>
 
-#define NUM_LINES 15
+#define NUM_LINES 10
 #define HISTORY_LENGTH 50
 
 namespace Ryno{
@@ -30,11 +32,13 @@ namespace Ryno{
 		void rotate_lines();
 
 		bool request_exit = false;
+		bool request_pause = false;
 
 
 	protected:
 		
 		DeferredRenderer* deferred_renderer;
+		TimeManager* time_manager;
 		Log* log;
 		
 		std::string active_line;
@@ -52,8 +56,7 @@ namespace Ryno{
 		std::string get_argument();
 		std::string string_argument();
 		I32 int_argument();
-		
-
+		F32 float_argument();
 	};
 
 }

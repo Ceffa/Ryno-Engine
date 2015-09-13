@@ -2,6 +2,11 @@
 #include <iostream>
 
 namespace Ryno{
+
+	AudioManager* AudioManager::get_instance(){
+		static AudioManager instance;
+		return &instance;
+	}
 	AudioManager::AudioManager()
 	{
 	}

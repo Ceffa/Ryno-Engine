@@ -1,4 +1,5 @@
 #include "SpotLight.h"
+#include "Log.h"
 
 namespace Ryno{
 
@@ -37,7 +38,7 @@ namespace Ryno{
 		
 
 		direction = glm::normalize(glm::vec3(cos(yaw)*cos(pitch), sin(pitch), sin(yaw)*cos(pitch)));
-		
+
 	}
 
 	void SpotLight::calculate_max_radius()

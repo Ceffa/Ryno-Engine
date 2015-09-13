@@ -26,6 +26,7 @@ namespace Ryno {
 		
 		background->anchor_point = TOP_LEFT;
 		background->set_position(0, 1);
+		background->set_scale(350, WINDOW_HEIGHT / 1.506f);
 
 		//Create Texts
 		lines.resize(NUM_LINES);
@@ -36,15 +37,15 @@ namespace Ryno {
 		lines[0]->text = "";
 		lines[0]->set_scale(0.7f,0.7f);
 		lines[0]->depth = 4;
-		lines[0]->set_color(255, 255, 255, 255);
-		lines[0]->set_position(0.005f, .505f);
+		lines[0]->set_color(255, 230, 0, 255);
+		lines[0]->set_position(0.005f, .34f);
 		lines[0]->use = SHELL;
 
 
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
 			lines[i] = new Text(lines[0]);
-			lines[i]->set_position(0.005f, .505f + 0.495f * i / NUM_LINES);
+			lines[i]->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
 		}
 
 	

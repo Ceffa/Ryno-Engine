@@ -8,6 +8,13 @@ namespace Ryno{
 	TimeManager::TimeManager() : current_fps(60){
 
 	}
+
+	TimeManager* TimeManager::get_instance()
+	{
+		static TimeManager instance;
+		return &instance;
+	}
+
 	void TimeManager::init(F32 max_fps){
 		set_max_fps(max_fps);
 	}
@@ -18,7 +25,7 @@ namespace Ryno{
 	void TimeManager::begin_frame(){
 		initial_ticks = SDL_GetTicks();
 	}
-	float TimeManager::end_frame(){
+	F32 TimeManager::end_frame(){
 
 		calculate_FPS();
 
@@ -27,12 +34,13 @@ namespace Ryno{
 		if ((U32)(1000.0f / target_fps) > time_passed) {
 			SDL_Delay((U32)(1000.0f / target_fps) - time_passed);
 		}
-		return current_fps;
+		delta_time = (F32) SDL_GetTicks() - initial_ticks;
+		return slow_factor * delta_time;
 
 	}
 	void TimeManager::print_fps(){
 		static U32 frame_count = 0;
-		if (frame_count++ == 30) {
+		if (frame_count++ == 60) {
 			frame_count = 0;
 			std::cout << current_fps << std::endl;
 			Log::message(current_fps);

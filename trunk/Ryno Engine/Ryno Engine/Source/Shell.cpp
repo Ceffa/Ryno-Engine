@@ -3,8 +3,10 @@
 #include <iostream>
 #include <unordered_map>
 
-#define MISSING_INT INT_MIN-1
-#define ERROR_INT INT_MIN
+#define MISSING_INT INT_MAX/2-1
+#define ERROR_INT INT_MAX/2
+#define MISSING_FLOAT FLT_MAX/2-1
+#define ERROR_FLOAT INT_MAX/2
 
 namespace Ryno {
 
@@ -23,12 +25,14 @@ namespace Ryno {
 		IConsole::init();
 
 		input_manager = InputManager::get_instance();
+		time_manager = TimeManager::get_instance();
 		base_path_size = (U8)base_path.size();
 		deferred_renderer = DeferredRenderer::get_instance();
 		log = Log::get_instance();
 		
 		background->anchor_point = BOTTOM_LEFT;
 		background->set_position(0, 0);
+		background->set_scale(350, WINDOW_HEIGHT / 3.06f);
 
 		//Create Texts 
 
@@ -40,15 +44,15 @@ namespace Ryno {
 		lines[0]->text = base_path;
 		lines[0]->set_scale(0.7f,0.7f);
 		lines[0]->depth = 4;
-		lines[0]->set_color(255, 255, 255, 255);
-		lines[0]->set_position(0.005f, 0);
+		lines[0]->set_color(255, 230, 0, 255);
+		lines[0]->set_position(0.003f, 0.005f);
 		lines[0]->use = SHELL;
 
 
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
 			lines[i] = new Text(lines[0]);
-			lines[i]->set_position(0.005f, 0.495f * i / NUM_LINES);
+			lines[i]->set_position(0.005f, 0.003f + 0.33f * i / NUM_LINES);
 		}
 
 		
@@ -92,12 +96,15 @@ namespace Ryno {
 
 		
 		if (input_manager->is_key_pressed(SDLK_TAB, KEYBOARD)){
-			//hack to toggle log and shell
-			if (!active);
-				log->toggle();
-			if (log->active)
+				
 				toggle();
+				log->toggle();
 			return;
+		}
+
+		if (input_manager->is_key_pressed(SDLK_BACKSLASH, KEYBOARD) && active == false){
+			toggle();
+			log->toggle();
 		}
 
 		if (!active)
@@ -109,6 +116,7 @@ namespace Ryno {
 			parse_input();
 			rotate_lines();
 		}
+		
 
 		if (input_manager->is_key_down(SDLK_LSHIFT, KEYBOARD) && input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
 			log->read_beginning();
@@ -214,6 +222,72 @@ namespace Ryno {
 	{
 		if (command.compare("hide")==0)
 			hide();
+		else if (command.compare("pausemusic") == 0)
+			Music::pause();
+		else if (command.compare("resumemusic") == 0)
+			Music::resume();
+		else if (command.compare("mutemusic") == 0)
+			Music::set_volume(0);
+		else if (command.compare("mutesound") == 0)
+			Sound::set_volume(0);
+		else if (command.compare("musicvolume") == 0){
+
+			//read args
+			F32 f;
+
+
+			f = float_argument();
+			if (f == ERROR_FLOAT){
+				print_message("argument(s) is not an int."); return;
+			}
+			else if (f == MISSING_FLOAT){
+				print_message("missing argument(s)."); return;
+			}
+
+			Music::set_volume(f);
+
+		}
+		else if (command.compare("soundvolume") == 0){
+
+			//read args
+			F32 f;
+
+
+			f = float_argument();
+			if (f == ERROR_FLOAT){
+				print_message("argument(s) is not an int."); return;
+			}
+			else if (f == MISSING_FLOAT){
+				print_message("missing argument(s)."); return;
+			}
+
+			Sound::set_volume(f);
+
+		}
+		else if (command.compare("pause") == 0){
+			request_pause = true;
+		}
+		else if (command.compare("resume") == 0){
+			request_pause = false;
+		}
+		else if (command.compare("slowfactor") == 0){
+
+			//read args
+			F32 f;
+
+
+			f = float_argument();
+			if (f == ERROR_FLOAT){
+				print_message("argument(s) is not an int."); return;
+			}
+			else if (f == MISSING_FLOAT){
+				print_message("missing argument(s)."); return;
+			}
+			
+			
+			time_manager->slow_factor = f;
+
+		}
 
 		else if (command.compare("shelltextcolor") == 0){
 			
@@ -324,7 +398,7 @@ namespace Ryno {
 
 		}
 		else if (command.compare("exit") == 0){
-
+			
 			request_exit = true;
 		}
 
@@ -470,15 +544,33 @@ namespace Ryno {
 		std::string s = get_argument();
 
 		if (s.empty())
-			return INT_MIN-1;
+			return MISSING_INT;
 
 		I64 r = std::strtol(s.c_str(),&error,0);
 		
 		if (*error!='\0'){
-			return INT_MIN;
+			return ERROR_INT;
 		}
 		return (I32)r;
 		
+	}
+
+	F32 Shell::float_argument()
+	{
+		C* error;
+
+		std::string s = get_argument();
+
+		if (s.empty())
+			return MISSING_FLOAT - 1;
+
+		F64 r = std::strtod(s.c_str(), &error);
+
+		if (*error != '\0'){
+			return ERROR_FLOAT;
+		}
+		return (F32)r;
+
 	}
 
 }

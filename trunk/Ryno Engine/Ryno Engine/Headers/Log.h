@@ -9,7 +9,7 @@
 #include <list>
 
 
-#define NUM_LINES 15
+#define NUM_LINES 20
 #define HISTORY_LENGTH 50
 
 namespace Ryno{

@@ -51,11 +51,12 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading audio
-		sound = m_audio_manager.load_sound("stomp.wav", GAME_FOLDER);
-		music = m_audio_manager.load_music("cthulhu.ogg", GAME_FOLDER);
+		sound = m_audio_manager->load_sound("stomp.wav", GAME_FOLDER);
+		music = m_audio_manager->load_music("journey.ogg", GAME_FOLDER);
 		sound.set_volume(0.0f);
 		music.set_volume(0.0f);
 		music.play();
+		
 
 
 		CPUProfiler::next_time();
@@ -117,7 +118,7 @@ namespace Ryno{
 		go = new GameObject(go);
 		go->scale = glm::vec3(100,100,100);
 		go->model->mesh = sphere_model;
-		go->position = glm::vec3(0, 300, -150);
+		go->position = glm::vec3(0, 300, 0);
 
 
 		CPUProfiler::next_time();
@@ -129,7 +130,7 @@ namespace Ryno{
 		
 		SpotLight* s = new SpotLight();
 		s->set_position(0,190,0);
-		s->set_direction(-90, 0);
+		s->set_direction(-90,0);
 		s->cutoff = 40;
 		s->set_diffuse_color(0,255,0);
 		s->diffuse_intensity = 30;
@@ -151,25 +152,28 @@ namespace Ryno{
 		go->model->set_texture_normal(white, white_normal);
 		go->scale = glm::vec3(25,25,25);
 		go->position = glm::vec3(180, 20, 180);
+		spheres[0] = go;
 		
 		p = new PointLight(p);
 		p->set_position(-180, 20, 180);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(-180, 20, 180);
+		spheres[1] = go;
 
 		p = new PointLight(p);
 		p->set_position(-180, 20, -180);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(-180, 20, -180);
+		spheres[2] = go;
 
 		p = new PointLight(p);
 		p->set_position(180, 20, -180);
 
 		go = new GameObject(go);
 		go->position = glm::vec3(180, 20, -180);
-
+		spheres[3] = go;
 
 		DirectionalLight* l = new DirectionalLight();
 		l->set_direction(-65, 150);
@@ -179,8 +183,7 @@ namespace Ryno{
 		l->set_specular_color(255, 255, 200);
 		l->ambient_intensity = .05;
 		l->set_ambient_color(255, 255, 200);
-
-
+		
 		Sprite* sp = new Sprite();
 		sp->depth = 20;
 		sp->angle = 0;
@@ -201,7 +204,7 @@ namespace Ryno{
 		t->anchor_point = TOP_RIGHT;
 		t->set_scale(1,1);
 		t->set_color(255,255,0, 255);
-		t->text = "So much text.\nVery Doge.\nWOW";
+		t->text = "Ryno Engine";
 
 		
 		
@@ -214,41 +217,53 @@ namespace Ryno{
 	
 	void MainGame::input(){
 		if (!shell->active){
+		if (m_input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
+			sound.play();
+
+		}
 		if (m_input_manager->is_key_down(SDLK_d, KEYBOARD)){
-			m_camera->move_right(3.0f);
+			m_camera->move_right(0.5f * delta_time);
 
 		}
 		if (m_input_manager->is_key_down(SDLK_a, KEYBOARD)){
-			m_camera->move_left(3.0f);
+			m_camera->move_left(0.5f * delta_time);
 		}
 		if (m_input_manager->is_key_down(SDLK_w, KEYBOARD) || m_input_manager->is_key_down(SDL_BUTTON_LEFT, MOUSE)){
-			m_camera->move_forward(3.0f);
+			m_camera->move_forward(0.5f * delta_time);
 		}
 		if (m_input_manager->is_key_down(SDLK_s, KEYBOARD) || m_input_manager->is_key_down(SDL_BUTTON_RIGHT, MOUSE)){
-			m_camera->move_back(3.0f);
+			m_camera->move_back(0.5f * delta_time);
 		}
 
 
 
 
-		if (m_input_manager->is_key_down(SDLK_LEFT, KEYBOARD) || m_input_manager->is_key_down(SDL_CONTROLLER_BUTTON_DPAD_LEFT, CONTROLLER)){
+		if (m_input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
-				l->position.x -= 3;
+				l->position.x -= 0.5f * delta_time;
+
+			}
+			for (GameObject* l : spheres){
+				l->position.x -= 0.5f * delta_time;
 
 			}
 			for (PointLight* l : PointLight::point_lights){
-				l->position.x -= 3;
+				l->position.x -= 0.5f * delta_time;
 
 			}
 
 		}
 		if (m_input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
-				l->position.x += 3;
+				l->position.x += 0.5f * delta_time;
+
+			}
+			for (GameObject* l : spheres){
+				l->position.x += 0.5f * delta_time;
 
 			}
 			for (PointLight* l : PointLight::point_lights){
-				l->position.x += 3;
+				l->position.x += 0.5f * delta_time;
 
 			}
 
@@ -266,11 +281,15 @@ namespace Ryno{
 
 		if (m_input_manager->is_key_down(SDLK_n, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
-				l->position.z -= 3;
+				l->position.z -= 0.5f * delta_time;
+
+			}
+			for (GameObject* l : spheres){
+				l->position.z -= 0.5f * delta_time;
 
 			}
 			for (PointLight* l : PointLight::point_lights){
-				l->position.z -= 3;
+				l->position.z -= 0.5f * delta_time;
 
 			}
 
@@ -278,33 +297,46 @@ namespace Ryno{
 		}
 		if (m_input_manager->is_key_down(SDLK_m, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
-				l->position.z += 3;
+				l->position.z += 0.5f * delta_time;
+
+			}
+			for (GameObject* l : spheres){
+				l->position.z += 0.5f * delta_time;
 
 			}
 			for (PointLight* l : PointLight::point_lights){
-				l->position.z += 3;
+				l->position.z += 0.5f * delta_time;
 
 			}
 
 		}
 		if (m_input_manager->is_key_down(SDLK_UP, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
-				l->position.y += 3;
+				l->position.y += 0.5f * delta_time;
+
+			}
+
+			for (GameObject* l : spheres){
+				l->position.y += 0.5f * delta_time;
 
 			}
 			for (PointLight* l : PointLight::point_lights){
-				l->position.y += 3;
+				l->position.y += 0.5f * delta_time;
 
 			}
 
 		}
 		if (m_input_manager->is_key_down(SDLK_DOWN, KEYBOARD)){
 			for (SpotLight* l : SpotLight::spot_lights){
-				l->position.y -= 3;
+				l->position.y -= 0.5f * delta_time;
+
+			}
+			for (GameObject* l : spheres){
+				l->position.y -= 0.5f * delta_time;
 
 			}
 			for (PointLight* l : PointLight::point_lights){
-				l->position.y -= 3;
+				l->position.y -= 0.5f * delta_time;
 
 			}
 
@@ -375,12 +407,12 @@ namespace Ryno{
 
 	}
 		glm::vec2 mouse_coords = m_input_manager->get_mouse_movement();
-		m_camera->rotate(0.005f * mouse_coords.x, 0.005f* mouse_coords.y);
+		m_camera->rotate(0.0005f * mouse_coords.x * delta_time, 0.0005f* mouse_coords.y* delta_time);
 		glm::vec2 rotation_view = m_input_manager->get_controller_RX_coords();
-		m_camera->rotate(0.05f * rotation_view.x, 0.05f* rotation_view.y);
+		m_camera->rotate(0.01f * rotation_view.x* delta_time, 0.01f* rotation_view.y* delta_time);
 		glm::vec2 direction = m_input_manager->get_controller_LX_coords();
-		m_camera->move_forward(5.0f * -direction.y);
-		m_camera->move_right(5.0f * direction.x);
+		m_camera->move_forward(delta_time *1.0f * -direction.y);
+		m_camera->move_right(delta_time * 1.0f * direction.x);
 
 	}
 

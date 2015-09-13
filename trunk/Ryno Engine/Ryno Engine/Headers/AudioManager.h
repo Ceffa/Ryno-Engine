@@ -33,7 +33,7 @@ namespace Ryno{
 	class AudioManager
 	{
 	public:
-		AudioManager();
+		static AudioManager* get_instance();
 		~AudioManager();
 
 		void init();
@@ -44,6 +44,7 @@ namespace Ryno{
 
 
 	private:
+		AudioManager();
 		std::map <std::string, Mix_Chunk*> m_sound_map;
 		std::map <std::string, Mix_Music*> m_music_map;
 
