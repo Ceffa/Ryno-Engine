@@ -1,6 +1,6 @@
 #include "MainGame.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
+#include "Lights/DirectionalLight.h"
+#include "Lights/PointLight.h"
 #include "Text.h"
 #include "GPUProfiler.h"
 #include "CPUProfiler.h"

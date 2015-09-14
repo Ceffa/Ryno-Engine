@@ -1,8 +1,8 @@
 #pragma once
 #include "MainGameInterface.h"
-#include "PointLight.h"
+#include "Lights/PointLight.h"
 #include "DeferredRenderer.h"
-#include "DirectionalLight.h"
+#include "Lights/DirectionalLight.h"
 #include <Sprite.h>
 
 namespace Ryno{
