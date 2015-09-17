@@ -23,9 +23,10 @@ namespace Ryno{
 		void show() override;
 		void hide() override;
 		void toggle() override;
-		static void message(const std::string& message);
-		static void message(F32 f);
-
+		static void print(const std::string& message);
+		static void print(F32 f);
+		static void println(const std::string& message);
+		static void println(F32 f);
 		
 
 

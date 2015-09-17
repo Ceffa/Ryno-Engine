@@ -43,7 +43,7 @@ namespace Ryno{
 		if (frame_count++ == 60) {
 			frame_count = 0;
 			std::cout << current_fps << std::endl;
-			Log::message(current_fps);
+			//Log::message(current_fps);
 
 		}
 	}

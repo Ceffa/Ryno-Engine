@@ -32,7 +32,9 @@ namespace Ryno{
 		void rotate_lines();
 
 		bool request_exit = false;
+		bool restart_physics = false;
 		bool request_pause = false;
+		bool phys_step;
 
 
 	protected:
@@ -46,6 +48,7 @@ namespace Ryno{
 		U8 base_path_size;
 		U32 active_line_size;
 		U32 parse_starting_point;
+		
 	
 
 	private:

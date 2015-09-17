@@ -48,7 +48,8 @@ namespace Ryno {
 			lines[i]->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
 		}
 
-	
+		
+		
 	
 		
 	}
@@ -109,7 +110,7 @@ namespace Ryno {
 
 	
 
-	void Log::message(const std::string& message)
+	void Log::println(const std::string& message)
 	{
 		if (instance.history_length < HISTORY_LENGTH)
 			instance.history_length++;
@@ -125,13 +126,34 @@ namespace Ryno {
 
 	
 
-	void Log::message(F32 f)
+	void Log::println(F32 f)
 	{
 		std::stringstream ss;
 		std::string s;
 		ss << f;
 		ss >> s;
-		message(s);
+		println(s);
+	}
+
+	void Log::print(F32 f)
+	{
+		std::stringstream ss;
+		std::string s;
+		ss << f;
+		ss >> s;
+		print(s);
+	}
+
+
+	void Log::print(const std::string& message)
+	{
+		instance.iterator = instance.history.begin();
+		if (instance.iterator == instance.history.end())
+			println(message);
+		else{
+			*instance.iterator += message;
+			instance.refresh();
+		}
 	}
 
 	void Log::read_up()

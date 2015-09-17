@@ -4,6 +4,7 @@
 #include "DeferredRenderer.h"
 #include "Lights/DirectionalLight.h"
 #include <Sprite.h>
+#include "Forces.h"
 
 namespace Ryno{
 	class MainGame : public MainGameInterface
@@ -13,20 +14,25 @@ namespace Ryno{
 		void start() override;
 		void input() override;
 		void update() override;
-		
-		bool swap_curve = false;
-		bool just_played = false;
-		I64 speed = 40;
-		I64 time = 0;;
+		void set_physics();
+
 		Sound sound;
 		Music music;
 		
-
 		GameObject* spheres[4];
-		I32 square_model;
-		I32 bound_sphere;
-		I32 cube_mesh;
-		Model* sphere_box_model;
+		GameObject* ball;
+		std::vector<GameObject*> markers;
+
+		WeightForce Fw;
+		DragForce Fd;
+		Texture white;
+		I32 marker_mesh;
+		glm::vec3 velocity = glm::vec3(0, 0, 0);
+		glm::vec3 acceleration = glm::vec3(0, 0, 0);
+		GameObject* marker;
+
+		
+		
 
 		
 	

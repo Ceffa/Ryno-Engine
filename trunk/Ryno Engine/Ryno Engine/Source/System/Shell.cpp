@@ -59,6 +59,9 @@ namespace Ryno {
 		iterator = history.begin();
 		history_length = 0;
 		
+		
+
+		
 	}
 
 	void Shell::set(bool b)
@@ -222,6 +225,8 @@ namespace Ryno {
 	{
 		if (command.compare("hide")==0)
 			hide();
+		else if (command.compare("ps") == 0)
+			phys_step = true;
 		else if (command.compare("pausemusic") == 0)
 			Music::pause();
 		else if (command.compare("resumemusic") == 0)
@@ -264,11 +269,11 @@ namespace Ryno {
 			Sound::set_volume(f);
 
 		}
-		else if (command.compare("pause") == 0){
-			request_pause = true;
+		else if (command.compare("p") == 0){
+			request_pause = !request_pause;
 		}
-		else if (command.compare("resume") == 0){
-			request_pause = false;
+		else if (command.compare("r") == 0){
+			restart_physics = true;
 		}
 		else if (command.compare("slowfactor") == 0){
 
@@ -370,7 +375,7 @@ namespace Ryno {
 			if (s.empty()){
 				print_message("missing argument(s)."); return;
 			}
-			log->message(s);
+			log->print(s);
 		}
 
 		else if (command.compare("fuckyou") == 0){

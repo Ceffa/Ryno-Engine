@@ -52,6 +52,7 @@ namespace Ryno{
 		virtual void input() = 0;
 
 		virtual void update() = 0;
+		void camera_update();
 
 		void draw();
 

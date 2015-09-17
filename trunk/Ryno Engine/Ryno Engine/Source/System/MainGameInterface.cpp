@@ -84,7 +84,7 @@ namespace Ryno{
 		while (m_game_state != GameState::Exit){
 			m_time_manager->begin_frame();
 			handle_input();
-			if (m_game_state != GameState::Paused) m_camera->generate_VP_matrix();
+			camera_update();
 			if (m_game_state != GameState::Paused) update();
 			draw();
 			delta_time = m_time_manager->end_frame();
@@ -95,6 +95,34 @@ namespace Ryno{
 		exit_game();
 
 
+	}
+
+	void MainGameInterface::camera_update()
+	{
+		if (!shell->active){
+			m_camera->generate_VP_matrix();
+
+			if (m_input_manager->is_key_down(SDLK_d, KEYBOARD)){
+				m_camera->move_right(0.5f * delta_time);
+
+			}
+			if (m_input_manager->is_key_down(SDLK_a, KEYBOARD)){
+				m_camera->move_left(0.5f * delta_time);
+			}
+			if (m_input_manager->is_key_down(SDLK_w, KEYBOARD) || m_input_manager->is_key_down(SDL_BUTTON_LEFT, MOUSE)){
+				m_camera->move_forward(0.5f * delta_time);
+			}
+			if (m_input_manager->is_key_down(SDLK_s, KEYBOARD) || m_input_manager->is_key_down(SDL_BUTTON_RIGHT, MOUSE)){
+				m_camera->move_back(0.5f * delta_time);
+			}
+		}
+		glm::vec2 mouse_coords = m_input_manager->get_mouse_movement();
+		m_camera->rotate(0.0005f * mouse_coords.x * delta_time, 0.0005f* mouse_coords.y* delta_time);
+		glm::vec2 rotation_view = m_input_manager->get_controller_RX_coords();
+		m_camera->rotate(0.01f * rotation_view.x* delta_time, 0.01f* rotation_view.y* delta_time);
+		glm::vec2 direction = m_input_manager->get_controller_LX_coords();
+		m_camera->move_forward(delta_time *1.0f * -direction.y);
+		m_camera->move_right(delta_time * 1.0f * direction.x);
 	}
 
 	void MainGameInterface::draw(){
