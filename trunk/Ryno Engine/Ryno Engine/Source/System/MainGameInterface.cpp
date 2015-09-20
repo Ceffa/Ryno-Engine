@@ -100,7 +100,7 @@ namespace Ryno{
 	void MainGameInterface::camera_update()
 	{
 		if (!shell->active){
-			m_camera->generate_VP_matrix();
+			
 
 			if (m_input_manager->is_key_down(SDLK_d, KEYBOARD)){
 				m_camera->move_right(0.5f * delta_time);
@@ -116,6 +116,7 @@ namespace Ryno{
 				m_camera->move_back(0.5f * delta_time);
 			}
 		}
+		m_camera->generate_VP_matrix();
 		glm::vec2 mouse_coords = m_input_manager->get_mouse_movement();
 		m_camera->rotate(0.0005f * mouse_coords.x * delta_time, 0.0005f* mouse_coords.y* delta_time);
 		glm::vec2 rotation_view = m_input_manager->get_controller_RX_coords();
