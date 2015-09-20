@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ryno Engine", "Ryno Engine\Ryno Engine.vcxproj", "{8E9740DA-B08B-4E49-821A-696D543348EA}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{DF2BD9E7-7399-4C1E-8100-A6BC6C317A10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -34,6 +36,14 @@ Global
 		{8E9740DA-B08B-4E49-821A-696D543348EA}.Release|Win32.Build.0 = Release|Win32
 		{8E9740DA-B08B-4E49-821A-696D543348EA}.Release|x64.ActiveCfg = Release|x64
 		{8E9740DA-B08B-4E49-821A-696D543348EA}.Release|x64.Build.0 = Release|x64
+		{DF2BD9E7-7399-4C1E-8100-A6BC6C317A10}.Debug|Win32.ActiveCfg = Debug
+		{DF2BD9E7-7399-4C1E-8100-A6BC6C317A10}.Debug|Win32.Build.0 = Debug
+		{DF2BD9E7-7399-4C1E-8100-A6BC6C317A10}.Debug|x64.ActiveCfg = Debug
+		{DF2BD9E7-7399-4C1E-8100-A6BC6C317A10}.Debug|x64.Build.0 = Debug
+		{DF2BD9E7-7399-4C1E-8100-A6BC6C317A10}.Release|Win32.ActiveCfg = Release
+		{DF2BD9E7-7399-4C1E-8100-A6BC6C317A10}.Release|Win32.Build.0 = Release
+		{DF2BD9E7-7399-4C1E-8100-A6BC6C317A10}.Release|x64.ActiveCfg = Release
+		{DF2BD9E7-7399-4C1E-8100-A6BC6C317A10}.Release|x64.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
