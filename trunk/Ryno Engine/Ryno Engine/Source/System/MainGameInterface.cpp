@@ -130,7 +130,6 @@ namespace Ryno{
 
 		m_deferred_renderer->init_frame();
 		m_deferred_renderer->geometry_pass();
-		m_deferred_renderer->prepare_for_light_passes();
 		m_deferred_renderer->spot_light_pass();
 		m_deferred_renderer->point_light_pass();
 		m_deferred_renderer->directional_light_pass();

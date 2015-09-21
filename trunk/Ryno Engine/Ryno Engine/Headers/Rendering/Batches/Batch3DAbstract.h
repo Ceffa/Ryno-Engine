@@ -2,7 +2,7 @@
 
 #include "Global.h"
 #include "Structures.h"
-#include "Model.h"
+#include "GameObject.h"
 #include "Camera3D.h"
 #include "MeshManager.h"
 #include "GLSLProgram.h"
@@ -34,13 +34,13 @@ namespace Ryno{
 		void init(Camera3D* camera);
 		virtual void begin() = 0;
 		virtual void end() = 0;
-		virtual void draw(Model* model) = 0;
+		virtual void draw(GameObject* go) = 0;
 		virtual void render_batch() = 0;
 
 	protected:
 		
 		
-		std::vector<Model*> m_models;
+		std::vector<GameObject*> m_game_objects;
 		
 		virtual void create_render_batches() = 0;
 		virtual void create_vertex_array() = 0;

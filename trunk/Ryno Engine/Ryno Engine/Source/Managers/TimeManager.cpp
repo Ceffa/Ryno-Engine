@@ -30,11 +30,13 @@ namespace Ryno{
 		calculate_FPS();
 
 		//limit fps
+		
 		U32 time_passed = SDL_GetTicks() - initial_ticks;
 		if ((U32)(1000.0f / target_fps) > time_passed) {
 			SDL_Delay((U32)(1000.0f / target_fps) - time_passed);
 		}
 		delta_time = (F32) SDL_GetTicks() - initial_ticks;
+		current_time = SDL_GetTicks();
 		return slow_factor * delta_time;
 
 	}

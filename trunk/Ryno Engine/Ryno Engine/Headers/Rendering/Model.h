@@ -21,7 +21,6 @@ namespace Ryno{
 		void set_tiling(U32 u, U32 v);
 		void set_texture_normal(Texture t, Texture n);
 
-		glm::mat4 model_matrix;
 		Texture texture,normal_map;
 	
 		I32 mesh;

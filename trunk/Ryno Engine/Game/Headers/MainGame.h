@@ -1,8 +1,9 @@
 #pragma once
 #include "MainGameInterface.h"
 #include "Lights/PointLight.h"
-#include "DeferredRenderer.h"
 #include "Lights/DirectionalLight.h"
+#include "Lights/SpotLight.h"
+#include "DeferredRenderer.h"
 #include <Sprite.h>
 #include "Forces.h"
 
@@ -19,9 +20,9 @@ namespace Ryno{
 		Sound sound;
 		Music music;
 		
-		GameObject* spheres[4];
+		GameObject* spheres[5];
 		GameObject* ball;
-		std::vector<GameObject*> markers;
+		std::list<GameObject*> markers;
 
 		WeightForce Fw;
 		DragForce Fd;

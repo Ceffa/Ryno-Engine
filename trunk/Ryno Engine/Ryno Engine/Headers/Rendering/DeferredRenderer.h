@@ -76,9 +76,6 @@ namespace Ryno{
 		//Skybox pass. Not sure where to use yet
 		void skybox_pass();
 
-		//Fill shadow batches
-		void prepare_for_light_passes();
-
 		//Pass for point lights
 		void point_light_pass();
 
@@ -104,22 +101,22 @@ namespace Ryno{
 		DeferredRenderer();
 
 		//Shadow subpass for point light
-		void point_shadow_subpass(PointLight* p);
+		void point_shadow_subpass(GameObject* go);
 
 		//Lighting subpass for point light
-		void point_lighting_subpass(PointLight* point_light);
+		void point_lighting_subpass(GameObject* go);
 
 		//Shadow subpass for spot light
-		void spot_shadow_subpass(SpotLight* p);
+		void spot_shadow_subpass(GameObject* go);
 
 		//Lighting subpass for spot light
-		void spot_lighting_subpass(SpotLight* spot_light);
+		void spot_lighting_subpass(GameObject* go);
 
 		//Shadow subpass for directional light 
-		void directional_shadow_subpass(DirectionalLight* directional_light);
+		void directional_shadow_subpass(GameObject* go);
 
 		//Lighting subpass for directional light
-		void directional_lighting_subpass(DirectionalLight* directional_light);
+		void directional_lighting_subpass(GameObject* go);
 
 	
 		Camera3D* m_camera;
@@ -160,6 +157,11 @@ namespace Ryno{
 		spot_uniforms_locations spot_uni_loc;
 		point_uniforms_locations point_uni_loc;
 		directional_uniforms_locations directional_uni_loc;
+
+		std::vector<GameObject*> point_lights;
+		std::vector<GameObject*> spot_lights;
+		std::vector<GameObject*> directional_lights;
+
 		
 
 	};

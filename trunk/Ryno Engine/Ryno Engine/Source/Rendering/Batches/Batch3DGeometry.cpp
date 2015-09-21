@@ -13,7 +13,7 @@ namespace Ryno {
 
 		m_render_batches.clear();
 		input_instances.clear();
-		m_models.clear();
+		m_game_objects.clear();
 	
 
 
@@ -23,16 +23,16 @@ namespace Ryno {
 
 	
 		//Sort with provided compare function
-		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
+		std::stable_sort(m_game_objects.begin(), m_game_objects.end(), compare_models);
 
 
 		//Create batches
 		create_render_batches();
 	}
 
-	void Batch3DGeometry::draw(Model* model) {
+	void Batch3DGeometry::draw(GameObject* go) {
 
-		m_models.push_back(model);
+		m_game_objects.push_back(go);
 
 	}
 
@@ -45,7 +45,7 @@ namespace Ryno {
 		
 
 	
-		I32 models_size = (I32) m_models.size();
+		I32 models_size = (I32) m_game_objects.size();
 
 		//Resize the MVP vector at the beginning to avoid reallocations
 		input_instances.resize(models_size);
@@ -53,15 +53,15 @@ namespace Ryno {
 		//Adds MVP to the final instance array.
 		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
-			input_instances[i].color = m_models[i]->color;
-			input_instances[i].m = m_models[i]->model_matrix;
-			input_instances[i].tiling = m_models[i]->tiling;
+			input_instances[i].color = m_game_objects[i]->model->color;
+			input_instances[i].m = m_game_objects[i]->transform->model_matrix;
+			input_instances[i].tiling = m_game_objects[i]->model->tiling;
 
 		}
 		
 
 		//Return if no mesh
-		if (m_models.empty())
+		if (m_game_objects.empty())
 			return;
 
 		U32 vertex_offset = 0;
@@ -69,22 +69,23 @@ namespace Ryno {
 		
 
 		//For each mesh...
-		for (I32 cg = 0; cg < m_models.size(); cg++){
+		for (I32 cg = 0; cg < m_game_objects.size(); cg++){
 
-			I32 mesh_size = (I32)m_mesh_manager->get_mesh(m_models[cg]->mesh)->size;
+			Model* temp_model = m_game_objects[cg]->model;
+			I32 mesh_size = (I32)m_mesh_manager->get_mesh(temp_model->mesh)->size;
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
-				|| m_models[cg]->texture.id != m_models[cg - 1]->texture.id
-				|| m_models[cg]->normal_map.id != m_models[cg - 1]->normal_map.id
-				|| m_models[cg]->mesh != m_models[cg - 1]->mesh)
+				|| temp_model->texture.id != m_game_objects[cg - 1]->model->texture.id
+				|| temp_model->normal_map.id != m_game_objects[cg - 1]->model->normal_map.id
+				|| temp_model->mesh != m_game_objects[cg - 1]->model->mesh)
 			{
 				if (cg != 0){
 					vertex_offset += m_render_batches.back().num_vertices;
 					instance_offset += m_render_batches.back().num_instances;
 				}
 					
-				m_render_batches.emplace_back(vertex_offset, instance_offset, mesh_size, 1, m_models[cg]->texture.id, m_models[cg]->normal_map.id, m_models[cg]->mesh);
+				m_render_batches.emplace_back(vertex_offset, instance_offset, mesh_size, 1, temp_model->texture.id, temp_model->normal_map.id, temp_model->mesh);
 				
 				
 			}
@@ -237,13 +238,15 @@ namespace Ryno {
 		}
 	}
 
-	U8 Batch3DGeometry::compare_models(Model* a, Model* b){
-		if (a->texture.id == b->texture.id){
-			if (a->normal_map.id == b->normal_map.id)
-				return a->mesh < b->mesh;
-			return a->normal_map.id < b->normal_map.id;
+	U8 Batch3DGeometry::compare_models(GameObject* a, GameObject* b){
+		Model* ma = a->model;
+		Model* mb = b->model;
+		if (ma->texture.id == mb->texture.id){
+			if (ma->normal_map.id == mb->normal_map.id)
+				return ma->mesh < mb->mesh;
+			return ma->normal_map.id < mb->normal_map.id;
 		}
-		return a->texture.id < b->texture.id;
+		return ma->texture.id < mb->texture.id;
 	}
 
 

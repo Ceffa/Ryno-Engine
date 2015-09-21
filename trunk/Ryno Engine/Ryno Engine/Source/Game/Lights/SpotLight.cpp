@@ -3,33 +3,6 @@
 
 namespace Ryno{
 
-	std::list<SpotLight*> SpotLight::spot_lights;
-
-	SpotLight::SpotLight()
-	{
-		spot_lights.push_back(this);
-	}
-
-	SpotLight::SpotLight(const SpotLight *s)
-	{
-		*this = *s;
-		spot_lights.push_back(this);
-	}
-	
-	SpotLight::~SpotLight()
-	{
-		spot_lights.remove(this);
-	}
-	
-
-
-	void SpotLight::set_position(F32 x, F32 y, F32 z)
-	{
-		position.x = x;
-		position.y = y;
-		position.z = z;
-	}
-
 	void SpotLight::set_direction(F32 _pitch, F32 _yaw)
 	{
 		

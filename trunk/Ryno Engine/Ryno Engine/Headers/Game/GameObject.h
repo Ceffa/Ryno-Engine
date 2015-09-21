@@ -1,6 +1,10 @@
 #pragma once
 #include "Global.h"
 #include "Model.h"
+#include "Transform.h"
+#include "Lights/PointLight.h"
+#include "Lights/SpotLight.h"
+#include "Lights/DirectionalLight.h"
 #include <list>
 
 namespace Ryno{
@@ -11,16 +15,14 @@ namespace Ryno{
 		~GameObject();
 		GameObject(const GameObject *go);
 
-		void rotate(F32 y, F32 p, F32 r);
-		void generate_model_matrix();
-
-		//Gameobject data
+		//Components
 		Model* model;
-		glm::vec3 position;
-		glm::vec3 scale;
-		F32 yaw, pitch, roll;
-
-		//Static gameobjects list
+		Transform* transform;
+		PointLight* point_light = nullptr;
+		DirectionalLight* dir_light = nullptr;
+		SpotLight* spot_light = nullptr;
+		
+		//Static GameObjects List
 		static std::list<GameObject*> game_objects;
 	
 

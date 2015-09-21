@@ -2,35 +2,9 @@
 
 namespace Ryno{
 
-	std::list<PointLight*> PointLight::point_lights;
-
-	PointLight::PointLight()
-	{
-		point_lights.push_back(this);
-	}
-
-	PointLight::PointLight(const PointLight *p)
-	{
-		*this = *p;
-		point_lights.push_back(this);
-	}
-
-	PointLight::~PointLight()
-	{
-		point_lights.remove(this);
-	}
 	
 
 
-	
-	
-
-	void PointLight::set_position(F32 x, F32 y, F32 z)
-	{
-		position.x = x;
-		position.y = y;
-		position.z = z;
-	}
 
 	void PointLight::calculate_max_radius()
 	{

@@ -3,25 +3,6 @@
 namespace Ryno{
 
 
-	DirectionalLight* DirectionalLight::directional_light;
-
-	DirectionalLight::DirectionalLight()
-	{
-		if (directional_light)
-			delete directional_light;
-		directional_light = this;
-	}
-
-	DirectionalLight::~DirectionalLight()
-	{
-		
-	}
-	
-
-
-
-
-
 	void DirectionalLight::set_direction(F32 p, F32 y){
 		
 			

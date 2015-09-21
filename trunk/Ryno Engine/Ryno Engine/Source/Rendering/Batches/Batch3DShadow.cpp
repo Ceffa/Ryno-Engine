@@ -15,7 +15,7 @@ namespace Ryno {
 
 		m_render_batches.clear();
 		input_instances.clear();
-		m_models.clear();
+		m_game_objects.clear();
 	
 
 
@@ -25,18 +25,18 @@ namespace Ryno {
 
 	
 		//Sort with provided compare function
-		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
+		std::stable_sort(m_game_objects.begin(), m_game_objects.end(), compare_models);
 
 
 		//Create batches
 		create_render_batches();
 	}
 
-	void Batch3DShadow::draw(Model* model) {
+	void Batch3DShadow::draw(GameObject* go) {
 
 		//discard light-emitting models
-		if (model->cast_shadows)
-			m_models.push_back(model);
+		if (go->model->cast_shadows)
+			m_game_objects.push_back(go);
 
 	}
 
@@ -47,7 +47,7 @@ namespace Ryno {
 
 		
 	
-		I32 models_size = (I32) m_models.size();
+		I32 models_size = (I32) m_game_objects.size();
 
 		//Resize the MVP vector at the beginning to avoid reallocations
 		input_instances.resize(models_size);
@@ -56,14 +56,14 @@ namespace Ryno {
 		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
 		
-			input_instances[i].m = m_models[i]->model_matrix;
+			input_instances[i].m = m_game_objects[i]->transform->model_matrix;
 		
 
 		}
 		
 
 		//Return if no mesh
-		if (m_models.empty())
+		if (m_game_objects.empty())
 			return;
 
 		U32 vertex_offset = 0;
@@ -71,20 +71,20 @@ namespace Ryno {
 		
 
 		//For each mesh...
-		for (I32 cg = 0; cg < m_models.size(); cg++){
+		for (I32 cg = 0; cg < m_game_objects.size(); cg++){
 
-			I32 mesh_size = (I32)m_mesh_manager->get_mesh(m_models[cg]->mesh)->size;
+			I32 mesh_size = (I32)m_mesh_manager->get_mesh(m_game_objects[cg]->model->mesh)->size;
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
-				|| m_models[cg]->mesh != m_models[cg - 1]->mesh)
+				|| m_game_objects[cg]->model->mesh != m_game_objects[cg - 1]->model->mesh)
 			{
 				if (cg != 0){
 					vertex_offset += m_render_batches.back().num_vertices;
 					mvp_offset += m_render_batches.back().num_instances;
 				}
 					
-				m_render_batches.emplace_back(vertex_offset, mvp_offset, mesh_size, 1, m_models[cg]->mesh);
+				m_render_batches.emplace_back(vertex_offset, mvp_offset, mesh_size, 1, m_game_objects[cg]->model->mesh);
 				
 				
 			}
@@ -213,9 +213,9 @@ namespace Ryno {
 
 	}
 
-	U8 Batch3DShadow::compare_models(Model* a, Model* b){
+	U8 Batch3DShadow::compare_models(GameObject* a, GameObject* b){
 	
-		return a->mesh < b->mesh;
+		return a->model->mesh < b->model->mesh;
 		
 	}
 

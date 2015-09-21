@@ -176,32 +176,55 @@ namespace Ryno{
 
 	void DeferredRenderer::init_frame(){
 
+		//Clear lights vectors
+		point_lights.clear();
+		spot_lights.clear();
+		directional_lights.clear();
+
 		//Calculate camera matrix once and for all
 		inverse_P_matrix = glm::inverse(m_camera->get_P_matrix());
 		inverse_VP_matrix = glm::inverse(m_camera->get_VP_matrix());
-
-
 
 		//Setup the two fbos for this frame
 		m_fbo_deferred->start_frame();
 		m_fbo_shadow->start_frame();
 
+		//Iterate once and for all through the GameObjects
+	
+		m_shadow_batch3d->begin();
+		m_geometry_batch3d->begin();
+
+		for (GameObject* go : GameObject::game_objects)
+		{
+			go->transform->generate_model_matrix();
+
+			//Fill geometry batch
+			if (geometry_enabled){
+				if (go->model)
+					m_geometry_batch3d->draw(go);
+			}
+			//Fill shadow batch
+			if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled){
+				if (go->model)
+					m_shadow_batch3d->draw(go);
+			}
+			//Add ligths
+			if (go->point_light)
+				point_lights.push_back(go);
+			if (go->spot_light)
+				spot_lights.push_back(go);
+			if (go->dir_light)
+				directional_lights.push_back(go);
+
+		}
+		m_shadow_batch3d->end();
+		m_geometry_batch3d->end();
 	}
 
 
 	void DeferredRenderer::geometry_pass()
 	{
-		
-
-		//Add to geometry batch the game objects
-		m_geometry_batch3d->begin();
-		if (geometry_enabled){
-			for (GameObject* go : GameObject::game_objects){
-				go->generate_model_matrix();
-				m_geometry_batch3d->draw(go->model);
-			}
-		}
-		m_geometry_batch3d->end();
+		//Batch was filled in the init method
 
 		m_fbo_deferred->bind_for_geometry_pass();
 
@@ -223,9 +246,9 @@ namespace Ryno{
 
 		if (!point_light_enabled)
 			return;
-		for (PointLight* p : PointLight::point_lights){
-			point_shadow_subpass(p);
-			point_lighting_subpass(p);
+		for (GameObject* go : point_lights){
+			point_shadow_subpass(go);
+			point_lighting_subpass(go);
 
 		}
 
@@ -237,9 +260,9 @@ namespace Ryno{
 	{
 		if (!spot_light_enabled)
 			return;
-		for (SpotLight* p : SpotLight::spot_lights){
-			spot_shadow_subpass(p);
-			spot_lighting_subpass(p);
+		for (GameObject* go : spot_lights){
+			spot_shadow_subpass(go);
+			spot_lighting_subpass(go);
 
 		}
 
@@ -250,16 +273,21 @@ namespace Ryno{
 	{
 		if (!directional_light_enabled)
 			return;
-		directional_shadow_subpass(DirectionalLight::directional_light);
-		directional_lighting_subpass(DirectionalLight::directional_light);
+		for (GameObject* go : directional_lights){
+			directional_shadow_subpass(go);
+			directional_lighting_subpass(go);
+		}
 	}	
 
 
-	void DeferredRenderer::point_shadow_subpass(PointLight* p)
+	void DeferredRenderer::point_shadow_subpass(GameObject* go)
 	{
-
+		
 		if (!point_shadow_enabled)
 			return;
+
+		PointLight* p = go->point_light;
+
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -275,7 +303,7 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 correct_position = glm::vec3(p->position.x, p->position.y, -p->position.z);
+		glm::vec3 correct_position = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
 
 		glm::mat4 light_VP_matrices[NUM_OF_LAYERS];
 
@@ -313,8 +341,9 @@ namespace Ryno{
 	}
 	
 
-	void DeferredRenderer::point_lighting_subpass(PointLight* p){
+	void DeferredRenderer::point_lighting_subpass(GameObject* go){
 
+		PointLight* p = go->point_light;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_point_lighting_pass();
 
@@ -328,7 +357,7 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		glm::vec3 temp_pos = glm::vec3(p->position.x, p->position.y, -p->position.z);
+		glm::vec3 temp_pos = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
 		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(p->max_radius));
 		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), temp_pos);
 
@@ -336,7 +365,7 @@ namespace Ryno{
 
 		m_point_lighting_program->use();
 		//SEND POINT LIGHT UNIFORMS
-		glUniform4f(point_uni_loc.position, p->position.x, p->position.y, -p->position.z, p->attenuation);
+		glUniform4f(point_uni_loc.position, temp_pos.x, temp_pos.y, temp_pos.z, p->attenuation);
 		glUniform4f(point_uni_loc.diffuse, p->diffuse_color.r / 256.0f, p->diffuse_color.g / 256.0f, p->diffuse_color.b / 256.0f, p->diffuse_intensity);
 		glUniform4f(point_uni_loc.specular, p->specular_color.r / 256.0f, p->specular_color.g / 256.0f, p->specular_color.b / 256.0f, p->specular_intensity);
 		
@@ -356,10 +385,14 @@ namespace Ryno{
 	}
 
 	
-	void DeferredRenderer::spot_shadow_subpass(SpotLight* s)
+	void DeferredRenderer::spot_shadow_subpass(GameObject* go)
 	{
+
 		if (!spot_shadow_enabled)
 			return;
+
+		SpotLight* s = go->spot_light;
+
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -374,7 +407,7 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 correct_position = glm::vec3(s->position.x, s->position.y, -s->position.z);
+		glm::vec3 correct_position = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
 		
 		
 		s->calculate_max_radius();
@@ -404,8 +437,9 @@ namespace Ryno{
 	}
 
 
-	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
+	void DeferredRenderer::spot_lighting_subpass(GameObject* go)
 	{
+		SpotLight* s = go->spot_light;
 
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_spot_lighting_pass();
@@ -420,7 +454,7 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 	
-		glm::vec3 temp_pos = glm::vec3(s->position.x, s->position.y, -s->position.z);
+		glm::vec3 temp_pos = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
 		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
 		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(width, s->max_radius, width));
 		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), temp_pos);
@@ -431,7 +465,7 @@ namespace Ryno{
 
 		m_spot_lighting_program->use();
 		//SEND SPOT LIGHT UNIFORMS
-		glUniform4f(spot_uni_loc.position, s->position.x, s->position.y, -s->position.z, s->attenuation);
+		glUniform4f(spot_uni_loc.position, temp_pos.x, temp_pos.y, temp_pos.z, s->attenuation);
 		glUniform4f(spot_uni_loc.direction, s->direction.x, s->direction.y, s->direction.z, cos(s->cutoff * DEG_TO_RAD));
 		glUniform4f(spot_uni_loc.diffuse, s->diffuse_color.r / 256.0f, s->diffuse_color.g / 256.0f, s->diffuse_color.b / 256.0f, s->diffuse_intensity);
 		glUniform4f(spot_uni_loc.specular, s->specular_color.r / 256.0f, s->specular_color.g / 256.0f, s->specular_color.b / 256.0f, s->specular_intensity);
@@ -452,7 +486,9 @@ namespace Ryno{
 	}
 	
 
-	void DeferredRenderer::directional_shadow_subpass(DirectionalLight* directional_light){
+	void DeferredRenderer::directional_shadow_subpass(GameObject* go){
+
+		DirectionalLight* d = go->dir_light;
 
 		if (!directional_shadow_enabled)
 			return;
@@ -465,10 +501,9 @@ namespace Ryno{
 
 
 		//generate light_VP matrix
-		glm::vec3 inv_dir = directional_light->direction;
 		glm::mat4 ortho_mat = m_camera->get_O_matrix();
-		glm::vec3 up_vect = glm::vec3(inv_dir.y, -inv_dir.x, 0);
-		glm::mat4 view_mat = glm::lookAt(inv_dir, glm::vec3(0, 0, 0),up_vect);
+		glm::vec3 up_vect = glm::vec3(d->direction.y, -d->direction.x, 0);
+		glm::mat4 view_mat = glm::lookAt(d->direction, glm::vec3(0, 0, 0), up_vect);
 		directional_light_VP = ortho_mat * view_mat;
 
 		glViewport(0, 0, m_fbo_shadow->directional_resolution, m_fbo_shadow->directional_resolution);
@@ -486,8 +521,11 @@ namespace Ryno{
 	}
 
 
-	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* d)
+	void DeferredRenderer::directional_lighting_subpass(GameObject* go)
 	{
+
+		DirectionalLight* d = go->dir_light;
+
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_directional_lighting_pass();
 
@@ -577,17 +615,6 @@ namespace Ryno{
 
 	}
 
-
-	void DeferredRenderer::prepare_for_light_passes()
-	{
-		//Add to batch the game objects that affects shadows
-		m_shadow_batch3d->begin();
-		for (GameObject* go : GameObject::game_objects){
-			go->generate_model_matrix();
-			m_shadow_batch3d->draw(go->model);
-		}
-		m_shadow_batch3d->end();
-	}
 
 
 	void DeferredRenderer::GUI_pass()

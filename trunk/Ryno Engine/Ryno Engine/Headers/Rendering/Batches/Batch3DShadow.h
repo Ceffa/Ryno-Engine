@@ -30,7 +30,7 @@ namespace Ryno{
 		void begin() override;
 		void end() override;
 		
-		void draw(Model* model) override;
+		void draw(GameObject* go) override;
 
 		void render_batch() override;
 
@@ -42,7 +42,7 @@ namespace Ryno{
 		std::vector<InputInstanceShadow> input_instances;
 		std::vector<RenderBatchShadow> m_render_batches;
 		
-		static U8 compare_models(Model* a, Model* b);
+		static U8 compare_models(GameObject* a, GameObject* b);
 
 		void create_render_batches() override;
 		void create_vertex_array() override;

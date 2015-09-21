@@ -8,8 +8,9 @@ namespace Ryno{
 
 	class DirectionalLight : public AbstractLight{
 	public:
-		DirectionalLight();
-		~DirectionalLight();
+		DirectionalLight(){}
+		DirectionalLight(const DirectionalLight *d){ *this = *d; }
+		~DirectionalLight(){}
 
 		
 	
@@ -32,8 +33,6 @@ namespace Ryno{
 			I32 ambient;
 		} locations;
 
-		//static list of spot lights
-		static DirectionalLight* directional_light;
 	
 	};
 

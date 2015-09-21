@@ -3,7 +3,7 @@
 #include "Batch3DAbstract.h"
 #include "Global.h"
 #include "Structures.h"
-#include "Model.h"
+#include "GameObject.h"
 #include "Camera3D.h"
 #include "MeshManager.h"
 #include "GLSLProgram.h"
@@ -33,7 +33,7 @@ namespace Ryno{
 		void begin() override;
 		void end() override;
 		
-		void draw(Model* model) override;
+		void draw(GameObject* go) override;
 
 		void render_batch() override;
 		
@@ -43,7 +43,7 @@ namespace Ryno{
 		std::vector<InputInstanceGeometry> input_instances;
 		std::vector<RenderBatchGeometry> m_render_batches;
 		
-		static U8 compare_models(Model* a, Model* b) ;
+		static U8 compare_models(GameObject* a, GameObject* b) ;
 
 		void create_render_batches();
 		void create_vertex_array();

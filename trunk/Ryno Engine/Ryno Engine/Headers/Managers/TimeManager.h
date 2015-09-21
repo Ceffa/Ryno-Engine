@@ -13,6 +13,8 @@ namespace Ryno{
 		void print_fps();
 		F32 delta_time;
 		F32 slow_factor = 1.0f;
+		U32 current_time;
+
 	private:
 		TimeManager();
 		void calculate_FPS();
