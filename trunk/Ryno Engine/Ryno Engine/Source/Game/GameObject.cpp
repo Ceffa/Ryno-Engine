@@ -19,6 +19,8 @@ namespace Ryno{
 
 		if (go->model)
 			model = new Model(go->model);
+		if (go->collider)
+			collider = go->collider->get_copy();
 		if (go->point_light)
 			point_light = new PointLight(go->point_light);
 		if (go->spot_light)

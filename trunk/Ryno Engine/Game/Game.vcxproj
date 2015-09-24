@@ -69,6 +69,10 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;$(SolutionDir)x64/Release;</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;$(SolutionDir)x64/Debug;</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -84,9 +88,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_ITERATOR_DEBUG_LEVEL=2;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>SDL2_ttf.lib;Ryno Engine.lib;opengl32.lib;glew32.lib;glew32s.lib;SDL2.lib;SDL2_mixer.lib;SDL2main.lib;SDL2test.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -32,6 +32,12 @@ namespace Ryno{
 		glm::vec3 acceleration = glm::vec3(0, 0, 0);
 		GameObject* marker;
 
+		GameObject* go_a;
+		GameObject* go_b;
+		GameObject* go_c;
+		GameObject* go_d;
+		GameObject* body;
+
 		
 		
 

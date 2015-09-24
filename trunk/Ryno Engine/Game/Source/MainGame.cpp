@@ -4,7 +4,9 @@
 #include "CPUProfiler.h"
 #include <string>
 #include <GLM/gtx/transform.hpp>
-
+#include "SphereCollider.h"
+#include "AABBCollider.h"
+#include "GJK.h"
 
 
 
@@ -218,6 +220,28 @@ namespace Ryno{
 		CPUProfiler::print_time();
 
 
+
+		go_a = new GameObject(ball);
+		go_a->transform->set_scale(150, 150, 150);
+		go_a->model->mesh = sphere_mesh;
+		go_a->transform->position = glm::vec3(-155, 223, -100);
+		go_a->collider = new SphereCollider(0, 0, 0, .5f);
+		delete go_a->point_light;
+		go_a->point_light = nullptr;
+		body = go_a;
+
+		go_b = new GameObject(go_a);
+		go_b->transform->position = glm::vec3(10,10, -100);
+		go_b->transform->set_scale(80, 80, 80);
+		go_c = new GameObject(go_a);
+		go_c->transform->set_scale(40, 40, 40);
+		go_c->collider = new AABBCollider();
+		go_c->model->mesh = cube_mesh;
+		go_d = new GameObject(go_c);
+		go_d->transform->set_scale(110, 110,100);
+
+
+
 		set_physics();
 		
 
@@ -228,6 +252,13 @@ namespace Ryno{
 	
 
 	void MainGame::update(){
+		go_a->model->set_color(255, 0, 0);
+
+		if (GJK::gjk(go_a, go_b)) go_b->model->set_color(255, 0, 0); else go_b->model->set_color(255, 255, 0);
+		if (GJK::gjk(go_a, go_c)) go_c->model->set_color(255, 0, 0); else go_c->model->set_color(255, 255, 0);
+		if (GJK::gjk(go_a, go_d)) go_d->model->set_color(255, 0, 0); else go_d->model->set_color(255, 255, 0);
+
+		
 
 
 		for (I32 i = 0; i < 4; i++){
@@ -240,93 +271,93 @@ namespace Ryno{
 			shell->restart_physics = false;
 			set_physics();
 		}
-		if (!shell->active || shell->phys_step){
-			glm::vec3 force = glm::vec3(0, 0, 0);
-			F32 time_step = delta_time * 0.001; //from ms to s
+		//if (!shell->active || shell->phys_step){
+		//	glm::vec3 force = glm::vec3(0, 0, 0);
+		//	F32 time_step = delta_time * 0.001; //from ms to s
 
 
-			glm::vec3 F0 = Fw.get_force();
-			glm::vec3 F1 = Fd.get_force();
-
-
-
-
-
-			force = F0 + F1;
-
-			glm::vec3 old_a = acceleration;
-			ball->transform->add_position(100.0f * (velocity * time_step + (0.5f * old_a * time_step * time_step)));
-			acceleration = force / Fw.m;
+		//	glm::vec3 F0 = Fw.get_force();
+		//	glm::vec3 F1 = Fd.get_force();
 
 
 
 
-			glm::vec3 avg_a = 0.5f * (acceleration + old_a);
 
-			velocity += avg_a * time_step;
-			//Log::print(" avga: "); //Log::print(avg_a.x);
-			//Log::print(" v: "); //Log::print(velocity.x);
+		//	force = F0 + F1;
 
-
-			Fd.v = glm::length(velocity);
-			Fd.dir = glm::normalize(velocity);
-
-			//Collision
-			if (ball->transform->position.y - ball->transform->scale.y / 2.0f < 5 && velocity.y < 0)
-			{
-				/* This is a simplification of impulse-momentum collision response. e should be a negative number, which will change the velocity's direction. */
-				velocity.y *= -0.95;
-				/* Move the ball back a little bit so it's not still "stuck" in the wall. */
-				ball->transform->position.y = 5 + ball->transform->scale.y / 2.0f;
-			}
-			else if (ball->transform->position.y + ball->transform->scale.y / 2.0f >200 && velocity.y > 0)
-			{
-				/* This is a simplification of impulse-momentum collision response. e should be a negative number, which will change the velocity's direction. */
-				velocity.y *= -0.95;
-				/* Move the ball back a little bit so it's not still "stuck" in the wall. */
-				ball->transform->position.y = 200 - ball->transform->scale.y / 2.0f;
-			}
-			if (ball->transform->position.x + ball->transform->scale.x / 2.0f > 195 && velocity.x > 0)
-			{
-				/* This is a simplification of impulse-momentum collision response. e should be a negative number, which will change the velocity's direction. */
-				velocity.x *= -0.95;
-				/* Move the ball back a little bit so it's not still "stuck" in the wall. */
-				ball->transform->position.x = 195 - ball->transform->scale.x / 2.0f;
-			}
-			else if (ball->transform->position.x - ball->transform->scale.x / 2.0f < -195 && velocity.x < 0)
-			{
-				/* This is a simplification of impulse-momentum collision response. e should be a negative number, which will change the velocity's direction. */
-				velocity.x *= -0.95;
-				/* Move the ball back a little bit so it's not still "stuck" in the wall. */
-				ball->transform->position.x = -195 + ball->transform->scale.x / 2.0f;
-			}
+		//	glm::vec3 old_a = acceleration;
+		//	ball->transform->add_position(100.0f * (velocity * time_step + (0.5f * old_a * time_step * time_step)));
+		//	acceleration = force / Fw.m;
 
 
-			shell->phys_step = false;
 
 
-			if (++cnt > 0){
-				cnt = 0;
-				for (GameObject* o : markers){
-					if (o->model->color.g > 0)o->model->color.g-=2;
-				}
-				GameObject* temp = markers.back();
-				if (markers.back()->model->color.g == 0){
-					temp->transform->position = ball->transform->position;
-					temp->model->set_color(254, 254, 0);
-					markers.pop_back();
-					markers.push_front(temp);
-				}
-				else
-				{
-					GameObject* go = new GameObject(temp);
-					go->transform->position = ball->transform->position;
-					go->model->set_color(254, 254, 0);
-					markers.push_front(go);
-				}
+		//	glm::vec3 avg_a = 0.5f * (acceleration + old_a);
 
-			}
-		}
+		//	velocity += avg_a * time_step;
+		//	//Log::print(" avga: "); //Log::print(avg_a.x);
+		//	//Log::print(" v: "); //Log::print(velocity.x);
+
+
+		//	Fd.v = glm::length(velocity);
+		//	Fd.dir = glm::normalize(velocity);
+
+		//	//Collision
+		//	if (ball->transform->position.y - ball->transform->scale.y / 2.0f < 5 && velocity.y < 0)
+		//	{
+		//		/* This is a simplification of impulse-momentum collision response. e should be a negative number, which will change the velocity's direction. */
+		//		velocity.y *= -0.95;
+		//		/* Move the ball back a little bit so it's not still "stuck" in the wall. */
+		//		ball->transform->position.y = 5 + ball->transform->scale.y / 2.0f;
+		//	}
+		//	else if (ball->transform->position.y + ball->transform->scale.y / 2.0f >200 && velocity.y > 0)
+		//	{
+		//		/* This is a simplification of impulse-momentum collision response. e should be a negative number, which will change the velocity's direction. */
+		//		velocity.y *= -0.95;
+		//		/* Move the ball back a little bit so it's not still "stuck" in the wall. */
+		//		ball->transform->position.y = 200 - ball->transform->scale.y / 2.0f;
+		//	}
+		//	if (ball->transform->position.x + ball->transform->scale.x / 2.0f > 195 && velocity.x > 0)
+		//	{
+		//		/* This is a simplification of impulse-momentum collision response. e should be a negative number, which will change the velocity's direction. */
+		//		velocity.x *= -0.95;
+		//		/* Move the ball back a little bit so it's not still "stuck" in the wall. */
+		//		ball->transform->position.x = 195 - ball->transform->scale.x / 2.0f;
+		//	}
+		//	else if (ball->transform->position.x - ball->transform->scale.x / 2.0f < -195 && velocity.x < 0)
+		//	{
+		//		/* This is a simplification of impulse-momentum collision response. e should be a negative number, which will change the velocity's direction. */
+		//		velocity.x *= -0.95;
+		//		/* Move the ball back a little bit so it's not still "stuck" in the wall. */
+		//		ball->transform->position.x = -195 + ball->transform->scale.x / 2.0f;
+		//	}
+
+
+		//	shell->phys_step = false;
+
+
+		//	if (++cnt > 0){
+		//		cnt = 0;
+		//		for (GameObject* o : markers){
+		//			if (o->model->color.g > 0)o->model->color.g-=2;
+		//		}
+		//		GameObject* temp = markers.back();
+		//		if (markers.back()->model->color.g == 0){
+		//			temp->transform->position = ball->transform->position;
+		//			temp->model->set_color(254, 254, 0);
+		//			markers.pop_back();
+		//			markers.push_front(temp);
+		//		}
+		//		else
+		//		{
+		//			GameObject* go = new GameObject(temp);
+		//			go->transform->position = ball->transform->position;
+		//			go->model->set_color(254, 254, 0);
+		//			markers.push_front(go);
+		//		}
+
+		//	}
+		//}
 
 		
 
@@ -370,60 +401,50 @@ namespace Ryno{
 				sound.play();
 
 			}
+			if (m_input_manager->is_key_pressed(SDLK_v, KEYBOARD)){
+				if (body == go_a)
+					body = go_b;
+				else if (body == go_b)
+					body = go_c;
+				else if (body == go_c)
+					body = go_d;
+				else body = go_a;
+			}
 		
 
 
 
 
 			if (m_input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
-	
-				for (GameObject* l : spheres){
-					l->transform->position.x -= 0.5f * delta_time;
-
-				}
-			
+				body->transform->position.x -= 0.1f * delta_time;
 			}
 			if (m_input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
 				
-				for (GameObject* l : spheres){
-					l->transform->position.x += 0.5f * delta_time;
-
-				}
-				
+					body->transform->position.x += 0.1f * delta_time;
 			}
 	
 
 			if (m_input_manager->is_key_down(SDLK_n, KEYBOARD)){
 				
-				for (GameObject* l : spheres){
-					l->transform->position.z -= 0.5f * delta_time;
-
-				}
-			
+					body->transform->position.z -= 0.1f * delta_time;
+						
 
 			}
 			if (m_input_manager->is_key_down(SDLK_m, KEYBOARD)){
 				
-				for (GameObject* l : spheres){
-					l->transform->position.z += 0.5f * delta_time;
-
-				}
-			
+					body->transform->position.z += 0.1f * delta_time;
+								
 			}
 			if (m_input_manager->is_key_down(SDLK_UP, KEYBOARD)){
+				
+					body->transform->position.y += 0.1f * delta_time;
 			
-				for (GameObject* l : spheres){
-					l->transform->position.y += 0.5f * delta_time;
 
-				}
-			
+
 			}
 			if (m_input_manager->is_key_down(SDLK_DOWN, KEYBOARD)){
 			
-				for (GameObject* l : spheres){
-					l->transform->position.y -= 0.5f * delta_time;
-
-				}
+					body->transform->position.y -= 0.1f * delta_time;
 			
 			}
 		
