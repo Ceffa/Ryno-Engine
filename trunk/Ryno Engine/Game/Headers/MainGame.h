@@ -36,6 +36,7 @@ namespace Ryno{
 		GameObject* go_b;
 		GameObject* go_c;
 		GameObject* go_d;
+		GameObject* go_e;
 		GameObject* body;
 
 		

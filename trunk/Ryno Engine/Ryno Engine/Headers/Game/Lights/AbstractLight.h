@@ -16,6 +16,7 @@ namespace Ryno{
 		void set_diffuse_color(U8 r, U8 g, U8 b);
 		void set_specular_color(U8 r, U8 g, U8 b);
 
+		bool active = true;
 
 		glm::vec3 get_diffuse_color();
 		glm::vec3 get_specular_color();

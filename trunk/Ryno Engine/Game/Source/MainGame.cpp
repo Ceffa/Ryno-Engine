@@ -131,7 +131,7 @@ namespace Ryno{
 		go->model->set_color_and_flatness(255, 255, 255, 255);
 		go->model->cast_shadows = false;
 		go->model->set_texture_normal(white, white_normal);
-		go->transform->set_scale(25, 25, 25);
+		go->transform->set_scale(12, 12, 12);
 		go->transform->set_position(180, 20, 180);
 		go->model->mesh = sphere_mesh;
 		go->point_light = p;
@@ -220,25 +220,43 @@ namespace Ryno{
 		CPUProfiler::print_time();
 
 
+	
+
 
 		go_a = new GameObject(ball);
-		go_a->transform->set_scale(150, 150, 150);
-		go_a->model->mesh = sphere_mesh;
-		go_a->transform->position = glm::vec3(-155, 223, -100);
-		go_a->collider = new SphereCollider(0, 0, 0, .5f);
+		go_a->model->set_color_and_flatness(255, 255, 255, 0);
+		go_a->model->texture = texture_bricks;
+		go_a->model->normal_map = normal_map_bricks;
+		go_a->model->cast_shadows = true;
+		go_a->transform->set_scale(50, 50, 50);
+		go_a->model->mesh = cube_mesh;
 		delete go_a->point_light;
 		go_a->point_light = nullptr;
+		go_a->transform->position = glm::vec3(-155, 223, -100);
+		go_a->collider = new AABBCollider();
 		body = go_a;
 
 		go_b = new GameObject(go_a);
+		go_b->model->cast_shadows = false;
+		go_b->model->set_color_and_flatness(255, 255, 255, 255);
+		go_b->model->texture = white;
+		go_b->model->normal_map = white_normal;
+		go_b->point_light = new PointLight(p);
+		go_b->collider = new SphereCollider(0, 0, 0, 1);
+		go_b->model->mesh = sphere_mesh;
 		go_b->transform->position = glm::vec3(10,10, -100);
-		go_b->transform->set_scale(80, 80, 80);
-		go_c = new GameObject(go_a);
-		go_c->transform->set_scale(40, 40, 40);
-		go_c->collider = new AABBCollider();
-		go_c->model->mesh = cube_mesh;
+		go_b->transform->set_scale(20, 20, 20);
+
+		go_c = new GameObject(go_b);
+		go_c->transform->set_scale(10, 10, 10);
+		go_c->collider = new SphereCollider(0, 0, 0, 1);
+		go_c->model->mesh = sphere_mesh;
 		go_d = new GameObject(go_c);
-		go_d->transform->set_scale(110, 110,100);
+		go_d->transform->set_scale(30, 30,30);
+		go_d->model->mesh = cube_mesh;
+		go_d->collider = new AABBCollider();
+		go_e = new GameObject(go_d);
+		go_e->transform->set_scale(50, 50, 50);
 
 
 
@@ -252,11 +270,11 @@ namespace Ryno{
 	
 
 	void MainGame::update(){
-		go_a->model->set_color(255, 0, 0);
 
-		if (GJK::gjk(go_a, go_b)) go_b->model->set_color(255, 0, 0); else go_b->model->set_color(255, 255, 0);
-		if (GJK::gjk(go_a, go_c)) go_c->model->set_color(255, 0, 0); else go_c->model->set_color(255, 255, 0);
-		if (GJK::gjk(go_a, go_d)) go_d->model->set_color(255, 0, 0); else go_d->model->set_color(255, 255, 0);
+		if (GJK::gjk(go_a, go_b)) go_b->point_light->active = true; else go_b->point_light->active = false;
+		if (GJK::gjk(go_a, go_c)) go_c->point_light->active = true; else go_c->point_light->active = false;
+		if (GJK::gjk(go_a, go_d)) go_d->point_light->active = true; else go_d->point_light->active = false;
+		if (GJK::gjk(go_a, go_e)) go_e->point_light->active = true; else go_e->point_light->active = false;
 
 		
 
@@ -408,6 +426,8 @@ namespace Ryno{
 					body = go_c;
 				else if (body == go_c)
 					body = go_d;
+				else if (body == go_d)
+					body = go_e;
 				else body = go_a;
 			}
 		

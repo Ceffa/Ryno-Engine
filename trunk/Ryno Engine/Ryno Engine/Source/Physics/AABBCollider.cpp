@@ -12,7 +12,7 @@ namespace Ryno{
 	AABBCollider::AABBCollider()
 	{
 		center = glm::vec3(0, 0, 0);
-		size = glm::vec3(.5,.5,.5);
+		size = glm::vec3(1,1,1);
 	}
 
 	Collider* AABBCollider::get_copy()
@@ -23,11 +23,11 @@ namespace Ryno{
 	glm::vec3 AABBCollider::get_farthest_point(const glm::vec3& dir)
 	{
 		F32 x, y, z;
-		if (dir.x > 0) x = size.x; else x = -size.x;
-		if (dir.y > 0) y = size.y; else y = -size.y;
-		if (dir.z > 0) z = size.z; else z = -size.z;
+		if (dir.x >=0) x = size.x; else x = -size.x;
+		if (dir.y >= 0) y = size.y; else y = -size.y;
+		if (dir.z >=0) z = size.z; else z = -size.z;
 
-		return center + glm::vec3(x, y, 0);
+		return center + glm::vec3(x, y, z);
 
 	}
 
@@ -40,7 +40,7 @@ namespace Ryno{
 	{
 		AABBCollider* s = new AABBCollider();
 		s->center = center + t->position;
-		s->size *= t->scale;	
+		s->size = t->scale;	
 		return s;
 	}
 

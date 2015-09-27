@@ -209,11 +209,11 @@ namespace Ryno{
 					m_shadow_batch3d->draw(go);
 			}
 			//Add ligths
-			if (go->point_light)
+			if (go->point_light && go->point_light->active)
 				point_lights.push_back(go);
-			if (go->spot_light)
+			if (go->spot_light && go->spot_light->active)
 				spot_lights.push_back(go);
-			if (go->dir_light)
+			if (go->dir_light && go->dir_light->active)
 				directional_lights.push_back(go);
 
 		}
