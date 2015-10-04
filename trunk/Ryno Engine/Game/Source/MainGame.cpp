@@ -5,7 +5,9 @@
 #include <string>
 #include <GLM/gtx/transform.hpp>
 #include "SphereCollider.h"
+#include "PointCollider.h"
 #include "AABBCollider.h"
+#include "ConvexCollider.h"
 #include "GJK.h"
 
 
@@ -19,7 +21,6 @@ namespace Ryno{
 
 		//initializations
 		m_camera->position = glm::vec4(0,150,-500, 1);
-		
 
 		CPUProfiler::next_time();
 
@@ -228,12 +229,12 @@ namespace Ryno{
 		go_a->model->texture = texture_bricks;
 		go_a->model->normal_map = normal_map_bricks;
 		go_a->model->cast_shadows = true;
-		go_a->transform->set_scale(50, 50, 50);
-		go_a->model->mesh = cube_mesh;
+		go_a->transform->set_scale(10, 10, 10);
+		go_a->model->mesh = sphere_mesh;
 		delete go_a->point_light;
 		go_a->point_light = nullptr;
-		go_a->transform->position = glm::vec3(-155, 223, -100);
-		go_a->collider = new AABBCollider();
+		go_a->transform->position = glm::vec3(-155, 100, -100);
+		go_a->collider = new SphereCollider();
 		body = go_a;
 
 		go_b = new GameObject(go_a);
@@ -247,17 +248,19 @@ namespace Ryno{
 		go_b->transform->position = glm::vec3(10,10, -100);
 		go_b->transform->set_scale(20, 20, 20);
 
+		I32 collider = m_mesh_manager->load_collider_mesh("cube", GAME_FOLDER);
+
 		go_c = new GameObject(go_b);
 		go_c->transform->set_scale(10, 10, 10);
 		go_c->collider = new SphereCollider(0, 0, 0, 1);
 		go_c->model->mesh = sphere_mesh;
 		go_d = new GameObject(go_c);
-		go_d->transform->set_scale(30, 30,30);
+		go_d->transform->set_scale(1,1,1);
 		go_d->model->mesh = cube_mesh;
-		go_d->collider = new AABBCollider();
+		go_d->collider = new ConvexCollider(collider);
 		go_e = new GameObject(go_d);
+		go_e->transform->set_rotation(0, 0 , 0);
 		go_e->transform->set_scale(50, 50, 50);
-
 
 
 		set_physics();
@@ -271,11 +274,15 @@ namespace Ryno{
 
 	void MainGame::update(){
 
-		if (GJK::gjk(go_a, go_b)) go_b->point_light->active = true; else go_b->point_light->active = false;
-		if (GJK::gjk(go_a, go_c)) go_c->point_light->active = true; else go_c->point_light->active = false;
-		if (GJK::gjk(go_a, go_d)) go_d->point_light->active = true; else go_d->point_light->active = false;
-		if (GJK::gjk(go_a, go_e)) go_e->point_light->active = true; else go_e->point_light->active = false;
+		static I32 counter = 0;
 
+		if (++counter > 2){
+			counter = 0;
+			if (GJK::gjk(go_a, go_b)) go_b->model->set_color(255, 0, 0); else go_b->model->set_color(255, 255, 0);
+			if (GJK::gjk(go_a, go_c)) go_c->model->set_color(255, 0, 0); else go_c->model->set_color(255, 255, 0);
+			if (GJK::gjk(go_a, go_d)) go_d->model->set_color(255, 0, 0); else go_d->model->set_color(255, 255, 0);
+			if (GJK::gjk(go_a, go_e)) go_e->model->set_color(255, 0, 0); else go_e->model->set_color(255, 255, 0);
+		}
 		
 
 

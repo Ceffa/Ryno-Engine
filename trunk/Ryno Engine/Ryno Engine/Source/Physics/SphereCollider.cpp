@@ -3,39 +3,34 @@
 #include <GLM/gtx/string_cast.hpp>
 namespace Ryno{
 
-	SphereCollider::SphereCollider(const glm::vec3& _center, F32 _radius)
+	SphereCollider::SphereCollider(const glm::dvec3& _center, F32 _radius)
 	{
 		center = _center;
 		radius = _radius;
 	}
 
-	SphereCollider::SphereCollider()
-	{
-		center = glm::vec3(0, 0, 0);
-		radius = 1;
-	}
-
+		
 	Collider* SphereCollider::get_copy()
 	{
 		return new SphereCollider(this);
 	}
 
-	glm::vec3 SphereCollider::get_farthest_point(const glm::vec3& dir)
+	glm::dvec3 SphereCollider::get_farthest_point(const glm::dvec3& dir)
 	{
-		return center + normalize(dir) *radius;
+		return transformed_center + normalize(dir) * (F64)transformed_radius;
 	}
 
-	glm::vec3 SphereCollider::get_center()
+	glm::dvec3 SphereCollider::get_center()
 	{
-		return center;
+		return transformed_center;
 	}
 
-	Collider* SphereCollider::adapt_to_transform(Transform* t)
+	void SphereCollider::adapt_to_transform(Transform* t)
 	{
-		SphereCollider* s = new SphereCollider();
-		s->center = center + t->position;
-		s->radius = radius * t->scale.x;	//meh
-		return s;
+		
+		transformed_center = center + glm::dvec3(t->position);
+		transformed_radius = radius * t->scale.x;	//meh
+	
 	}
 
 }

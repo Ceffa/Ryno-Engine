@@ -58,8 +58,7 @@ namespace Ryno {
 		
 		iterator = history.begin();
 		history_length = 0;
-		
-		
+		set(false);
 
 		
 	}

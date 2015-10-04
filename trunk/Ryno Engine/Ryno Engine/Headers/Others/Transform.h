@@ -36,6 +36,8 @@ namespace Ryno{
 
 		//Model matrix
 		glm::mat4 model_matrix;
+		glm::mat4 rotation_matrix;
+		
 
 		void generate_model_matrix();
 

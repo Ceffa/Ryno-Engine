@@ -49,7 +49,7 @@ namespace Ryno {
 		}
 
 		
-		
+		Log::print("");
 	
 		
 	}

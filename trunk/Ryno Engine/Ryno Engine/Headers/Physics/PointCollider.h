@@ -5,27 +5,20 @@
 
 //To be implemented by colliders that uses GJK
 namespace Ryno{
-	class SphereCollider : public Collider {
+	class PointCollider : public Collider {
 		friend class GJK;
 		
 	public:
-		SphereCollider(const glm::dvec3& _center, F32 _radius);
-		SphereCollider(F32 x, F32 y, F32 z, F32 _radius)
-			: SphereCollider(glm::dvec3(x, y, z), _radius){}
-		SphereCollider() 
-			: SphereCollider(0,0,0,1){}
+		PointCollider(const glm::dvec3& _center);
+		PointCollider() :
+			PointCollider(glm::dvec3(0, 0, 0)){}
 
-		SphereCollider(const SphereCollider* s){ *this = *s; }
-
-
-		Collider* get_copy() override;
-
-		
+		PointCollider(const PointCollider* s){ *this = *s; }
 
 		glm::dvec3 center;
 		glm::dvec3 transformed_center;
-		F32 radius;
-		F32 transformed_radius;
+
+		Collider* get_copy() override;
 
 	protected:
 		glm::dvec3 get_farthest_point(const glm::dvec3& dir) override;

@@ -7,6 +7,8 @@ namespace Ryno{
 	MeshManager::MeshManager(){
 		last_mesh = 0;
 		meshes.resize(0);
+		last_collider_mesh = 0;
+		collider_meshes.resize(0);
 	}
 
 	MeshManager* MeshManager::get_instance(){
@@ -17,6 +19,9 @@ namespace Ryno{
 
 	Mesh* MeshManager::get_mesh(I32 mesh_number){
 		return meshes[mesh_number-1];
+	}
+	ColliderMesh* MeshManager::get_collider_mesh(I32 collider_mesh_number){
+		return collider_meshes[collider_mesh_number - 1];
 	}
 
 	I32 MeshManager::load_mesh(const std::string& name, bool has_uvs, LocationOfResource loc)
@@ -169,5 +174,44 @@ namespace Ryno{
 		meshes[last_mesh]->size = meshes[last_mesh]->vertices.size(); //One time only
 
 		return ++last_mesh;
+	}
+
+	I32 MeshManager::load_collider_mesh(const std::string& name, LocationOfResource loc)
+	{
+		static const std::string middle_path = "Resources/Models/Colliders/";
+
+		const std::string& path = BASE_PATHS[loc] + middle_path + name + ".obj";
+
+		ColliderMesh* coll_mesh = new ColliderMesh();
+		collider_meshes.push_back(coll_mesh);
+
+	
+		FILE * file = fopen(path.c_str(), "r");
+		if (!file){
+			printf("Impossible to open the file !\n");
+			return -1;
+		}
+
+		while (1){
+			printf("");
+			char lineHeader[128];
+			// read the first word of the line
+			int res = fscanf(file, "%s", lineHeader);
+			if (res == EOF)
+				break; // EOF = End Of File. Quit the loop.
+			// else : parse lineHeader
+			if (strcmp(lineHeader, "v") == 0){
+				glm::vec3 vertex;
+				fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+				coll_mesh->vertices.push_back(vertex);
+				coll_mesh->size++;
+
+			}
+
+		}
+
+
+
+		return ++last_collider_mesh;
 	}
 }
