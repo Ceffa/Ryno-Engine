@@ -213,11 +213,13 @@ namespace Ryno{
 
 		Emitter* emitter = new Emitter();
 		particle_batch = new GameObject();
-		emitter->init(20000, .001, 100, shos,
+		emitter->init(20000, .0005, 10, shos,
 			[](Particle3D* p, float delta_time){
 			p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
-			p->model->color.lerp(ColorRGBA(255,0,0,255), ColorRGBA(255,255,0,255), p->lifetime * 1.0f);
-		});
+			p->model->color = lerp (ColorRGBA(255,0,0,255), ColorRGBA(255,255,0,255), p->lifetime * 1.0f);
+			p->transform->scale = glm::vec3(lerp(1,50,p->lifetime));
+		}); 
+
 		particle_batch->set_emitter(emitter);
 		
 		
@@ -230,15 +232,13 @@ namespace Ryno{
 
 	void MainGame::update(){
 
-		particle_batch->get_emitter()->update(delta_time);
+		m_particle_manager->update(delta_time);
 		for (I32 i = 0; i < 4; i++){
 			spheres[i]->transform->position.y = 40 + sin(m_time_manager->current_time / 1000.0f) * 20;
 		}
 
 	}
 	
-	
-
 	void MainGame::input(){
 		if (!shell->active){
 			if (m_input_manager->is_key_pressed(SDLK_c, KEYBOARD)){

@@ -13,7 +13,7 @@ namespace Ryno{
 	void Emitter::init(U32 nr_particles, F32 decay_rate, F32 number_per_frame, GameObject* go,
 		std::function<void(Particle3D*, F32)> update_func){
 
-		m_update_func = update_func;
+		lambda_particle = update_func;
 		m_max_particles = nr_particles;
 		m_decay_rate = decay_rate;
 		m_number_per_frame = number_per_frame;
@@ -49,12 +49,12 @@ namespace Ryno{
 			F32 yaw = (rand() % 360) * DEG_TO_RAD;
 			F32 pitch = (rand() % 360) * DEG_TO_RAD;
 			glm::vec3 dir = normalize(glm::vec3(sin(yaw), -sin(pitch), cos(yaw)));
-			add_particle(game_object->transform->position, dir, .1f, glm::vec3(1.0f), ColorRGBA(255, 255, 255, 255));
+			add_particle(game_object->transform->position, dir, .5f, glm::vec3(50.0f), ColorRGBA(255, 255, 255, 255));
 		}
 
 		for (Particle3D* p : m_particles){
 			if (p->active){
-				m_update_func(p, delta_time);
+				lambda_particle(p, delta_time);
 				p->lifetime += m_decay_rate * delta_time;
 				if (p->lifetime >= 1.0f)
 					p->active = false;

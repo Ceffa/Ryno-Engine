@@ -4,11 +4,13 @@
 #include "Model.h"
 #include "Structures.h"
 #include "GameObject.h"
+#include "Lerp.h"
 #include <vector>
 #include <functional>
 
 namespace Ryno{
 	
+
 	class Particle3D : public GameObject {
 	public:
 		Particle3D(){}
@@ -36,13 +38,16 @@ class Emitter{
 		void update(F32 delta_time);
 
 		GameObject* game_object;
-	
-	private:
-		std::function<void(Particle3D*, F32)> m_update_func;
 
+		std::function<void(Particle3D*, F32)> lambda_particle;
+		std::function<void(F32)> lambda_emitter;
 		F32 m_max_particles;
 		F32 m_decay_rate;
 		F32 m_number_per_frame;
+	private:
+		
+
+		
 
 		std::vector <Particle3D*> m_particles;
 	};

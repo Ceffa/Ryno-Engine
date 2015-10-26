@@ -3,6 +3,7 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include <GLM/gtx/quaternion.hpp>
+#include "ParticleManager.h"
 
 namespace Ryno{
 
@@ -10,6 +11,14 @@ namespace Ryno{
 	{
 		emitter = _emitter; 
 		emitter->game_object = this;
+		ParticleManager::get_instance()->add_emitter(this);
+	}
+
+	void GameObject::remove_emitter()
+	{
+		ParticleManager::get_instance()->remove_emitter(this);
+		emitter->game_object = nullptr;
+		emitter = nullptr;
 	}
 
 	Emitter* GameObject::get_emitter()

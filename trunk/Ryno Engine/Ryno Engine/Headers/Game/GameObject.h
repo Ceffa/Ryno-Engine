@@ -33,6 +33,7 @@ namespace Ryno{
 
 		//Component getter and setter
 		void set_emitter(Emitter* _emitter);
+		void remove_emitter();
 		Emitter* get_emitter();
 		//Static GameObjects List
 		static std::list<GameObject*> game_objects;

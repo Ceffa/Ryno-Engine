@@ -9,8 +9,6 @@ namespace Ryno{
 		}
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	//	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	//	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
 		if ((m_window = SDL_CreateWindow("Ryno Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL)) == NULL){
 			std::cout<<"Failed to create SDL window: "+ std::string(SDL_GetError())<<std::endl;
 		}
@@ -37,9 +35,6 @@ namespace Ryno{
 			std::cout << "Failed to initialize glew." << std::endl;
 		}
 
-		
-	//	glEnable(GL_MULTISAMPLE);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe
 
 		SDL_GL_SetSwapInterval(0); //disable vsync
 
@@ -59,6 +54,8 @@ namespace Ryno{
 		shell->init();
 		log = Log::get_instance();
 		log->init();
+		m_particle_manager = ParticleManager::get_instance();
+		m_particle_manager->init();
 		m_audio_manager = AudioManager::get_instance();
 		m_audio_manager->init();
 		m_time_manager = TimeManager::get_instance();
