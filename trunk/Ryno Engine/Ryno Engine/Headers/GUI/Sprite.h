@@ -41,7 +41,7 @@ namespace Ryno{
 		//static list of sprites
 		static std::list<Sprite*> sprites;
 
-	private:
+	protected:
 		Texture texture;
 		glm::vec2 tiling;
 		ColorRGBA color;

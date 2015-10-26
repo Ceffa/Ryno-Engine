@@ -89,7 +89,6 @@ namespace Ryno{
 			draw();
 			delta_time = m_time_manager->end_frame();
 			if (m_game_state != GameState::Paused) m_time_manager->print_fps();
-
 		}
 		end();
 		exit_game();

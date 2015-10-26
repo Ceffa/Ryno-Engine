@@ -48,17 +48,14 @@ namespace Ryno {
 		lines[0]->set_position(0.003f, 0.005f);
 		lines[0]->use = SHELL;
 
-
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
 			lines[i] = new Text(lines[0]);
 			lines[i]->set_position(0.005f, 0.003f + 0.33f * i / NUM_LINES);
 		}
-
-		
+				
 		iterator = history.begin();
 		history_length = 0;
-		set(false);
 
 		
 	}
@@ -81,7 +78,6 @@ namespace Ryno {
 		set(false);
 	}
 
-
 	void Shell::toggle()
 	{
 		if (active)
@@ -95,7 +91,6 @@ namespace Ryno {
 
 	void Shell::process_input()
 	{	
-
 		
 		if (input_manager->is_key_pressed(SDLK_TAB, KEYBOARD)){
 				

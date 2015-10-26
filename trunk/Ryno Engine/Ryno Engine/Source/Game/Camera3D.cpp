@@ -36,14 +36,11 @@ namespace Ryno{
 			glm::vec3(-position.x, -position.y, position.z)
 			); 
 		VP_matrix = P_matrix * V_matrix;
-						
-	
 	}
 	
 
 	void Camera3D::move_forward(F32 speed){
 		position += speed* glm::vec4(sin(yaw), -sin(pitch), cos(yaw),0);
-		
 	}
 
 	void Camera3D::move_relative_to_view(F32 speed, glm::vec2 coords){

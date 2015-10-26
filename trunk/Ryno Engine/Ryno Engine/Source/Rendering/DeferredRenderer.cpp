@@ -6,6 +6,8 @@
 #include <GLM/gtx/transform.hpp>
 #include <GLM/gtx/string_cast.hpp>
 
+#include "Emitter.h"
+
 #define PI 3.14159265359
 #define HALF_PI 1.57079632679489661923
 
@@ -200,12 +202,12 @@ namespace Ryno{
 
 			//Fill geometry batch
 			if (geometry_enabled){
-				if (go->model)
+				if (go->active && go->model)
 					m_geometry_batch3d->draw(go);
 			}
 			//Fill shadow batch
 			if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled){
-				if (go->model)
+				if (go->active && go->model)
 					m_shadow_batch3d->draw(go);
 			}
 			//Add ligths
@@ -634,6 +636,7 @@ namespace Ryno{
 			m_sprite_batch2d->draw(s);
 		}
 		
+
 		m_sprite_batch2d->end();
 
 

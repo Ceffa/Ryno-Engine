@@ -11,7 +11,7 @@ out vec4 out_color;
 void main(){
 
 	out_color = texture(m_texture, uv).rgba * color.rgba;
-	if (out_color.a < 0.3)
+	if (out_color.a <0.9)
 		discard;
 	gl_FragDepth = depth;
 	

@@ -6,6 +6,7 @@
 #include "DeferredRenderer.h"
 #include <Sprite.h>
 #include "Forces.h"
+#include "Emitter.h"
 
 namespace Ryno{
 	class MainGame : public MainGameInterface
@@ -15,7 +16,6 @@ namespace Ryno{
 		void start() override;
 		void input() override;
 		void update() override;
-		void set_physics();
 
 		Sound sound;
 		Music music;
@@ -32,11 +32,8 @@ namespace Ryno{
 		glm::vec3 acceleration = glm::vec3(0, 0, 0);
 		GameObject* marker;
 
-		GameObject* go_a;
-		GameObject* go_b;
-		GameObject* go_c;
-		GameObject* go_d;
-		GameObject* go_e;
+		GameObject* particle_batch;
+	
 		GameObject* body;
 
 		
