@@ -213,12 +213,25 @@ namespace Ryno{
 
 		Emitter* emitter = new Emitter();
 		particle_batch = new GameObject();
-		emitter->init(20000, .0005, 10, shos,
-			[](Particle3D* p, float delta_time){
+		emitter->init(20000, .0005, 10, shos);
+		emitter->lambda_particle = [](Particle3D* p, float delta_time)
+		{
 			p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
-			p->model->color = lerp (ColorRGBA(255,0,0,255), ColorRGBA(255,255,0,255), p->lifetime * 1.0f);
-			p->transform->scale = glm::vec3(lerp(1,50,p->lifetime));
-		}); 
+			p->model->color = lerp(ColorRGBA(255, 0, 0, 255), ColorRGBA(255, 255, 0, 255), p->lifetime * 1.0f);
+			p->transform->scale = glm::vec3(lerp(1, 50, p->lifetime));
+		};
+			
+
+		emitter->lambda_emitter = [](Emitter* e, F32 delta_time){
+			for (U32 i = 0; i < e->m_number_per_frame; i++){
+				F32 yaw = (rand() % 360) * DEG_TO_RAD;
+				F32 pitch = (rand() % 360) * DEG_TO_RAD;
+				Particle3D* p = e->new_particle();
+				p->transform->position = e->game_object->transform->position;
+
+			}
+		};
+
 
 		particle_batch->set_emitter(emitter);
 		
@@ -247,7 +260,6 @@ namespace Ryno{
 			}
 			if (m_input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
 				particle_batch->transform->add_position(-.5f* delta_time, 0, 0);
-				std::cout << particle_batch->transform->position.x << std::endl;
 			}
 			if (m_input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
 				particle_batch->transform->add_position(.5f * delta_time , 0, 0);
