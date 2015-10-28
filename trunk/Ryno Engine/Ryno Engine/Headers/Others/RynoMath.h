@@ -23,6 +23,8 @@ namespace Ryno{
 		static glm::vec3 get_rand_dir(F32 p_min, F32 p_max, F32 y_min, F32 y_max);
 		static U32 rand_int_range(U32 min, U32 max);
 		static F32 rand_float_range(F32 min, F32 max);
+		static glm::vec3 rand_vec3_range(glm::vec3 min, glm::vec3 max);
+
 
 	private:
 		//Random generators

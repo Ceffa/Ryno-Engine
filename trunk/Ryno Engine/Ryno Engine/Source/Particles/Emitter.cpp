@@ -18,7 +18,7 @@ namespace Ryno{
 
 		for (U32 i = 0; i < nr_particles; i++){
 			Particle3D* p = new Particle3D(go);
-			
+			p->e = this;
 			m_particles.push_back(p);
 			m_pool.push_back(p);
 			p->active = false;

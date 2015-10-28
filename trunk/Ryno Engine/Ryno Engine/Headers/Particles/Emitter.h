@@ -21,6 +21,7 @@ namespace Ryno{
 		ColorRGBA color;
 		F32 lifetime;
 		F32 decay_rate = .0001f; 
+		Emitter* e;
 		
 
 	};

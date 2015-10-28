@@ -27,7 +27,7 @@ namespace Ryno{
 
 	//UTILITIES
 	glm::vec3 ryno_math::get_rand_dir(){
-		return get_rand_dir(0, 360, 0, 180);
+		return get_rand_dir(0, 360, 0, 360);
 	}
 
 	glm::vec3 ryno_math::get_rand_dir(F32 p_min, F32 p_max, F32 y_min, F32 y_max){
@@ -46,6 +46,10 @@ namespace Ryno{
 	F32 ryno_math::rand_float_range(F32 min, F32 max){
 		std::uniform_real_distribution<float> f_dist(min, max);
 		return f_dist(mt);
+	}
+
+	glm::vec3 ryno_math::rand_vec3_range(glm::vec3 min, glm::vec3 max){
+		return glm::vec3(rand_float_range(min.x, max.x), rand_float_range(min.y, max.y), rand_float_range(min.z, max.z));
 	}
 	
 
