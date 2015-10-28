@@ -1,6 +1,6 @@
 #pragma once
 #include <GLM/glm.hpp>
-#include "Global.h"
+#include "Types.h"
 
 namespace Ryno{
 	struct ColorRGB{
@@ -52,14 +52,6 @@ namespace Ryno{
 				a = col.a;
 			}
 
-			void lerp(ColorRGBA ca, ColorRGBA cb, F32 value){
-				if (value > 1) dupe_color(cb);
-				else if (value < 0) dupe_color(ca);
-				else set_color_and_alpha(value * cb.r + (1.0f - value) * ca.r,
-					value * cb.g + (1.0f - value) * ca.g,
-					value * cb.b + (1.0f - value) * ca.b,
-					value * cb.a + (1.0f - value) * ca.a);
-			}
 
 			U8 r; U8 g; U8 b; U8 a;
 			

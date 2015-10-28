@@ -4,14 +4,13 @@
 #include "Model.h"
 #include "Structures.h"
 #include "GameObject.h"
-#include "Lerp.h"
+#include "RynoMath.h"
 #include <vector>
 #include <functional>
 
 namespace Ryno{
-	
 
-	class Particle3D : public GameObject {
+		class Particle3D : public GameObject {
 	public:
 		Particle3D(){}
 		Particle3D(GameObject* go);
@@ -21,9 +20,11 @@ namespace Ryno{
 		F32 speed;
 		ColorRGBA color;
 		F32 lifetime;
+		F32 decay_rate = .0001f; 
 		
 
 	};
+
 
 class Emitter{
 
@@ -33,7 +34,7 @@ class Emitter{
 		Emitter(){}
 		Emitter(const Emitter *e);
 		~Emitter();
-		void init(U32 nr_particles, F32 decay_rate, F32 numbers_per_frame, GameObject* go);
+		void init(U32 nr_particles, GameObject* go);
 		Particle3D* new_particle();
 		void update(F32 delta_time);
 
@@ -51,11 +52,12 @@ class Emitter{
 			Particle3D* p = e->new_particle();
 		};
 		F32 m_max_particles;
-		F32 m_decay_rate;
-		F32 m_number_per_frame;
+		F32 m_elapsed_time;
+		F32 m_emission_rate;
 	private:
 		
 		std::vector <Particle3D*> m_particles;
+		std::list <Particle3D*> m_pool;
 	};
 
 
