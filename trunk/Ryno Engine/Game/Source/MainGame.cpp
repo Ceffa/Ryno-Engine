@@ -217,28 +217,28 @@ namespace Ryno{
 		
 		/*emitter->lambda_particle = [](Particle3D* p, float delta_time)
 		{
-			p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
-			p->model->color = lerp(ColorRGBA(0, 255, 0, 255), ColorRGBA(0, 0,255, 255), p->lifetime * 1.0f);
-			p->transform->scale = glm::vec3(lerp(1, 50, p->lifetime));
-			
-			if (p->lifetime > 0.6 && p->model->mesh == cube_mesh){
-				p->model->mesh = sphere_mesh;
-			}
+		p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
+		p->model->color = ryno_math::lerp(ColorRGBA(0, 255, 0, 255), ColorRGBA(0, 0, 255, 255), p->lifetime * 1.0f);
+		p->transform->scale = glm::vec3(ryno_math::lerp(1, 50, p->lifetime));
+
+		if (p->lifetime > 0.6 && p->model->mesh == cube_mesh){
+		p->model->mesh = sphere_mesh;
+		}
 		};
-			
+
 
 		emitter->lambda_emitter = [](Emitter* e, F32 delta_time){
-			for (U32 i = 0; i < 5; i++){
-				
-				Particle3D* p = e->new_particle();
-				p->transform->position = e->game_object->transform->position;
-				p->speed = .25f;
-				p->decay_rate = .0005f;
-				p->direction = get_particle_dir(0,180,0,180);
-				p->model->mesh = cube_mesh;
-			}
-		};
-*/
+		for (U32 i = 0; i < 5; i++){
+
+		Particle3D* p = e->new_particle();
+		p->transform->position = e->game_object->transform->position;
+		p->speed = .25f;
+		p->decay_rate = .0005f;
+		p->direction = ryno_math::get_rand_dir(0, 180, 0, 180);
+		p->model->mesh = cube_mesh;
+		}
+		};*/
+
 
 		emitter->lambda_particle = [](Particle3D* p, float delta_time)
 		{
@@ -254,7 +254,7 @@ namespace Ryno{
 					p->speed = 0;
 					p->decay_rate = 0;
 					p->model->mesh = cube_mesh;
-					p->model->color = ColorRGBA(255, 255, 255, 050);
+					p->model->color = ColorRGBA(255, 255, 255, 100);
 					p->model->cast_shadows = true;
 					p->transform->scale = ryno_math::rand_vec3_range(glm::vec3(.25f), glm::vec3(.07f));
 					p->transform->set_rotation(ryno_math::rand_vec3_range(glm::vec3(0), glm::vec3(360)));
