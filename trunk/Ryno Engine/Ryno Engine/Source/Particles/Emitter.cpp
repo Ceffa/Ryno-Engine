@@ -6,8 +6,6 @@
 
 namespace Ryno{
 
-	
-
 	Emitter::Emitter(const Emitter *e){ *this = *e; }
 
 	Emitter::~Emitter(){ m_particles.clear(); }
@@ -57,6 +55,7 @@ namespace Ryno{
 		}
 		ret->active = true;
 		ret->lifetime = 0;
+		ret->save_map.clear();
 		return ret; 
 	}
 

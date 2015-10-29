@@ -39,7 +39,7 @@ namespace Ryno{
 		//loading models
 		static I32 cube_mesh = m_mesh_manager->load_mesh("cube", 1, GAME_FOLDER);
 		static I32 sphere_mesh = m_mesh_manager->load_mesh("sphere", 1, GAME_FOLDER);
-		I32 cone_mesh = m_mesh_manager->load_mesh("cone", 1, GAME_FOLDER);
+		static I32 cone_mesh = m_mesh_manager->load_mesh("cone", 1, GAME_FOLDER);
 		marker_mesh = m_mesh_manager->load_mesh("marker", 1, GAME_FOLDER);
 
 		CPUProfiler::next_time();
@@ -215,54 +215,70 @@ namespace Ryno{
 		particle_batch = new GameObject();
 		emitter->init(20000, shos);
 		
-		/*emitter->lambda_particle = [](Particle3D* p, float delta_time)
-		{
-		p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
-		p->model->color = ryno_math::lerp(ColorRGBA(0, 255, 0, 255), ColorRGBA(0, 0, 255, 255), p->lifetime * 1.0f);
-		p->transform->scale = glm::vec3(ryno_math::lerp(1, 50, p->lifetime));
-
-		if (p->lifetime > 0.6 && p->model->mesh == cube_mesh){
-		p->model->mesh = sphere_mesh;
-		}
-		};
-
-
-		emitter->lambda_emitter = [](Emitter* e, F32 delta_time){
-		for (U32 i = 0; i < 5; i++){
-
-		Particle3D* p = e->new_particle();
-		p->transform->position = e->game_object->transform->position;
-		p->speed = .25f;
-		p->decay_rate = .0005f;
-		p->direction = ryno_math::get_rand_dir(0, 180, 0, 180);
-		p->model->mesh = cube_mesh;
-		}
-		};*/
-
-
 		emitter->lambda_particle = [](Particle3D* p, float delta_time)
 		{
-			p->transform->add_position(ryno_math::get_rand_dir() * 0.05f);
+			p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
+			p->transform->scale = glm::vec3(ryno_math::lerp(1, 50, p->lifetime));
+
+			if (p->lifetime < 0.25){
+				p->model->color = ryno_math::lerp(ColorRGBA::red, ColorRGBA::yellow, p->lifetime*4);
+			}
+			else if (p->lifetime < 0.50){
+				p->model->color = ryno_math::lerp(ColorRGBA::yellow, ColorRGBA::green, p->lifetime*4 -1.0f);
+			}
+			else if (p->lifetime < 0.75){
+				p->model->color = ryno_math::lerp(ColorRGBA::green, ColorRGBA::blue, p->lifetime*4 - 2.0f);
+			}
+			else {
+				p->model->color = ryno_math::lerp(ColorRGBA::blue, ColorRGBA::magenta,p->lifetime * 4 - 3.0f);
+			}
+
+			if (p->lifetime > 0.6 && p->model->mesh == cube_mesh){
+				I32 mesh;
+				p->save_map.get("mesh", &mesh );
+				p->model->mesh = mesh;
+			}
+		};
+
+		emitter->lambda_emitter = [](Emitter* e, F32 delta_time){
+			for (U32 i = 0; i < 4; i++){
+
+				Particle3D* p = e->new_particle();
+				p->transform->position = e->game_object->transform->position;
+				p->speed = .25f;
+				p->decay_rate = .0005f;
+				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
+				p->model->mesh = cube_mesh;
+				p->save_map.add("mesh", cone_mesh);
+			}
+		};
+
+
+		/*emitter->lambda_particle = [](Particle3D* p, float delta_time)
+		{
+		glm::vec3 rand_pos;
+		p->save_map.get("rand_pos", &rand_pos);
+		p->transform->set_position(p->e->game_object->transform->position + rand_pos +  ryno_math::get_rand_dir() * 0.05f);
 
 		};
 
 
 		emitter->lambda_emitter = [](Emitter* e, F32 delta_time){
-			if (e->m_elapsed_time == 0){
-				for (U32 i = 0; i < 500; i++){
-					Particle3D* p = e->new_particle();
-					p->speed = 0;
-					p->decay_rate = 0;
-					p->model->mesh = cube_mesh;
-					p->model->color = ColorRGBA(255, 255, 255, 100);
-					p->model->cast_shadows = true;
-					p->transform->scale = ryno_math::rand_vec3_range(glm::vec3(.25f), glm::vec3(.07f));
-					p->transform->set_rotation(ryno_math::rand_vec3_range(glm::vec3(0), glm::vec3(360)));
-
-					p->transform->set_position(e->game_object->transform->position + ryno_math::rand_vec3_range(glm::vec3(-200,0,-200), glm::vec3(200,200,200)));
-				}
-			}
-		};
+		if (e->m_elapsed_time == 0){
+		for (U32 i = 0; i < 500; i++){
+		Particle3D* p = e->new_particle();
+		p->speed = 0;
+		p->decay_rate = 0;
+		p->model->mesh = cube_mesh;
+		p->model->color = ColorRGBA(255, 255, 255, 100);
+		p->model->cast_shadows = false;
+		p->transform->scale = ryno_math::rand_vec3_range(glm::vec3(.25f), glm::vec3(.07f));
+		p->transform->set_rotation(ryno_math::rand_vec3_range(glm::vec3(0), glm::vec3(360)));
+		glm::vec3 rand_pos = ryno_math::rand_vec3_range(glm::vec3(-200, 0, -200), glm::vec3(200, 200, 200));
+		p->save_map.add("rand_pos", rand_pos);
+		}
+		}
+		};*/
 
 
 		particle_batch->set_emitter(emitter);
@@ -272,8 +288,7 @@ namespace Ryno{
 		CPUProfiler::print_time();
 
 	}
-	
-	
+		
 
 	void MainGame::update(){
 
@@ -310,5 +325,4 @@ namespace Ryno{
 			}
 		}
 	}
-	
 }

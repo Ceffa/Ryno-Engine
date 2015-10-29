@@ -7,10 +7,13 @@
 #include "RynoMath.h"
 #include <vector>
 #include <functional>
+#include "GenericMap.h"
 
 namespace Ryno{
+	
 
-		class Particle3D : public GameObject {
+	class Particle3D : public GameObject {
+
 	public:
 		Particle3D(){}
 		Particle3D(GameObject* go);
@@ -22,7 +25,7 @@ namespace Ryno{
 		F32 lifetime;
 		F32 decay_rate = .0001f; 
 		Emitter* e;
-		
+		GenericMap save_map;		
 
 	};
 
@@ -30,6 +33,7 @@ namespace Ryno{
 class Emitter{
 
 	friend class Particle3D;
+
 	
 	public:
 		Emitter(){}

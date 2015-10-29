@@ -20,8 +20,17 @@ namespace Ryno{
 
 
 	};
-
 	struct ColorRGBA{
+
+		static ColorRGBA red;
+		static ColorRGBA yellow;
+		static ColorRGBA green;
+		static ColorRGBA cyan;
+		static ColorRGBA blue;
+		static ColorRGBA magenta;
+		static ColorRGBA black;
+		static ColorRGBA gray;
+		static ColorRGBA white;
 
 			ColorRGBA() : r(0), g(0), b(0), a(0){}
 			ColorRGBA(U8 R, U8 G, U8 B, U8 A) : r(R), g(G), b(B), a(A){}
@@ -56,6 +65,10 @@ namespace Ryno{
 			U8 r; U8 g; U8 b; U8 a;
 			
 	};
+
+
+
+
 	struct Vertex3D{
 		glm::vec3 position;
 		glm::vec2 uv;

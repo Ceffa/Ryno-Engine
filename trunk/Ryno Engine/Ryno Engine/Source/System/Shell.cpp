@@ -269,7 +269,7 @@ namespace Ryno {
 		else if (command.compare("r") == 0){
 			restart_physics = true;
 		}
-		else if (command.compare("slowfactor") == 0){
+		else if (command.compare("sf") == 0){
 
 			//read args
 			F32 f;
