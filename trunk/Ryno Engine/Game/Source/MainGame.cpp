@@ -240,12 +240,14 @@ namespace Ryno{
 			p->set_emitter(new Emitter(m_emitter));
 		};
 		emitter->lambda_emission = [](Emitter* e){
+			for (U8 t = 0; t < 5; t++){
 				Particle3D* p = e->new_particle();
 				p->transform->position = e->game_object->transform->position;
-				p->direction = ryno_math::get_rand_dir(0, 360, 0, 1);
+				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 				bool b = false;
 				p->get_emitter()->save_map.replace("go_crazy", b);
-				p->transform->set_scale(20,20,20);
+				p->transform->set_scale(1, 1, 1);
+			}
 		};
 
 		emitter->lambda_particle = [](Emitter* e,Particle3D* p, float delta_time)
@@ -253,9 +255,10 @@ namespace Ryno{
 			
 			bool f = false;
 			bool t = true;
-			if (p->lifetime < .75f)
+			if (p->lifetime < .75f){
 				p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
-		
+				p->transform->scale = glm::vec3(ryno_math::lerp(1, 30, p->lifetime));
+			}
 
 			if (p->lifetime > .75f && p->lifetime < .82f){
 				p->get_emitter()->save_map.replace("go_crazy", t);
@@ -302,7 +305,7 @@ namespace Ryno{
 
 
 		e2->init(200);
-		emitter->init(100);
+		emitter->init(200);
 		particle_batch = new GameObject();
 		particle_batch->set_emitter(emitter);
 
