@@ -204,84 +204,110 @@ namespace Ryno{
 		t->set_color(255,255,0, 255);
 		t->text = "Ryno Engine";*/
 
-		GameObject* shos = new GameObject();
-		shos->model = new Model();
-		shos->model->set_texture_normal(white, white_normal);
-		shos->model->mesh = cube_mesh;
-		shos->model->cast_shadows = true;
-		shos->active = true;
-
+	
+		Emitter* e2 = new Emitter();
+		e2->save_map.add("texture", white);
+		e2->save_map.add("normal", white_normal);
+		e2->save_map.add("mesh", cube_mesh);
+		bool* a = new bool(false);
+		e2->save_map.replace("go_crazy", a);
+	
 		Emitter* emitter = new Emitter();
-		particle_batch = new GameObject();
-		emitter->init(20000, shos);
+		emitter->save_map.add("texture",white);
+		emitter->save_map.add("normal", white_normal);
+		emitter->save_map.add("mesh", sphere_mesh);
+		emitter->save_map.add("emitter", e2);
 		
-		emitter->lambda_particle = [](Particle3D* p, float delta_time)
-		{
-			p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
-			p->transform->scale = glm::vec3(ryno_math::lerp(1, 50, p->lifetime));
+	
+		
+		
+		
+		emitter->lambda_creation = [](Emitter* e,Particle3D* p){
+			Texture m_white, m_normal;
+			Emitter* m_emitter;
+			I32 m_mesh;
+			e->save_map.get("texture", &m_white);
+			e->save_map.get("normal", &m_normal);
+			e->save_map.get("mesh", &m_mesh);
+			e->save_map.get("emitter", &m_emitter);
 
-			if (p->lifetime < 0.25){
-				p->model->color = ryno_math::lerp(ColorRGBA::red, ColorRGBA::yellow, p->lifetime*4);
-			}
-			else if (p->lifetime < 0.50){
-				p->model->color = ryno_math::lerp(ColorRGBA::yellow, ColorRGBA::green, p->lifetime*4 -1.0f);
-			}
-			else if (p->lifetime < 0.75){
-				p->model->color = ryno_math::lerp(ColorRGBA::green, ColorRGBA::blue, p->lifetime*4 - 2.0f);
-			}
-			else {
-				p->model->color = ryno_math::lerp(ColorRGBA::blue, ColorRGBA::magenta,p->lifetime * 4 - 3.0f);
-			}
-
-			if (p->lifetime > 0.6 && p->model->mesh == cube_mesh){
-				I32 mesh;
-				p->save_map.get("mesh", &mesh );
-				p->model->mesh = mesh;
-			}
+			p->decay_rate = .001f;
+			p->speed = 1;
+			p->model = new Model();
+			p->model->set_texture_normal(m_white, m_normal);
+			p->model->mesh = m_mesh;
+			p->model->color = ColorRGBA::yellow;
+			p->set_emitter(new Emitter(m_emitter));
 		};
-
-		emitter->lambda_emitter = [](Emitter* e, F32 delta_time){
-			for (U32 i = 0; i < 4; i++){
-
+		emitter->lambda_emission = [](Emitter* e){
 				Particle3D* p = e->new_particle();
 				p->transform->position = e->game_object->transform->position;
-				p->speed = .25f;
-				p->decay_rate = .0005f;
-				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
-				p->model->mesh = cube_mesh;
-				p->save_map.add("mesh", cone_mesh);
+				p->direction = ryno_math::get_rand_dir(0, 360, 0, 1);
+				bool b = false;
+				p->get_emitter()->save_map.replace("go_crazy", b);
+				p->transform->set_scale(20,20,20);
+		};
+
+		emitter->lambda_particle = [](Emitter* e,Particle3D* p, float delta_time)
+		{
+			
+			bool f = false;
+			bool t = true;
+			if (p->lifetime < .75f)
+				p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
+		
+
+			if (p->lifetime > .75f && p->lifetime < .82f){
+				p->get_emitter()->save_map.replace("go_crazy", t);
+				if (p->transform->scale.x > 1)
+					p->transform->set_scale(0,0,0);
+			}
+			else p->get_emitter()->save_map.replace("go_crazy", f);
+
+		};
+
+		e2->lambda_creation = [](Emitter* e,Particle3D* p){
+			Texture m_white, m_normal;
+			I32 m_mesh;
+			Emitter* m_emitter;
+
+			e->save_map.get("texture", &m_white);
+			e->save_map.get("normal", &m_normal);
+			e->save_map.get("mesh", &m_mesh);
+
+			p->speed = .95f;
+			p->decay_rate = .005f;
+			p->transform->scale = glm::vec3(10);
+			p->model = new Model();
+			p->model->set_texture_normal(m_white, m_normal);
+			p->model->mesh = m_mesh;
+			p->model->color = ColorRGBA::red;
+		};
+		e2->lambda_emission = [](Emitter* e){
+			bool go_crazy;
+			e->save_map.get("go_crazy", &go_crazy);
+			if (go_crazy){
+				for (U8 t = 0; t < 10; t++){
+					Particle3D* p = e->new_particle();
+					p->transform->position = e->game_object->transform->position;
+					p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
+				}
 			}
 		};
 
-
-		/*emitter->lambda_particle = [](Particle3D* p, float delta_time)
+		e2->lambda_particle = [](Emitter* e, Particle3D* p, F32 delta_time)
 		{
-		glm::vec3 rand_pos;
-		p->save_map.get("rand_pos", &rand_pos);
-		p->transform->set_position(p->e->game_object->transform->position + rand_pos +  ryno_math::get_rand_dir() * 0.05f);
-
+			p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
 		};
 
 
-		emitter->lambda_emitter = [](Emitter* e, F32 delta_time){
-		if (e->m_elapsed_time == 0){
-		for (U32 i = 0; i < 500; i++){
-		Particle3D* p = e->new_particle();
-		p->speed = 0;
-		p->decay_rate = 0;
-		p->model->mesh = cube_mesh;
-		p->model->color = ColorRGBA(255, 255, 255, 100);
-		p->model->cast_shadows = false;
-		p->transform->scale = ryno_math::rand_vec3_range(glm::vec3(.25f), glm::vec3(.07f));
-		p->transform->set_rotation(ryno_math::rand_vec3_range(glm::vec3(0), glm::vec3(360)));
-		glm::vec3 rand_pos = ryno_math::rand_vec3_range(glm::vec3(-200, 0, -200), glm::vec3(200, 200, 200));
-		p->save_map.add("rand_pos", rand_pos);
-		}
-		}
-		};*/
-
-
+		e2->init(200);
+		emitter->init(100);
+		particle_batch = new GameObject();
 		particle_batch->set_emitter(emitter);
+
+		
+		
 		
 		
 		CPUProfiler::end_time();

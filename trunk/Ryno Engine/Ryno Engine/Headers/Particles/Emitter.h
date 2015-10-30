@@ -24,7 +24,6 @@ namespace Ryno{
 		ColorRGBA color;
 		F32 lifetime;
 		F32 decay_rate = .0001f; 
-		Emitter* e;
 		GenericMap save_map;		
 
 	};
@@ -39,23 +38,20 @@ class Emitter{
 		Emitter(){}
 		Emitter(const Emitter *e);
 		~Emitter();
-		void init(U32 nr_particles, GameObject* go);
+		void init(U32 nr_particles);
 		Particle3D* new_particle();
 		void update(F32 delta_time);
+		void remove_particle(Particle3D* p);
+		void disable();
+
 
 		GameObject* game_object;
+		GenericMap save_map;
 
-		std::function<void(Particle3D*, F32)> lambda_particle = [](Particle3D* p, F32 delta_time)
-		{
-			p->speed += p->acceleration * delta_time;
-			p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
-		};
-		std::function<void(Emitter*, F32)> lambda_emitter = [](Emitter* e, F32 delta_time){
-			F32 yaw = (rand() % 360) * DEG_TO_RAD;
-			F32 pitch = (rand() % 360) * DEG_TO_RAD;
-			glm::vec3 dir = normalize(glm::vec3(sin(yaw), -sin(pitch), cos(yaw)));
-			Particle3D* p = e->new_particle();
-		};
+		std::function<void(Emitter*, Particle3D*)> lambda_creation;
+		std::function<void(Emitter*)> lambda_emission;
+		std::function<void(Emitter*,Particle3D*, F32)> lambda_particle;
+
 		F32 m_max_particles;
 		F32 m_elapsed_time;
 		F32 m_emission_rate;

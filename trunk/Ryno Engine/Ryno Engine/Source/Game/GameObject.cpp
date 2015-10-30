@@ -9,9 +9,10 @@ namespace Ryno{
 
 	void GameObject::set_emitter(Emitter* _emitter)
 	{
+		if (!emitter)
+			ParticleManager::get_instance()->add_emitter(this);
 		emitter = _emitter; 
 		emitter->game_object = this;
-		ParticleManager::get_instance()->add_emitter(this);
 	}
 
 	void GameObject::remove_emitter()
@@ -50,7 +51,7 @@ namespace Ryno{
 		if (go->dir_light)
 			dir_light = new DirectionalLight(go->dir_light);
 		if (go->emitter)
-			set_emitter(go->emitter);
+			set_emitter(new Emitter(go->emitter));
 
 		game_objects.push_back(this);
 	}

@@ -21,6 +21,13 @@ public:
 	void get(const std::string& name, T* result){
 		*result = *static_cast<T*>(saved_vals.find(name)->second);
 	}
+	template<typename T>
+	void replace(const std::string& name, T& value)
+	{
+		if (saved_vals.find(name) != saved_vals.end())
+			remove(name);
+		add(name, value);
+	}
 	void remove(const std::string& name){
 		saved_vals.erase(name);
 	}
