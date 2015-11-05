@@ -1,0 +1,10 @@
+x64/
+x86/
+*.sdf
+*.suo
+*.user
+Ryno Engine/x64/
+Ryno Engine/x86/
+Game/x64/
+Game/x86/
+.vs/

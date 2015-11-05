@@ -1,0 +1,858 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{c8355624-adcf-4811-b6d6-2c379036ebc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Sounds">
+      <UniqueIdentifier>{6f339f0b-2159-4f00-91e7-1fc9ad68cc2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Music">
+      <UniqueIdentifier>{00e79ec0-f66b-40e7-8966-21244b53f5aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{cb522041-1aa0-473f-a8b2-59c6b139b3eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\2D">
+      <UniqueIdentifier>{b89aff0d-5aa8-4e66-99e5-ae21d1f3ba36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\3D">
+      <UniqueIdentifier>{e96b8dc3-9bdc-4530-b5a3-6430ff040a4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\2D\Pack">
+      <UniqueIdentifier>{1d82cf19-13eb-477f-83f8-82bbe6b81715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\3D\day">
+      <UniqueIdentifier>{b2ede912-26dc-42b7-ad1b-6bc2ddb4db44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\3D\full_moon">
+      <UniqueIdentifier>{c29f06d1-f4db-4c28-baf3-d44dda715eb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{75109cb9-8780-47eb-a892-f6c1ecda3684}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Lights">
+      <UniqueIdentifier>{c4bc55ee-1b98-4e24-8398-f257c9b58e34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{ea285a99-a876-477b-830e-cd85f397eed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers">
+      <UniqueIdentifier>{b5df88c1-230b-46eb-9497-9bf1b5146815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System">
+      <UniqueIdentifier>{d9bccb7d-6a3e-4dc5-9d41-fb1237828104}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering">
+      <UniqueIdentifier>{00ca63b5-1d47-4cc1-84be-193fd2381c14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering\FBOs">
+      <UniqueIdentifier>{0ba1871f-6c80-4314-a242-c799008bb701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering\Batches">
+      <UniqueIdentifier>{986d7f30-6f9a-4442-bc18-cca6f55c8cfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Others">
+      <UniqueIdentifier>{06887d23-7e8a-437c-bcd3-f5aa771f0e41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering">
+      <UniqueIdentifier>{bb8b63fd-db15-4741-b212-82aea0a4498c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering\Batches">
+      <UniqueIdentifier>{a58f01e1-933e-4c24-a159-40e1484db5f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering\FBOs">
+      <UniqueIdentifier>{c9ef8646-2124-46f9-8d61-6686e171449c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{0bc841cd-c208-41e9-b15b-d5d5d21ba2cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System">
+      <UniqueIdentifier>{4e75f393-78be-478d-bb7e-2601f97173b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Managers">
+      <UniqueIdentifier>{3ed43c60-ad49-40cc-93f4-401fcb26cbb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\GeometryPass">
+      <UniqueIdentifier>{b009b8e3-e52d-4231-b647-4cad44d79672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\LightPass">
+      <UniqueIdentifier>{61362479-916f-442d-b16a-62e8b0ec0ddd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\ShadowPass">
+      <UniqueIdentifier>{57c60a2d-77bc-4b16-a085-5e7503e27ce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\SkyboxPass">
+      <UniqueIdentifier>{033800ca-b807-4a65-8e16-28af7f9e4fbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Others">
+      <UniqueIdentifier>{b1922418-8386-443c-a5b7-2b818b6b9326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\GUIPass">
+      <UniqueIdentifier>{b4f47e46-9671-42ef-9fc5-6f87a40925ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{773b5122-0b40-4457-bc3b-5a46ff26c0a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Physics">
+      <UniqueIdentifier>{5a831fd1-f5a8-4b62-bc0c-dc5344ded434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Others">
+      <UniqueIdentifier>{fddd31c9-4b15-44e7-bfc9-e2ef5358d8ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game">
+      <UniqueIdentifier>{e4395c0d-40d5-42b0-86ee-4c7f96f5c016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game\Lights">
+      <UniqueIdentifier>{5c0c7c7a-04f0-4eaf-a029-92d4ebefdc61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Particles">
+      <UniqueIdentifier>{cd1c870f-ac50-4e7a-9fcc-9a8b06349bb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Particles">
+      <UniqueIdentifier>{0addf6bd-ff4d-474c-b395-d1a0344e1993}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Music\cthulhu.ogg">
+      <Filter>Resource Files\Music</Filter>
+    </None>
+    <None Include="Resources\Shaders\GeometryPass\geometry.frag">
+      <Filter>Resource Files\Shaders\GeometryPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\GeometryPass\geometry.vert">
+      <Filter>Resource Files\Shaders\GeometryPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\directional.frag">
+      <Filter>Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\directional.vert">
+      <Filter>Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\point.frag">
+      <Filter>Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\point.vert">
+      <Filter>Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\spot.frag">
+      <Filter>Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\spot.vert">
+      <Filter>Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\directional.frag">
+      <Filter>Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\directional.vert">
+      <Filter>Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\point.frag">
+      <Filter>Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\point.geom">
+      <Filter>Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\point.vert">
+      <Filter>Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\spot.frag">
+      <Filter>Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\spot.vert">
+      <Filter>Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\Others\blit.vert">
+      <Filter>Resource Files\Shaders\Others</Filter>
+    </None>
+    <None Include="Resources\Shaders\Others\blit.frag">
+      <Filter>Resource Files\Shaders\Others</Filter>
+    </None>
+    <None Include="Resources\Shaders\SkyboxPass\skybox.frag">
+      <Filter>Resource Files\Shaders\SkyboxPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\SkyboxPass\skybox.vert">
+      <Filter>Resource Files\Shaders\SkyboxPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\GUIPass\font.frag">
+      <Filter>Resource Files\Shaders\GUIPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\GUIPass\font.vert">
+      <Filter>Resource Files\Shaders\GUIPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\GUIPass\sprite.frag">
+      <Filter>Resource Files\Shaders\GUIPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\GUIPass\sprite.vert">
+      <Filter>Resource Files\Shaders\GUIPass</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\Sounds\hum.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="Resources\Sounds\stomp.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Textures\2D\brick.png">
+      <Filter>Resource Files\Textures\2D</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\brick_normal.png">
+      <Filter>Resource Files\Textures\2D</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\metal.png">
+      <Filter>Resource Files\Textures\2D</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\moon.png">
+      <Filter>Resource Files\Textures\2D</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\normal_pixel.png">
+      <Filter>Resource Files\Textures\2D</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\white.png">
+      <Filter>Resource Files\Textures\2D</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\white_pixel.png">
+      <Filter>Resource Files\Textures\2D</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\151.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\151_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\152.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\152_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\153.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\153_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\154.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\154_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\155.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\155_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\156.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\156_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\157.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\157_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\158.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\158_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\159.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\159_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\160.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\160_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\161.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\161_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\161b.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\162.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\162_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\163.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\163_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\164.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\164_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\165.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\165_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\166.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\166_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\167.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\167_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\168.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\168_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\169.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\169_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\170.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\170_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\171.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\171_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\172.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\172_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\173.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\173_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\173b.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\174.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\174_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\175.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\175_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\176.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\176_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\177.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\177_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\178.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\178_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\179.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\179_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\180.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\180_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\181.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\181_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\182.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\182_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\183.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\183_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\184.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\184_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\185.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\185_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\186.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\186_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\187.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\187_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\188.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\188_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\189.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\189_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\190.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\190_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\191.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\191_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\192.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\192_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\193.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\193_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\194.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\194_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\195.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\195_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\196.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\196_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\197.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\197_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\198.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\198_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\199.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\199_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\200.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\2D\pack\200_norm.png">
+      <Filter>Resource Files\Textures\2D\Pack</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\day\day_neg_x.png">
+      <Filter>Resource Files\Textures\3D\day</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\day\day_neg_y.png">
+      <Filter>Resource Files\Textures\3D\day</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\day\day_neg_z.png">
+      <Filter>Resource Files\Textures\3D\day</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\day\day_pos_x.png">
+      <Filter>Resource Files\Textures\3D\day</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\day\day_pos_y.png">
+      <Filter>Resource Files\Textures\3D\day</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\day\day_pos_z.png">
+      <Filter>Resource Files\Textures\3D\day</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_neg_x.png">
+      <Filter>Resource Files\Textures\3D\full_moon</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_neg_y.png">
+      <Filter>Resource Files\Textures\3D\full_moon</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_neg_z.png">
+      <Filter>Resource Files\Textures\3D\full_moon</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_pos_x.png">
+      <Filter>Resource Files\Textures\3D\full_moon</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_pos_y.png">
+      <Filter>Resource Files\Textures\3D\full_moon</Filter>
+    </Image>
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_pos_z.png">
+      <Filter>Resource Files\Textures\3D\full_moon</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Game\Camera3D.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\GameObject.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Lights\AbstractLight.cpp">
+      <Filter>Source Files\Game\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Lights\DirectionalLight.cpp">
+      <Filter>Source Files\Game\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Lights\PointLight.cpp">
+      <Filter>Source Files\Game\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Lights\SpotLight.cpp">
+      <Filter>Source Files\Game\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GUI\Sprite.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GUI\Text.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\AudioManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\CPUProfiler.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\ErrorManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\GPUProfiler.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\InputManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\lodepng.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\MeshManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\TextureManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\TimeManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\IConsole.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Log.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\MainGameInterface.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Shell.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\DeferredRenderer.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Font.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\GLSLProgram.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Model.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\SimpleDrawer.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\FBOs\FBO_Deferred.cpp">
+      <Filter>Source Files\Rendering\FBOs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\FBOs\FBO_Shadow.cpp">
+      <Filter>Source Files\Rendering\FBOs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Batches\Batch2DFont.cpp">
+      <Filter>Source Files\Rendering\Batches</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Batches\Batch2DSprite.cpp">
+      <Filter>Source Files\Rendering\Batches</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Batches\Batch3DAbstract.cpp">
+      <Filter>Source Files\Rendering\Batches</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Batches\Batch3DGeometry.cpp">
+      <Filter>Source Files\Rendering\Batches</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Batches\Batch3DShadow.cpp">
+      <Filter>Source Files\Rendering\Batches</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\Forces.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Others\Transform.cpp">
+      <Filter>Source Files\Others</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\SphereCollider.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\GJK.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\AABBCollider.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PointCollider.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\ConvexCollider.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Particles\Emitter.cpp">
+      <Filter>Source Files\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\ParticleManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Others\RynoMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Others\Structures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\Game\Camera3D.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Game\GameObject.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Game\Lights\AbstractLight.h">
+      <Filter>Header Files\Game\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Game\Lights\DirectionalLight.h">
+      <Filter>Header Files\Game\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Game\Lights\PointLight.h">
+      <Filter>Header Files\Game\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Game\Lights\SpotLight.h">
+      <Filter>Header Files\Game\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GUI\Sprite.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GUI\Text.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\AudioManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\CPUProfiler.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\ErrorManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\GPUProfiler.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\InputManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\lodepng.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\MeshManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\TextureManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\TimeManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\System\Global.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\System\IConsole.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\System\Log.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\System\MainGameInterface.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\System\Shell.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\DeferredRenderer.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\Font.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\GLSLProgram.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\Model.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\SimpleDrawer.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\FBOs\FBO_Deferred.h">
+      <Filter>Header Files\Rendering\FBOs</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\FBOs\FBO_Shadow.h">
+      <Filter>Header Files\Rendering\FBOs</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\Batches\Batch2DFont.h">
+      <Filter>Header Files\Rendering\Batches</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\Batches\Batch2DSprite.h">
+      <Filter>Header Files\Rendering\Batches</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\Batches\Batch3DAbstract.h">
+      <Filter>Header Files\Rendering\Batches</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\Batches\Batch3DGeometry.h">
+      <Filter>Header Files\Rendering\Batches</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\Batches\Batch3DShadow.h">
+      <Filter>Header Files\Rendering\Batches</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\ITransform2D.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\Structures.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Physics\Forces.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\Transform.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Physics\SphereCollider.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Physics\GJK.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Physics\Collider.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Physics\AABBCollider.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Physics\PointCollider.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Physics\ConvexCollider.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Particles\Emitter.h">
+      <Filter>Header Files\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\ParticleManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\RynoMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\GenericMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

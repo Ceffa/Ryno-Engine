@@ -1,0 +1,394 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Music\cthulhu.ogg" />
+    <None Include="Resources\Shaders\GeometryPass\geometry.frag" />
+    <None Include="Resources\Shaders\GeometryPass\geometry.vert" />
+    <None Include="Resources\Shaders\GUIPass\font.frag" />
+    <None Include="Resources\Shaders\GUIPass\font.vert" />
+    <None Include="Resources\Shaders\GUIPass\sprite.frag" />
+    <None Include="Resources\Shaders\GUIPass\sprite.vert" />
+    <None Include="Resources\Shaders\LightPass\directional.frag" />
+    <None Include="Resources\Shaders\LightPass\directional.vert" />
+    <None Include="Resources\Shaders\LightPass\point.frag" />
+    <None Include="Resources\Shaders\LightPass\point.vert" />
+    <None Include="Resources\Shaders\LightPass\spot.frag" />
+    <None Include="Resources\Shaders\LightPass\spot.vert" />
+    <None Include="Resources\Shaders\Others\blit.frag" />
+    <None Include="Resources\Shaders\Others\blit.vert" />
+    <None Include="Resources\Shaders\ShadowPass\directional.frag" />
+    <None Include="Resources\Shaders\ShadowPass\directional.vert" />
+    <None Include="Resources\Shaders\ShadowPass\point.frag" />
+    <None Include="Resources\Shaders\ShadowPass\point.geom" />
+    <None Include="Resources\Shaders\ShadowPass\point.vert" />
+    <None Include="Resources\Shaders\ShadowPass\spot.frag" />
+    <None Include="Resources\Shaders\ShadowPass\spot.vert" />
+    <None Include="Resources\Shaders\SkyboxPass\skybox.frag" />
+    <None Include="Resources\Shaders\SkyboxPass\skybox.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\Sounds\hum.wav" />
+    <Media Include="Resources\Sounds\stomp.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Textures\2D\brick.png" />
+    <Image Include="Resources\Textures\2D\brick_normal.png" />
+    <Image Include="Resources\Textures\2D\metal.png" />
+    <Image Include="Resources\Textures\2D\moon.png" />
+    <Image Include="Resources\Textures\2D\normal_pixel.png" />
+    <Image Include="Resources\Textures\2D\pack\151.png" />
+    <Image Include="Resources\Textures\2D\pack\151_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\152.png" />
+    <Image Include="Resources\Textures\2D\pack\152_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\153.png" />
+    <Image Include="Resources\Textures\2D\pack\153_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\154.png" />
+    <Image Include="Resources\Textures\2D\pack\154_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\155.png" />
+    <Image Include="Resources\Textures\2D\pack\155_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\156.png" />
+    <Image Include="Resources\Textures\2D\pack\156_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\157.png" />
+    <Image Include="Resources\Textures\2D\pack\157_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\158.png" />
+    <Image Include="Resources\Textures\2D\pack\158_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\159.png" />
+    <Image Include="Resources\Textures\2D\pack\159_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\160.png" />
+    <Image Include="Resources\Textures\2D\pack\160_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\161.png" />
+    <Image Include="Resources\Textures\2D\pack\161b.png" />
+    <Image Include="Resources\Textures\2D\pack\161_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\162.png" />
+    <Image Include="Resources\Textures\2D\pack\162_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\163.png" />
+    <Image Include="Resources\Textures\2D\pack\163_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\164.png" />
+    <Image Include="Resources\Textures\2D\pack\164_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\165.png" />
+    <Image Include="Resources\Textures\2D\pack\165_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\166.png" />
+    <Image Include="Resources\Textures\2D\pack\166_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\167.png" />
+    <Image Include="Resources\Textures\2D\pack\167_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\168.png" />
+    <Image Include="Resources\Textures\2D\pack\168_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\169.png" />
+    <Image Include="Resources\Textures\2D\pack\169_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\170.png" />
+    <Image Include="Resources\Textures\2D\pack\170_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\171.png" />
+    <Image Include="Resources\Textures\2D\pack\171_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\172.png" />
+    <Image Include="Resources\Textures\2D\pack\172_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\173.png" />
+    <Image Include="Resources\Textures\2D\pack\173b.png" />
+    <Image Include="Resources\Textures\2D\pack\173_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\174.png" />
+    <Image Include="Resources\Textures\2D\pack\174_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\175.png" />
+    <Image Include="Resources\Textures\2D\pack\175_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\176.png" />
+    <Image Include="Resources\Textures\2D\pack\176_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\177.png" />
+    <Image Include="Resources\Textures\2D\pack\177_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\178.png" />
+    <Image Include="Resources\Textures\2D\pack\178_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\179.png" />
+    <Image Include="Resources\Textures\2D\pack\179_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\180.png" />
+    <Image Include="Resources\Textures\2D\pack\180_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\181.png" />
+    <Image Include="Resources\Textures\2D\pack\181_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\182.png" />
+    <Image Include="Resources\Textures\2D\pack\182_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\183.png" />
+    <Image Include="Resources\Textures\2D\pack\183_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\184.png" />
+    <Image Include="Resources\Textures\2D\pack\184_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\185.png" />
+    <Image Include="Resources\Textures\2D\pack\185_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\186.png" />
+    <Image Include="Resources\Textures\2D\pack\186_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\187.png" />
+    <Image Include="Resources\Textures\2D\pack\187_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\188.png" />
+    <Image Include="Resources\Textures\2D\pack\188_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\189.png" />
+    <Image Include="Resources\Textures\2D\pack\189_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\190.png" />
+    <Image Include="Resources\Textures\2D\pack\190_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\191.png" />
+    <Image Include="Resources\Textures\2D\pack\191_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\192.png" />
+    <Image Include="Resources\Textures\2D\pack\192_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\193.png" />
+    <Image Include="Resources\Textures\2D\pack\193_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\194.png" />
+    <Image Include="Resources\Textures\2D\pack\194_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\195.png" />
+    <Image Include="Resources\Textures\2D\pack\195_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\196.png" />
+    <Image Include="Resources\Textures\2D\pack\196_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\197.png" />
+    <Image Include="Resources\Textures\2D\pack\197_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\198.png" />
+    <Image Include="Resources\Textures\2D\pack\198_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\199.png" />
+    <Image Include="Resources\Textures\2D\pack\199_norm.png" />
+    <Image Include="Resources\Textures\2D\pack\200.png" />
+    <Image Include="Resources\Textures\2D\pack\200_norm.png" />
+    <Image Include="Resources\Textures\2D\white.png" />
+    <Image Include="Resources\Textures\2D\white_pixel.png" />
+    <Image Include="Resources\Textures\3D\day\day_neg_x.png" />
+    <Image Include="Resources\Textures\3D\day\day_neg_y.png" />
+    <Image Include="Resources\Textures\3D\day\day_neg_z.png" />
+    <Image Include="Resources\Textures\3D\day\day_pos_x.png" />
+    <Image Include="Resources\Textures\3D\day\day_pos_y.png" />
+    <Image Include="Resources\Textures\3D\day\day_pos_z.png" />
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_neg_x.png" />
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_neg_y.png" />
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_neg_z.png" />
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_pos_x.png" />
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_pos_y.png" />
+    <Image Include="Resources\Textures\3D\full_moon\full_moon_pos_z.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Game\Camera3D.cpp" />
+    <ClCompile Include="Source\Game\GameObject.cpp" />
+    <ClCompile Include="Source\Game\Lights\AbstractLight.cpp" />
+    <ClCompile Include="Source\Game\Lights\DirectionalLight.cpp" />
+    <ClCompile Include="Source\Game\Lights\PointLight.cpp" />
+    <ClCompile Include="Source\Game\Lights\SpotLight.cpp" />
+    <ClCompile Include="Source\GUI\Sprite.cpp" />
+    <ClCompile Include="Source\GUI\Text.cpp" />
+    <ClCompile Include="Source\Managers\AudioManager.cpp" />
+    <ClCompile Include="Source\Managers\CPUProfiler.cpp" />
+    <ClCompile Include="Source\Managers\ErrorManager.cpp" />
+    <ClCompile Include="Source\Managers\GPUProfiler.cpp" />
+    <ClCompile Include="Source\Managers\InputManager.cpp" />
+    <ClCompile Include="Source\Managers\lodepng.cpp" />
+    <ClCompile Include="Source\Managers\MeshManager.cpp" />
+    <ClCompile Include="Source\Managers\ParticleManager.cpp" />
+    <ClCompile Include="Source\Managers\TextureManager.cpp" />
+    <ClCompile Include="Source\Managers\TimeManager.cpp" />
+    <ClCompile Include="Source\Others\RynoMath.cpp" />
+    <ClCompile Include="Source\Others\Structures.cpp" />
+    <ClCompile Include="Source\Others\Transform.cpp" />
+    <ClCompile Include="Source\Particles\Emitter.cpp" />
+    <ClCompile Include="Source\Physics\AABBCollider.cpp" />
+    <ClCompile Include="Source\Physics\ConvexCollider.cpp" />
+    <ClCompile Include="Source\Physics\Forces.cpp" />
+    <ClCompile Include="Source\Physics\GJK.cpp" />
+    <ClCompile Include="Source\Physics\PointCollider.cpp" />
+    <ClCompile Include="Source\Physics\SphereCollider.cpp" />
+    <ClCompile Include="Source\Rendering\Batches\Batch2DFont.cpp" />
+    <ClCompile Include="Source\Rendering\Batches\Batch2DSprite.cpp" />
+    <ClCompile Include="Source\Rendering\Batches\Batch3DAbstract.cpp" />
+    <ClCompile Include="Source\Rendering\Batches\Batch3DGeometry.cpp" />
+    <ClCompile Include="Source\Rendering\Batches\Batch3DShadow.cpp" />
+    <ClCompile Include="Source\Rendering\DeferredRenderer.cpp" />
+    <ClCompile Include="Source\Rendering\FBOs\FBO_Deferred.cpp" />
+    <ClCompile Include="Source\Rendering\FBOs\FBO_Shadow.cpp" />
+    <ClCompile Include="Source\Rendering\Font.cpp" />
+    <ClCompile Include="Source\Rendering\GLSLProgram.cpp" />
+    <ClCompile Include="Source\Rendering\Model.cpp" />
+    <ClCompile Include="Source\Rendering\SimpleDrawer.cpp" />
+    <ClCompile Include="Source\System\IConsole.cpp" />
+    <ClCompile Include="Source\System\Log.cpp" />
+    <ClCompile Include="Source\System\MainGameInterface.cpp" />
+    <ClCompile Include="Source\System\Shell.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\Game\Camera3D.h" />
+    <ClInclude Include="Headers\Game\GameObject.h" />
+    <ClInclude Include="Headers\Game\Lights\AbstractLight.h" />
+    <ClInclude Include="Headers\Game\Lights\DirectionalLight.h" />
+    <ClInclude Include="Headers\Game\Lights\PointLight.h" />
+    <ClInclude Include="Headers\Game\Lights\SpotLight.h" />
+    <ClInclude Include="Headers\GUI\Sprite.h" />
+    <ClInclude Include="Headers\GUI\Text.h" />
+    <ClInclude Include="Headers\Managers\AudioManager.h" />
+    <ClInclude Include="Headers\Managers\CPUProfiler.h" />
+    <ClInclude Include="Headers\Managers\ErrorManager.h" />
+    <ClInclude Include="Headers\Managers\GPUProfiler.h" />
+    <ClInclude Include="Headers\Managers\InputManager.h" />
+    <ClInclude Include="Headers\Managers\lodepng.h" />
+    <ClInclude Include="Headers\Managers\MeshManager.h" />
+    <ClInclude Include="Headers\Managers\ParticleManager.h" />
+    <ClInclude Include="Headers\Managers\TextureManager.h" />
+    <ClInclude Include="Headers\Managers\TimeManager.h" />
+    <ClInclude Include="Headers\Others\GenericMap.h" />
+    <ClInclude Include="Headers\Others\ITransform2D.h" />
+    <ClInclude Include="Headers\Others\RynoMath.h" />
+    <ClInclude Include="Headers\Others\Transform.h" />
+    <ClInclude Include="Headers\Others\Structures.h" />
+    <ClInclude Include="Headers\Others\Types.h" />
+    <ClInclude Include="Headers\Particles\Emitter.h" />
+    <ClInclude Include="Headers\Physics\AABBCollider.h" />
+    <ClInclude Include="Headers\Physics\ConvexCollider.h" />
+    <ClInclude Include="Headers\Physics\Forces.h" />
+    <ClInclude Include="Headers\Physics\GJK.h" />
+    <ClInclude Include="Headers\Physics\Collider.h" />
+    <ClInclude Include="Headers\Physics\PointCollider.h" />
+    <ClInclude Include="Headers\Physics\SphereCollider.h" />
+    <ClInclude Include="Headers\Rendering\Batches\Batch2DFont.h" />
+    <ClInclude Include="Headers\Rendering\Batches\Batch2DSprite.h" />
+    <ClInclude Include="Headers\Rendering\Batches\Batch3DAbstract.h" />
+    <ClInclude Include="Headers\Rendering\Batches\Batch3DGeometry.h" />
+    <ClInclude Include="Headers\Rendering\Batches\Batch3DShadow.h" />
+    <ClInclude Include="Headers\Rendering\DeferredRenderer.h" />
+    <ClInclude Include="Headers\Rendering\FBOs\FBO_Deferred.h" />
+    <ClInclude Include="Headers\Rendering\FBOs\FBO_Shadow.h" />
+    <ClInclude Include="Headers\Rendering\Font.h" />
+    <ClInclude Include="Headers\Rendering\GLSLProgram.h" />
+    <ClInclude Include="Headers\Rendering\Model.h" />
+    <ClInclude Include="Headers\Rendering\SimpleDrawer.h" />
+    <ClInclude Include="Headers\System\Global.h" />
+    <ClInclude Include="Headers\System\IConsole.h" />
+    <ClInclude Include="Headers\System\Log.h" />
+    <ClInclude Include="Headers\System\MainGameInterface.h" />
+    <ClInclude Include="Headers\System\Shell.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8E9740DA-B08B-4E49-821A-696D543348EA}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>RynoEngine</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Deps/Includes;$(ProjectDir)Headers\Game;$(ProjectDir)Headers\GUI;$(ProjectDir)Headers\Particles;$(ProjectDir)Headers\Physics;$(ProjectDir)Headers\System;$(ProjectDir)Headers\Rendering;$(ProjectDir)Headers\Others;$(ProjectDir)Headers\Managers;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Deps/Includes;$(ProjectDir)Headers\Game;$(ProjectDir)Headers\GUI;$(ProjectDir)Headers\Physics;$(ProjectDir)Headers\System;$(ProjectDir)Headers\Rendering;$(ProjectDir)Headers\Others;$(ProjectDir)Headers\Managers;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;_ITERATOR_DEBUG_LEVEL=2;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
