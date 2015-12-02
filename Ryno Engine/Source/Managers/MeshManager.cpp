@@ -113,29 +113,30 @@ namespace Ryno{
 		U32 size = (U32)vertexIndices.size();
 		Mesh* mesh = new Mesh();
 		meshes.push_back(mesh);
-		mesh->vertices.resize(size);
+		std::vector <Vertex3D> vertices;
+		vertices.resize(size);
 
 		
 
 		for (U32 i = 0; i < size; i++){
 			U32 vertexIndex = vertexIndices[i];
-			mesh->vertices[i].position = temp_vertices[vertexIndex - 1];
+			vertices[i].position = temp_vertices[vertexIndex - 1];
 
 			if (has_uvs){
 				U32 uvIndex = uvIndices[i];
-				mesh->vertices[i].uv = temp_uvs[uvIndex - 1];
+				vertices[i].uv = temp_uvs[uvIndex - 1];
 			}
 			
 			U32 normalIndex = normalIndices[i];
-			mesh->vertices[i].normal = temp_normals[normalIndex - 1];
+			vertices[i].normal = temp_normals[normalIndex - 1];
 
 
 		}
 
-		for (U32 i = 0; i < mesh->vertices.size(); i += 3) {
-			Vertex3D* v0 = &mesh->vertices[i];
-			Vertex3D* v1 = &mesh->vertices[i+1];
-			Vertex3D* v2 = &mesh->vertices[i+2];
+		for (U32 i = 0; i < vertices.size(); i += 3) {
+			Vertex3D* v0 = &vertices[i];
+			Vertex3D* v1 = &vertices[i+1];
+			Vertex3D* v2 = &vertices[i+2];
 
 			if (has_uvs){
 				glm::vec3 Edge1 = v1->position - v0->position;
@@ -166,15 +167,39 @@ namespace Ryno{
 		}
 
 		if (has_uvs){
-			for (U32 i = 0; i < mesh->vertices.size(); i++) {
-				mesh->vertices[i].tangent = glm::normalize(mesh->vertices[i].tangent);
+			for (U32 i = 0; i < vertices.size(); i++) {
+				vertices[i].tangent = glm::normalize(vertices[i].tangent);
 			}
 		}
 
-		meshes[last_mesh]->size = meshes[last_mesh]->vertices.size(); //One time only
+		bool add = true;
+
+		for (int i = 0; i < vertices.size(); i++){
+			Vertex3D a = vertices[i];
+			add = true;
+			for (int j = 0; j < mesh->vertices.size(); j++){
+				if (Vertex3D::Compare(a, mesh->vertices[j])){
+					mesh->indices.push_back(j);
+					add = false;
+					break;
+				}
+			}
+			if (add){
+				mesh->indices.push_back(mesh->vertices.size());
+				mesh->vertices.push_back(a);
+			}
+		}
+
+
+		
+
+		meshes[last_mesh]->vertices_number = meshes[last_mesh]->vertices.size(); //One time only
+		meshes[last_mesh]->indices_number = meshes[last_mesh]->indices.size(); //One time only
 
 		return ++last_mesh;
 	}
+
+	
 
 	I32 MeshManager::load_collider_mesh(const std::string& name, LocationOfResource loc)
 	{

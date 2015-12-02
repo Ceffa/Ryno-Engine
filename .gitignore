@@ -7,4 +7,5 @@ Ryno Engine/x64/
 Ryno Engine/x86/
 Game/x64/
 Game/x86/
-.vs/
+.vs/Ryno Engine
+*.opensdf

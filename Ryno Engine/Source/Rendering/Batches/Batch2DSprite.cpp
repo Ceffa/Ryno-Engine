@@ -131,9 +131,12 @@ namespace Ryno {
 		//temporally bind vbo
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-		//Tell vbo how to use the data it will receive
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (void*)offsetof(Vertex2D, position));
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (void*)offsetof(Vertex2D, uv));
+		//Tell vbo how to use the data it will receive.
+		//In this case 4 bytes: 2 for position, 2 for uvs.
+		//They are always normalized quads, because they are sprites,
+		//so a byte is enough
+		glVertexAttribPointer(0, 2, GL_BYTE, GL_FALSE, 4, (void*)0);
+		glVertexAttribPointer(1, 2, GL_UNSIGNED_BYTE, GL_FALSE, 4, (void*)2);
 		
 		//Create instanced vbo
 		if (!m_i_vbo)
@@ -156,8 +159,12 @@ namespace Ryno {
 		glVertexAttribDivisor(6, 1);
 		glVertexAttribDivisor(7, 1);
 
-
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		if (!m_indices_vbo)
+			glGenBuffers(1, &m_indices_vbo);
+
+		
 
 
 	}
@@ -172,25 +179,16 @@ namespace Ryno {
 
 	void Batch2DSprite::render_batch() {
 
-		const Vertex2D quad_vertices[6] {
-			Vertex2D(-1, -1,0,1),
-			Vertex2D(-1, 1, 0,0),
-			Vertex2D(1, 1, 1,0),
-			Vertex2D(-1, -1, 0, 1),
-			Vertex2D(1, 1, 1, 0),
-			Vertex2D(1, -1, 1, 1)
-		};
-		
-		I32 draw_calls = 0;
-		bool a = false;
-		
+		const I8 quad_vertices[16] {-1, -1, 0, 1, -1, 1, 0, 0, 1, 1, 1, 0, 1, -1, 1, 1};	//A mapped quad
+		const U8 quad_indices[6]{ 0, 1, 2, 0, 2, 3 };										//Quad indices	
+
 		enable_attributes();
 
-
-		// orphaning before
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Vertex2D), nullptr, GL_STATIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, 6 * sizeof(Vertex2D), quad_vertices);
+		glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(I8), quad_vertices, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_vbo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(U8), quad_indices, GL_STATIC_DRAW);
 
 
 		U32 current_instance = 0;
@@ -201,13 +199,9 @@ namespace Ryno {
 			glBindTexture(GL_TEXTURE_2D, rb.texture);
 			
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InstanceValues), nullptr, GL_STATIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(InstanceValues), &input_instances[number_of_instances]);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InstanceValues), &input_instances[number_of_instances], GL_STATIC_DRAW);
 			
-			++draw_calls;
-			
-			glDrawArraysInstanced(GL_TRIANGLES,0 ,6,rb.num_instances);
+			glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void*)0, rb.num_instances);
 			current_instance++;
 			number_of_instances += rb.num_instances;
 		}

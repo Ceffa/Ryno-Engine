@@ -38,6 +38,7 @@ namespace Ryno{
 		std::vector<Sprite*> m_sprites;
 		U32 m_vbo;
 		U32 m_i_vbo;//instancing vbo
+		U32 m_indices_vbo;
 		U32 m_vao;
 
 		std::vector<InstanceValues> input_instances;

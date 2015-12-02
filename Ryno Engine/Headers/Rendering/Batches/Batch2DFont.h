@@ -39,6 +39,7 @@ namespace Ryno{
 		std::vector<FontGlyph*> m_font_glyphs;
 		U32 m_vbo;
 		U32 m_i_vbo;//instancing vbo
+		U32 m_indices_vbo;
 		U32 m_vao;
 
 		std::vector<InstanceValuesFont> input_instances;

@@ -27,12 +27,14 @@ namespace Ryno {
 
 		
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, m->size * sizeof(Vertex3D), nullptr, GL_DYNAMIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, m->size * sizeof(Vertex3D), m_mesh_manager->get_mesh(model->mesh)->vertices.data());
+		glBufferData(GL_ARRAY_BUFFER, m->vertices_number * sizeof(Vertex3D), nullptr, GL_DYNAMIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, m->vertices_number * sizeof(Vertex3D), m_mesh_manager->get_mesh(model->mesh)->vertices.data());
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		glDrawArrays(GL_TRIANGLES, 0, m->size);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m->indices_number * sizeof(U16), &m->indices[0], GL_STATIC_DRAW);
 
+		glDrawElements(GL_TRIANGLES, m->indices_number, GL_UNSIGNED_SHORT, (void*)0);
 	
 	}
 
@@ -60,10 +62,11 @@ namespace Ryno {
 		//Enable the attrib arrays
 		glEnableVertexAttribArray(0);
 
-
+		if (!m_index_vbo)
+			glGenBuffers(1, &m_index_vbo);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+		
 
 
 	}

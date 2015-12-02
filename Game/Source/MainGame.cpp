@@ -22,8 +22,7 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading graphics
-		white = m_texture_manager->loadPNG("white_pixel",GAME_FOLDER);
-		Texture white_normal = m_texture_manager->loadPNG("normal_pixel", GAME_FOLDER);
+	
 		Texture texture_bricks = m_texture_manager->loadPNG("pack/177", GAME_FOLDER);
 		Texture normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm", GAME_FOLDER);
 		Texture at = m_texture_manager->loadPNG("pack/196", GAME_FOLDER);
@@ -33,13 +32,15 @@ namespace Ryno{
 		Texture solaire = m_texture_manager->loadPNG("solaire", GAME_FOLDER);
 		Texture sun = m_texture_manager->loadPNG("sun", GAME_FOLDER);
 		Texture doge = m_texture_manager->loadPNG("doge", GAME_FOLDER);
+		white = m_texture_manager->loadPNG("white_pixel", GAME_FOLDER);
+		Texture white_normal = m_texture_manager->loadPNG("normal_pixel", GAME_FOLDER);
 
 		CPUProfiler::next_time();
 
 		//loading models
-		static I32 cube_mesh = m_mesh_manager->load_mesh("cube", 1, GAME_FOLDER);
 		static I32 sphere_mesh = m_mesh_manager->load_mesh("sphere", 1, GAME_FOLDER);
 		static I32 cone_mesh = m_mesh_manager->load_mesh("cone", 1, GAME_FOLDER);
+		static I32 cube_mesh = m_mesh_manager->load_mesh("cube", 1, GAME_FOLDER);
 		marker_mesh = m_mesh_manager->load_mesh("marker", 1, GAME_FOLDER);
 
 		CPUProfiler::next_time();
@@ -309,10 +310,7 @@ namespace Ryno{
 		particle_batch = new GameObject();
 		particle_batch->set_emitter(emitter);
 
-		
-		
-		
-		
+				
 		CPUProfiler::end_time();
 		CPUProfiler::print_time();
 

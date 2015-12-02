@@ -11,7 +11,9 @@ namespace Ryno{
 	struct Mesh{
 	
 		std::vector<Vertex3D> vertices;
-		I32 size;
+		std::vector<U16> indices;
+		U16 vertices_number;
+		U16 indices_number;
 	};
 
 	struct ColliderMesh{

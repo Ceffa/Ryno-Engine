@@ -74,6 +74,14 @@ namespace Ryno{
 		glm::vec2 uv;
 		glm::vec3 normal;
 		glm::vec3 tangent;
+		static bool Compare(Vertex3D a, Vertex3D b){
+			if (a.normal == b.normal &&
+				a.position == b.position &&
+				a.uv == b.uv &&
+				a.tangent == b.tangent)
+				return true;
+			return false;
+		}
 	};
 
 	struct Vertex2D{

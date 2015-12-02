@@ -194,6 +194,8 @@ namespace Ryno {
 		glVertexAttribDivisor(5, 1);
 		glVertexAttribDivisor(6, 1);
 
+		if (!m_indices_vbo)
+			glGenBuffers(1, &m_indices_vbo);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -212,29 +214,28 @@ namespace Ryno {
 		quad_vertices[0].uv = glm::vec2(uvs->x, uvs->y );
 		quad_vertices[1].uv = glm::vec2(uvs->x, uvs->y - uvs->w);
 		quad_vertices[2].uv = glm::vec2(uvs->x + uvs->z, uvs->y - uvs->w);
-		quad_vertices[3].uv = glm::vec2(uvs->x, uvs->y);
-		quad_vertices[4].uv = glm::vec2(uvs->x + uvs->z, uvs->y - uvs->w);
-		quad_vertices[5].uv = glm::vec2(uvs->x + uvs->z, uvs->y);
+		quad_vertices[3].uv = glm::vec2(uvs->x + uvs->z, uvs->y);
 
 	}
 
 	void Batch2DFont::render_batch() {
 
-		 static Vertex2D quad_vertices[6] {
+		 static Vertex2D quad_vertices[4] {
 			Vertex2D(0, -1,0,1),
 			Vertex2D(0, 1, 0,0),
 			Vertex2D(2, 1, 1,0),
-			Vertex2D(0, -1, 0, 1),
-			Vertex2D(2, 1, 1, 0),
 			Vertex2D(2, -1, 1, 1)
 		};
-		
-	
+		const U8 quad_indices[6]{ 0, 1, 2,0,2,3 };										//Quad indices	
 
 		enable_attributes();
 
 		U32 current_instance = 0;
 		U32 number_of_instances = 0;
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_vbo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(U8), quad_indices, GL_STATIC_DRAW);
+
 		for (RenderBatch2DFont rb : m_render_batches){
 
 			glActiveTexture(GL_TEXTURE0);
@@ -243,24 +244,15 @@ namespace Ryno {
 			//Change UVs depending on letter glyph.
 			//They are batched, so many identical letters share the same font uvs
 			set_uvs(quad_vertices, &rb.uv);
-
-						
-			
-			// orphaning  before
+							
 			glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-			glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Vertex2D), nullptr, GL_STATIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, 6 * sizeof(Vertex2D), quad_vertices);
-			
-		
+			glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(Vertex2D), quad_vertices, GL_STATIC_DRAW);
 			
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InstanceValuesFont), nullptr, GL_STATIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(InstanceValuesFont), &input_instances[number_of_instances]);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InstanceValuesFont), &input_instances[number_of_instances], GL_STATIC_DRAW);
+				
+			glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void*)0, rb.num_instances);
 
-			
-			
-			glDrawArraysInstanced(GL_TRIANGLES,0 ,6,rb.num_instances);
 			current_instance++;
 			number_of_instances += rb.num_instances;
 		}
