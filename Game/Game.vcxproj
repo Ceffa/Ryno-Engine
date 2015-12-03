@@ -32,7 +32,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -70,7 +70,7 @@
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;$(SolutionDir)x64/Release;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(SolutionDir)Ryno Engine\Headers\Particles;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;$(SolutionDir)x64/Debug;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

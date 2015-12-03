@@ -186,6 +186,7 @@
     <ClCompile Include="Source\Managers\GPUProfiler.cpp" />
     <ClCompile Include="Source\Managers\InputManager.cpp" />
     <ClCompile Include="Source\Managers\lodepng.cpp" />
+    <ClCompile Include="Source\Managers\MeshBuilder.cpp" />
     <ClCompile Include="Source\Managers\MeshManager.cpp" />
     <ClCompile Include="Source\Managers\ParticleManager.cpp" />
     <ClCompile Include="Source\Managers\TextureManager.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="Headers\Managers\GPUProfiler.h" />
     <ClInclude Include="Headers\Managers\InputManager.h" />
     <ClInclude Include="Headers\Managers\lodepng.h" />
+    <ClInclude Include="Headers\Managers\MeshBuilder.h" />
     <ClInclude Include="Headers\Managers\MeshManager.h" />
     <ClInclude Include="Headers\Managers\ParticleManager.h" />
     <ClInclude Include="Headers\Managers\TextureManager.h" />
@@ -283,7 +285,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -321,7 +323,7 @@
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Deps/Includes;$(ProjectDir)Headers\Game;$(ProjectDir)Headers\GUI;$(ProjectDir)Headers\Physics;$(ProjectDir)Headers\System;$(ProjectDir)Headers\Rendering;$(ProjectDir)Headers\Others;$(ProjectDir)Headers\Managers;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Deps/Includes;$(ProjectDir)Headers\Particles;$(ProjectDir)Headers\Game;$(ProjectDir)Headers\GUI;$(ProjectDir)Headers\Physics;$(ProjectDir)Headers\System;$(ProjectDir)Headers\Rendering;$(ProjectDir)Headers\Others;$(ProjectDir)Headers\Managers;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

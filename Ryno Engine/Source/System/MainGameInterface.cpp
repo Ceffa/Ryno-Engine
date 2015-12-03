@@ -67,7 +67,7 @@ namespace Ryno{
 		m_deferred_renderer = DeferredRenderer::get_instance();
 		m_deferred_renderer->init(m_camera);
 		m_simple_drawer = SimpleDrawer::get_instance();
-
+		m_mesh_builder = MeshBuilder::get_instance();
 		
 		
 				

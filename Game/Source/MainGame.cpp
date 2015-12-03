@@ -41,8 +41,11 @@ namespace Ryno{
 		static I32 sphere_mesh = m_mesh_manager->load_mesh("sphere", 1, GAME_FOLDER);
 		static I32 cone_mesh = m_mesh_manager->load_mesh("cone", 1, GAME_FOLDER);
 		static I32 cube_mesh = m_mesh_manager->load_mesh("cube", 1, GAME_FOLDER);
-		marker_mesh = m_mesh_manager->load_mesh("marker", 1, GAME_FOLDER);
-
+		
+		static I32 terrain_mesh = m_mesh_manager->create_empty_mesh();
+		m_mesh_builder->set_mesh(terrain_mesh);
+		NewTerrain();
+		
 		CPUProfiler::next_time();
 
 		//loading skyboxes
@@ -68,28 +71,29 @@ namespace Ryno{
 		go->model->set_color_and_flatness(255, 255, 255, 0);
 		go->model->set_texture_normal(white, white_normal);
 		go->model->mesh = cone_mesh;
-		go->transform->set_scale(20,20,20);
-		go->transform->set_position(0, 15, 50);
+		go->transform->set_scale(100,100,100);
+		go->transform->set_position(0, 55, 50);
 		
 	
 		go = new GameObject(go);
-		go->transform->set_scale(20, 20, 20);
-		go->transform->set_position(-150, 15, -170);
+		go->transform->set_scale(30, 30, 30);
+		go->transform->set_position(-150, 20, -170);
 
 		go = new GameObject(go);
-		go->transform->set_position(150, 15, -170);
+		go->transform->set_position(150, 20, -170);
 
 
 		//Base
 		go = new GameObject(go);
-		go->transform->set_scale(200, 5, 200);
+		go->transform->set_scale(1, 1,1);
 		go->model->set_texture_normal(bt, bn);
 
-		go->model->mesh = cube_mesh;
+		go->model->mesh = terrain_mesh;
 		go->model->set_tiling(3, 3);
-		go->transform->set_position(0, 0, 0);
+		go->transform->set_position(5, 5, -5);
 		//Left
 		go = new GameObject(go);
+		go->model->mesh = cube_mesh;
 		go->transform->set_scale(5, 100, 200);
 		go->transform->set_position(-200, 105, 0);
 		//Right
@@ -225,52 +229,53 @@ namespace Ryno{
 		
 		emitter->lambda_creation = [](Emitter* e,Particle3D* p){
 			Texture m_white, m_normal;
-			Emitter* m_emitter;
+			//Emitter* m_emitter;
 			I32 m_mesh;
 			e->save_map.get("texture", &m_white);
 			e->save_map.get("normal", &m_normal);
 			e->save_map.get("mesh", &m_mesh);
-			e->save_map.get("emitter", &m_emitter);
+			//e->save_map.get("emitter", &m_emitter);
 
 			p->decay_rate = .001f;
-			p->speed = 1;
+			p->speed = .05f;
 			p->model = new Model();
 			p->model->set_texture_normal(m_white, m_normal);
 			p->model->mesh = m_mesh;
 			p->model->color = ColorRGBA::yellow;
-			p->set_emitter(new Emitter(m_emitter));
+			//p->set_emitter(new Emitter(m_emitter));
 		};
 		emitter->lambda_spawn = [](Emitter* e){
-			for (U8 t = 0; t < 5; t++){
+			for (U8 t = 0; t < 2; t++){
 				Particle3D* p = e->new_particle();
 				p->transform->position = e->game_object->transform->position;
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
-				bool b = false;
-				p->get_emitter()->save_map.replace("go_crazy", b);
-				p->transform->set_scale(1, 1, 1);
+				//bool b = false;
+				//p->get_emitter()->save_map.replace("go_crazy", b);
 			}
 		};
 
 		emitter->lambda_particle_update = [](Emitter* e,Particle3D* p, float delta_time)
 		{
 			
-			bool f = false;
-			bool t = true;
-			if (p->lifetime < .75f){
+			//bool f = false;
+			//bool t = true;
+			//if (p->lifetime < .75f){
 				p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
-				p->transform->scale = glm::vec3(ryno_math::lerp(1, 30, p->lifetime));
-			}
+				p->transform->set_scale(ryno_math::lerp(glm::vec3(.1), glm::vec3(5), p->lifetime));
 
-			if (p->lifetime > .75f && p->lifetime < .82f){
+				p->model->set_color(255, ryno_math::lerp(0, 255, p->lifetime), 0);
+			//}
+
+			/*if (p->lifetime > .75f && p->lifetime < .82f){
 				p->get_emitter()->save_map.replace("go_crazy", t);
 				if (p->transform->scale.x > 1)
 					p->transform->set_scale(0,0,0);
 			}
-			else p->get_emitter()->save_map.replace("go_crazy", f);
+			else p->get_emitter()->save_map.replace("go_crazy", f);*/
 
 		};
 
-		e2->lambda_creation = [](Emitter* e,Particle3D* p){
+		/*e2->lambda_creation = [](Emitter* e,Particle3D* p){
 			Texture m_white, m_normal;
 			I32 m_mesh;
 			Emitter* m_emitter;
@@ -302,12 +307,13 @@ namespace Ryno{
 		e2->lambda_particle_update = [](Emitter* e, Particle3D* p, F32 delta_time)
 		{
 			p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
-		};
+		};*/
 
 
-		e2->init(200);
+		//e2->init(200);
 		emitter->init(200);
 		particle_batch = new GameObject();
+		particle_batch->transform->set_position(0, 105, 50);
 		particle_batch->set_emitter(emitter);
 
 				
@@ -352,4 +358,62 @@ namespace Ryno{
 			}
 		}
 	}
+
+
+	void MainGame::NewTerrain()
+	{
+		I32 m_SegmentCount = 80;
+		F32 m_Length = 5;
+		F32 m_Width = 5;
+		F32 m_Height = 10;
+
+		for (int i = 0; i < m_SegmentCount; i++)
+		{
+			float z = m_Length * i;
+			float v = (1.0f / m_SegmentCount) * i;
+
+			for (int j = 0; j < m_SegmentCount; j++)
+			{
+				float x = m_Width * j;
+				float u = (1.0f / m_SegmentCount) * j;
+
+				glm::vec3 offset;
+				if (j == 0 || j == m_SegmentCount - 1 || i == 0 || i == m_SegmentCount - 1 )
+					offset = glm::vec3(x - m_Width * m_SegmentCount/2.0f, 0, z - m_Length * m_SegmentCount/ 2.0f);
+				else
+					offset = glm::vec3(x - m_Width * m_SegmentCount / 2.0f, ryno_math::rand_float_range(0.0f, m_Height), z - m_Length * m_SegmentCount / 2.0f);
+
+				glm::vec2 uv = glm::vec2(u, v);
+				bool buildTriangles = i > 0 && j > 0;
+
+				BuildQuadForGrid(offset, uv, buildTriangles, m_SegmentCount);
+			}
+		}
+		m_mesh_builder->calculate_tangents();
+		m_mesh_builder->calculate_normals();
+
+
+	}
+
+	void MainGame::BuildQuadForGrid(glm::vec3 position, glm::vec2 uv,
+		bool buildTriangles, int vertsPerRow)
+	{
+		m_mesh_builder->new_vertex();
+		m_mesh_builder->set_position(position);
+		m_mesh_builder->set_uvs(uv);
+
+		if (buildTriangles)
+		{
+			int baseIndex = m_mesh_builder->get_vertices_count() - 1;
+
+			int index0 = baseIndex;
+			int index1 = baseIndex - 1;
+			int index2 = baseIndex - vertsPerRow;
+			int index3 = baseIndex - vertsPerRow - 1;
+
+			m_mesh_builder->add_triangle(index0, index2, index1);
+			m_mesh_builder->add_triangle(index2, index3, index1);
+		}
+	}
+
 }

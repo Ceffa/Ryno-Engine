@@ -90,14 +90,15 @@ void main(){
 	
 	//**SHADOWS**//
 	float visibility = 1.0f;
-	if (shadows_enabled > 0.5){
+	if (shadows_enabled > 0.5f){
 		vec3 world_light_position = point_light.position_and_attenuation.xyz;
 		vec3 light_direction = world_position - world_light_position;
 
 		//This sampling with a vec4 automatically compares the sampled value with the forth parameter (i think).
 		//So the result is the visibility
 		float current_depth = vector_to_depth(light_direction, 1.0, max_fov);
-		visibility = texture(shadow_cube, vec4(light_direction, current_depth));
+		float bias = 0.0005;
+		visibility = texture(shadow_cube, vec4(light_direction, current_depth - bias));
 	}
 
 		

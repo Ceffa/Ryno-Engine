@@ -12,6 +12,7 @@
 #include "AudioManager.h"
 #include "ParticleManager.h"
 #include "Log.h"
+#include "MeshBuilder.h"
 //other
 #include "Global.h"
 #include "GLSLProgram.h"
@@ -75,6 +76,7 @@ namespace Ryno{
 		SimpleDrawer* m_simple_drawer;
 		DeferredRenderer* m_deferred_renderer;
 		ParticleManager* m_particle_manager;
+		MeshBuilder* m_mesh_builder;
 		Shell* shell;
 		Log* log;
 		Camera3D* m_camera;

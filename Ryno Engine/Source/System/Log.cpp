@@ -101,7 +101,7 @@ namespace Ryno {
 			else
 				lines[i]->text = *temp;
 
-			temp++;
+			if (temp!= history.end()) temp++;
 		}
 		
 		

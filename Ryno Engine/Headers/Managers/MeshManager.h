@@ -31,6 +31,7 @@ namespace Ryno{
 		
 		static MeshManager* get_instance();
 		I32 load_mesh(const std::string& name, bool has_uvs, LocationOfResource loc);
+		I32 create_empty_mesh();
 		Mesh* get_mesh(I32 mesh_number);
 		I32 load_collider_mesh(const std::string& name, LocationOfResource loc);
 		ColliderMesh* get_collider_mesh(I32 collider_mesh_number);
