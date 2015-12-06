@@ -8,6 +8,7 @@
 #include "PointCollider.h"
 #include "AABBCollider.h"
 #include "ConvexCollider.h"
+#include "PerlinNoise.h"
 #include "GJK.h"
 
 namespace Ryno{
@@ -23,24 +24,24 @@ namespace Ryno{
 
 		//loading graphics
 	
-		Texture texture_bricks = m_texture_manager->loadPNG("pack/177", GAME_FOLDER);
-		Texture normal_map_bricks = m_texture_manager->loadPNG("pack/177_norm", GAME_FOLDER);
-		Texture at = m_texture_manager->loadPNG("pack/196", GAME_FOLDER);
-		Texture an = m_texture_manager->loadPNG("pack/196_norm", GAME_FOLDER);
-		Texture bt = m_texture_manager->loadPNG("pack/161", GAME_FOLDER);
-		Texture bn = m_texture_manager->loadPNG("pack/161_norm", GAME_FOLDER);
-		Texture solaire = m_texture_manager->loadPNG("solaire", GAME_FOLDER);
-		Texture sun = m_texture_manager->loadPNG("sun", GAME_FOLDER);
-		Texture doge = m_texture_manager->loadPNG("doge", GAME_FOLDER);
-		white = m_texture_manager->loadPNG("white_pixel", GAME_FOLDER);
-		Texture white_normal = m_texture_manager->loadPNG("normal_pixel", GAME_FOLDER);
+		Texture texture_bricks = m_texture_manager->load_png("pack/177", GAME);
+		Texture normal_map_bricks = m_texture_manager->load_png("pack/177_norm", GAME);
+		Texture at = m_texture_manager->load_png("pack/196", GAME);
+		Texture an = m_texture_manager->load_png("pack/196_norm", GAME);
+		Texture bt = m_texture_manager->load_png("pack/161", GAME);
+		Texture bn = m_texture_manager->load_png("pack/161_norm", GAME);
+		Texture solaire = m_texture_manager->load_png("solaire", GAME);
+		Texture sun = m_texture_manager->load_png("sun", GAME);
+		Texture doge = m_texture_manager->load_png("doge", GAME);
+		white = m_texture_manager->load_png("white_pixel", GAME);
+		Texture white_normal = m_texture_manager->load_png("normal_pixel", GAME);
 
 		CPUProfiler::next_time();
 
 		//loading models
-		static I32 sphere_mesh = m_mesh_manager->load_mesh("sphere", 1, GAME_FOLDER);
-		static I32 cone_mesh = m_mesh_manager->load_mesh("cone", 1, GAME_FOLDER);
-		static I32 cube_mesh = m_mesh_manager->load_mesh("cube", 1, GAME_FOLDER);
+		static I32 sphere_mesh = m_mesh_manager->load_mesh("sphere", 1, GAME);
+		static I32 cone_mesh = m_mesh_manager->load_mesh("cone", 1, GAME);
+		static I32 cube_mesh = m_mesh_manager->load_mesh("cube", 1, GAME);
 		
 		static I32 terrain_mesh = m_mesh_manager->create_empty_mesh();
 		m_mesh_builder->set_mesh(terrain_mesh);
@@ -49,15 +50,15 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading skyboxes
-		m_camera->skybox = m_texture_manager->loadCubeMap("full_moon_small", GAME_FOLDER);
+		m_camera->skybox = m_texture_manager->load_cube_map("full_moon_small", GAME);
 
 		CPUProfiler::next_time();
 
 		//loading audio
-		sound = m_audio_manager->load_sound("stomp.wav", GAME_FOLDER);
-		music = m_audio_manager->load_music("journey.ogg", GAME_FOLDER);
-		sound.set_volume(0.0f);
-		music.set_volume(0.0f);
+		sound = m_audio_manager->load_sound("stomp.wav", GAME);
+		music = m_audio_manager->load_music("journey.ogg", GAME);
+		sound.set_volume(1.0f);
+		music.set_volume(1.0f);
 		music.play();
 	
 
@@ -199,7 +200,7 @@ namespace Ryno{
 		sp->angle = 0;
 
 
-		Font* f = new Font("Aaargh",24, GAME_FOLDER);
+		Font* f = new Font("Aaargh",24, GAME);
 		Text* t = new Text();
 		t->depth = 10;
 		t->font = f;
@@ -336,7 +337,6 @@ namespace Ryno{
 		if (!shell->active){
 			if (m_input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
 				sound.play();
-
 			}
 			if (m_input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
 				particle_batch->transform->add_position(-.5f* delta_time, 0, 0);
@@ -362,10 +362,10 @@ namespace Ryno{
 
 	void MainGame::NewTerrain()
 	{
-		I32 m_SegmentCount = 80;
-		F32 m_Length = 5;
-		F32 m_Width = 5;
-		F32 m_Height = 10;
+		I32 m_SegmentCount = 160;
+		F32 m_Length = 2.5f;
+		F32 m_Width = 2.5f;
+		F32 m_Height = 50;
 
 		for (int i = 0; i < m_SegmentCount; i++)
 		{
@@ -381,7 +381,7 @@ namespace Ryno{
 				if (j == 0 || j == m_SegmentCount - 1 || i == 0 || i == m_SegmentCount - 1 )
 					offset = glm::vec3(x - m_Width * m_SegmentCount/2.0f, 0, z - m_Length * m_SegmentCount/ 2.0f);
 				else
-					offset = glm::vec3(x - m_Width * m_SegmentCount / 2.0f, ryno_math::rand_float_range(0.0f, m_Height), z - m_Length * m_SegmentCount / 2.0f);
+					offset = glm::vec3(x - m_Width * m_SegmentCount / 2.0f, m_Height * PerlinNoise::octave_perlin(x,z,1/80.0f,1,0.35f), z - m_Length * m_SegmentCount / 2.0f);
 
 				glm::vec2 uv = glm::vec2(u, v);
 				bool buildTriangles = i > 0 && j > 0;

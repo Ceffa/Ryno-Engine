@@ -3,21 +3,28 @@
 
 namespace Ryno{
 
+	std::list<Model*> Model::models;
+
+
+	void Model::reset()
+	{
+		for (Model* m : models){
+			free(m);
+		}
+		models.clear();
+	}
 
 	Model::Model(){
 		color.set_color_and_alpha(255,255,255,0);
 		normal_map.id = -1;
 		set_tiling(1, 1);
+		models.push_back(this);
 	}
-
 	
-
-
-
 	Model::Model(const Model *m)
 	{
-		
 		*this = *m;
+		Model();
 	}
 
 	void Model::set_color(U8 r, U8 g, U8 b){

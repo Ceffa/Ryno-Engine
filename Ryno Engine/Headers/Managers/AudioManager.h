@@ -38,9 +38,10 @@ namespace Ryno{
 
 		void init();
 		void destroy();
-		Sound load_sound(const std::string& file_path, LocationOfResource loc);
-		Music load_music(const std::string& file_path, LocationOfResource loc);
+		Sound load_sound(const std::string& file_path, Owner loc);
+		Music load_music(const std::string& file_path, Owner loc);
 
+		void reset();
 
 
 	private:

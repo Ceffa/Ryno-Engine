@@ -9,7 +9,7 @@ namespace Ryno {
 		
 		//Load textures
 		TextureManager* texture_manager = TextureManager::get_instance();
-		Texture background_texture = texture_manager->loadPNG("background", ENGINE_FOLDER);
+		Texture background_texture = texture_manager->load_png("background", ENGINE);
 		
 		//Create background
 		background = new Sprite();
@@ -20,7 +20,7 @@ namespace Ryno {
 		background->use = SHELL;
 
 
-		font = new Font("inconsolata", 24, ENGINE_FOLDER);
+		font = new Font("inconsolata", 24, ENGINE);
 
 
 		iterator = history.begin();

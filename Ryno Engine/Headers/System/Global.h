@@ -9,9 +9,9 @@
 
 //Engine folder or game folder
 #pragma once
-enum LocationOfResource{
-	ENGINE_FOLDER,
-	GAME_FOLDER
+enum Owner{
+	ENGINE,
+	GAME
 };
 
 enum Use{

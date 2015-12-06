@@ -6,8 +6,9 @@
 namespace Ryno{
 
 	MeshManager::MeshManager(){
-		last_mesh = 0;
-		meshes.resize(0);
+		last_game_mesh = GAME_OFFSET;
+		last_engine_mesh = 0;
+		game_meshes.resize(0);
 		last_collider_mesh = 0;
 		collider_meshes.resize(0);
 	}
@@ -19,7 +20,12 @@ namespace Ryno{
 	}
 
 	Mesh* MeshManager::get_mesh(I32 mesh_number){
-		return meshes[mesh_number-1];
+		//if the number is very high, the mesh is for the game,
+		//and the offset must be adjusted
+		if (mesh_number >= GAME_OFFSET)
+			return game_meshes[mesh_number - GAME_OFFSET - 1];
+		else
+			return engine_meshes[mesh_number - 1];
 	}
 	ColliderMesh* MeshManager::get_collider_mesh(I32 collider_mesh_number){
 		return collider_meshes[collider_mesh_number - 1];
@@ -28,7 +34,15 @@ namespace Ryno{
 
 	
 
-	I32 MeshManager::load_mesh(const std::string& name, bool has_uvs, LocationOfResource loc)
+	void MeshManager::reset()
+	{
+		game_meshes.clear();
+		last_game_mesh = GAME_OFFSET;
+		collider_meshes.clear();
+		last_collider_mesh = 0;
+	}
+
+	I32 MeshManager::load_mesh(const std::string& name, bool has_uvs, Owner loc)
 	{
 		static const std::string middle_path = "Resources/Models/";
 
@@ -116,7 +130,10 @@ namespace Ryno{
 
 		U32 size = (U32)vertexIndices.size();
 		Mesh* mesh = new Mesh();
-		meshes.push_back(mesh);
+		if (loc == Owner::ENGINE)
+			engine_meshes.push_back(mesh);
+		else
+			game_meshes.push_back(mesh);
 		std::vector <Vertex3D> vertices;
 		vertices.resize(size);
 
@@ -154,14 +171,23 @@ namespace Ryno{
 				mesh->vertices.push_back(a);
 			}
 		}
+		if (loc == Owner::GAME){
+			I32 last = last_game_mesh - GAME_OFFSET;
+			game_meshes[last]->vertices_number = game_meshes[last]->vertices.size(); //One time only
+			game_meshes[last]->indices_number = game_meshes[last]->indices.size(); //One time only
+		}
+		else{
+			engine_meshes[last_engine_mesh]->vertices_number = engine_meshes[last_engine_mesh]->vertices.size(); //One time only
+			engine_meshes[last_engine_mesh]->indices_number = engine_meshes[last_engine_mesh]->indices.size(); //One time only
 
-		meshes[last_mesh]->vertices_number = meshes[last_mesh]->vertices.size(); //One time only
-		meshes[last_mesh]->indices_number = meshes[last_mesh]->indices.size(); //One time only
-
+		}
 		if (has_uvs)
 			MeshBuilder::calculate_tangents(mesh);
 
-		return ++last_mesh;
+		if (loc == Owner::ENGINE)
+			return ++last_engine_mesh;
+		else
+			return ++last_game_mesh;
 	}
 
 
@@ -171,11 +197,11 @@ namespace Ryno{
 	I32 MeshManager::create_empty_mesh()
 	{
 		Mesh* mesh = new Mesh();
-		meshes.push_back(mesh);
-		return ++last_mesh;
+		game_meshes.push_back(mesh);
+		return ++last_game_mesh;
 	}
 
-	I32 MeshManager::load_collider_mesh(const std::string& name, LocationOfResource loc)
+	I32 MeshManager::load_collider_mesh(const std::string& name, Owner loc)
 	{
 		static const std::string middle_path = "Resources/Models/Colliders/";
 

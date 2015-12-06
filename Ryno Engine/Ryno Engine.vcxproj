@@ -191,6 +191,7 @@
     <ClCompile Include="Source\Managers\ParticleManager.cpp" />
     <ClCompile Include="Source\Managers\TextureManager.cpp" />
     <ClCompile Include="Source\Managers\TimeManager.cpp" />
+    <ClCompile Include="Source\Others\PerlinNoise.cpp" />
     <ClCompile Include="Source\Others\RynoMath.cpp" />
     <ClCompile Include="Source\Others\Structures.cpp" />
     <ClCompile Include="Source\Others\Transform.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="Headers\Managers\TimeManager.h" />
     <ClInclude Include="Headers\Others\GenericMap.h" />
     <ClInclude Include="Headers\Others\ITransform2D.h" />
+    <ClInclude Include="Headers\Others\PerlinNoise.h" />
     <ClInclude Include="Headers\Others\RynoMath.h" />
     <ClInclude Include="Headers\Others\Transform.h" />
     <ClInclude Include="Headers\Others\Structures.h" />

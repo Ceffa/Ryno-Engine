@@ -38,11 +38,6 @@ namespace Ryno{
 
 		void BuildQuadForGrid(glm::vec3 position, glm::vec2 uv,bool buildTriangles, int vertsPerRow);
 		void NewTerrain();
-
-		
-		
-
-		
 	
 	};
 }

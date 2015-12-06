@@ -214,7 +214,7 @@ namespace Ryno {
 		glBufferData(GL_ARRAY_BUFFER, vertices_positions.size() * sizeof(glm::vec3), vertices_positions.data(), GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U16), &indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), &indices[0], GL_STATIC_DRAW);
 
 		for (RenderBatchShadow rb : m_render_batches){
 			
@@ -224,9 +224,9 @@ namespace Ryno {
 			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(InputInstanceShadow), &input_instances[rb.instance_offset]);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			
-			U32 offset = rb.indices_offset * sizeof(U16);
+			U32 offset = rb.indices_offset * sizeof(U32);
 
-			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_SHORT, (void*)offset, rb.num_instances, rb.vertex_offset);
+			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_INT, (void*)offset, rb.num_instances, rb.vertex_offset);
 
 			//glDrawArraysInstanced(GL_TRIANGLES,rb.vertex_offset ,rb.num_vertices,rb.num_instances);
 		}

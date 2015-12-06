@@ -11,6 +11,8 @@ namespace Ryno{
 		bool set_mesh(I32 _mesh);
 		static MeshBuilder* get_instance();
 
+		void reset();
+
 		void new_vertex();
 
 		void set_position(glm::vec3 pos);
@@ -25,16 +27,16 @@ namespace Ryno{
 		void set_tangent(glm::vec3 pos);
 		void set_tangent(F32 p, F32 y, F32 r) { set_tangent(glm::vec3(p, y, r)); }
 
-		void add_triangle(U16 a, U16 b, U16 c);
-		void add_quad(U16 a, U16 b, U16 c, U16 d);
+		void add_triangle(U32 a, U32 b, U32 c);
+		void add_quad(U32 a, U32 b, U32 c, U32 d);
 
 		static void calculate_normals(Mesh* mesh);
 		static void calculate_tangents(Mesh* mesh);
 		void calculate_normals() { calculate_normals(mesh);}
 		void calculate_tangents() { calculate_tangents(mesh);};
 
-		U16 get_vertices_count(){ return mesh->vertices_number; };
-		U16 get_indices_count(){ return mesh->indices_number; };
+		U32 get_vertices_count(){ return mesh->vertices_number; };
+		U32 get_indices_count(){ return mesh->indices_number; };
 
 
 	private:
@@ -42,7 +44,6 @@ namespace Ryno{
 		I32 mesh_id;
 		Mesh* mesh;
 		Vertex3D* last_vertex = nullptr;
-
 	};
 
 }

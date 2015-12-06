@@ -16,10 +16,14 @@ namespace Ryno{
 	class TextureManager{
 	public:
 		static TextureManager* get_instance();
-		Texture loadPNG(const std::string& name, LocationOfResource loc);
-		Texture loadCubeMap(const std::string& name, LocationOfResource loc);
+		Texture load_png(const std::string& name, Owner loc);
+		Texture load_cube_map(const std::string& name, Owner loc);
+
+		void reset();
+		
 	private:
 		TextureManager::TextureManager();
 		U8 read_file_to_buffer(const std::string& f_path, std::vector<U8>& buffer);
+		std::vector<U32> allocated_textures;
 	};
 }

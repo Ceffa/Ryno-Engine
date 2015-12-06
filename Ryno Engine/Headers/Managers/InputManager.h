@@ -44,6 +44,7 @@ namespace Ryno{
 		glm::vec2 get_controller_RX_coords(){ return m_controller_RX_coords; }
 
 		void update();
+		void reset();
 		glm::vec2 m_mouse_coords;
 		glm::vec2 m_controller_LX_coords;
 		glm::vec2 m_controller_RX_coords;
@@ -56,8 +57,6 @@ namespace Ryno{
 		U8 was_key_down(U32 key, InputDevice device);
 		std::unordered_map<U32, U8> m_key_map;
 		std::unordered_map<U32, U8> m_previous_key_map;
-
-		
 
 	};
 }

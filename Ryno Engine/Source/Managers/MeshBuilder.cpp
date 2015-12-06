@@ -8,6 +8,13 @@ namespace Ryno{
 		return &instance;
 	}
 
+	void MeshBuilder::reset()
+	{
+		mesh = nullptr;
+		last_vertex = 0;
+		mesh_id = 0;
+	}
+
 	void MeshBuilder::new_vertex()
 	{
 		mesh->vertices.emplace_back();
@@ -33,14 +40,14 @@ namespace Ryno{
 	}
 
 
-	void MeshBuilder::add_triangle(U16 a, U16 b, U16 c)
+	void MeshBuilder::add_triangle(U32 a, U32 b, U32 c)
 	{
 		mesh->indices.push_back(a);
 		mesh->indices.push_back(b);
 		mesh->indices.push_back(c);
 		mesh->indices_number += 3;
 	}
-	void MeshBuilder::add_quad(U16 a, U16 b, U16 c, U16 d)
+	void MeshBuilder::add_quad(U32 a, U32 b, U32 c, U32 d)
 	{
 		add_triangle(a, b, c);
 		add_triangle(a, c, d);

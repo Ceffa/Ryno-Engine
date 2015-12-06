@@ -22,8 +22,8 @@ namespace Ryno{
 		RenderBatch(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, U32 m) : vertex_offset(v_o), num_vertices(n_v), indices_offset(idx_o), num_indices(n_idx), instance_offset(i_o),num_instances(n_i), mesh(m){}
 		U32 vertex_offset;
 		U32 num_vertices;
-		U16 indices_offset;
-		U16 num_indices;
+		U32 indices_offset;
+		U32 num_indices;
 		U32 instance_offset;
 		U32 num_instances;
 		U32 mesh;
@@ -43,7 +43,7 @@ namespace Ryno{
 		
 		
 		std::vector<GameObject*> m_game_objects;
-		std::vector<U16> indices;
+		std::vector<U32> indices;
 
 		virtual void create_render_batches() = 0;
 		virtual void create_vertex_array() = 0;

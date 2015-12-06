@@ -37,21 +37,15 @@ namespace Ryno{
 	void AudioManager::destroy(){
 		if (m_is_initialized){
 			m_is_initialized = false;
-			for (auto& it : m_sound_map){
-				Mix_FreeChunk(it.second);
-			}
-			for (auto& it : m_music_map){
-				Mix_FreeMusic(it.second);
-			}
 
-			m_sound_map.clear();
-			m_music_map.clear();
+			reset();
+
 			Mix_CloseAudio();//opposite of openaudio
 			Mix_Quit();//opposite of init
 		}
 	}
 
-	Sound AudioManager::load_sound(const std::string& file_path, LocationOfResource loc){
+	Sound AudioManager::load_sound(const std::string& file_path, Owner loc){
 
 		Sound sound;
 		static const std::string middle_path = "Resources/Sounds/";
@@ -77,7 +71,7 @@ namespace Ryno{
 
 	}
 
-	Music AudioManager::load_music(const std::string& file_path, LocationOfResource loc){
+	Music AudioManager::load_music(const std::string& file_path, Owner loc){
 		Music music;
 		static const std::string middle_path = "Resources/Music/";
 		//check if already cached
@@ -97,6 +91,18 @@ namespace Ryno{
 		return music;
 	}
 
+
+	void AudioManager::reset()
+	{
+		for (auto it : m_sound_map){
+			Mix_FreeChunk(it.second);
+		}
+		for (auto it : m_music_map){
+			Mix_FreeMusic(it.second);
+		}
+		m_sound_map.clear();
+		m_music_map.clear();
+	}
 
 	void Sound::play(U32 loops){
 		if (Mix_PlayChannel(-1, m_chunk, loops) == -1){

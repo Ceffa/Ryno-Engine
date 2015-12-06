@@ -47,4 +47,10 @@ namespace Ryno{
 		}
 		printf("\n");
 	}
+
+	void GPUProfiler::reset()
+	{
+		times.clear();
+	}
+
 }

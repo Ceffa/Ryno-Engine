@@ -32,9 +32,9 @@ namespace Ryno {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m->indices_number * sizeof(U16), &m->indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m->indices_number * sizeof(U32), &m->indices[0], GL_STATIC_DRAW);
 
-		glDrawElements(GL_TRIANGLES, m->indices_number, GL_UNSIGNED_SHORT, (void*)0);
+		glDrawElements(GL_TRIANGLES, m->indices_number, GL_UNSIGNED_INT, (void*)0);
 	
 	}
 

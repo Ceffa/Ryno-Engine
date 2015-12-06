@@ -4,15 +4,14 @@
 #include "Global.h"
 #include "TextureManager.h"
 #include "Structures.h"
+#include <list>
 
 namespace Ryno{
-
-	
-	
+		
 	class Model{
 	public:
 		Model();
-		~Model(){}
+		~Model(){ models.remove(this); }
 		Model(const Model *m);
 		void set_color(U8 r, U8 g, U8 b);
 		void set_alpha(U8 f);
@@ -27,9 +26,9 @@ namespace Ryno{
 		glm::vec2 tiling;
 		ColorRGBA color;  //Alpha is flatness
 		bool cast_shadows = true;
-		
-		
 
-		
+	private:
+		static std::list<Model*> models;
+		static void reset();
 	};
 }

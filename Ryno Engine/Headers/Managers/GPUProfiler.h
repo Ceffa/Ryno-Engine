@@ -23,6 +23,7 @@ namespace Ryno{
 		static void next_time(); 
 		static void end_time();
 		static void print_time();
+		static void reset();
 
 	private:
 		static std::vector<Times> times;

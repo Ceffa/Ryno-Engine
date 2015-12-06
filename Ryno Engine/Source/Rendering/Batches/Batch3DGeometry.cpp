@@ -88,8 +88,8 @@ namespace Ryno {
 				}
 
 				Mesh* temp_mesh = m_mesh_manager->get_mesh(temp_model->mesh);
-				U16 num_indices = temp_mesh->indices_number;
-				U16 num_vertices = temp_mesh->vertices_number;
+				U32 num_indices = temp_mesh->indices_number;
+				U32 num_vertices = temp_mesh->vertices_number;
 	
 				m_render_batches.emplace_back(vertex_offset, num_vertices, indices_offset, num_indices, instance_offset, 1, temp_model->texture.id, temp_model->normal_map.id, temp_model->mesh);
 			
@@ -115,7 +115,7 @@ namespace Ryno {
 		cv = 0;
 		indices.resize(total_indices);
 		for (RenderBatchGeometry rb : m_render_batches){
-			for (U16 v : m_mesh_manager->get_mesh(rb.mesh)->indices){
+			for (U32 v : m_mesh_manager->get_mesh(rb.mesh)->indices){
 				indices[cv++] = v;
 			}
 		}
@@ -208,11 +208,6 @@ namespace Ryno {
 
 
 
-
-
-
-	
-
 	void Batch3DGeometry::render_batch() {
 
 		enable_attributes();
@@ -223,7 +218,7 @@ namespace Ryno {
 
 		//Indices data
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U16), &indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), &indices[0], GL_STATIC_DRAW);
 		for (RenderBatchGeometry rb : m_render_batches){
 			
 			glActiveTexture(GL_TEXTURE0);
@@ -235,9 +230,9 @@ namespace Ryno {
 			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InputInstanceGeometry), &input_instances[rb.instance_offset], GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
-			U32 offset = rb.indices_offset * sizeof(U16);
+			U32 offset = rb.indices_offset * sizeof(U32);
 			
-			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_SHORT, (void*)offset, rb.num_instances, rb.vertex_offset);
+			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_INT, (void*)offset, rb.num_instances, rb.vertex_offset);
 			
 		}
 	}

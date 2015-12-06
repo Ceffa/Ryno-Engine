@@ -16,7 +16,7 @@ namespace Ryno{
 	
 
 
-	Texture TextureManager::loadPNG(const std::string& name, LocationOfResource loc){
+	Texture TextureManager::load_png(const std::string& name, Owner loc){
 		
 		static const std::string middle_path = "Resources/Textures/2D/";
 
@@ -46,6 +46,8 @@ namespace Ryno{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
+		allocated_textures.push_back(t.id);
+
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 
@@ -53,7 +55,7 @@ namespace Ryno{
 
 	}
 
-	Texture TextureManager::loadCubeMap(const std::string& name, LocationOfResource loc){
+	Texture TextureManager::load_cube_map(const std::string& name, Owner loc){
 
 		Texture t;
 		
@@ -99,6 +101,11 @@ namespace Ryno{
 
 	}
 
+
+	void TextureManager::reset()
+	{
+		glDeleteTextures(allocated_textures.size(), allocated_textures.data());
+	}
 
 	U8 TextureManager::read_file_to_buffer(const std::string& f_path, std::vector<U8>& buffer){
 

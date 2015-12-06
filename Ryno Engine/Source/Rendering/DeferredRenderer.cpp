@@ -154,16 +154,16 @@ namespace Ryno{
 
 		//MODEL LOADING
 		m_bounding_sphere = new Model();
-		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE_FOLDER);
+		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
 
 		m_bounding_pyramid = new Model();
-		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE_FOLDER);
+		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
 
 		m_fullscreen_quad = new Model();
-		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE_FOLDER);
+		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
 
 		m_cube_box = new Model();
-		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube",false,ENGINE_FOLDER);
+		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube",false,ENGINE);
 
 		//BIAS MATRIX
 		bias = glm::mat4(

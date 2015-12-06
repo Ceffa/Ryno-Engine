@@ -97,6 +97,12 @@ namespace Ryno {
 		
 	}
 
+	void InputManager::reset()
+	{
+		m_previous_key_map.clear();
+		m_key_map.clear();
+	}
+
 	void InputManager::key_press(U32 keyID, InputDevice device) {
 		// Here we are treating _keyMap as an associative array.
 		// if keyID doesn't already exist in _keyMap, it will get added

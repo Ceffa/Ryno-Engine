@@ -32,7 +32,7 @@ namespace Ryno{
 		/**
 		Load both shaders
 		*/
-		void load_shaders(const std::string& name, LocationOfResource b);
+		void load_shaders(const std::string& name, Owner b);
 
 		/**
 		Compile both Vertex and Fragment shader.

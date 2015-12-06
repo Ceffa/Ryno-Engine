@@ -36,4 +36,10 @@ namespace Ryno{
 		}
 		printf("\n");
 	}
+
+	void CPUProfiler::reset()
+	{
+		times.clear();
+	}
+
 }
