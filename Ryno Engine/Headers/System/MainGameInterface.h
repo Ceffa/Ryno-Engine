@@ -13,9 +13,7 @@
 #include "ParticleManager.h"
 #include "Log.h"
 #include "MeshBuilder.h"
-#include "PoolAllocator.h"
-#include "ReferenceAllocator.h"
-#include "StackAllocator.h"
+#include "Allocator.h"
 
 //other
 #include "Global.h"

@@ -1,4 +1,4 @@
-#include "GameObject.h"
+       #include "GameObject.h"
 #include "Emitter.h"
 #include <iostream>
 #include <GLM/gtx/string_cast.hpp>
@@ -30,7 +30,7 @@ namespace Ryno{
 
 		for (U32 i = 0; i < nr_particles; i++){
 
-			Particle3D* p = new Particle3D();
+			Particle3D* p = new (STACK_TEMP) Particle3D();
 			lambda_creation(this, p);
 			p->active = false;
 			m_particles.push_back(p);
@@ -89,9 +89,9 @@ namespace Ryno{
 		return ret; 
 	}
 
-	Particle3D::Particle3D(GameObject* go): GameObject(go)
-	{
-	}
+	Particle3D::Particle3D(GameObject* go, MemoryLocation mem_loc) : GameObject(go,mem_loc){}
+	Particle3D::Particle3D() : GameObject(){}
+
 	
 
 }

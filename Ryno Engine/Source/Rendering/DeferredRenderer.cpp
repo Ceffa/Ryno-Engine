@@ -153,16 +153,16 @@ namespace Ryno{
 		m_font_program->unuse();
 
 		//MODEL LOADING
-		m_bounding_sphere = new Model();
+		m_bounding_sphere = new (STACK_PERS) Model();
 		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
 
-		m_bounding_pyramid = new Model();
+		m_bounding_pyramid = new (STACK_PERS)Model();
 		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
 
-		m_fullscreen_quad = new Model();
+		m_fullscreen_quad = new (STACK_PERS) Model();
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
 
-		m_cube_box = new Model();
+		m_cube_box = new (STACK_PERS)Model();
 		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube",false,ENGINE);
 
 		//BIAS MATRIX
@@ -683,8 +683,8 @@ namespace Ryno{
 	void DeferredRenderer::destroy(){
 		delete m_fbo_deferred;
 		delete m_fbo_shadow;
-		delete m_bounding_sphere;
-		delete m_fullscreen_quad;
+		//delete m_bounding_sphere;
+		//delete m_fullscreen_quad;
 		m_blit_program->destroy();
 		m_sprite_program->destroy();
 		m_geometry_program->destroy();

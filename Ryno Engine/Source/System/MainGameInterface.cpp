@@ -56,9 +56,12 @@ namespace Ryno{
 		log->init();
 
 		//Memory
-		StackAllocator::get_instance()->init(1024);
-		PoolAllocator::get_instance()->init();
-		ReferenceAllocator::get_instance()->init();
+		Allocator::stack_allocator = StackAllocator::get_instance();
+		Allocator::reference_allocator = ReferenceAllocator::get_instance();
+		Allocator::pool_allocator = PoolAllocator::get_instance();
+		Allocator::stack_allocator->init(1024);
+		Allocator::reference_allocator->init();
+		Allocator::pool_allocator->init();
 
 		m_particle_manager = ParticleManager::get_instance();
 		m_particle_manager->init();

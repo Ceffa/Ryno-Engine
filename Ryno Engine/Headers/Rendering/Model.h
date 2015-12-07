@@ -10,8 +10,11 @@ namespace Ryno{
 		
 	class Model{
 	public:
+		static void* operator new(size_t size, MemoryLocation mem_loc){
+			return Allocator::alloc(size, mem_loc);
+		}
 		Model();
-		~Model(){}
+		
 		Model(const Model *m);
 		void set_color(U8 r, U8 g, U8 b);
 		void set_alpha(U8 f);
@@ -27,7 +30,8 @@ namespace Ryno{
 		ColorRGBA color;  //Alpha is flatness
 		bool cast_shadows = true;
 
-
+	private:
+		~Model(){}
 		
 	};
 }

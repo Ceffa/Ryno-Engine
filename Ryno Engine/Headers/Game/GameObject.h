@@ -16,9 +16,12 @@ namespace Ryno{
 	class GameObject{
 
 	public:
+		static void* operator new(size_t size, MemoryLocation mem_loc){
+			return Allocator::alloc(size, mem_loc);
+		}
 		GameObject();
-		~GameObject();
-		GameObject(const GameObject *go);
+		
+		GameObject(const GameObject *go, MemoryLocation mem_loc);
 
 		//Status
 		bool active = true;
@@ -40,6 +43,7 @@ namespace Ryno{
 
 	private:
 		Emitter* emitter = nullptr;
+		~GameObject();
 
 	
 

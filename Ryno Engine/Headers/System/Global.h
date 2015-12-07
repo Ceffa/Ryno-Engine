@@ -2,6 +2,7 @@
 #include "Types.h"
 #include "RynoMath.h"
 #include "Structures.h"
+#include "Allocator.h"
 
 //Size definitions
 #define WINDOW_WIDTH 800				

@@ -8,9 +8,12 @@ namespace Ryno{
 
 	class DirectionalLight : public AbstractLight{
 	public:
+
+		static void* operator new(size_t size, MemoryLocation mem_loc){
+			return Allocator::alloc(size, mem_loc);
+		}
 		DirectionalLight(){}
 		DirectionalLight(const DirectionalLight *d){ *this = *d; }
-		~DirectionalLight(){}
 
 		
 	
@@ -33,7 +36,9 @@ namespace Ryno{
 			I32 ambient;
 		} locations;
 
-	
+	private:
+		~DirectionalLight();
+
 	};
 
 }

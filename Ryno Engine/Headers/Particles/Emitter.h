@@ -15,9 +15,11 @@ namespace Ryno{
 	class Particle3D : public GameObject {
 
 	public:
-		Particle3D(){}
-		Particle3D(GameObject* go);
-		~Particle3D(){} 
+		static void* operator new(size_t size, MemoryLocation mem_loc){
+			return Allocator::alloc(size, mem_loc);
+		}
+		Particle3D();
+		Particle3D(GameObject* go, MemoryLocation mem_loc);
 		glm::vec3 direction;
 		F32 acceleration;
 		F32 speed;
@@ -25,6 +27,9 @@ namespace Ryno{
 		F32 lifetime;
 		F32 decay_rate = .0001f; 
 		GenericMap save_map;		
+
+	private:
+		~Particle3D();
 
 	};
 
@@ -35,9 +40,12 @@ class Emitter{
 
 	
 	public:
+		static void* operator new(size_t size, MemoryLocation mem_loc){
+			return Allocator::alloc(size, mem_loc);
+		}
 		Emitter(){}
 		Emitter(const Emitter *e);
-		~Emitter();
+		
 		void init(U32 nr_particles);
 		Particle3D* new_particle();
 		void update(F32 delta_time);
@@ -56,7 +64,7 @@ class Emitter{
 		F32 m_elapsed_time;
 		F32 m_emission_rate;
 	private:
-		
+		~Emitter();
 		std::vector <Particle3D*> m_particles;
 		std::list <Particle3D*> m_pool;
 	};

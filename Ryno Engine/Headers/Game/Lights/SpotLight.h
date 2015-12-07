@@ -8,9 +8,11 @@ namespace Ryno{
 
 	class SpotLight : public AbstractLight{
 	public:
+		static void* operator new(size_t size, MemoryLocation mem_loc){
+			return Allocator::alloc(size, mem_loc);
+		}
 		SpotLight(){}
 		SpotLight(const SpotLight *s){ *this = *s; }
-		~SpotLight(){}
 	
 		void set_direction(F32 _pitch, F32 _yaw);
 
@@ -32,6 +34,8 @@ namespace Ryno{
 			I32 specular;
 		} locations;
 
+	private:
+		~SpotLight();
 
 	};
 

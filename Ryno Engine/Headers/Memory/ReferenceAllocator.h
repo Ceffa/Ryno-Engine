@@ -1,5 +1,5 @@
 #pragma once
-#include "Global.h"
+#include "Types.h"
 #include <iostream>
 #include <initializer_list>
 #include <unordered_map>
@@ -13,23 +13,36 @@ namespace Ryno{
 
 		bool init();
 
+		//Allocate temp object
+		template<typename... Args>
+		void* temp_alloc(size_t obj_size, Args...args){
+			void* ptr = malloc(obj_size);
+			if (ptr == nullptr){
+				std::cout << "Temp Reference Allocator: Malloc Failed." << std::endl;
+				exit(-1);
+			}
+			entries[ptr] = true;
+			return ptr;
+		}
+
+
+		//Allocate pers object
+		template<typename... Args>
+		void* pers_alloc(size_t obj_size, Args...args){
+			void* ptr = malloc(obj_size);
+			if (ptr == nullptr){
+				std::cout << "Temp Reference Allocator: Malloc Failed." << std::endl;
+				exit(-1);
+			}
+			entries[ptr] = false;
+			return ptr;
+		}
+
 	private:
 
 		ReferenceAllocator::ReferenceAllocator(){}
 
-		//Allocate temp object
-		template<typename T, typename... Args>
-		bool temp_alloc(T** t, Args...args){
-			*t = new T(args);
-			entries[(void*)*t] = true;
-		}
-
-		//Allocate pers object
-		template<typename T, typename... Args>
-		bool pers_alloc(T** t, Args...args){
-			*t = new T(args);
-			entries[(void*)*t] = false;
-		}
+		
 
 		//Free an object
 		template<typename T, typename... Args>
