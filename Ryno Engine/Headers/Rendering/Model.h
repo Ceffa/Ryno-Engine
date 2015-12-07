@@ -11,7 +11,7 @@ namespace Ryno{
 	class Model{
 	public:
 		Model();
-		~Model(){ models.remove(this); }
+		~Model(){}
 		Model(const Model *m);
 		void set_color(U8 r, U8 g, U8 b);
 		void set_alpha(U8 f);
@@ -27,8 +27,7 @@ namespace Ryno{
 		ColorRGBA color;  //Alpha is flatness
 		bool cast_shadows = true;
 
-	private:
-		static std::list<Model*> models;
-		static void reset();
+
+		
 	};
 }

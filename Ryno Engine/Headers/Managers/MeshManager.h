@@ -5,12 +5,11 @@
 #include "Structures.h"
 #include "Global.h"
 
-#define GAME_OFFSET 1073741823
 
 namespace Ryno{
-	
+
 	struct Mesh{
-	
+
 		std::vector<Vertex3D> vertices;
 		std::vector<U32> indices;
 		U32 vertices_number;
@@ -27,9 +26,9 @@ namespace Ryno{
 
 	class MeshManager{
 
-		
+
 	public:
-		
+
 		static MeshManager* get_instance();
 		I32 load_mesh(const std::string& name, bool has_uvs, Owner loc);
 		I32 create_empty_mesh();
@@ -37,14 +36,11 @@ namespace Ryno{
 		I32 load_collider_mesh(const std::string& name, Owner loc);
 		ColliderMesh* get_collider_mesh(I32 collider_mesh_number);
 
-		void reset();//preserve engine meshes
-
 	private:
-		MeshManager::MeshManager();		
-		I32 last_game_mesh, last_engine_mesh, last_collider_mesh;
-		std::vector < Mesh* > game_meshes;
-		std::vector < Mesh* > engine_meshes;
+		MeshManager::MeshManager();
+		I32 last_mesh, last_collider_mesh;
+		std::vector < Mesh* > meshes;
 		std::vector < ColliderMesh* > collider_meshes;
-	
+
 	};
 }

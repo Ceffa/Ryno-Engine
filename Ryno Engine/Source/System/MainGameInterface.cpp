@@ -54,6 +54,12 @@ namespace Ryno{
 		shell->init();
 		log = Log::get_instance();
 		log->init();
+
+		//Memory
+		StackAllocator::get_instance()->init(1024);
+		PoolAllocator::get_instance()->init();
+		ReferenceAllocator::get_instance()->init();
+
 		m_particle_manager = ParticleManager::get_instance();
 		m_particle_manager->init();
 		m_audio_manager = AudioManager::get_instance();

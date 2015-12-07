@@ -6,9 +6,8 @@
 namespace Ryno{
 
 	MeshManager::MeshManager(){
-		last_game_mesh = GAME_OFFSET;
-		last_engine_mesh = 0;
-		game_meshes.resize(0);
+		last_mesh = 0;
+		meshes.resize(0);
 		last_collider_mesh = 0;
 		collider_meshes.resize(0);
 	}
@@ -20,27 +19,14 @@ namespace Ryno{
 	}
 
 	Mesh* MeshManager::get_mesh(I32 mesh_number){
-		//if the number is very high, the mesh is for the game,
-		//and the offset must be adjusted
-		if (mesh_number >= GAME_OFFSET)
-			return game_meshes[mesh_number - GAME_OFFSET - 1];
-		else
-			return engine_meshes[mesh_number - 1];
+		return meshes[mesh_number - 1];
 	}
 	ColliderMesh* MeshManager::get_collider_mesh(I32 collider_mesh_number){
 		return collider_meshes[collider_mesh_number - 1];
 	}
 
 
-	
 
-	void MeshManager::reset()
-	{
-		game_meshes.clear();
-		last_game_mesh = GAME_OFFSET;
-		collider_meshes.clear();
-		last_collider_mesh = 0;
-	}
 
 	I32 MeshManager::load_mesh(const std::string& name, bool has_uvs, Owner loc)
 	{
@@ -88,11 +74,11 @@ namespace Ryno{
 			else if (strcmp(lineHeader, "f") == 0){
 				std::string vertex1, vertex2, vertex3;
 				unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-				
+
 				fgetc(file);
 				char buffer[100];
 				fgets(buffer, 100, file);
-			
+
 				int matches;
 				if (has_uvs){
 					matches = sscanf(buffer, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
@@ -109,8 +95,8 @@ namespace Ryno{
 						return -1;
 					}
 				}
-				
-				
+
+
 
 				vertexIndices.push_back(vertexIndex[0]);
 				vertexIndices.push_back(vertexIndex[1]);
@@ -123,21 +109,18 @@ namespace Ryno{
 				normalIndices.push_back(normalIndex[0]);
 				normalIndices.push_back(normalIndex[1]);
 				normalIndices.push_back(normalIndex[2]);
-				
+
 
 			}
 		}
 
 		U32 size = (U32)vertexIndices.size();
 		Mesh* mesh = new Mesh();
-		if (loc == Owner::ENGINE)
-			engine_meshes.push_back(mesh);
-		else
-			game_meshes.push_back(mesh);
+		meshes.push_back(mesh);
 		std::vector <Vertex3D> vertices;
 		vertices.resize(size);
 
-		
+
 
 		for (U32 i = 0; i < size; i++){
 			U32 vertexIndex = vertexIndices[i];
@@ -147,13 +130,13 @@ namespace Ryno{
 				U32 uvIndex = uvIndices[i];
 				vertices[i].uv = temp_uvs[uvIndex - 1];
 			}
-			
+
 			U32 normalIndex = normalIndices[i];
 			vertices[i].normal = temp_normals[normalIndex - 1];
 
 
 		}
-		
+
 		bool add = true;
 
 		for (int i = 0; i < vertices.size(); i++){
@@ -171,34 +154,25 @@ namespace Ryno{
 				mesh->vertices.push_back(a);
 			}
 		}
-		if (loc == Owner::GAME){
-			I32 last = last_game_mesh - GAME_OFFSET;
-			game_meshes[last]->vertices_number = game_meshes[last]->vertices.size(); //One time only
-			game_meshes[last]->indices_number = game_meshes[last]->indices.size(); //One time only
-		}
-		else{
-			engine_meshes[last_engine_mesh]->vertices_number = engine_meshes[last_engine_mesh]->vertices.size(); //One time only
-			engine_meshes[last_engine_mesh]->indices_number = engine_meshes[last_engine_mesh]->indices.size(); //One time only
 
-		}
+		meshes[last_mesh]->vertices_number = meshes[last_mesh]->vertices.size(); //One time only
+		meshes[last_mesh]->indices_number = meshes[last_mesh]->indices.size(); //One time only
+
 		if (has_uvs)
 			MeshBuilder::calculate_tangents(mesh);
 
-		if (loc == Owner::ENGINE)
-			return ++last_engine_mesh;
-		else
-			return ++last_game_mesh;
+		return ++last_mesh;
 	}
 
 
 
-	
+
 
 	I32 MeshManager::create_empty_mesh()
 	{
 		Mesh* mesh = new Mesh();
-		game_meshes.push_back(mesh);
-		return ++last_game_mesh;
+		meshes.push_back(mesh);
+		return ++last_mesh;
 	}
 
 	I32 MeshManager::load_collider_mesh(const std::string& name, Owner loc)
@@ -210,7 +184,7 @@ namespace Ryno{
 		ColliderMesh* coll_mesh = new ColliderMesh();
 		collider_meshes.push_back(coll_mesh);
 
-	
+
 		FILE * file = fopen(path.c_str(), "r");
 		if (!file){
 			printf("Impossible to open the file !\n");

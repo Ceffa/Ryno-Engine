@@ -8,8 +8,8 @@
 #include "PointCollider.h"
 #include "AABBCollider.h"
 #include "ConvexCollider.h"
-#include "PerlinNoise.h"
 #include "GJK.h"
+#include "PerlinNoise.h"
 
 namespace Ryno{
 
@@ -57,8 +57,8 @@ namespace Ryno{
 		//loading audio
 		sound = m_audio_manager->load_sound("stomp.wav", GAME);
 		music = m_audio_manager->load_music("journey.ogg", GAME);
-		sound.set_volume(1.0f);
-		music.set_volume(1.0f);
+		sound.set_volume(0.0f);
+		music.set_volume(0.0f);
 		music.play();
 	
 
@@ -67,8 +67,9 @@ namespace Ryno{
 		//Build the environnement
 
 		//Cones
-		GameObject* go = new GameObject();
-		go->model = new Model();
+		GameObject* go = nullptr;
+		StackAllocator::get_instance()->temp_alloc(&go);
+		StackAllocator::get_instance()->temp_alloc(&go->model);
 		go->model->set_color_and_flatness(255, 255, 255, 0);
 		go->model->set_texture_normal(white, white_normal);
 		go->model->mesh = cone_mesh;
@@ -200,7 +201,7 @@ namespace Ryno{
 		sp->angle = 0;
 
 
-		Font* f = new Font("Aaargh",24, GAME);
+		Font* f = new Font("Aaargh",24, GAME_FOLDER);
 		Text* t = new Text();
 		t->depth = 10;
 		t->font = f;
@@ -337,6 +338,7 @@ namespace Ryno{
 		if (!shell->active){
 			if (m_input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
 				sound.play();
+
 			}
 			if (m_input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
 				particle_batch->transform->add_position(-.5f* delta_time, 0, 0);
@@ -362,9 +364,9 @@ namespace Ryno{
 
 	void MainGame::NewTerrain()
 	{
-		I32 m_SegmentCount = 160;
-		F32 m_Length = 2.5f;
-		F32 m_Width = 2.5f;
+		I32 m_SegmentCount = 80;
+		F32 m_Length = 5;
+		F32 m_Width = 5;
 		F32 m_Height = 50;
 
 		for (int i = 0; i < m_SegmentCount; i++)
@@ -381,7 +383,7 @@ namespace Ryno{
 				if (j == 0 || j == m_SegmentCount - 1 || i == 0 || i == m_SegmentCount - 1 )
 					offset = glm::vec3(x - m_Width * m_SegmentCount/2.0f, 0, z - m_Length * m_SegmentCount/ 2.0f);
 				else
-					offset = glm::vec3(x - m_Width * m_SegmentCount / 2.0f, m_Height * PerlinNoise::octave_perlin(x,z,1/80.0f,1,0.35f), z - m_Length * m_SegmentCount / 2.0f);
+					offset = glm::vec3(x - m_Width * m_SegmentCount / 2.0f, m_Height * PerlinNoise::perlin(x,z,1/80.0f), z - m_Length * m_SegmentCount / 2.0f);
 
 				glm::vec2 uv = glm::vec2(u, v);
 				bool buildTriangles = i > 0 && j > 0;
