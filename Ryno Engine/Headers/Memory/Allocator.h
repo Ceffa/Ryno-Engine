@@ -1,10 +1,10 @@
 #pragma once
 #include "StackAllocator.h"
-#include "PoolAllocator.h"
+#include "Pool.h"
 #include "ReferenceAllocator.h"
 #include <iostream>
 
-#define LOG 0
+#define LOG 1
 
 namespace Ryno{
 
@@ -55,7 +55,7 @@ namespace Ryno{
 
 		static StackAllocator* stack_allocator;
 		static ReferenceAllocator* reference_allocator;
-		static PoolAllocator* pool_allocator;
+		static Pool* pool_allocator;
 	};
 
 }

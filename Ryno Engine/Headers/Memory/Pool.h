@@ -5,14 +5,14 @@
 
 namespace Ryno{
 
-	class PoolAllocator{
+	class Pool{
 	public:
-		static PoolAllocator* get_instance();
+		static Pool* get_instance();
 
 		bool init();
 
 	private:
 
-		PoolAllocator::PoolAllocator(){}
+		Pool::Pool(){}
 	};
 }

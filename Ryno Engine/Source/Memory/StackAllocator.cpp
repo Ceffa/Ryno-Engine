@@ -20,4 +20,24 @@ namespace Ryno{
 		temp_current = temp_start;
 		
 	}
+
+	void StackAllocator::free_temp_top()
+	{
+		void* previous = *(void**)temp_current;
+		std::cout << previous << "  " << temp_current <<  std::endl;
+		//delete  ((U64*)temp_current + sizeof(void*)); //FUUUUCK
+		temp_current = previous;
+	}
+
+	bool StackAllocator::memory_full()
+	{
+		if (temp_current <= pers_current){
+			std::cout << "Stack Allocator memory is full" << std::endl;
+			std::cout << "Pers pointer at: " << pers_current << std::endl;
+			std::cout << "Temp pointer at: " << temp_current << std::endl;
+			return true;
+		}
+		return false;
+	}
+
 }

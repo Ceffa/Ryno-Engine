@@ -4,5 +4,5 @@ namespace Ryno{
 
 	StackAllocator* Allocator::stack_allocator;
 	ReferenceAllocator* Allocator::reference_allocator;
-	PoolAllocator* Allocator::pool_allocator;
+	Pool* Allocator::pool_allocator;
 }

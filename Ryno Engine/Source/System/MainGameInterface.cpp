@@ -58,7 +58,7 @@ namespace Ryno{
 		//Memory
 		Allocator::stack_allocator = StackAllocator::get_instance();
 		Allocator::reference_allocator = ReferenceAllocator::get_instance();
-		Allocator::pool_allocator = PoolAllocator::get_instance();
+		Allocator::pool_allocator = Pool::get_instance();
 		Allocator::stack_allocator->init(1024);
 		Allocator::reference_allocator->init();
 		Allocator::pool_allocator->init();

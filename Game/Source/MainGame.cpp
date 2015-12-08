@@ -71,6 +71,9 @@ namespace Ryno{
 		go = new (STACK_TEMP) GameObject();
 		//StackAllocator::get_instance()->temp_alloc(&go->model, sizeof(Model));
 		go->model = new (STACK_TEMP) Model();
+		Allocator::stack_allocator->free_temp_top();
+		go->model = new (STACK_TEMP)Model();
+
 		go->model->set_color_and_flatness(255, 255, 255, 0);
 		go->model->set_texture_normal(white, white_normal);
 		go->model->mesh = cone_mesh;
