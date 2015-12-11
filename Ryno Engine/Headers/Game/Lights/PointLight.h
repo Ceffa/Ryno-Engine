@@ -8,10 +8,6 @@ namespace Ryno{
 	class PointLight : public AbstractLight{
 	public:
 
-		static void* operator new(size_t size, MemoryLocation mem_loc){
-			return Allocator::alloc(size, mem_loc);
-		}
-
 		//Constructors
 		PointLight(){}
 		PointLight(const PointLight *p){ *this = *p; }

@@ -220,7 +220,8 @@
     <ClCompile Include="Source\Rendering\SimpleDrawer.cpp" />
     <ClCompile Include="Source\System\IConsole.cpp" />
     <ClCompile Include="Source\System\Log.cpp" />
-    <ClCompile Include="Source\System\MainGameInterface.cpp" />
+    <ClCompile Include="Source\System\Game.cpp" />
+    <ClCompile Include="Source\System\Scene.cpp" />
     <ClCompile Include="Source\System\Shell.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -274,10 +275,11 @@
     <ClInclude Include="Headers\Rendering\GLSLProgram.h" />
     <ClInclude Include="Headers\Rendering\Model.h" />
     <ClInclude Include="Headers\Rendering\SimpleDrawer.h" />
+    <ClInclude Include="Headers\System\Scene.h" />
     <ClInclude Include="Headers\System\Global.h" />
     <ClInclude Include="Headers\System\IConsole.h" />
     <ClInclude Include="Headers\System\Log.h" />
-    <ClInclude Include="Headers\System\MainGameInterface.h" />
+    <ClInclude Include="Headers\System\Game.h" />
     <ClInclude Include="Headers\System\Shell.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

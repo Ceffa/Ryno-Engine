@@ -630,9 +630,6 @@
     <ClCompile Include="Source\System\Log.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="Source\System\MainGameInterface.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\System\Shell.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -723,6 +720,12 @@
     <ClCompile Include="Source\Memory\Pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\System\Game.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Game\Camera3D.h">
@@ -783,9 +786,6 @@
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\System\Log.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\System\MainGameInterface.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\System\Shell.h">
@@ -888,6 +888,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Memory\Pool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\System\Game.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\System\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

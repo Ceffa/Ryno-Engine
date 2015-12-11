@@ -34,24 +34,24 @@ namespace Ryno{
 		transform = new Transform();
 		game_objects.push_back(this);
 	}
-	GameObject::GameObject(const GameObject *go, MemoryLocation mem_loc)
+	GameObject::GameObject(const GameObject *go)
 	{
 		*this = *go;
 		
 		transform = new Transform(go->transform);
 
 		if (go->model)
-			model = new (mem_loc) Model(go->model);
+			model = new  Model(go->model);
 		if (go->collider)
 			collider = go->collider->get_copy();
 		if (go->point_light)
-			point_light = new (mem_loc)PointLight(go->point_light);
+			point_light = new PointLight(go->point_light);
 		if (go->spot_light)
-			spot_light = new (mem_loc)SpotLight(go->spot_light);
+			spot_light = new SpotLight(go->spot_light);
 		if (go->dir_light)
-			dir_light = new (mem_loc)DirectionalLight(go->dir_light);
+			dir_light = new DirectionalLight(go->dir_light);
 		if (go->emitter)
-			set_emitter(new (mem_loc)Emitter(go->emitter));
+			set_emitter(new Emitter(go->emitter));
 
 		game_objects.push_back(this);
 	}

@@ -1,4 +1,4 @@
-#include "MainGame.h"
+#include "MainScene.h"
 #include "Text.h"
 #include "GPUProfiler.h"
 #include "CPUProfiler.h"
@@ -13,50 +13,50 @@
 
 namespace Ryno{
 
-	void MainGame::start(){
+	void MainScene::start(){
 		CPUProfiler::begin();
 		CPUProfiler::start_time();
 
 		//initializations
-		m_camera->position = glm::vec4(0,150,-500, 1);
+		game->camera->position = glm::vec4(0,150,-500, 1);
 
 		CPUProfiler::next_time();
 
 		//loading graphics
 	
-		Texture texture_bricks = m_texture_manager->load_png("pack/177", GAME);
-		Texture normal_map_bricks = m_texture_manager->load_png("pack/177_norm", GAME);
-		Texture at = m_texture_manager->load_png("pack/196", GAME);
-		Texture an = m_texture_manager->load_png("pack/196_norm", GAME);
-		Texture bt = m_texture_manager->load_png("pack/161", GAME);
-		Texture bn = m_texture_manager->load_png("pack/161_norm", GAME);
-		Texture solaire = m_texture_manager->load_png("solaire", GAME);
-		Texture sun = m_texture_manager->load_png("sun", GAME);
-		Texture doge = m_texture_manager->load_png("doge", GAME);
-		white = m_texture_manager->load_png("white_pixel", GAME);
-		Texture white_normal = m_texture_manager->load_png("normal_pixel", GAME);
+		Texture texture_bricks = game->texture_manager->load_png("pack/177", GAME);
+		Texture normal_map_bricks = game->texture_manager->load_png("pack/177_norm", GAME);
+		Texture at = game->texture_manager->load_png("pack/196", GAME);
+		Texture an = game->texture_manager->load_png("pack/196_norm", GAME);
+		Texture bt = game->texture_manager->load_png("pack/161", GAME);
+		Texture bn = game->texture_manager->load_png("pack/161_norm", GAME);
+		Texture solaire = game->texture_manager->load_png("solaire", GAME);
+		Texture sun = game->texture_manager->load_png("sun", GAME);
+		Texture doge = game->texture_manager->load_png("doge", GAME);
+		white = game->texture_manager->load_png("white_pixel", GAME);
+		Texture white_normal = game->texture_manager->load_png("normal_pixel", GAME);
 
 		CPUProfiler::next_time();
 
 		//loading models
-		static I32 sphere_mesh = m_mesh_manager->load_mesh("sphere", 1, GAME);
-		static I32 cone_mesh = m_mesh_manager->load_mesh("cone", 1, GAME);
-		static I32 cube_mesh = m_mesh_manager->load_mesh("cube", 1, GAME);
+		static I32 sphere_mesh = game->mesh_manager->load_mesh("sphere", 1, GAME);
+		static I32 cone_mesh = game->mesh_manager->load_mesh("cone", 1, GAME);
+		static I32 cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
 		
-		static I32 terrain_mesh = m_mesh_manager->create_empty_mesh();
-		m_mesh_builder->set_mesh(terrain_mesh);
+		static I32 terrain_mesh = game->mesh_manager->create_empty_mesh();
+		game->mesh_builder->set_mesh(terrain_mesh);
 		NewTerrain();
 		
 		CPUProfiler::next_time();
 
 		//loading skyboxes
-		m_camera->skybox = m_texture_manager->load_cube_map("full_moon_small", GAME);
+		game->camera->skybox = game->texture_manager->load_cube_map("full_moon_small", GAME);
 
 		CPUProfiler::next_time();
 
 		//loading audio
-		sound = m_audio_manager->load_sound("stomp.wav", GAME);
-		music = m_audio_manager->load_music("journey.ogg", GAME);
+		sound = game->audio_manager->load_sound("stomp.wav", GAME);
+		music = game->audio_manager->load_music("journey.ogg", GAME);
 		sound.set_volume(0.0f);
 		music.set_volume(0.0f);
 		music.play();
@@ -68,11 +68,10 @@ namespace Ryno{
 
 		//Cones
 		GameObject* go = nullptr;
-		go = new (STACK_TEMP) GameObject();
+		go = new  GameObject();
 		//StackAllocator::get_instance()->temp_alloc(&go->model, sizeof(Model));
-		go->model = new (STACK_TEMP) Model();
-		Allocator::stack_allocator->free_temp_top();
-		go->model = new (STACK_TEMP)Model();
+		go->model = new Model();
+		go->model = new Model();
 
 		go->model->set_color_and_flatness(255, 255, 255, 0);
 		go->model->set_texture_normal(white, white_normal);
@@ -81,16 +80,16 @@ namespace Ryno{
 		go->transform->set_position(0, 55, 50);
 		
 	
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->transform->set_scale(30, 30, 30);
 		go->transform->set_position(-150, 20, -170);
 
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->transform->set_position(150, 20, -170);
 
 
 		//Base
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->transform->set_scale(1, 1,1);
 		go->model->set_texture_normal(bt, bn);
 
@@ -98,24 +97,24 @@ namespace Ryno{
 		go->model->set_tiling(3, 3);
 		go->transform->set_position(5, 5, -5);
 		//Left
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->model->mesh = cube_mesh;
 		go->transform->set_scale(5, 100, 200);
 		go->transform->set_position(-200, 105, 0);
 		//Right
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->transform->set_scale(5, 100, 200);
 		go->transform->set_position(200, 105, 0);
 		//Front
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->transform->set_scale(200, 100, 5);
 		go->transform->set_position(0, 105, 200);
 		//Roof
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->transform->set_scale(200, 5, 200);
 		go->transform->set_position(0, 205, 0);
 	
-		SpotLight* s = new (STACK_TEMP) SpotLight();
+		SpotLight* s = new  SpotLight();
 		s->set_direction(-90, 0);
 		s->cutoff = 30;
 		s->set_diffuse_color(0, 255, 0);
@@ -124,19 +123,19 @@ namespace Ryno{
 		s->specular_intensity = 10;
 		s->set_specular_color(0, 255, 0);
 
-		GameObject* spot_light = new (STACK_TEMP) GameObject();
+		GameObject* spot_light = new  GameObject();
 		spot_light->transform->set_position(0, 190, 50);
 		spot_light->spot_light = s;
 		spheres[4] = spot_light;
 
-		PointLight* p = new (STACK_TEMP) PointLight();
+		PointLight* p = new  PointLight();
 		p->set_diffuse_color(255, 80, 0);
 		p->diffuse_intensity = 3;
 		p->attenuation = .001;
 		p->specular_intensity = 10;
 		p->set_specular_color(255, 80, 0);
 
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->model->set_color_and_flatness(255, 255, 255, 255);
 		go->model->cast_shadows = false;
 		go->model->set_texture_normal(white, white_normal);
@@ -147,21 +146,21 @@ namespace Ryno{
 		spheres[0] = go;
 
 
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->transform->set_position(-180, 20, 180);
-		go->point_light = new (STACK_TEMP) PointLight(p);
+		go->point_light = new  PointLight(p);
 		spheres[1] = go;
 
 
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->transform->set_position(-180, 20, -180);
-		go->point_light = new (STACK_TEMP) PointLight(p);
+		go->point_light = new  PointLight(p);
 		spheres[2] = go;
 
 	
-		go = new (STACK_TEMP) GameObject(go,STACK_TEMP);
+		go = new  GameObject(go);
 		go->transform->set_position(180, 20, -180);
-		go->point_light = new (STACK_TEMP) PointLight(p);
+		go->point_light = new  PointLight(p);
 		spheres[3] = go;
 
 		
@@ -180,7 +179,7 @@ namespace Ryno{
 	
 
 		
-		DirectionalLight* l = new (STACK_TEMP) DirectionalLight();
+		DirectionalLight* l = new  DirectionalLight();
 		l->set_direction(-65, 150);
 		l->diffuse_intensity = 0.2;
 		l->set_diffuse_color(255, 255, 200);
@@ -188,12 +187,12 @@ namespace Ryno{
 		l->set_specular_color(255, 255, 200);
 		l->ambient_intensity = .05;
 		l->set_ambient_color(255, 255, 200);
-		GameObject* dir_light = new (STACK_TEMP) GameObject();
+		GameObject* dir_light = new  GameObject();
 		dir_light->dir_light = l;
 	
 
 		
-		/*Sprite* sp = new (STACK_TEMP) Sprite();
+		/*Sprite* sp = new  Sprite();
 		sp->depth = 20;
 		sp->angle = 0;
 		sp->set_color(255, 255, 255, 255);
@@ -216,39 +215,38 @@ namespace Ryno{
 		t->text = "Ryno Engine";*/
 
 	
-		Emitter* e2 = new (STACK_TEMP) Emitter();
+		Emitter* e2 = new  Emitter();
 		e2->save_map.add("texture", white);
 		e2->save_map.add("normal", white_normal);
 		e2->save_map.add("mesh", cube_mesh);
 		bool* a = new bool(false);
 		e2->save_map.replace("go_crazy", a);
 	
-		Emitter* emitter = new (STACK_TEMP)Emitter();
+		Emitter* emitter = new Emitter();
 		emitter->save_map.add("texture",white);
 		emitter->save_map.add("normal", white_normal);
 		emitter->save_map.add("mesh", sphere_mesh);
 		emitter->save_map.add("emitter", e2);
-		
 	
 		
 		
 		
 		emitter->lambda_creation = [](Emitter* e,Particle3D* p){
-			Texture m_white, m_normal;
-			//Emitter* m_emitter;
-			I32 m_mesh;
-			e->save_map.get("texture", &m_white);
-			e->save_map.get("normal", &m_normal);
-			e->save_map.get("mesh", &m_mesh);
-			//e->save_map.get("emitter", &m_emitter);
+			Texture white, normal;
+			//Emitter* emitter;
+			I32 mesh;
+			e->save_map.get("texture", &white);
+			e->save_map.get("normal", &normal);
+			e->save_map.get("mesh", &mesh);
+			//e->save_map.get("emitter", &emitter);
 
 			p->decay_rate = .001f;
 			p->speed = .05f;
-			p->model = new (STACK_TEMP) Model();
-			p->model->set_texture_normal(m_white, m_normal);
-			p->model->mesh = m_mesh;
+			p->model = new  Model();
+			p->model->set_texture_normal(white, normal);
+			p->model->mesh = mesh;
 			p->model->color = ColorRGBA::yellow;
-			//p->set_emitter(new Emitter(m_emitter));
+			//p->set_emitter(new Emitter(emitter));
 		};
 		emitter->lambda_spawn = [](Emitter* e){
 			for (U8 t = 0; t < 2; t++){
@@ -260,13 +258,13 @@ namespace Ryno{
 			}
 		};
 
-		emitter->lambda_particle_update = [](Emitter* e,Particle3D* p, float delta_time)
+		emitter->lambda_particle_update = [](Emitter* e,Particle3D* p, float _delta_time)
 		{
 			
 			//bool f = false;
 			//bool t = true;
 			//if (p->lifetime < .75f){
-				p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
+				p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
 				p->transform->set_scale(ryno_math::lerp(glm::vec3(.1), glm::vec3(5), p->lifetime));
 
 				p->model->set_color(255, ryno_math::lerp(0, 255, p->lifetime), 0);
@@ -282,20 +280,20 @@ namespace Ryno{
 		};
 
 		/*e2->lambda_creation = [](Emitter* e,Particle3D* p){
-			Texture m_white, m_normal;
-			I32 m_mesh;
-			Emitter* m_emitter;
+			Texture game->white, game->normal;
+			I32 game->mesh;
+			Emitter* game->emitter;
 
-			e->save_map.get("texture", &m_white);
-			e->save_map.get("normal", &m_normal);
-			e->save_map.get("mesh", &m_mesh);
+			e->save_map.get("texture", &game->white);
+			e->save_map.get("normal", &game->normal);
+			e->save_map.get("mesh", &game->mesh);
 
 			p->speed = .95f;
 			p->decay_rate = .005f;
 			p->transform->scale = glm::vec3(10);
-			p->model = new (STACK_TEMP) Model();
-			p->model->set_texture_normal(m_white, m_normal);
-			p->model->mesh = m_mesh;
+			p->model = new  Model();
+			p->model->set_texture_normal(game->white, game->normal);
+			p->model->mesh = game->mesh;
 			p->model->color = ColorRGBA::red;
 		};
 		e2->lambda_spawn = [](Emitter* e){
@@ -310,15 +308,15 @@ namespace Ryno{
 			}
 		};
 
-		e2->lambda_particle_update = [](Emitter* e, Particle3D* p, F32 delta_time)
+		e2->lambda_particle_update = [](Emitter* e, Particle3D* p, F32 game->delta_time)
 		{
-			p->transform->set_position(p->direction * p->speed * delta_time + p->transform->position);
+			p->transform->set_position(p->direction * p->speed * game->delta_time + p->transform->position);
 		};*/
 
 
 		//e2->init(200);
 		emitter->init(200);
-		particle_batch = new (STACK_TEMP) GameObject();
+		particle_batch = new  GameObject();
 		particle_batch->transform->set_position(0, 105, 50);
 		particle_batch->set_emitter(emitter);
 
@@ -329,44 +327,44 @@ namespace Ryno{
 	}
 		
 
-	void MainGame::update(){
+	void MainScene::update(){
 
-		m_particle_manager->update(delta_time);
+		game->particle_manager->update(game->delta_time);
 		for (I32 i = 0; i < 4; i++){
-			spheres[i]->transform->position.y = 40 + sin(m_time_manager->current_time / 1000.0f) * 20;
+			spheres[i]->transform->position.y = 40 + sin(game->time_manager->current_time / 1000.0f) * 20;
 		}
 
 	}
 	
-	void MainGame::input(){
-		if (!shell->active){
-			if (m_input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
-				sound.play();
+	void MainScene::input(){
+		if (!game->shell->active){
+			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
+				game->set_scene("second");
 
 			}
-			if (m_input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
-				particle_batch->transform->add_position(-.5f* delta_time, 0, 0);
+			if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
+				particle_batch->transform->add_position(-.5f* game->delta_time, 0, 0);
 			}
-			if (m_input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
-				particle_batch->transform->add_position(.5f * delta_time , 0, 0);
+			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
+				particle_batch->transform->add_position(.5f * game->delta_time , 0, 0);
 			}
-			if (m_input_manager->is_key_down(SDLK_UP, KEYBOARD)){
-				particle_batch->transform->add_position(0, .5f* delta_time, 0);
+			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)){
+				particle_batch->transform->add_position(0, .5f* game->delta_time, 0);
 			}
-			if (m_input_manager->is_key_down(SDLK_DOWN, KEYBOARD)){
-				particle_batch->transform->add_position(0, -.5f* delta_time, 0);
+			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)){
+				particle_batch->transform->add_position(0, -.5f* game->delta_time, 0);
 			}
-			if (m_input_manager->is_key_down(SDLK_n, KEYBOARD)){
-				particle_batch->transform->add_position(0, 0, .5f* delta_time);
+			if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)){
+				particle_batch->transform->add_position(0, 0, .5f* game->delta_time);
 			}
-			if (m_input_manager->is_key_down(SDLK_m, KEYBOARD)){
-				particle_batch->transform->add_position(0, 0, -.5f* delta_time);
+			if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)){
+				particle_batch->transform->add_position(0, 0, -.5f* game->delta_time);
 			}
 		}
 	}
 
 
-	void MainGame::NewTerrain()
+	void MainScene::NewTerrain()
 	{
 		I32 m_SegmentCount = 80;
 		F32 m_Length = 5;
@@ -395,30 +393,30 @@ namespace Ryno{
 				BuildQuadForGrid(offset, uv, buildTriangles, m_SegmentCount);
 			}
 		}
-		m_mesh_builder->calculate_tangents();
-		m_mesh_builder->calculate_normals();
+		game->mesh_builder->calculate_tangents();
+		game->mesh_builder->calculate_normals();
 
 
 	}
 
-	void MainGame::BuildQuadForGrid(glm::vec3 position, glm::vec2 uv,
+	void MainScene::BuildQuadForGrid(glm::vec3 position, glm::vec2 uv,
 		bool buildTriangles, int vertsPerRow)
 	{
-		m_mesh_builder->new_vertex();
-		m_mesh_builder->set_position(position);
-		m_mesh_builder->set_uvs(uv);
+		game->mesh_builder->new_vertex();
+		game->mesh_builder->set_position(position);
+		game->mesh_builder->set_uvs(uv);
 
 		if (buildTriangles)
 		{
-			int baseIndex = m_mesh_builder->get_vertices_count() - 1;
+			int baseIndex = game->mesh_builder->get_vertices_count() - 1;
 
 			int index0 = baseIndex;
 			int index1 = baseIndex - 1;
 			int index2 = baseIndex - vertsPerRow;
 			int index3 = baseIndex - vertsPerRow - 1;
 
-			m_mesh_builder->add_triangle(index0, index2, index1);
-			m_mesh_builder->add_triangle(index2, index3, index1);
+			game->mesh_builder->add_triangle(index0, index2, index1);
+			game->mesh_builder->add_triangle(index2, index3, index1);
 		}
 	}
 

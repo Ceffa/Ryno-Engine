@@ -1,16 +1,20 @@
 #pragma once
-#include "MainGameInterface.h"
 #include "Lights/PointLight.h"
 #include "Lights/DirectionalLight.h"
 #include "Lights/SpotLight.h"
 #include "DeferredRenderer.h"
 #include <Sprite.h>
-#include "Forces.h"
 #include "Emitter.h"
+#include "Scene.h"
+#include "Game.h"
 
 namespace Ryno{
-	class MainGame : public MainGameInterface
+
+	class MainScene : public Scene
 	{
+
+	public:
+		MainScene(std::string name) : Scene(name){}
 	private:
 	
 		void start() override;
@@ -24,8 +28,6 @@ namespace Ryno{
 		GameObject* ball;
 		std::list<GameObject*> markers;
 
-		WeightForce Fw;
-		DragForce Fd;
 		Texture white;
 		I32 marker_mesh;
 		glm::vec3 velocity = glm::vec3(0, 0, 0);

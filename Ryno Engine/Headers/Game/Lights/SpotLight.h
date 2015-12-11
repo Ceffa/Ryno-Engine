@@ -8,9 +8,7 @@ namespace Ryno{
 
 	class SpotLight : public AbstractLight{
 	public:
-		static void* operator new(size_t size, MemoryLocation mem_loc){
-			return Allocator::alloc(size, mem_loc);
-		}
+	
 		SpotLight(){}
 		SpotLight(const SpotLight *s){ *this = *s; }
 	

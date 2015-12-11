@@ -15,11 +15,9 @@ namespace Ryno{
 	class Particle3D : public GameObject {
 
 	public:
-		static void* operator new(size_t size, MemoryLocation mem_loc){
-			return Allocator::alloc(size, mem_loc);
-		}
+		
 		Particle3D();
-		Particle3D(GameObject* go, MemoryLocation mem_loc);
+		Particle3D(GameObject* go);
 		glm::vec3 direction;
 		F32 acceleration;
 		F32 speed;
@@ -40,9 +38,7 @@ class Emitter{
 
 	
 	public:
-		static void* operator new(size_t size, MemoryLocation mem_loc){
-			return Allocator::alloc(size, mem_loc);
-		}
+	
 		Emitter(){}
 		Emitter(const Emitter *e);
 		

@@ -30,32 +30,51 @@
 #include "Log.h"
 
 namespace Ryno{
-	class MainGameInterface
+
+	enum GameState
 	{
+		Running,
+		Paused,
+		Exit,
+		None
+	};
+
+	class Scene;
+	class Game
+	{
+
 	public:
-		
-		void run();
+
+		static Game* get_instance();
+		void run(std::string name);
+		void set_scene(std::string name);
+
+		AudioManager* audio_manager;
+		InputManager* input_manager;
+		TimeManager* time_manager;
+		TextureManager* texture_manager;
+		MeshManager* mesh_manager;
+		SimpleDrawer* simple_drawer;
+		DeferredRenderer* deferred_renderer;
+		ParticleManager* particle_manager;
+		MeshBuilder* mesh_builder;
+		Shell* shell;
+		Log* log;
+		Camera3D* camera;
+		GameState game_state;
+
+		F32 delta_time = 0;
 
 	protected:
 
-		enum GameState
-		{
-			Running,
-			Paused,
-			Exit,
-			None
-		};
+		void select_scene();
 
-		
 		void init_external_systems();
 		void init_internal_systems();
 
-		virtual void start() = 0;
 
 		void handle_input();//make initializations, then call input
-		virtual void input() = 0;
 
-		virtual void update() = 0;
 		void camera_update();
 
 		void draw();
@@ -64,31 +83,16 @@ namespace Ryno{
 
 		void exit_game();
 
-
-		U32 vao, vbo;
-
+		Scene *scene;
+		std::string scene_name;
 
 		SDL_Joystick *game_controller;
-	
-		AudioManager* m_audio_manager;
-		InputManager* m_input_manager;
-		TimeManager* m_time_manager;
-		TextureManager* m_texture_manager;
-		MeshManager* m_mesh_manager;
-		SimpleDrawer* m_simple_drawer;
-		DeferredRenderer* m_deferred_renderer;
-		ParticleManager* m_particle_manager;
-		MeshBuilder* m_mesh_builder;
 
-		Shell* shell;
-		Log* log;
-		Camera3D* m_camera;
-		GameState m_game_state;
-		SDL_Window* m_window;
+		SDL_Window* window;
 
-		F32 delta_time=0;
-		
 
+	private:
+		Game::Game(){}
 
 	};
 }

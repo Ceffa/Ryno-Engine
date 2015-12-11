@@ -10,9 +10,7 @@ namespace Ryno{
 		
 	class Model{
 	public:
-		static void* operator new(size_t size, MemoryLocation mem_loc){
-			return Allocator::alloc(size, mem_loc);
-		}
+	
 
 		Model();
 		~Model(){}
