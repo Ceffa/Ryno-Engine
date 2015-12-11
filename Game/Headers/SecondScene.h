@@ -13,7 +13,7 @@ namespace Ryno{
 	{
 
 	public:
-		SecondScene(std::string name) : Scene(name){}
+		SecondScene() : Scene(){}
 	private:
 	
 		void start() override;
@@ -36,7 +36,8 @@ namespace Ryno{
 		GameObject* particle_batch;
 	
 		GameObject* body;
-
+		New<GameObject> go;
+		New<DirectionalLight> l;
 		void BuildQuadForGrid(glm::vec3 position, glm::vec2 uv,bool buildTriangles, int vertsPerRow);
 		void NewTerrain();
 	

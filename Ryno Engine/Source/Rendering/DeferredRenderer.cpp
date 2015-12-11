@@ -153,17 +153,17 @@ namespace Ryno{
 		m_font_program->unuse();
 
 		//MODEL LOADING
-		m_bounding_sphere = new  Model();
+		m_bounding_sphere = New<Model>(new Model());
 		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
 
-		m_bounding_pyramid = new Model();
+		m_bounding_pyramid = New<Model>(new Model());
 		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
 
-		m_fullscreen_quad = new  Model();
+		m_fullscreen_quad = New<Model>(new Model());
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
 
-		m_cube_box = new Model();
-		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube",false,ENGINE);
+		m_cube_box = New<Model>(new Model());
+		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
 
 		//BIAS MATRIX
 		bias = glm::mat4(
@@ -202,20 +202,20 @@ namespace Ryno{
 
 			//Fill geometry batch
 			if (geometry_enabled){
-				if (go->active && go->model)
+				if (go->active && *go->model)
 					m_geometry_batch3d->draw(go);
 			}
 			//Fill shadow batch
 			if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled){
-				if (go->active && go->model)
+				if (go->active && *go->model)
 					m_shadow_batch3d->draw(go);
 			}
 			//Add ligths
-			if (go->point_light && go->point_light->active)
+			if (*go->point_light && go->point_light->active)
 				point_lights.push_back(go);
-			if (go->spot_light && go->spot_light->active)
+			if (*go->spot_light && go->spot_light->active)
 				spot_lights.push_back(go);
-			if (go->dir_light && go->dir_light->active)
+			if (*go->dir_light && go->dir_light->active)
 				directional_lights.push_back(go);
 
 		}
@@ -288,7 +288,7 @@ namespace Ryno{
 		if (!point_shadow_enabled)
 			return;
 
-		PointLight* p = go->point_light;
+		PointLight* p = *go->point_light;
 
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
@@ -345,7 +345,7 @@ namespace Ryno{
 
 	void DeferredRenderer::point_lighting_subpass(GameObject* go){
 
-		PointLight* p = go->point_light;
+		PointLight* p = *go->point_light;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_point_lighting_pass();
 
@@ -379,7 +379,7 @@ namespace Ryno{
 		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
 		glUniform1i(m_point_lighting_program->getUniformLocation("shadows_enabled"), point_shadow_enabled);
 
-		m_simple_drawer->draw(m_bounding_sphere);
+		m_simple_drawer->draw(*m_bounding_sphere);
 		m_point_lighting_program->unuse();
 
 		glDisable(GL_BLEND);
@@ -393,7 +393,7 @@ namespace Ryno{
 		if (!spot_shadow_enabled)
 			return;
 
-		SpotLight* s = go->spot_light;
+		SpotLight* s = *go->spot_light;
 
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
@@ -441,7 +441,7 @@ namespace Ryno{
 
 	void DeferredRenderer::spot_lighting_subpass(GameObject* go)
 	{
-		SpotLight* s = go->spot_light;
+		SpotLight* s = *go->spot_light;
 
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_spot_lighting_pass();
@@ -481,7 +481,7 @@ namespace Ryno{
 		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
 		glUniform1i(m_spot_lighting_program->getUniformLocation("shadows_enabled"), spot_shadow_enabled);
 
-		m_simple_drawer->draw(m_bounding_pyramid);
+		m_simple_drawer->draw(*m_bounding_pyramid);
 		m_spot_lighting_program->unuse();
 
 		glDisable(GL_BLEND);
@@ -490,7 +490,7 @@ namespace Ryno{
 
 	void DeferredRenderer::directional_shadow_subpass(GameObject* go){
 
-		DirectionalLight* d = go->dir_light;
+		DirectionalLight* d = *go->dir_light;
 
 		if (!directional_shadow_enabled)
 			return;
@@ -526,7 +526,7 @@ namespace Ryno{
 	void DeferredRenderer::directional_lighting_subpass(GameObject* go)
 	{
 
-		DirectionalLight* d = go->dir_light;
+		DirectionalLight* d = *go->dir_light;
 
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_directional_lighting_pass();
@@ -563,7 +563,7 @@ namespace Ryno{
 
 		
 
-		m_simple_drawer->draw(m_fullscreen_quad);
+		m_simple_drawer->draw(*m_fullscreen_quad);
 
 		//The draw is done, unuse the program
 		m_directional_lighting_program->unuse();
@@ -583,7 +583,7 @@ namespace Ryno{
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_blit_program->use();
-		m_simple_drawer->draw(m_fullscreen_quad);
+		m_simple_drawer->draw(*m_fullscreen_quad);
 		m_blit_program->unuse();
 
 		glDepthMask(GL_FALSE);
@@ -605,7 +605,7 @@ namespace Ryno{
 		glUniform1i(m_skybox_program->getUniformLocation("cube_map"), 0);
 
 
-		m_simple_drawer->draw(m_cube_box);
+		m_simple_drawer->draw(*m_cube_box);
 
 		m_skybox_program->unuse();
 

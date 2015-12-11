@@ -21,8 +21,6 @@ namespace Ryno{
 		init(e->m_max_particles);
 		
 	}
-
-	Emitter::~Emitter(){ m_particles.clear(); }
 	
 	void Emitter::init(U32 nr_particles){
 

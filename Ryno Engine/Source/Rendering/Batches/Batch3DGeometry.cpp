@@ -72,7 +72,7 @@ namespace Ryno {
 		//For each mesh...
 		for (I32 cg = 0; cg < m_game_objects.size(); cg++){
 
-			Model* temp_model = m_game_objects[cg]->model;
+			Model* temp_model = *m_game_objects[cg]->model;
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
@@ -238,8 +238,8 @@ namespace Ryno {
 	}
 
 	U8 Batch3DGeometry::compare_models(GameObject* a, GameObject* b){
-		Model* ma = a->model;
-		Model* mb = b->model;
+		Model* ma = *a->model;
+		Model* mb = *b->model;
 		if (ma->texture.id == mb->texture.id){
 			if (ma->normal_map.id == mb->normal_map.id)
 				return ma->mesh < mb->mesh;

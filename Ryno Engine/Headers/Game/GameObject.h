@@ -18,19 +18,20 @@ namespace Ryno{
 	public:
 		
 		GameObject();
-		
-		GameObject(const GameObject *go);
+		~GameObject();
+
+		GameObject(const GameObject* go);
 
 		//Status
 		bool active = true;
 
 		//Components
-		Model* model;
-		Transform* transform;
-		PointLight* point_light = nullptr;
-		DirectionalLight* dir_light = nullptr;
-		SpotLight* spot_light = nullptr;
-		Collider* collider = nullptr;
+		New<Model> model;
+		New<Transform> transform;
+		New<PointLight> point_light;
+		New<DirectionalLight> dir_light;
+		New<SpotLight> spot_light;
+		New<Collider> collider;
 
 		//Component getter and setter
 		void set_emitter(Emitter* _emitter);
@@ -38,10 +39,8 @@ namespace Ryno{
 		Emitter* get_emitter();
 		//Static GameObjects List
 		static std::list<GameObject*> game_objects;
-
 	private:
-		Emitter* emitter = nullptr;
-		~GameObject();
+		New<Emitter> emitter;
 
 	
 

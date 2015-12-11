@@ -10,6 +10,7 @@ namespace Ryno{
 	public:
 	
 		SpotLight(){}
+		~SpotLight(){}
 		SpotLight(const SpotLight *s){ *this = *s; }
 	
 		void set_direction(F32 _pitch, F32 _yaw);
@@ -32,8 +33,6 @@ namespace Ryno{
 			I32 specular;
 		} locations;
 
-	private:
-		~SpotLight();
 
 	};
 

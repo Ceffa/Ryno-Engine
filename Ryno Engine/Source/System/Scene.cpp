@@ -3,10 +3,8 @@
 
 namespace Ryno{
 
-	std::map<std::string, Scene*> Scene::scenes;
-	Scene::Scene(std::string name)
+	Scene::Scene()
 	{
 		game = Game::get_instance();
-		scenes[name] = this;
 	}
 }

@@ -88,12 +88,14 @@ namespace Ryno{
 		return &game;
 	}
 
-	void Game::run(std::string name){
-		set_scene(name);
+	void Game::init()
+	{
 		init_external_systems();
 		init_internal_systems();
-		select_scene(); //Also calls start on the scene
+	}
 
+	void Game::run(){
+	
 		while (game_state != GameState::Exit){
 			select_scene();
 			time_manager->begin_frame();
@@ -110,15 +112,16 @@ namespace Ryno{
 
 	}
 
-	void Game::set_scene(std::string name)
+	void Game::set_scene(Scene* _scene)
 	{
-			scene_name = name;
+			new_scene = _scene;
 	}
 
 	//Called the next frame to avoid problems.
 	void Game::select_scene(){
-		Scene* new_scene = Scene::scenes[scene_name];
 		if (new_scene != scene){
+			if (scene) 
+				delete scene;
 			scene = new_scene;
 			scene->start();
 		}

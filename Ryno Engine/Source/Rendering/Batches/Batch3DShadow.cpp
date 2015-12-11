@@ -74,7 +74,7 @@ namespace Ryno {
 		//For each mesh...
 		for (I32 cg = 0; cg < m_game_objects.size(); cg++){
 
-			Model* temp_model = m_game_objects[cg]->model;
+			Model* temp_model = *m_game_objects[cg]->model;
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
@@ -85,7 +85,7 @@ namespace Ryno {
 					vertex_offset += m_render_batches.back().num_vertices;
 					instance_offset += m_render_batches.back().num_instances;
 				}
-					
+				std::cout << temp_model->mesh << std::endl;
 				Mesh* temp_mesh = m_mesh_manager->get_mesh(temp_model->mesh);
 				I32 num_indices = temp_mesh->indices_number;
 				I32 num_vertices = temp_mesh->vertices_number;

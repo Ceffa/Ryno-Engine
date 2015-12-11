@@ -17,10 +17,10 @@ namespace Ryno{
 	}
 
 	bool GJK::gjk(GameObject* go1, GameObject* go2){
-		go1->collider->adapt_to_transform(go1->transform);
-		go2->collider->adapt_to_transform(go2->transform);
+		go1->collider->adapt_to_transform(*go1->transform);
+		go2->collider->adapt_to_transform(*go2->transform);
 		
-		bool b = gjk_colliders(go1->collider, go2->collider);
+		bool b = gjk_colliders(*go1->collider, *go2->collider);
 
 		return b;
 	}

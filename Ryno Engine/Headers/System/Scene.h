@@ -1,6 +1,5 @@
 #pragma once
 #include "Global.h"
-#include <unordered_map>
 
 namespace Ryno{
 
@@ -9,12 +8,10 @@ namespace Ryno{
 	class Scene{
 	public:
 
-		Scene(std::string name);
+		Scene();
 		virtual void start() = 0;
 		virtual void input() = 0;
 		virtual void update() = 0;
-
-		static std::map<std::string, Scene*> scenes;
 
 	protected:
 		Game* game;

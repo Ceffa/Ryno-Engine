@@ -38,7 +38,8 @@ class Emitter{
 
 	
 	public:
-	
+		~Emitter(){}
+
 		Emitter(){}
 		Emitter(const Emitter *e);
 		
@@ -60,7 +61,6 @@ class Emitter{
 		F32 m_elapsed_time;
 		F32 m_emission_rate;
 	private:
-		~Emitter();
 		std::vector <Particle3D*> m_particles;
 		std::list <Particle3D*> m_pool;
 	};

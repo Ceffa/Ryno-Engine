@@ -335,7 +335,7 @@
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Deps/Includes;$(ProjectDir)Headers\Particles;$(ProjectDir)Headers\Game;$(ProjectDir)Headers\GUI;$(ProjectDir)Headers\Physics;$(ProjectDir)Headers\System;$(ProjectDir)Headers\Rendering;$(ProjectDir)Headers\Others;$(ProjectDir)Headers\Managers;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Deps/Includes;$(ProjectDir)Headers\Memory;$(ProjectDir)Headers\Particles;$(ProjectDir)Headers\Game;$(ProjectDir)Headers\GUI;$(ProjectDir)Headers\Physics;$(ProjectDir)Headers\System;$(ProjectDir)Headers\Rendering;$(ProjectDir)Headers\Others;$(ProjectDir)Headers\Managers;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

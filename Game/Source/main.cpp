@@ -9,10 +9,10 @@
 
 int main(int argc, char* argv[]) {
 	Ryno::Game* game = Ryno::Game::get_instance();
-	Ryno::MainScene* scene = new Ryno::MainScene("main");
-	Ryno::SecondScene* second_scene = new Ryno::SecondScene("second");
-
-	game->run("main");
+	game->init();
+	Ryno::MainScene* scene = new Ryno::MainScene();
+	game->set_scene(scene);
+	game->run();
 	
 	return 0;
 }

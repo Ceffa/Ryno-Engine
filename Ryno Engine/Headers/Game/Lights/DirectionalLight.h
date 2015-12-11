@@ -11,6 +11,7 @@ namespace Ryno{
 
 	
 		DirectionalLight(){}
+		~DirectionalLight(){}
 		DirectionalLight(const DirectionalLight *d){ *this = *d; }
 
 		
@@ -34,8 +35,6 @@ namespace Ryno{
 			I32 ambient;
 		} locations;
 
-	private:
-		~DirectionalLight();
 
 	};
 

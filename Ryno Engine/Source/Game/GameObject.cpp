@@ -9,9 +9,9 @@ namespace Ryno{
 
 	void GameObject::set_emitter(Emitter* _emitter)
 	{
-		if (!emitter)
+		if (!*emitter)
 			ParticleManager::get_instance()->add_emitter(this);
-		emitter = _emitter; 
+		emitter = New<Emitter>(_emitter);
 		emitter->game_object = this;
 	}
 
@@ -19,41 +19,40 @@ namespace Ryno{
 	{
 		ParticleManager::get_instance()->remove_emitter(this);
 		emitter->game_object = nullptr;
-		emitter = nullptr;
+		emitter = New<Emitter>(nullptr);
 	}
 
 	Emitter* GameObject::get_emitter()
 	{
-		return emitter;
+		return *emitter;
 	}
 
 
 	std::list<GameObject*> GameObject::game_objects;
 
 	GameObject::GameObject(){
-		transform = new Transform();
+		transform = New<Transform>(new Transform());
+	
 		game_objects.push_back(this);
+
 	}
-	GameObject::GameObject(const GameObject *go)
+	GameObject::GameObject(const GameObject* go) : GameObject()
 	{
 		*this = *go;
 		
-		transform = new Transform(go->transform);
-
-		if (go->model)
-			model = new  Model(go->model);
-		if (go->collider)
-			collider = go->collider->get_copy();
-		if (go->point_light)
-			point_light = new PointLight(go->point_light);
-		if (go->spot_light)
-			spot_light = new SpotLight(go->spot_light);
-		if (go->dir_light)
-			dir_light = new DirectionalLight(go->dir_light);
-		if (go->emitter)
-			set_emitter(new Emitter(go->emitter));
-
-		game_objects.push_back(this);
+		if (*go->model)
+			model = New<Model>(new Model(*go->model));
+		if (*go->collider)
+			collider = New<Collider>(go->collider->get_copy());
+		if (*go->point_light)
+			point_light = New<PointLight>(new PointLight(*go->point_light));
+		if (*go->spot_light)
+			spot_light = New<SpotLight> (new SpotLight(*go->spot_light));
+		if (*go->dir_light)
+			dir_light = New<DirectionalLight> (new DirectionalLight(*go->dir_light));
+		if (*go->emitter)
+			set_emitter(new Emitter(*go->emitter));
+		
 	}
 	GameObject::~GameObject(){
 		game_objects.remove(this);

@@ -10,6 +10,7 @@ namespace Ryno{
 
 		//Constructors
 		PointLight(){}
+		~PointLight(){}
 		PointLight(const PointLight *p){ *this = *p; }
 		
 
@@ -29,9 +30,7 @@ namespace Ryno{
 			I32 specular;
 		} locations;
 
-	private:
-		~PointLight();
-		
+	
 	};
 
 }

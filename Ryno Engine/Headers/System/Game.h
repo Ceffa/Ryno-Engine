@@ -46,8 +46,9 @@ namespace Ryno{
 	public:
 
 		static Game* get_instance();
-		void run(std::string name);
-		void set_scene(std::string name);
+		void init();
+		void run();
+		void set_scene(Scene* _scene);
 
 		AudioManager* audio_manager;
 		InputManager* input_manager;
@@ -83,8 +84,8 @@ namespace Ryno{
 
 		void exit_game();
 
-		Scene *scene;
-		std::string scene_name;
+		Scene *scene = nullptr;
+		Scene *new_scene = nullptr;
 
 		SDL_Joystick *game_controller;
 

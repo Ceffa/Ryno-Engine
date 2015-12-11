@@ -38,7 +38,7 @@ namespace Ryno{
 
 	private:
 		MeshManager::MeshManager();
-		I32 last_mesh, last_collider_mesh;
+		I32 last_mesh=0, last_collider_mesh=0;
 		std::vector < Mesh* > meshes;
 		std::vector < ColliderMesh* > collider_meshes;
 
