@@ -14,6 +14,8 @@
 #include "Log.h"
 #include "MeshBuilder.h"
 #include "Allocator.h"
+#include "CPUProfiler.h"
+#include "GPUProfiler.h"
 
 //other
 #include "Global.h"
@@ -70,6 +72,7 @@ namespace Ryno{
 
 		void select_scene();
 
+		void destroy_scene(Scene* s);
 		void init_external_systems();
 		void init_internal_systems();
 

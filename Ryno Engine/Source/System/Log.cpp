@@ -24,28 +24,31 @@ namespace Ryno {
 
 		input_manager = InputManager::get_instance();
 		
-		background->anchor_point = TOP_LEFT;
-		background->set_position(0, 1);
-		background->set_scale(350, WINDOW_HEIGHT / 1.506f);
+		background->sprite->anchor_point = TOP_LEFT;
+		background->sprite->set_position(0, 1);
+		background->sprite->set_scale(350, WINDOW_HEIGHT / 1.506f);
 
 		//Create Texts
 		lines.resize(NUM_LINES);
 
-		lines[0] = new Text();
-		lines[0]->anchor_point = BOTTOM_LEFT;
-		lines[0]->font = font;
-		lines[0]->text = "";
-		lines[0]->set_scale(0.7f,0.7f);
-		lines[0]->depth = 4;
-		lines[0]->set_color(255, 230, 0, 255);
-		lines[0]->set_position(0.005f, .34f);
-		lines[0]->use = SHELL;
+		lines[0] = new GUIObject();
+		Text* t = new Text();
+		lines[0]->text = t;
+		t->anchor_point = BOTTOM_LEFT;
+		t->font = *font;
+		t->text = "";
+		t->set_scale(0.7f,0.7f);
+		t->depth = 4;
+		t->set_color(255, 230, 0, 255);
+		t->set_position(0.005f, .34f);
+		t->use = SHELL;
 
 
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
-			lines[i] = new Text(lines[0]);
-			lines[i]->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
+			lines[i] = new GUIObject();
+			lines[i]->text = new Text(t);
+			lines[i]->text->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
 		}
 
 		
@@ -57,9 +60,9 @@ namespace Ryno {
 	void Log::set(bool b)
 	{
 		active = b;
-		for (Text* t : lines)
-			t->active = b;
-		background->active = b;
+		for (New<GUIObject>& go : lines)
+			go->text->active = b;
+		background->sprite->active = b;
 	}
 
 	void Log::show()
@@ -93,13 +96,13 @@ namespace Ryno {
 		bool write = true;
 		for (U8 i = 0; i < NUM_LINES; i++){
 			if (write && temp == history.end()){
-				lines[i]->text = "";
+				lines[i]->text->text = "";
 				write = false;
 			}
 			else if (!write)
-				lines[i]->text = "";
+				lines[i]->text->text = "";
 			else
-				lines[i]->text = *temp;
+				lines[i]->text->text = *temp;
 
 			if (temp!= history.end()) temp++;
 		}

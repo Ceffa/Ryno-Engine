@@ -3,8 +3,7 @@
 #include "TextureManager.h"
 #include "InputManager.h"
 #include "DeferredRenderer.h"
-#include "Sprite.h"
-#include "Text.h"
+#include "GUIObject.h"
 #include <list>
 #include <iterator>
 
@@ -21,15 +20,15 @@ namespace Ryno{
 		void set_text_color(U8 r, U8 g, U8 b);
 	
 		bool active = true;
-		Sprite* background;
+		New<GUIObject> background;
 
 	protected:
 		IConsole(){}
 
 		InputManager* input_manager;
-		Font* font;
+		New<Font> font;
 
-		std::vector<Text*> lines;
+		std::vector<New<GUIObject>> lines;
 		std::list<std::string> history;
 		std::list<std::string>::iterator iterator;
 		U32 history_length;

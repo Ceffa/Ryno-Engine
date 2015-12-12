@@ -131,10 +131,12 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\MainScene.cpp" />
     <ClCompile Include="Source\SecondScene.cpp" />
+    <ClCompile Include="Source\ShowScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\MainScene.h" />
     <ClInclude Include="Headers\SecondScene.h" />
+    <ClInclude Include="Headers\ShowScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

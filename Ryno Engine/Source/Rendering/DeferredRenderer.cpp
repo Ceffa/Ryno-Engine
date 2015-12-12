@@ -1,5 +1,7 @@
 #include "DeferredRenderer.h"
 #include "GameObject.h"
+#include "GuiObject.h"
+
 #include "Shell.h"
 
 #include <GLM/glm.hpp>
@@ -153,16 +155,16 @@ namespace Ryno{
 		m_font_program->unuse();
 
 		//MODEL LOADING
-		m_bounding_sphere.set(new Model());
+		m_bounding_sphere = new Model();
 		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
 
-		m_bounding_pyramid.set(new Model());
+		m_bounding_pyramid = new Model();
 		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
 
-		m_fullscreen_quad.set(new Model());
+		m_fullscreen_quad = new Model();
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
 
-		m_cube_box.set(new Model());
+		m_cube_box = new Model();
 		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
 
 		//BIAS MATRIX
@@ -626,31 +628,24 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 
-		//Add the GUI elements to the 2D batch
+		//Add the GUI elements to the 2D batches
 		m_sprite_batch2d->begin();
-		
-		for (Sprite* s : Sprite::sprites)
+		m_font_batch2d->begin();
+
+		for (GUIObject* go : GUIObject::gui_objects)
 		{
-			if (!gui_sprites_enabled && s->use == GUI ) continue;
-			s->generate_model_matrix();
-			m_sprite_batch2d->draw(s);
+			if (*go->sprite && (gui_sprites_enabled || go->sprite->use == SHELL)) {
+				go->sprite->generate_model_matrix();
+				m_sprite_batch2d->draw(*go->sprite);
+			}
+			if (*go->text && (gui_text_enabled || go->text->use == SHELL)) {
+				m_font_batch2d->draw_font(*go->text);
+			}
 		}
 		
 
 		m_sprite_batch2d->end();
-
-
-		//Add the font elements to the 2D font batch
-		m_font_batch2d->begin();
-
-		for (Text* s : Text::texts){
-			if (!gui_text_enabled && s->use == GUI)continue;
-			m_font_batch2d->draw_font(s);
-		}
-		
-
 		m_font_batch2d->end();
-
 
 
 		glEnable(GL_DEPTH_TEST);

@@ -4,20 +4,16 @@
 
 namespace Ryno{
 
-    std::list<Sprite*> Sprite::sprites;
 
     Sprite::Sprite(){
 
-		sprites.push_back(this);
 		set_scale(1, 1);
     }
     Sprite::Sprite(const Sprite *s)
     {
         *this = *s;
-        sprites.push_back(this);
     }
     Sprite::~Sprite(){
-        sprites.remove(this);
     }
 
     void Sprite::generate_model_matrix()

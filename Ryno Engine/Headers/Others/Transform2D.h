@@ -7,9 +7,9 @@
 
 namespace Ryno{
 
-	class ITransform2D{
+	class Transform2D{
 	public:
-		virtual ~ITransform2D(){}
+		virtual ~Transform2D(){}
 
 		void set_position(F32 x, F32 y){ position.x = x; position.y = y; }
 		void set_position(glm::vec2 pos){ position = pos; }

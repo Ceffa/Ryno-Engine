@@ -31,12 +31,15 @@ class New {
 public:
 	
 	New(T* t) : data(t){}
-	New() : data(){}
-	void set(T* t) { data = t; }
+	New() {}
 	T* operator->() const{ return data; }
 	T* operator* () const { return data; }
 	bool operator== (const New<T>& b) {
 		return data == b.data;
+	}
+	New<T>& operator=(T* b){
+		this->data = b;
+		return *this;
 	}
 
 	~New() { delete data; }

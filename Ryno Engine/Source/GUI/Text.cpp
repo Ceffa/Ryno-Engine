@@ -16,13 +16,13 @@ namespace Ryno {
 
 
 
-	std::list<Text*> Text::texts;
 
 	void Text::preallocate_memory_for_glyphs()
 	{
 		FontGlyph::current_glyph = 0;
-		for (Text* s : texts){
-			FontGlyph::current_glyph += s->text.length();
+		for (GUIObject* go : GUIObject::gui_objects){
+			if (*go->text)
+				FontGlyph::current_glyph += go->text->text.length();
 		}
 		
 		FontGlyph::font_glyphs.resize(FontGlyph::current_glyph);
@@ -32,21 +32,16 @@ namespace Ryno {
 
 
 	Text::Text() {
-
 		anchor_point = CENTER;
-		texts.push_back(this);
-
     }
 
 	Text::Text(const Text* t)
 	{
 		*this = *t;
 		text = std::string(t->text);
-		texts.push_back(this);
 	}
 
 	Text::~Text(){
-		texts.remove(this);
 	}
    
 

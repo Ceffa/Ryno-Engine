@@ -726,6 +726,9 @@
     <ClCompile Include="Source\System\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GUI\GUIObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Game\Camera3D.h">
@@ -827,9 +830,6 @@
     <ClInclude Include="Headers\Rendering\Batches\Batch3DShadow.h">
       <Filter>Header Files\Rendering\Batches</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Others\ITransform2D.h">
-      <Filter>Header Files\Others</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Others\Structures.h">
       <Filter>Header Files\Others</Filter>
     </ClInclude>
@@ -895,6 +895,12 @@
     </ClInclude>
     <ClInclude Include="Headers\System\Scene.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GUI\GUIObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\Transform2D.h">
+      <Filter>Header Files\Others</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

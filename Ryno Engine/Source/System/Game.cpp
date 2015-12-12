@@ -121,10 +121,20 @@ namespace Ryno{
 	void Game::select_scene(){
 		if (new_scene != scene){
 			if (scene)
-				delete scene;
+				destroy_scene(scene);
 			scene = new_scene;
 			scene->start();
 		}
+	}
+
+	void Game::destroy_scene(Scene* s){
+		particle_manager->reset();
+		texture_manager->reset();
+		audio_manager->reset();
+		CPUProfiler::reset();
+		GPUProfiler::reset();
+		mesh_builder->reset();
+		delete scene;
 	}
 
 	void Game::camera_update()

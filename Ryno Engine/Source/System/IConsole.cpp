@@ -12,12 +12,14 @@ namespace Ryno {
 		Texture background_texture = texture_manager->load_png("background", ENGINE);
 		
 		//Create background
-		background = new Sprite();
-		background->set_texture(background_texture);
-		background->angle = 0;
-		background->set_color(0,0,0,240);
-		background->depth = 5;
-		background->use = SHELL;
+		background = new GUIObject();
+		Sprite *s = new Sprite();
+		s->set_texture(background_texture);
+		s->angle = 0;
+		s->set_color(0,0,0,240);
+		s->depth = 5;
+		s->use = SHELL;
+		background->sprite = s;
 
 
 		font = new Font("inconsolata", 24, ENGINE);
@@ -29,11 +31,10 @@ namespace Ryno {
 	}
 
 
-
 	void IConsole::set_text_color(U8 r, U8 g, U8 b)
 	{
-		for (Text*t : lines){
-			t->set_color(r, g, b, 255);
+		for (New<GUIObject>& go : lines){
+			go->text->set_color(r, g, b, 255);
 		}
 	}
 

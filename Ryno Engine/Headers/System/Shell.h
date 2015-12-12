@@ -4,8 +4,6 @@
 #include "InputManager.h"
 #include "DeferredRenderer.h"
 #include "TimeManager.h"
-#include "Sprite.h"
-#include "Text.h"
 #include "Log.h"
 #include "IConsole.h"
 #include "AudioManager.h"

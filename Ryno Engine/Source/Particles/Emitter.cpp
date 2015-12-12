@@ -25,15 +25,14 @@ namespace Ryno{
 	void Emitter::init(U32 nr_particles){
 
 		m_max_particles = nr_particles;
-
+		m_pool.resize(nr_particles);
+		m_particles.resize(nr_particles);
 		for (U32 i = 0; i < nr_particles; i++){
-
-			Particle3D* p = new  Particle3D();
+			Particle3D* p = new Particle3D();
 			lambda_creation(this, p);
 			p->active = false;
-			m_particles.push_back(p);
+			m_particles[i] = p;
 			m_pool.push_back(p);
-			
 		}
 
 
@@ -45,14 +44,14 @@ namespace Ryno{
 		lambda_spawn(this);
 		m_elapsed_time += delta_time;
 		
-		for (Particle3D* p : m_particles){
+		for (New<Particle3D>& p : m_particles){
 		
 			if (p->active){
 				
-				lambda_particle_update(this,p, delta_time);
+				lambda_particle_update(this,*p, delta_time);
 				p->lifetime += p->decay_rate * delta_time;
 				if (p->lifetime >= 1.0f){
-					remove_particle(p);
+					remove_particle(*p);
 				}
 			}
 		}
@@ -69,13 +68,13 @@ namespace Ryno{
 		
 	}
 	void Emitter::disable(){
-		for (Particle3D* p : m_particles){
-			if (p->active) remove_particle(p);
+		for (New<Particle3D>& p : m_particles){
+			if (p->active) remove_particle(*p);
 		}
 	}
 	Particle3D* Emitter::new_particle(){
 		Particle3D* ret;
-		if (m_pool.empty()) ret = m_particles[0]; //override first particle, whatever
+		if (m_pool.empty()) ret = *m_particles[0]; //override first particle, whatever
 		else 
 		{
 			ret = m_pool.back();
@@ -87,8 +86,8 @@ namespace Ryno{
 		return ret; 
 	}
 
-	Particle3D::Particle3D(GameObject* go) : GameObject(go){}
-	Particle3D::Particle3D() : GameObject(){}
+	
+
 
 	
 

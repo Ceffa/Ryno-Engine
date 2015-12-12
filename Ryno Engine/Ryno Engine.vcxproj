@@ -178,6 +178,7 @@
     <ClCompile Include="Source\Game\Lights\DirectionalLight.cpp" />
     <ClCompile Include="Source\Game\Lights\PointLight.cpp" />
     <ClCompile Include="Source\Game\Lights\SpotLight.cpp" />
+    <ClCompile Include="Source\GUI\GUIObject.cpp" />
     <ClCompile Include="Source\GUI\Sprite.cpp" />
     <ClCompile Include="Source\GUI\Text.cpp" />
     <ClCompile Include="Source\Managers\AudioManager.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="Headers\Game\Lights\DirectionalLight.h" />
     <ClInclude Include="Headers\Game\Lights\PointLight.h" />
     <ClInclude Include="Headers\Game\Lights\SpotLight.h" />
+    <ClInclude Include="Headers\GUI\GUIObject.h" />
     <ClInclude Include="Headers\GUI\Sprite.h" />
     <ClInclude Include="Headers\GUI\Text.h" />
     <ClInclude Include="Headers\Managers\AudioManager.h" />
@@ -249,7 +251,7 @@
     <ClInclude Include="Headers\Memory\ReferenceAllocator.h" />
     <ClInclude Include="Headers\Memory\StackAllocator.h" />
     <ClInclude Include="Headers\Others\GenericMap.h" />
-    <ClInclude Include="Headers\Others\ITransform2D.h" />
+    <ClInclude Include="Headers\Others\Transform2D.h" />
     <ClInclude Include="Headers\Others\PerlinNoise.h" />
     <ClInclude Include="Headers\Others\RynoMath.h" />
     <ClInclude Include="Headers\Others\Transform.h" />

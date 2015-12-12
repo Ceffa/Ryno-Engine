@@ -30,28 +30,30 @@ namespace Ryno {
 		deferred_renderer = DeferredRenderer::get_instance();
 		log = Log::get_instance();
 		
-		background->anchor_point = BOTTOM_LEFT;
-		background->set_position(0, 0);
-		background->set_scale(350, WINDOW_HEIGHT / 3.06f);
+		background->sprite->anchor_point = BOTTOM_LEFT;
+		background->sprite->set_position(0, 0);
+		background->sprite->set_scale(350, WINDOW_HEIGHT / 3.06f);
 
 		//Create Texts 
 
 		lines.resize(NUM_LINES);
-
-		lines[0] = new Text();
-		lines[0]->anchor_point = BOTTOM_LEFT;
-		lines[0]->font = font;
-		lines[0]->text = base_path;
-		lines[0]->set_scale(0.7f,0.7f);
-		lines[0]->depth = 4;
-		lines[0]->set_color(255, 230, 0, 255);
-		lines[0]->set_position(0.003f, 0.005f);
-		lines[0]->use = SHELL;
+		lines[0] = new GUIObject();
+		Text *t = new Text();
+		lines[0]->text = t;
+		t->anchor_point = BOTTOM_LEFT;
+		t->font = *font;
+		t->text = base_path;
+		t->set_scale(0.7f,0.7f);
+		t->depth = 4;
+		t->set_color(255, 230, 0, 255);
+		t->set_position(0.003f, 0.005f);
+		t->use = SHELL;
 
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
-			lines[i] = new Text(lines[0]);
-			lines[i]->set_position(0.005f, 0.003f + 0.33f * i / NUM_LINES);
+			lines[i] = new GUIObject();
+			lines[i]->text = new Text(t);
+			lines[i]->text->set_position(0.005f, 0.003f + 0.33f * i / NUM_LINES);
 		}
 				
 		iterator = history.begin();
@@ -63,9 +65,9 @@ namespace Ryno {
 	void Shell::set(bool b)
 	{
 		active = b;
-		for (Text* t : lines)
-			t->active = b;
-		background->active = b;
+		for (New<GUIObject>& go : lines)
+			go->text->active = b;
+		background->sprite->active = b;
 	}
 
 	void Shell::show()
@@ -107,7 +109,7 @@ namespace Ryno {
 		if (!active)
 			return;
 
-		active_line_size = (U32)lines[0]->text.size();
+		active_line_size = (U32)lines[0]->text->text.size();
 
 		if (input_manager->is_key_pressed(SDLK_RETURN, KEYBOARD)){
 			parse_input();
@@ -128,7 +130,7 @@ namespace Ryno {
 		else if (input_manager->is_key_pressed(SDLK_UP, KEYBOARD)){
 
 			if (iterator != history.end()){
-				lines[0]->text = base_path + *iterator;
+				lines[0]->text->text = base_path + *iterator;
 				iterator++;
 			}
 		}
@@ -137,13 +139,13 @@ namespace Ryno {
 		}
 		else if (input_manager->is_key_pressed(SDLK_DOWN, KEYBOARD)){
 			if (iterator == history.begin())
-				lines[0]->text = base_path;
+				lines[0]->text->text = base_path;
 			else{
 				iterator--;
 				if (iterator == history.begin())
-					lines[0]->text = base_path;
+					lines[0]->text->text = base_path;
 				else{
-					lines[0]->text = base_path + *(--iterator);
+					lines[0]->text->text = base_path + *(--iterator);
 					iterator++;
 				}
 
@@ -156,10 +158,10 @@ namespace Ryno {
 		if (input_manager->is_key_pressed(SDLK_BACKSPACE, KEYBOARD)){
 			
 			if (active_line_size > base_path_size)
-				lines[0]->text = lines[0]->text.substr(0, active_line_size - 1);
+				lines[0]->text->text = lines[0]->text->text.substr(0, active_line_size - 1);
 		}
 		
-		lines[0]->text += input_manager->frame_text;
+		lines[0]->text->text += input_manager->frame_text;
 
 
 	}
@@ -169,7 +171,7 @@ namespace Ryno {
 	{
 
 		
-		active_line = lines[0]->text;
+		active_line = lines[0]->text->text;
 		if (active_line.compare(base_path) == 0)
 			return;
 
@@ -322,7 +324,7 @@ namespace Ryno {
 				}
 			}
 			
-			background->set_color(args[0], args[1], args[2], args[3]);
+			background->sprite->set_color(args[0], args[1], args[2], args[3]);
 
 		}
 
@@ -360,7 +362,7 @@ namespace Ryno {
 				}
 			}
 
-			log->background->set_color(args[0], args[1], args[2], args[3]);
+			log->background->sprite->set_color(args[0], args[1], args[2], args[3]);
 
 		}
 
@@ -382,8 +384,8 @@ namespace Ryno {
 			iterator = history.begin();
 		}
 		else if (command.compare("clearshellscreen") == 0){
-			for (Text* t : lines)
-				t->text = base_path;
+			for (New<GUIObject>& go : lines)
+				go->text->text = base_path;
 
 		}
 		else if (command.compare("clearloghistory") == 0){
@@ -392,8 +394,8 @@ namespace Ryno {
 			log->iterator = log->history.begin();
 		}
 		else if (command.compare("clearlogscreen") == 0){
-			for (Text* t : log->lines)
-				t->text = "";
+			for (New<GUIObject>& go : lines)
+				go->text->text = "";
 
 		}
 		else if (command.compare("exit") == 0){
@@ -489,9 +491,9 @@ namespace Ryno {
 	{
 		for (U8 i = NUM_LINES-1; i > 0; i--)
 		{
-			lines[i]->text = lines[i - 1]->text;
+			lines[i]->text->text = lines[i - 1]->text->text;
 		}
-		lines[0]->text = base_path;
+		lines[0]->text->text = base_path;
 		
 	}
 
@@ -501,7 +503,7 @@ namespace Ryno {
 	void Shell::print_message(const std::string& message)
 	{
 		rotate_lines();
-		lines[0]->text += message;
+		lines[0]->text->text += message;
 	}
 
 	

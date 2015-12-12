@@ -3,8 +3,6 @@
 #include "TextureManager.h"
 #include "InputManager.h"
 #include "DeferredRenderer.h"
-#include "Sprite.h"
-#include "Text.h"
 #include "IConsole.h"
 #include <list>
 

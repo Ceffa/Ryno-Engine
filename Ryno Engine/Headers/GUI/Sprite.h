@@ -1,7 +1,7 @@
 #pragma once
 #include "Global.h"
 #include "Structures.h"
-#include "ITransform2D.h"
+#include "Transform2D.h"
 #include <GLM/glm.hpp>
 #include <list>
 
@@ -10,7 +10,7 @@ namespace Ryno{
 
 	
 
-	class Sprite : public ITransform2D{
+	class Sprite : public Transform2D{
 	public:
 		Sprite();
 		~Sprite();
@@ -38,8 +38,6 @@ namespace Ryno{
 		AnchorPoint anchor_point = TOP_LEFT;
 		F32 angle;
 		
-		//static list of sprites
-		static std::list<Sprite*> sprites;
 
 	protected:
 		Texture texture;

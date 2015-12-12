@@ -16,4 +16,10 @@ namespace Ryno{
 		}
 	}
 
+
+	void ParticleManager::reset()
+	{
+		emitters.clear();
+	}
+
 }

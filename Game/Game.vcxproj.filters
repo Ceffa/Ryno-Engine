@@ -24,12 +24,18 @@
     <ClCompile Include="Source\SecondScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ShowScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\MainScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\SecondScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\ShowScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #include "SecondScene.h"
 #include "MainScene.h"
-
+#include "ShowScene.h"
 
 namespace Ryno{
 
@@ -22,14 +22,14 @@ namespace Ryno{
 		//music.set_volume(0.0f);
 		//music.play();
 
-		go.set(new GameObject());
-		go->model.set(new Model());
+		go = new GameObject();
+		go->model = new Model();
 		go->model->set_color_and_flatness(255, 255, 255, 0);
 		go->model->set_texture_normal(white, white_normal);
 		go->model->mesh = cone_mesh;
 		go->transform->set_scale(50, 100, 100);
 		go->transform->set_position(120, 55, 50);
-		go->dir_light.set(new DirectionalLight());
+		go->dir_light = new DirectionalLight();
 		go->dir_light->set_direction(-65, 150);
 		go->dir_light->diffuse_intensity = 0.2;
 		go->dir_light->set_diffuse_color(255, 255, 200);
@@ -47,7 +47,7 @@ namespace Ryno{
 	void SecondScene::input(){
 		if (!game->shell->active){
 			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
-				game->set_scene(new MainScene());
+				game->set_scene(new ShowScene());
 
 			}
 		}

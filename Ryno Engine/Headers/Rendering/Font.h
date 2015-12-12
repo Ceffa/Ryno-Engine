@@ -16,7 +16,7 @@
 #include <vector>
 #include <string>
 #include "Structures.h"
-#include "ITransform2D.h"
+#include "Transform2D.h"
 
 
 namespace Ryno {
@@ -34,7 +34,7 @@ namespace Ryno {
 #define FIRST_PRINTABLE_CHAR ((C)32)
 #define LAST_PRINTABLE_CHAR ((C)126)
 
-	class FontGlyph : public ITransform2D{
+	class FontGlyph : public Transform2D{
 
 
 	public:

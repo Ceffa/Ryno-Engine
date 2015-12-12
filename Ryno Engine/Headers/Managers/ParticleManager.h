@@ -16,6 +16,7 @@ namespace Ryno{
 		void add_emitter(GameObject* emitter){ emitters.push_back(emitter); }
 		void remove_emitter(GameObject* emitter){ emitters.remove(emitter); }
 		void update(F32 delta);
+		void reset();
 	private:
 		std::list <GameObject*> emitters;
 		ParticleManager(){}
