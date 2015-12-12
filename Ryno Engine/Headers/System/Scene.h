@@ -9,6 +9,7 @@ namespace Ryno{
 	public:
 
 		Scene();
+		virtual ~Scene() = 0{}
 		virtual void start() = 0;
 		virtual void input() = 0;
 		virtual void update() = 0;

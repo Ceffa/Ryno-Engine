@@ -29,9 +29,10 @@ class New {
 	T* data = nullptr;
 
 public:
-
+	
 	New(T* t) : data(t){}
-	New() : data(nullptr){}
+	New() : data(){}
+	void set(T* t) { data = t; }
 	T* operator->() const{ return data; }
 	T* operator* () const { return data; }
 	bool operator== (const New<T>& b) {

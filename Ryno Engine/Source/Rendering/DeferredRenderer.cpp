@@ -153,16 +153,16 @@ namespace Ryno{
 		m_font_program->unuse();
 
 		//MODEL LOADING
-		m_bounding_sphere = New<Model>(new Model());
+		m_bounding_sphere.set(new Model());
 		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
 
-		m_bounding_pyramid = New<Model>(new Model());
+		m_bounding_pyramid.set(new Model());
 		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
 
-		m_fullscreen_quad = New<Model>(new Model());
+		m_fullscreen_quad.set(new Model());
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
 
-		m_cube_box = New<Model>(new Model());
+		m_cube_box.set(new Model());
 		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
 
 		//BIAS MATRIX

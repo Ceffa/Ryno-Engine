@@ -120,7 +120,7 @@ namespace Ryno{
 	//Called the next frame to avoid problems.
 	void Game::select_scene(){
 		if (new_scene != scene){
-			if (scene) 
+			if (scene)
 				delete scene;
 			scene = new_scene;
 			scene->start();

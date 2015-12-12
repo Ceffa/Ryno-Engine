@@ -1,83 +1,35 @@
 #include "SecondScene.h"
-#include "Text.h"
-#include "GPUProfiler.h"
-#include "CPUProfiler.h"
-#include <string>
-#include <GLM/gtx/transform.hpp>
-#include "SphereCollider.h"
-#include "PointCollider.h"
-#include "AABBCollider.h"
-#include "ConvexCollider.h"
-#include "GJK.h"
-#include "PerlinNoise.h"
 #include "MainScene.h"
+
 
 namespace Ryno{
 
 	void SecondScene::start(){
-		CPUProfiler::begin();
-		CPUProfiler::start_time();
 
-		//initializations
 		game->camera->position = glm::vec4(0, 150, -500, 1);
 
-		CPUProfiler::next_time();
-
-		//loading graphics
-
-		Texture texture_bricks = game->texture_manager->load_png("pack/177", GAME);
-		Texture normal_map_bricks = game->texture_manager->load_png("pack/177_norm", GAME);
-		Texture at = game->texture_manager->load_png("pack/196", GAME);
-		Texture an = game->texture_manager->load_png("pack/196_norm", GAME);
-		Texture bt = game->texture_manager->load_png("pack/161", GAME);
-		Texture bn = game->texture_manager->load_png("pack/161_norm", GAME);
-		Texture solaire = game->texture_manager->load_png("solaire", GAME);
-		Texture sun = game->texture_manager->load_png("sun", GAME);
-		Texture doge = game->texture_manager->load_png("doge", GAME);
-		white = game->texture_manager->load_png("white_pixel", GAME);
+		Texture white = game->texture_manager->load_png("white_pixel", GAME);
 		Texture white_normal = game->texture_manager->load_png("normal_pixel", GAME);
 
-		CPUProfiler::next_time();
+		I32 cone_mesh = game->mesh_manager->load_mesh("cone", 1, GAME);
 
-		//loading models
-		static I32 sphere_mesh = game->mesh_manager->load_mesh("sphere", 1, GAME);
-		static I32 cone_mesh = game->mesh_manager->load_mesh("cone", 1, GAME);
-		static I32 cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
-
-		static I32 terrain_mesh = game->mesh_manager->create_empty_mesh();
-		game->mesh_builder->set_mesh(terrain_mesh);
-
-		CPUProfiler::next_time();
-
-		//loading skyboxes
 		game->camera->skybox = game->texture_manager->load_cube_map("full_moon_small", GAME);
 
-		CPUProfiler::next_time();
+		////loading audio
+		//sound = game->audio_manager->load_sound("stomp.wav", GAME);
+		//music = game->audio_manager->load_music("journey.ogg", GAME);
+		//sound.set_volume(0.0f);
+		//music.set_volume(0.0f);
+		//music.play();
 
-		//loading audio
-		sound = game->audio_manager->load_sound("stomp.wav", GAME);
-		music = game->audio_manager->load_music("journey.ogg", GAME);
-		sound.set_volume(0.0f);
-		music.set_volume(0.0f);
-		music.play();
-
-
-		CPUProfiler::next_time();
-
-		//Build the environnement
-
-		//Cones
-		go = New<GameObject>(new GameObject());
-		go->model = New<Model>(new Model());
-		go->transform = New<Transform>(new Transform());
+		go.set(new GameObject());
+		go->model.set(new Model());
 		go->model->set_color_and_flatness(255, 255, 255, 0);
 		go->model->set_texture_normal(white, white_normal);
 		go->model->mesh = cone_mesh;
-		go->transform->set_scale(100, 100, 100);
-		go->transform->set_position(200, 55, 50);
-
-
-		go->dir_light = New<DirectionalLight>(new DirectionalLight());
+		go->transform->set_scale(50, 100, 100);
+		go->transform->set_position(120, 55, 50);
+		go->dir_light.set(new DirectionalLight());
 		go->dir_light->set_direction(-65, 150);
 		go->dir_light->diffuse_intensity = 0.2;
 		go->dir_light->set_diffuse_color(255, 255, 200);
@@ -85,15 +37,11 @@ namespace Ryno{
 		go->dir_light->set_specular_color(255, 255, 200);
 		go->dir_light->ambient_intensity = .05;
 		go->dir_light->set_ambient_color(255, 255, 200);
-
-
-
-
 	}
 
 
 	void SecondScene::update(){
-
+		
 	}
 
 	void SecondScene::input(){
@@ -101,24 +49,6 @@ namespace Ryno{
 			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
 				game->set_scene(new MainScene());
 
-			}
-			if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
-				particle_batch->transform->add_position(-.5f* game->delta_time, 0, 0);
-			}
-			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
-				particle_batch->transform->add_position(.5f * game->delta_time, 0, 0);
-			}
-			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)){
-				particle_batch->transform->add_position(0, .5f* game->delta_time, 0);
-			}
-			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)){
-				particle_batch->transform->add_position(0, -.5f* game->delta_time, 0);
-			}
-			if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)){
-				particle_batch->transform->add_position(0, 0, .5f* game->delta_time);
-			}
-			if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)){
-				particle_batch->transform->add_position(0, 0, -.5f* game->delta_time);
 			}
 		}
 	}

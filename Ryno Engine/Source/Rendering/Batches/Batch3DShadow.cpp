@@ -85,7 +85,6 @@ namespace Ryno {
 					vertex_offset += m_render_batches.back().num_vertices;
 					instance_offset += m_render_batches.back().num_instances;
 				}
-				std::cout << temp_model->mesh << std::endl;
 				Mesh* temp_mesh = m_mesh_manager->get_mesh(temp_model->mesh);
 				I32 num_indices = temp_mesh->indices_number;
 				I32 num_vertices = temp_mesh->vertices_number;

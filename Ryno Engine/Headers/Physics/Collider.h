@@ -10,7 +10,7 @@ namespace Ryno{
 		friend class GJK;
 	public:
 		Collider(){}
-
+		~Collider(){}
 		virtual Collider* get_copy() = 0;
 
 	protected:

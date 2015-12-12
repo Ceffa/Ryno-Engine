@@ -24,17 +24,11 @@ namespace Ryno{
 		Sound sound;
 		Music music;
 
-		Texture white;
-		I32 marker_mesh;
 		glm::vec3 velocity = glm::vec3(0, 0, 0);
 		glm::vec3 acceleration = glm::vec3(0, 0, 0);
 		
 		New<GameObject> go;
-		New<DirectionalLight> l;
 
-
-		void BuildQuadForGrid(glm::vec3 position, glm::vec2 uv,bool buildTriangles, int vertsPerRow);
-		void NewTerrain();
 	
 	};
 }
