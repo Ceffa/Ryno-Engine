@@ -12,14 +12,14 @@ namespace Ryno{
 		U32 tot = 0;
 		for (GameObject* go : emitters){
 			++tot;
-			go->get_emitter()->update(delta);
+			go->emitter->update(delta);
 		}
 	}
 
 
 	void ParticleManager::reset()
 	{
-		emitters.clear();
+		//emitters.clear();
 	}
 
 }

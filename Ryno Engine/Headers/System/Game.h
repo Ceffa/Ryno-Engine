@@ -13,7 +13,8 @@
 #include "ParticleManager.h"
 #include "Log.h"
 #include "MeshBuilder.h"
-#include "Allocator.h"
+#include "ReferenceAllocator.h"
+#include "StackAllocator.h"
 #include "CPUProfiler.h"
 #include "GPUProfiler.h"
 
@@ -61,6 +62,7 @@ namespace Ryno{
 		DeferredRenderer* deferred_renderer;
 		ParticleManager* particle_manager;
 		MeshBuilder* mesh_builder;
+		ReferenceAllocator* ref_allocator;
 		Shell* shell;
 		Log* log;
 		Camera3D* camera;

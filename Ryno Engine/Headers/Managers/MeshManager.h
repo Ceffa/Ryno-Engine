@@ -5,6 +5,7 @@
 #include "Structures.h"
 #include "Global.h"
 
+#define TEMPORARY_OFFSET 1073741823
 
 namespace Ryno{
 
@@ -31,15 +32,18 @@ namespace Ryno{
 
 		static MeshManager* get_instance();
 		I32 load_mesh(const std::string& name, bool has_uvs, Owner loc);
-		I32 create_empty_mesh();
+		I32 create_empty_mesh(Owner loc);
 		Mesh* get_mesh(I32 mesh_number);
 		I32 load_collider_mesh(const std::string& name, Owner loc);
 		ColliderMesh* get_collider_mesh(I32 collider_mesh_number);
 
+		void reset();//preserve engine meshes
+
 	private:
 		MeshManager::MeshManager();
-		I32 last_mesh=0, last_collider_mesh=0;
-		std::vector < Mesh* > meshes;
+		I32 last_temporary_mesh, last_lifetime_mesh, last_collider_mesh;
+		std::vector < Mesh* > temporary_meshes;
+		std::vector < Mesh* > lifetime_meshes;
 		std::vector < ColliderMesh* > collider_meshes;
 
 	};

@@ -13,9 +13,9 @@ namespace Ryno{
 		*this = *go;
 
 		if (*go->sprite)
-			sprite = new Sprite(*go->sprite);
+			sprite.copy(go->sprite);
 		if (*go->text)
-			text = new Text(*go->text);
+			text.copy(go->text);
 		
 		gui_objects.push_back(this);
 

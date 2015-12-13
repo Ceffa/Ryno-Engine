@@ -24,23 +24,44 @@ enum Use{
 static const C* BASE_PATHS[2]{"../Ryno Engine/", ""};
 
 
-template<typename T>
-class New {
-	T* data = nullptr;
+namespace Ryno{
+	template<typename T>
+	class New {
+	private:
+		
 
-public:
-	
-	New(T* t) : data(t){}
-	New() {}
-	T* operator->() const{ return data; }
-	T* operator* () const { return data; }
-	bool operator== (const New<T>& b) {
-		return data == b.data;
-	}
-	New<T>& operator=(T* b){
-		this->data = b;
-		return *this;
-	}
+	public:
+		T* data = nullptr;
+		Allocator* allocator;
 
-	~New() { delete data; }
-};
+		template<typename ...Args>
+		T* create(Allocator* all, Args... args){
+			allocator = all;
+			data = new (all->alloc(sizeof(T),__alignof(T))) T(args...);
+			if (data)
+				return data;
+			return nullptr;
+		}
+		template<typename ...Args>
+		T* copy(const New<T>& old, Args... args){
+			allocator = old.allocator;
+			data = new (allocator->alloc(sizeof(T), __alignof(T))) T(*old,args...);
+			if (data)
+				return data;
+			return nullptr;
+		}
+		T* operator->() const{ return data; }
+		T* operator* () const { return data; }
+		bool operator== (const New<T>& b) {
+			return data == b.data;
+		}
+		
+
+		~New<T>() { 
+			if (data){
+				data->~T();
+				allocator->dealloc((void*)data);
+			}
+		}
+	};
+}

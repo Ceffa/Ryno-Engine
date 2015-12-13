@@ -31,19 +31,9 @@ namespace Ryno{
 		New<PointLight> point_light;
 		New<DirectionalLight> dir_light;
 		New<SpotLight> spot_light;
-		New<Collider> collider;
-
-		//Component getter and setter
-		void set_emitter(Emitter* _emitter);
-		void remove_emitter();
-		Emitter* get_emitter();
-		//Static GameObjects List
-		static std::list<GameObject*> game_objects;
-	private:
 		New<Emitter> emitter;
 
-	
-
+		static std::list<GameObject*> game_objects;
 		
 	};
 

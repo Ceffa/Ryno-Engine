@@ -55,13 +55,7 @@ namespace Ryno{
 		log = Log::get_instance();
 		log->init();
 
-		//Memory
-		/*Allocator::stack_allocator = StackAllocator::get_instance();
-		Allocator::reference_allocator = ReferenceAllocator::get_instance();
-		Allocator::pool_allocator = Pool::get_instance();
-		Allocator::stack_allocator->init(1024);
-		Allocator::reference_allocator->init();
-		Allocator::pool_allocator->init();*/
+		ref_allocator = ReferenceAllocator::get_instance();
 
 		particle_manager = ParticleManager::get_instance();
 		particle_manager->init();
@@ -129,11 +123,12 @@ namespace Ryno{
 
 	void Game::destroy_scene(Scene* s){
 		particle_manager->reset();
+		mesh_builder->reset();
+		mesh_manager->reset();
 		texture_manager->reset();
 		audio_manager->reset();
 		CPUProfiler::reset();
 		GPUProfiler::reset();
-		mesh_builder->reset();
 		delete scene;
 	}
 

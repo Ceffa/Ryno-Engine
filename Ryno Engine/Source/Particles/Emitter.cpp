@@ -1,37 +1,50 @@
-       #include "GameObject.h"
+#include "GameObject.h"
 #include "Emitter.h"
 #include <iostream>
 #include <GLM/gtx/string_cast.hpp>
-
+#include "ParticleManager.h"
+#include "ReferenceAllocator.h"
 
 namespace Ryno{
 
-	Emitter::Emitter(const Emitter *e){
+	Emitter::~Emitter()
+	{
+		ParticleManager::get_instance()->remove_emitter(game_object);
+	}
+
+	Emitter::Emitter(const Emitter *e) : Emitter(e->game_object){
 		//Instead of copying it, create it anew with the values 
 		//taken by the old emitter.
 		//To know how the particles is build, the first particle
 		//in the old pool is casted to GameObject
 		//and passed to the init method.
-		
-		game_object = nullptr;
 		save_map = e->save_map;
 		lambda_spawn = e->lambda_spawn;
 		lambda_creation = e->lambda_creation;
 		lambda_particle_update = e->lambda_particle_update;
 		init(e->m_max_particles);
+
 		
 	}
 	
+	Emitter::Emitter(GameObject* go)
+	{
+		game_object = go;
+		ParticleManager::get_instance()->add_emitter(go);
+	}
+
 	void Emitter::init(U32 nr_particles){
 
 		m_max_particles = nr_particles;
 		m_pool.resize(nr_particles);
 		m_particles.resize(nr_particles);
+		ReferenceAllocator* r = ReferenceAllocator::get_instance();
 		for (U32 i = 0; i < nr_particles; i++){
-			Particle3D* p = new Particle3D();
+			m_particles[i].create(r);
+			Particle3D * p = *m_particles[i];
+			p->transform.create(r);
 			lambda_creation(this, p);
 			p->active = false;
-			m_particles[i] = p;
 			m_pool.push_back(p);
 		}
 
@@ -61,7 +74,7 @@ namespace Ryno{
 
 	void Emitter::remove_particle(Particle3D* p){
 		
-		Emitter* e = p->get_emitter();
+		Emitter* e = *p->emitter;
 		if (e) e->disable();
 		m_pool.push_back(p);
 		p->active = false;

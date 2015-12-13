@@ -32,11 +32,11 @@ namespace Ryno{
 		CPUProfiler::next_time();
 
 		//loading models
-		static I32 sphere_mesh = game->mesh_manager->load_mesh("sphere", 1, GAME);
-		static I32 cone_mesh = game->mesh_manager->load_mesh("cone", 1, GAME);
-		static I32 cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
+		I32 sphere_mesh = game->mesh_manager->load_mesh("sphere", 1, GAME);
+		I32 cone_mesh = game->mesh_manager->load_mesh("cone", 1, GAME);
+		I32 cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
+		I32 terrain_mesh = game->mesh_manager->create_empty_mesh(GAME);
 
-		static I32 terrain_mesh = game->mesh_manager->create_empty_mesh();
 		game->mesh_builder->set_mesh(terrain_mesh);
 		NewTerrain();
 
@@ -60,25 +60,26 @@ namespace Ryno{
 		//Environnement
 
 		//Center big Cone
-		cones[0] = new GameObject();
-		cones[0]->model = new Model();
+		cones[0].create(game->ref_allocator);
+		cones[0]->model.create(game->ref_allocator);
 		cones[0]->model->set_color_and_flatness(255, 255, 255, 0);
 		cones[0]->model->set_texture_normal(white, white_normal);
 		cones[0]->model->mesh = cone_mesh;
+		cones[0]->transform.create(game->ref_allocator);
 		cones[0]->transform->set_scale(100, 100, 100);
 		cones[0]->transform->set_position(0, 55, 50);
 
 		//Left small cone
-		cones[1] = new GameObject(*cones[0]);
+		cones[1].create(game->ref_allocator,*cones[0]);
 		cones[1]->transform->set_scale(30, 30, 30);
 		cones[1]->transform->set_position(-150, 20, -170);
 
 		//Right small cone
-		cones[2] = new  GameObject(*cones[1]);
+		cones[2].create(game->ref_allocator, *cones[1]);
 		cones[2]->transform->set_position(150, 20, -170);
 
 		//Base
-		walls[0] = new  GameObject(*cones[2]);
+		walls[0].create(game->ref_allocator, *cones[2]);
 		walls[0]->transform->set_scale(1, 1, 1);
 		walls[0]->model->set_texture_normal(bt, bn);
 		walls[0]->model->mesh = terrain_mesh;
@@ -86,28 +87,32 @@ namespace Ryno{
 		walls[0]->transform->set_position(5, 5, -5);
 
 		//Left
-		walls[1] = new  GameObject(*walls[0]);
+		walls[1].create(game->ref_allocator, *walls[0]);
 		walls[1]->model->mesh = cube_mesh;
 		walls[1]->transform->set_scale(5, 100, 200);
 		walls[1]->transform->set_position(-200, 105, 0);
 
 		//Right
-		walls[2] = new  GameObject(*walls[1]);
+		walls[2].create(game->ref_allocator, *walls[1]);
 		walls[2]->transform->set_scale(5, 100, 200);
 		walls[2]->transform->set_position(200, 105, 0);
 
 		//Front
-		walls[3] = new  GameObject(*walls[2]);
+		walls[3].create(game->ref_allocator, *walls[2]);
 		walls[3]->transform->set_scale(200, 100, 5);
 		walls[3]->transform->set_position(0, 105, 200);
 
 		//Roof
-		walls[4] = new  GameObject(*walls[3]);
+		walls[4].create(game->ref_allocator, *walls[3]);
 		walls[4]->transform->set_scale(200, 5, 200);
 		walls[4]->transform->set_position(0, 205, 0);
 
 		//Spot light
-		SpotLight* s = new SpotLight();
+		spot_light.create(game->ref_allocator);
+		spot_light->transform.create(game->ref_allocator);
+		spot_light->transform->set_position(0, 190, 50);
+		SpotLight* s = spot_light->spot_light.create(game->ref_allocator);
+
 		s->set_direction(-90, 0);
 		s->cutoff = 30;
 		s->set_diffuse_color(0, 255, 0);
@@ -116,46 +121,41 @@ namespace Ryno{
 		s->specular_intensity = 10;
 		s->set_specular_color(0, 255, 0);
 
-		spot_light = new GameObject();
-		spot_light->transform->set_position(0, 190, 50);
-		spot_light->spot_light = s;
+
 		
 		//Point lights
-
-		PointLight* p = new  PointLight();
-		p->set_diffuse_color(255, 80, 0);
-		p->diffuse_intensity = 3;
-		p->attenuation = .001;
-		p->specular_intensity = 10;
-		p->set_specular_color(255, 80, 0);
-
 		//Point light 1
-		spheres[0] = new GameObject(*walls[3]);
+		spheres[0].create(game->ref_allocator,*walls[3]);
 		spheres[0]->model->set_color_and_flatness(255, 255, 255, 255);
 		spheres[0]->model->cast_shadows = false;
 		spheres[0]->model->set_texture_normal(white, white_normal);
 		spheres[0]->transform->set_scale(12, 12, 12);
 		spheres[0]->transform->set_position(180, 20, 180);
 		spheres[0]->model->mesh = sphere_mesh;
-		spheres[0]->point_light = p;
+
+		PointLight* p = spheres[0]->point_light.create(game->ref_allocator);
+		p->set_diffuse_color(255, 80, 0);
+		p->diffuse_intensity = 3;
+		p->attenuation = .001;
+		p->specular_intensity = 10;
+		p->set_specular_color(255, 80, 0);
 
 		//Point light 2
-		spheres[1] = new  GameObject(*spheres[0]);
+		spheres[1].create(game->ref_allocator, *spheres[0]);
 		spheres[1]->transform->set_position(-180, 20, 180);
-		spheres[1]->point_light = new  PointLight(p);
 
 		//Point light 3
-		spheres[2] = new  GameObject(*spheres[1]);
+		spheres[2].create(game->ref_allocator, *spheres[1]);
 		spheres[2]->transform->set_position(-180, 20, -180);
-		spheres[2]->point_light = new  PointLight(p);
 
 		//Point light 4
-		spheres[3] = new  GameObject(*spheres[2]);
+		spheres[3].create(game->ref_allocator, *spheres[2]);
 		spheres[3]->transform->set_position(180, 20, -180);
-		spheres[3]->point_light = new  PointLight(p);
 
 		//Directional light
-		DirectionalLight* l = new  DirectionalLight();
+		directional_light.create(game->ref_allocator);
+		DirectionalLight* l = directional_light->dir_light.create(game->ref_allocator);
+		directional_light->transform.create(game->ref_allocator);
 		l->set_direction(-65, 150);
 		l->diffuse_intensity = 0.2;
 		l->set_diffuse_color(255, 255, 200);
@@ -163,14 +163,13 @@ namespace Ryno{
 		l->set_specular_color(255, 255, 200);
 		l->ambient_intensity = .05;
 		l->set_ambient_color(255, 255, 200);
-		directional_light = new GameObject();
-		directional_light->dir_light = l;
 
-
-		font = new Font("Aaargh", 24, GAME);
-		gui = new GUIObject();
-
-		Sprite* sp = new Sprite();
+		//GUI
+		font.create(game->ref_allocator,"Aaargh", 24, GAME);
+		gui.create(game->ref_allocator);
+		
+		Sprite* sp = gui->sprite.create(game->ref_allocator);
+		Text* t = gui->text.create(game->ref_allocator);
 		sp->depth = 20;
 		sp->angle = 0;
 		sp->set_color(255, 255, 255, 255);
@@ -180,7 +179,6 @@ namespace Ryno{
 		sp->set_scale(150, 150);
 		sp->set_tiling(1, 1);
 		sp->angle = 0;
-		Text* t = new Text();
 		t->depth = 10;
 		t->font = *font;
 		t->set_position(1, 1);
@@ -189,12 +187,10 @@ namespace Ryno{
 		t->set_color(255, 255, 0, 255);
 		t->text = "Ryno Engine";
 
-		gui->sprite = sp;
-		gui->text = t;
-
-
-
-		Emitter* emitter = new Emitter();
+		emitter_obj.create(game->ref_allocator);
+		emitter_obj->transform.create(game->ref_allocator);
+		emitter_obj->transform->set_position(0, 105, 50);
+		Emitter* emitter = emitter_obj->emitter.create(game->ref_allocator,*emitter_obj);
 		emitter->save_map.add("texture", white);
 		emitter->save_map.add("normal", white_normal);
 		emitter->save_map.add("mesh", sphere_mesh);
@@ -213,7 +209,7 @@ namespace Ryno{
 
 			p->decay_rate = .001f;
 			p->speed = .05f;
-			p->model = new  Model();
+			p->model.create(ReferenceAllocator::get_instance());
 			p->model->set_texture_normal(white, normal);
 			p->model->mesh = mesh;
 			p->model->color = ColorRGBA::yellow;
@@ -222,6 +218,7 @@ namespace Ryno{
 		emitter->lambda_spawn = [](Emitter* e){
 			for (U8 t = 0; t < 2; t++){
 				Particle3D* p = e->new_particle();
+				p->transform.create(ReferenceAllocator::get_instance());
 				p->transform->position = e->game_object->transform->position;
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 				//bool b = false;
@@ -284,12 +281,8 @@ namespace Ryno{
 
 		//e2->init(200);
 		emitter->init(200);
-		emitter_obj = new  GameObject();
-		emitter_obj->transform->set_position(0, 105, 50);
-		emitter_obj->set_emitter(emitter);
-
-
 		
+
 
 	}
 

@@ -6,8 +6,9 @@
 namespace Ryno{
 
 	MeshManager::MeshManager(){
-		last_mesh = 0;
-		meshes.resize(0);
+		last_temporary_mesh = TEMPORARY_OFFSET;
+		last_lifetime_mesh = 0;
+		temporary_meshes.resize(0);
 		last_collider_mesh = 0;
 		collider_meshes.resize(0);
 	}
@@ -19,7 +20,12 @@ namespace Ryno{
 	}
 
 	Mesh* MeshManager::get_mesh(I32 mesh_number){
-		return meshes[mesh_number - 1];
+		//if the number is very high, the mesh is for the game,
+		//and the offset must be adjusted
+		if (mesh_number >= TEMPORARY_OFFSET)
+			return temporary_meshes[mesh_number - TEMPORARY_OFFSET - 1];
+		else
+			return lifetime_meshes[mesh_number - 1];
 	}
 	ColliderMesh* MeshManager::get_collider_mesh(I32 collider_mesh_number){
 		return collider_meshes[collider_mesh_number - 1];
@@ -27,6 +33,14 @@ namespace Ryno{
 
 
 
+
+	void MeshManager::reset()
+	{
+		temporary_meshes.clear();
+		last_temporary_mesh = TEMPORARY_OFFSET;
+		collider_meshes.clear();
+		last_collider_mesh = 0;
+	}
 
 	I32 MeshManager::load_mesh(const std::string& name, bool has_uvs, Owner loc)
 	{
@@ -116,7 +130,10 @@ namespace Ryno{
 
 		U32 size = (U32)vertexIndices.size();
 		Mesh* mesh = new Mesh();
-		meshes.push_back(mesh);
+		if (loc == Owner::ENGINE)
+			lifetime_meshes.push_back(mesh);
+		else
+			temporary_meshes.push_back(mesh);
 		std::vector <Vertex3D> vertices;
 		vertices.resize(size);
 
@@ -154,25 +171,38 @@ namespace Ryno{
 				mesh->vertices.push_back(a);
 			}
 		}
+		if (loc == Owner::GAME){
+			I32 last = last_temporary_mesh - TEMPORARY_OFFSET;
+			temporary_meshes[last]->vertices_number = temporary_meshes[last]->vertices.size(); //One time only
+			temporary_meshes[last]->indices_number = temporary_meshes[last]->indices.size(); //One time only
+		}
+		else{
+			lifetime_meshes[last_lifetime_mesh]->vertices_number = lifetime_meshes[last_lifetime_mesh]->vertices.size(); //One time only
+			lifetime_meshes[last_lifetime_mesh]->indices_number = lifetime_meshes[last_lifetime_mesh]->indices.size(); //One time only
 
-		meshes[last_mesh]->vertices_number = meshes[last_mesh]->vertices.size(); //One time only
-		meshes[last_mesh]->indices_number = meshes[last_mesh]->indices.size(); //One time only
-
+		}
 		if (has_uvs)
 			MeshBuilder::calculate_tangents(mesh);
 
-		return ++last_mesh;
+		if (loc == Owner::ENGINE)
+			return ++last_lifetime_mesh;
+		else
+			return ++last_temporary_mesh;
 	}
 
 
 
 
 
-	I32 MeshManager::create_empty_mesh()
+	I32 MeshManager::create_empty_mesh(Owner loc)
 	{
 		Mesh* mesh = new Mesh();
-		meshes.push_back(mesh);
-		return ++last_mesh;
+		if (loc == GAME){
+			temporary_meshes.push_back(mesh);
+			return ++last_temporary_mesh;
+		}
+		lifetime_meshes.push_back(mesh);
+		return ++last_lifetime_mesh;
 	}
 
 	I32 MeshManager::load_collider_mesh(const std::string& name, Owner loc)

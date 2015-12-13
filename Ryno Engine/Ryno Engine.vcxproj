@@ -192,7 +192,6 @@
     <ClCompile Include="Source\Managers\ParticleManager.cpp" />
     <ClCompile Include="Source\Managers\TextureManager.cpp" />
     <ClCompile Include="Source\Managers\TimeManager.cpp" />
-    <ClCompile Include="Source\Memory\Allocator.cpp" />
     <ClCompile Include="Source\Memory\Pool.cpp" />
     <ClCompile Include="Source\Memory\ReferenceAllocator.cpp" />
     <ClCompile Include="Source\Memory\StackAllocator.cpp" />
@@ -391,7 +390,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;</PreprocessorDefinitions>

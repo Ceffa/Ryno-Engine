@@ -9,6 +9,7 @@
 #include <GLM/gtx/string_cast.hpp>
 
 #include "Emitter.h"
+#include "ReferenceAllocator.h"
 
 #define PI 3.14159265359
 #define HALF_PI 1.57079632679489661923
@@ -155,16 +156,18 @@ namespace Ryno{
 		m_font_program->unuse();
 
 		//MODEL LOADING
-		m_bounding_sphere = new Model();
+		ReferenceAllocator* r = ReferenceAllocator::get_instance();
+
+		m_bounding_sphere.create(r);
 		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
 
-		m_bounding_pyramid = new Model();
+		m_bounding_pyramid.create(r);
 		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
 
-		m_fullscreen_quad = new Model();
+		m_fullscreen_quad.create(r);
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
 
-		m_cube_box = new Model();
+		m_cube_box.create(r);
 		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
 
 		//BIAS MATRIX

@@ -39,9 +39,9 @@ class Emitter{
 
 	
 	public:
-		~Emitter(){}
+		~Emitter();
 
-		Emitter(){}
+		Emitter(GameObject* go);
 		Emitter(const Emitter *e);
 		
 		void init(U32 nr_particles);

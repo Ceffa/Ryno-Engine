@@ -30,10 +30,11 @@ namespace Ryno {
 
 		//Create Texts
 		lines.resize(NUM_LINES);
+		
+		ReferenceAllocator* r = ReferenceAllocator::get_instance();
 
-		lines[0] = new GUIObject();
-		Text* t = new Text();
-		lines[0]->text = t;
+		lines[0].create(r);
+		Text* t = lines[0]->text.create(r);
 		t->anchor_point = BOTTOM_LEFT;
 		t->font = *font;
 		t->text = "";
@@ -46,8 +47,8 @@ namespace Ryno {
 
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
-			lines[i] = new GUIObject();
-			lines[i]->text = new Text(t);
+			lines[i].create(r);
+			lines[i]->text.create(r, t);
 			lines[i]->text->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
 		}
 

@@ -12,17 +12,19 @@ namespace Ryno {
 		Texture background_texture = texture_manager->load_png("background", ENGINE);
 		
 		//Create background
-		background = new GUIObject();
-		Sprite *s = new Sprite();
+		ReferenceAllocator* r = ReferenceAllocator::get_instance();
+		background.create(r);
+
+		Sprite* s = background->sprite.create(r);
 		s->set_texture(background_texture);
 		s->angle = 0;
 		s->set_color(0,0,0,240);
 		s->depth = 5;
 		s->use = SHELL;
-		background->sprite = s;
+		
 
 
-		font = new Font("inconsolata", 24, ENGINE);
+		font.create(r,"inconsolata", 24, ENGINE);
 
 
 		iterator = history.begin();

@@ -714,9 +714,6 @@
     <ClCompile Include="Source\Memory\StackAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Memory\Allocator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Memory\Pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
