@@ -45,17 +45,13 @@ namespace Ryno{
 
 	void Game::init_internal_systems(){
 
-		
-	
-		
-		camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		shell = Shell::get_instance();
 		shell->init();
 		log = Log::get_instance();
 		log->init();
 
-		ref_allocator = ReferenceAllocator::get_instance();
+		mallocator = Mallocator::get_instance();
 
 		particle_manager = ParticleManager::get_instance();
 		particle_manager->init();
@@ -68,7 +64,7 @@ namespace Ryno{
 		input_manager->init(window);
 		mesh_manager = MeshManager::get_instance();
 		deferred_renderer = DeferredRenderer::get_instance();
-		deferred_renderer->init(camera);
+		deferred_renderer->init();
 		simple_drawer = SimpleDrawer::get_instance();
 		mesh_builder = MeshBuilder::get_instance();
 		
@@ -94,7 +90,7 @@ namespace Ryno{
 			select_scene();
 			time_manager->begin_frame();
 			handle_input();
-			camera_update();
+			scene->camera_update();
 			if (game_state != GameState::Paused) scene->update();
 			draw();
 			delta_time = time_manager->end_frame();
@@ -117,6 +113,7 @@ namespace Ryno{
 			if (scene)
 				destroy_scene(scene);
 			scene = new_scene;
+			deferred_renderer->set_camera(scene->camera);
 			scene->start();
 		}
 	}
@@ -132,34 +129,7 @@ namespace Ryno{
 		delete scene;
 	}
 
-	void Game::camera_update()
-	{
-		if (!shell->active){
-			
-
-			if (input_manager->is_key_down(SDLK_d, KEYBOARD)){
-				camera->move_right(0.5f * delta_time);
-
-			}
-			if (input_manager->is_key_down(SDLK_a, KEYBOARD)){
-				camera->move_left(0.5f * delta_time);
-			}
-			if (input_manager->is_key_down(SDLK_w, KEYBOARD) || input_manager->is_key_down(SDL_BUTTON_LEFT, MOUSE)){
-				camera->move_forward(0.5f * delta_time);
-			}
-			if (input_manager->is_key_down(SDLK_s, KEYBOARD) || input_manager->is_key_down(SDL_BUTTON_RIGHT, MOUSE)){
-				camera->move_back(0.5f * delta_time);
-			}
-		}
-		camera->generate_VP_matrix();
-		glm::vec2 mouse_coords = input_manager->get_mouse_movement();
-		camera->rotate(0.0005f * mouse_coords.x * delta_time, 0.0005f* mouse_coords.y* delta_time);
-		glm::vec2 rotation_view = input_manager->get_controller_RX_coords();
-		camera->rotate(0.01f * rotation_view.x* delta_time, 0.01f* rotation_view.y* delta_time);
-		glm::vec2 direction = input_manager->get_controller_LX_coords();
-		camera->move_forward(delta_time *1.0f * -direction.y);
-		camera->move_right(delta_time * 1.0f * direction.x);
-	}
+	
 
 	void Game::draw(){
 

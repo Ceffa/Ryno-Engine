@@ -12,7 +12,7 @@ namespace Ryno {
 		Texture background_texture = texture_manager->load_png("background", ENGINE);
 		
 		//Create background
-		ReferenceAllocator* r = ReferenceAllocator::get_instance();
+		Mallocator* r = Mallocator::get_instance();
 		background.create(r);
 
 		Sprite* s = background->sprite.create(r);

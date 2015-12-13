@@ -708,9 +708,6 @@
     <ClCompile Include="Source\Others\PerlinNoise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Memory\ReferenceAllocator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Memory\StackAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -724,6 +721,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\GUI\GUIObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Memory\Mallocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -875,9 +875,6 @@
     <ClInclude Include="Headers\Others\PerlinNoise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Memory\ReferenceAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Memory\StackAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -898,6 +895,9 @@
     </ClInclude>
     <ClInclude Include="Headers\Others\Transform2D.h">
       <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Memory\Mallocator.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

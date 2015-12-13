@@ -4,7 +4,7 @@
 #include "InputManager.h"
 #include "DeferredRenderer.h"
 #include "GUIObject.h"
-#include "ReferenceAllocator.h"
+#include "Mallocator.h"
 #include <list>
 #include <iterator>
 

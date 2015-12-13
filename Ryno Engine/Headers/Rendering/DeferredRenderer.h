@@ -66,7 +66,7 @@ namespace Ryno{
 
 
 		//Initialize deferred rendering
-		void init(Camera3D* camera);
+		void init();
 
 		void init_frame();
 
@@ -94,6 +94,8 @@ namespace Ryno{
 
 	
 		void destroy();
+
+		void set_camera(Camera3D* camera);
 
 
 	private:

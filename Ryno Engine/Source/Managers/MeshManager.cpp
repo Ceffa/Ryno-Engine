@@ -36,6 +36,8 @@ namespace Ryno{
 
 	void MeshManager::reset()
 	{
+		std::cout << "Msh: " << temporary_meshes.size() << std::endl;
+
 		temporary_meshes.clear();
 		last_temporary_mesh = TEMPORARY_OFFSET;
 		collider_meshes.clear();

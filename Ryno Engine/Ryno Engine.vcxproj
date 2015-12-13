@@ -193,7 +193,7 @@
     <ClCompile Include="Source\Managers\TextureManager.cpp" />
     <ClCompile Include="Source\Managers\TimeManager.cpp" />
     <ClCompile Include="Source\Memory\Pool.cpp" />
-    <ClCompile Include="Source\Memory\ReferenceAllocator.cpp" />
+    <ClCompile Include="Source\Memory\Mallocator.cpp" />
     <ClCompile Include="Source\Memory\StackAllocator.cpp" />
     <ClCompile Include="Source\Others\PerlinNoise.cpp" />
     <ClCompile Include="Source\Others\RynoMath.cpp" />
@@ -247,7 +247,7 @@
     <ClInclude Include="Headers\Managers\TimeManager.h" />
     <ClInclude Include="Headers\Memory\Allocator.h" />
     <ClInclude Include="Headers\Memory\Pool.h" />
-    <ClInclude Include="Headers\Memory\ReferenceAllocator.h" />
+    <ClInclude Include="Headers\Memory\Mallocator.h" />
     <ClInclude Include="Headers\Memory\StackAllocator.h" />
     <ClInclude Include="Headers\Others\GenericMap.h" />
     <ClInclude Include="Headers\Others\Transform2D.h" />

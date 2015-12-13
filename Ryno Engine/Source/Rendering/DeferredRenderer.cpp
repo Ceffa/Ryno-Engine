@@ -9,7 +9,7 @@
 #include <GLM/gtx/string_cast.hpp>
 
 #include "Emitter.h"
-#include "ReferenceAllocator.h"
+#include "Mallocator.h"
 
 #define PI 3.14159265359
 #define HALF_PI 1.57079632679489661923
@@ -36,10 +36,16 @@ namespace Ryno{
 	{
 
 	}
-	void DeferredRenderer::init(Camera3D* camera){
+
+	void DeferredRenderer::set_camera(Camera3D* camera)
+	{
+		m_camera = camera;
+		m_geometry_batch3d->init(m_camera);
+		m_shadow_batch3d->init(m_camera);
+	}
+	void DeferredRenderer::init(){
 
 		//GENERAL SETUP
-		m_camera = camera;
 		m_mesh_manager = MeshManager::get_instance();
 		m_texture_manager = TextureManager::get_instance();
 		m_simple_drawer = SimpleDrawer::get_instance();
@@ -52,8 +58,6 @@ namespace Ryno{
 		m_sprite_batch2d = new Batch2DSprite();
 		m_font_batch2d = new Batch2DFont();
 
-		m_geometry_batch3d->init(m_camera);
-		m_shadow_batch3d->init(m_camera);
 		m_sprite_batch2d->init();
 		m_font_batch2d->init();
 
@@ -156,7 +160,7 @@ namespace Ryno{
 		m_font_program->unuse();
 
 		//MODEL LOADING
-		ReferenceAllocator* r = ReferenceAllocator::get_instance();
+		Mallocator* r = Mallocator::get_instance();
 
 		m_bounding_sphere.create(r);
 		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);

@@ -34,6 +34,7 @@ namespace Ryno{
 	public:
 		
 		void init(Camera3D* camera);
+		void set_camera(Camera3D* camera);
 		virtual void begin() = 0;
 		virtual void end() = 0;
 		virtual void draw(GameObject* go) = 0;

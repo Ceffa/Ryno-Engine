@@ -3,7 +3,7 @@
 #include <iostream>
 #include <GLM/gtx/string_cast.hpp>
 #include "ParticleManager.h"
-#include "ReferenceAllocator.h"
+#include "Mallocator.h"
 
 namespace Ryno{
 
@@ -38,7 +38,7 @@ namespace Ryno{
 		m_max_particles = nr_particles;
 		m_pool.resize(nr_particles);
 		m_particles.resize(nr_particles);
-		ReferenceAllocator* r = ReferenceAllocator::get_instance();
+		Mallocator* r = Mallocator::get_instance();
 		for (U32 i = 0; i < nr_particles; i++){
 			m_particles[i].create(r);
 			Particle3D * p = *m_particles[i];

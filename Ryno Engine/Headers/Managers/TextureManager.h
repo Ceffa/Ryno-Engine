@@ -24,6 +24,8 @@ namespace Ryno{
 	private:
 		TextureManager::TextureManager();
 		U8 read_file_to_buffer(const std::string& f_path, std::vector<U8>& buffer);
-		std::vector<U32> allocated_textures;
+		std::vector<U32> temporary_textures;
+		std::vector<U32> lifetime_textures;
+
 	};
 }

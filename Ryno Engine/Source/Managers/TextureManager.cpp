@@ -46,7 +46,10 @@ namespace Ryno{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		allocated_textures.push_back(t.id);
+		if (loc == GAME)
+			temporary_textures.push_back(t.id);
+		else
+			lifetime_textures.push_back(t.id);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -104,7 +107,9 @@ namespace Ryno{
 
 	void TextureManager::reset()
 	{
-		glDeleteTextures(allocated_textures.size(), allocated_textures.data());
+		std::cout << "TXT: " << temporary_textures.size() << std::endl;
+		glDeleteTextures(temporary_textures.size(), temporary_textures.data());
+		temporary_textures.resize(0);
 	}
 
 	U8 TextureManager::read_file_to_buffer(const std::string& f_path, std::vector<U8>& buffer){

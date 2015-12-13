@@ -8,15 +8,15 @@
 namespace Ryno{
 
 	
-	class ReferenceAllocator : public Allocator{
+	class Mallocator : public Allocator{
 	public:
-		static ReferenceAllocator* get_instance();
+		static Mallocator* get_instance();
 
 		void* alloc(size_t obj_size, U8 alignement) override;
 		void dealloc(void* p) override;
 
 
 	private:
-		ReferenceAllocator::ReferenceAllocator(){}
+		Mallocator::Mallocator(){}
 	};
 }

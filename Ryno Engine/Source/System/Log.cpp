@@ -31,7 +31,7 @@ namespace Ryno {
 		//Create Texts
 		lines.resize(NUM_LINES);
 		
-		ReferenceAllocator* r = ReferenceAllocator::get_instance();
+		Mallocator* r = Mallocator::get_instance();
 
 		lines[0].create(r);
 		Text* t = lines[0]->text.create(r);

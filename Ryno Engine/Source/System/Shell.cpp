@@ -35,7 +35,7 @@ namespace Ryno {
 		background->sprite->set_scale(350, WINDOW_HEIGHT / 3.06f);
 
 		//Create Texts 
-		ReferenceAllocator* r = ReferenceAllocator::get_instance();
+		Mallocator* r = Mallocator::get_instance();
 		lines.resize(NUM_LINES);
 		lines[0].create(r);
 		Text *t = lines[0]->text.create(r);
