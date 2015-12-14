@@ -1,41 +1,32 @@
-//#pragma once
-//#include "Types.h"
-//#include <iostream>
-//#include <initializer_list>
-//
-//namespace Ryno{
-//
-//	class StackAllocator{
-//	public:
-//		static StackAllocator* get_instance();
-//
-//		bool init(U64 MB_size);
-//
-//		template<typename T, typename... Args>
-//		T* alloc(T*t, Args...args){
-//			void* old_ptr = current;
-//			U64 pers_ptr = (U64)old_ptr + sizeof(T);
-//			U64 pers_mod = pers_ptr % alignment_of(T);
-//			current = (void*)(pers_ptr + sizeof(void*) + ((pers_mod == 0) ? 0 : (alignment_of(T) - pers_mod))); //alignement
-//
-//			if (memory_full())
-//				return nullptr;
-//
-//			*(void*)((U64)current - sizeof(void*)) = old_ptr;
-//			return current;
-//
-//			void free_temp_top();
-//
-//			bool free(T* t){
-//
-//			}
-//	private:
-//		U64 size; //bytes
-//		void *start, *current, *end;
-//		StackAllocator::StackAllocator(){}
-//		bool memory_full();
-//		};
-//
-//
-//	};
-//}
+#pragma once
+#include "Types.h"
+#include "Allocator.h"
+#include <iostream>
+#include <initializer_list>
+
+#define STACK_ALLOCATOR_LOG 0
+namespace Ryno{
+
+	class StackAllocator : public Allocator{
+	public:
+		static StackAllocator* get_instance();
+
+		bool init(U64 MB_size);
+		
+		//Deallocate top object. Use this instead of dealloc
+		void pop();
+
+		void wipe_all();//wipe memory
+		void free_all();//free memory
+
+	private:
+		U64 size; //bytes
+		void *start=nullptr, *current=nullptr, *end=nullptr;
+		StackAllocator::StackAllocator(){}
+		bool memory_full();
+		//Allocate
+		void* alloc(size_t obj_size, U8 alignement) override;
+		//Does nothing: deallocation is handled by wipe. Do not use.
+		void dealloc(void* p) override;
+	};
+}

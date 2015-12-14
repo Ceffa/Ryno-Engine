@@ -7,7 +7,8 @@
 namespace Ryno{
 
 	class Allocator{
-	public:
+		template<class T> friend class New;
+	protected:
 		virtual void* alloc(size_t size, U8 alignement) = 0;
 		virtual void dealloc(void*) = 0;
 	};

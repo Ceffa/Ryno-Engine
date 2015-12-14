@@ -12,11 +12,12 @@ namespace Ryno{
 	public:
 		static Mallocator* get_instance();
 
-		void* alloc(size_t obj_size, U8 alignement) override;
-		void dealloc(void* p) override;
 
-
+	
 	private:
 		Mallocator::Mallocator(){}
+
+		void* alloc(size_t obj_size, U8 alignement) override;
+		void dealloc(void* p) override;
 	};
 }

@@ -60,26 +60,26 @@ namespace Ryno{
 		//Environnement
 
 		//Center big Cone
-		cones[0].create(game->mallocator);
-		cones[0]->model.create(game->mallocator);
+		cones[0].create(game->stack_allocator);
+		cones[0]->model.create(game->stack_allocator);
 		cones[0]->model->set_color_and_flatness(255, 255, 255, 0);
 		cones[0]->model->set_texture_normal(white, white_normal);
 		cones[0]->model->mesh = cone_mesh;
-		cones[0]->transform.create(game->mallocator);
+		cones[0]->transform.create(game->stack_allocator);
 		cones[0]->transform->set_scale(100, 100, 100);
 		cones[0]->transform->set_position(0, 55, 50);
 
 		//Left small cone
-		cones[1].create(game->mallocator,*cones[0]);
+		cones[1].create(game->stack_allocator,*cones[0]);
 		cones[1]->transform->set_scale(30, 30, 30);
 		cones[1]->transform->set_position(-150, 20, -170);
 
 		//Right small cone
-		cones[2].create(game->mallocator, *cones[1]);
+		cones[2].create(game->stack_allocator, *cones[1]);
 		cones[2]->transform->set_position(150, 20, -170);
 
 		//Base
-		walls[0].create(game->mallocator, *cones[2]);
+		walls[0].create(game->stack_allocator, *cones[2]);
 		walls[0]->transform->set_scale(1, 1, 1);
 		walls[0]->model->set_texture_normal(bt, bn);
 		walls[0]->model->mesh = terrain_mesh;
@@ -87,31 +87,31 @@ namespace Ryno{
 		walls[0]->transform->set_position(5, 5, -5);
 
 		//Left
-		walls[1].create(game->mallocator, *walls[0]);
+		walls[1].create(game->stack_allocator, *walls[0]);
 		walls[1]->model->mesh = cube_mesh;
 		walls[1]->transform->set_scale(5, 100, 200);
 		walls[1]->transform->set_position(-200, 105, 0);
 
 		//Right
-		walls[2].create(game->mallocator, *walls[1]);
+		walls[2].create(game->stack_allocator, *walls[1]);
 		walls[2]->transform->set_scale(5, 100, 200);
 		walls[2]->transform->set_position(200, 105, 0);
 
 		//Front
-		walls[3].create(game->mallocator, *walls[2]);
+		walls[3].create(game->stack_allocator, *walls[2]);
 		walls[3]->transform->set_scale(200, 100, 5);
 		walls[3]->transform->set_position(0, 105, 200);
 
 		//Roof
-		walls[4].create(game->mallocator, *walls[3]);
+		walls[4].create(game->stack_allocator, *walls[3]);
 		walls[4]->transform->set_scale(200, 5, 200);
 		walls[4]->transform->set_position(0, 205, 0);
 
 		//Spot light
-		spot_light.create(game->mallocator);
-		spot_light->transform.create(game->mallocator);
+		spot_light.create(game->stack_allocator);
+		spot_light->transform.create(game->stack_allocator);
 		spot_light->transform->set_position(0, 190, 50);
-		SpotLight* s = spot_light->spot_light.create(game->mallocator);
+		SpotLight* s = spot_light->spot_light.create(game->stack_allocator);
 
 		s->set_direction(-90, 0);
 		s->cutoff = 30;
@@ -125,7 +125,7 @@ namespace Ryno{
 		
 		//Point lights
 		//Point light 1
-		spheres[0].create(game->mallocator,*walls[3]);
+		spheres[0].create(game->stack_allocator,*walls[3]);
 		spheres[0]->model->set_color_and_flatness(255, 255, 255, 255);
 		spheres[0]->model->cast_shadows = false;
 		spheres[0]->model->set_texture_normal(white, white_normal);
@@ -133,7 +133,7 @@ namespace Ryno{
 		spheres[0]->transform->set_position(180, 20, 180);
 		spheres[0]->model->mesh = sphere_mesh;
 
-		PointLight* p = spheres[0]->point_light.create(game->mallocator);
+		PointLight* p = spheres[0]->point_light.create(game->stack_allocator);
 		p->set_diffuse_color(255, 80, 0);
 		p->diffuse_intensity = 3;
 		p->attenuation = .001;
@@ -141,21 +141,21 @@ namespace Ryno{
 		p->set_specular_color(255, 80, 0);
 
 		//Point light 2
-		spheres[1].create(game->mallocator, *spheres[0]);
+		spheres[1].create(game->stack_allocator, *spheres[0]);
 		spheres[1]->transform->set_position(-180, 20, 180);
 
 		//Point light 3
-		spheres[2].create(game->mallocator, *spheres[1]);
+		spheres[2].create(game->stack_allocator, *spheres[1]);
 		spheres[2]->transform->set_position(-180, 20, -180);
 
 		//Point light 4
-		spheres[3].create(game->mallocator, *spheres[2]);
+		spheres[3].create(game->stack_allocator, *spheres[2]);
 		spheres[3]->transform->set_position(180, 20, -180);
 
 		//Directional light
-		directional_light.create(game->mallocator);
-		DirectionalLight* l = directional_light->dir_light.create(game->mallocator);
-		directional_light->transform.create(game->mallocator);
+		directional_light.create(game->stack_allocator);
+		DirectionalLight* l = directional_light->dir_light.create(game->stack_allocator);
+		directional_light->transform.create(game->stack_allocator);
 		l->set_direction(-65, 150);
 		l->diffuse_intensity = 0.2;
 		l->set_diffuse_color(255, 255, 200);
@@ -165,11 +165,11 @@ namespace Ryno{
 		l->set_ambient_color(255, 255, 200);
 
 		//GUI
-		font.create(game->mallocator,"Aaargh", 24, GAME);
-		gui.create(game->mallocator);
+		font.create(game->stack_allocator,"Aaargh", 24, GAME);
+		gui.create(game->stack_allocator);
 		
-		Sprite* sp = gui->sprite.create(game->mallocator);
-		Text* t = gui->text.create(game->mallocator);
+		Sprite* sp = gui->sprite.create(game->stack_allocator);
+		Text* t = gui->text.create(game->stack_allocator);
 		sp->depth = 20;
 		sp->angle = 0;
 		sp->set_color(255, 255, 255, 255);
@@ -187,10 +187,10 @@ namespace Ryno{
 		t->set_color(255, 255, 0, 255);
 		t->text = "Ryno Engine";
 
-		emitter_obj.create(game->mallocator);
-		emitter_obj->transform.create(game->mallocator);
+		emitter_obj.create(game->stack_allocator);
+		emitter_obj->transform.create(game->stack_allocator);
 		emitter_obj->transform->set_position(0, 105, 50);
-		Emitter* emitter = emitter_obj->emitter.create(game->mallocator,*emitter_obj);
+		Emitter* emitter = emitter_obj->emitter.create(game->stack_allocator, *emitter_obj);
 		emitter->save_map.add("texture", white);
 		emitter->save_map.add("normal", white_normal);
 		emitter->save_map.add("mesh", sphere_mesh);
@@ -209,7 +209,7 @@ namespace Ryno{
 
 			p->decay_rate = .001f;
 			p->speed = .05f;
-			p->model.create(Mallocator::get_instance());
+			p->model.create(StackAllocator::get_instance());
 			p->model->set_texture_normal(white, normal);
 			p->model->mesh = mesh;
 			p->model->color = ColorRGBA::yellow;
@@ -218,7 +218,6 @@ namespace Ryno{
 		emitter->lambda_spawn = [](Emitter* e){
 			for (U8 t = 0; t < 2; t++){
 				Particle3D* p = e->new_particle();
-				p->transform.create(Mallocator::get_instance());
 				p->transform->position = e->game_object->transform->position;
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 				//bool b = false;
