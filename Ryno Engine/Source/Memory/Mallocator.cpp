@@ -12,9 +12,13 @@ namespace Ryno{
 	{
 		void* ptr = malloc(obj_size + alignement);
 		if (ptr == nullptr){
-			std::cout << "Reference Allocator: Malloc Failed." << std::endl;
+			std::cout << "Mallocator: Malloc Failed." << std::endl;
 			return nullptr;
 		}
+#if MALLOCATOR_LOG
+		std::cout << "Mallocator: allocating" << std::endl;
+#endif
+
 		return ptr;
 
 
@@ -23,6 +27,9 @@ namespace Ryno{
 	void Mallocator::dealloc(void* p)
 	{
 		free(p);
+#if MALLOCATOR_LOG
+		std::cout << "Mallocator: deallocating" << std::endl;
+#endif
 	}
 
 }

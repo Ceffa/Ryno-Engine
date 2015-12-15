@@ -1,3 +1,4 @@
+#pragma once
 #include "Global.h"
 #include <iostream>
 #include "MeshManager.h"

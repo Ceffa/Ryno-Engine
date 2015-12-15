@@ -13,29 +13,41 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{5487e009-a553-4c73-b497-7cba20c0afc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{43853a61-452d-4bf7-87a3-cdf96185b525}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\MainScene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Source\Scenes\MainScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SecondScene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Source\Scenes\SecondScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ShowScene.cpp">
+    <ClCompile Include="Source\Scenes\ShowScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\MainScene.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Scenes\MainScene.h">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\SecondScene.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Scenes\SecondScene.h">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\ShowScene.h">
+    <ClInclude Include="Headers\Scenes\ShowScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Terrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,4 @@
 #include "GameObject.h"
-#include "Emitter.h"
 #include <iostream>
 #include <GLM/gtx/string_cast.hpp>
 #include "ParticleManager.h"
@@ -36,12 +35,13 @@ namespace Ryno{
 	void Emitter::init(U32 nr_particles){
 
 		m_max_particles = nr_particles;
-		m_pool.resize(nr_particles);
 		m_particles.resize(nr_particles);
-		Mallocator* r = Mallocator::get_instance();
+		StackAllocator* r = StackAllocator::get_instance();
+		pool.create(r);
+		pool->init<Particle3D>(nr_particles);
+
 		for (U32 i = 0; i < nr_particles; i++){
-			m_particles[i].create(r);
-			Particle3D * p = *m_particles[i];
+			Particle3D* p = m_particles[i].create(*pool);
 			p->transform.create(r);
 			lambda_creation(this, p);
 			p->active = false;
@@ -60,7 +60,6 @@ namespace Ryno{
 		for (New<Particle3D>& p : m_particles){
 		
 			if (p->active){
-				
 				lambda_particle_update(this,*p, delta_time);
 				p->lifetime += p->decay_rate * delta_time;
 				if (p->lifetime >= 1.0f){

@@ -7,6 +7,7 @@
 #include "Global.h"
 #include "Structures.h"
 
+#define TEXTURE_LOG 0
 
 namespace Ryno{
 	struct GLTexture{

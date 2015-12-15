@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <unordered_map>
 
+#define MALLOCATOR_LOG 0
 namespace Ryno{
 
 	

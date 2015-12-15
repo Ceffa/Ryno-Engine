@@ -33,7 +33,7 @@ namespace Ryno{
 		void* address = (void*)((U64)current + obj_size + alignement);
 		current = (void*)(sizeof(void*) + (U64)address);
 		if (memory_full())
-			return nullptr;
+			return nullptr; 
 		*(void**)address = allocate_at;
 #if STACK_ALLOCATOR_LOG
 		std::cout << "Stack Allocator: allocated at: " << current << std::endl;
@@ -43,7 +43,9 @@ namespace Ryno{
 
 	void StackAllocator::dealloc(void* p)
 	{
-		
+#if STACK_ALLOCATOR_LOG
+		std::cout << "Stack Allocator: deallocating... which does nothing " << std::endl;
+#endif
 	}
 
 	void StackAllocator::pop(){

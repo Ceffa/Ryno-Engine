@@ -9,6 +9,7 @@
 namespace Ryno{
 	class Camera3D{
 	public:
+
 		Camera3D(U32 w, U32 h);
 		~Camera3D();
 
@@ -26,6 +27,8 @@ namespace Ryno{
 		static glm::mat4 generate_P_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far);
 
 		
+		F32 movement_speed = 1.0f;
+		F32 rotation_speed = 0.0005f;
 		I32 width;
 		I32 height;
 		glm::vec4 position;

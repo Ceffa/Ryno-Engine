@@ -44,7 +44,7 @@ namespace Ryno{
 		static U32 frame_count = 0;
 		if (frame_count++ == 60) {
 			frame_count = 0;
-			std::cout << current_fps << std::endl;
+			Log::println(current_fps);
 			//Log::message(current_fps);
 
 		}

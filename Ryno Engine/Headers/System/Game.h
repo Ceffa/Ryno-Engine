@@ -81,6 +81,8 @@ namespace Ryno{
 
 		void handle_input();//make initializations, then call input
 
+		void update();
+
 		void draw();
 
 		void end();

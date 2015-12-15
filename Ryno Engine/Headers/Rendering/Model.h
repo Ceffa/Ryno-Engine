@@ -18,6 +18,7 @@ namespace Ryno{
 		void set_color(U8 r, U8 g, U8 b);
 		void set_alpha(U8 f);
 		void set_color_and_flatness(U8 r, U8 g, U8 b, U8 f);
+		void set_flatness(U8 f);
 			
 		void set_tiling(U32 u, U32 v);
 		void set_texture_normal(Texture t, Texture n);

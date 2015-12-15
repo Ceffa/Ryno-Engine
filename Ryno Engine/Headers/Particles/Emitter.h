@@ -8,6 +8,8 @@
 #include <vector>
 #include <functional>
 #include "GenericMap.h"
+#include "StackAllocator.h"
+#include "Pool.h"
 
 namespace Ryno{
 	
@@ -62,6 +64,7 @@ class Emitter{
 		F32 m_elapsed_time;
 		F32 m_emission_rate;
 	private:
+		New<Pool> pool;
 		std::vector <New<Particle3D>> m_particles;
 		std::list <Particle3D*> m_pool;
 	};

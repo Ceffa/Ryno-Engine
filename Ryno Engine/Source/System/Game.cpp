@@ -53,7 +53,7 @@ namespace Ryno{
 
 		mallocator = Mallocator::get_instance();
 		stack_allocator = StackAllocator::get_instance();
-		stack_allocator->init(128);
+		stack_allocator->init(4096);
 
 		particle_manager = ParticleManager::get_instance();
 		particle_manager->init();
@@ -93,7 +93,7 @@ namespace Ryno{
 			time_manager->begin_frame();
 			handle_input();
 			scene->camera_update();
-			if (game_state != GameState::Paused) scene->update();
+			if (game_state != GameState::Paused) update();
 			draw();
 			delta_time = time_manager->end_frame();
 			if (game_state != GameState::Paused) time_manager->print_fps();
@@ -186,4 +186,10 @@ namespace Ryno{
 	}
 
 		
+	void Game::update()
+	{
+		particle_manager->update(delta_time);
+		scene->update();
+	}
+
 }

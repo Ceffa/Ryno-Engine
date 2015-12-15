@@ -29,6 +29,11 @@ namespace Ryno{
 	}
 	
 
+	void Model::set_flatness(U8 f)
+	{
+		color.set_alpha(f);
+	}
+
 	void Model::set_tiling(U32 u, U32 v){
 		tiling = glm::vec2(u, v);
 	}

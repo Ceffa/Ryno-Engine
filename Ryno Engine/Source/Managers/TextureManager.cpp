@@ -107,7 +107,9 @@ namespace Ryno{
 
 	void TextureManager::reset()
 	{
-		std::cout << "TXT: " << temporary_textures.size() << std::endl;
+#if TEXTURE_LOG
+		std::cout << "Texture Manager: number of textures: " << temporary_textures.size() << std::endl;
+#endif
 		glDeleteTextures(temporary_textures.size(), temporary_textures.data());
 		temporary_textures.resize(0);
 	}

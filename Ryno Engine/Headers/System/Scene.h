@@ -9,6 +9,7 @@ namespace Ryno{
 	public:
 		Camera3D* camera;
 
+
 		Scene();
 		virtual ~Scene() = 0{}
 		virtual void start() = 0;
