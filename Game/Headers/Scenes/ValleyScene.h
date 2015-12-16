@@ -10,13 +10,12 @@
 
 namespace Ryno{
 
-	class MainScene : public Scene
+	class ValleyScene : public Scene
 	{
 
 	public:
-		MainScene() : Scene(){}
+		ValleyScene() : Scene(){}
 	private:
-	
 		void start() override;
 		void input() override;
 		void update() override;

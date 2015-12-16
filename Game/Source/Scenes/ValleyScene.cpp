@@ -1,11 +1,11 @@
 #pragma once
-#include "MainScene.h"
-#include "SecondScene.h"
+#include "ValleyScene.h"
+#include "FireworkScene.h"
 #include "Terrain.h"
 
 namespace Ryno{
 
-	void MainScene::start(){
+	void ValleyScene::start(){
 
 		camera->position = glm::vec4(0,200,0, 1);
 		camera->movement_speed = .01f;
@@ -48,13 +48,13 @@ namespace Ryno{
 	}
 		
 
-	void MainScene::update(){
+	void ValleyScene::update(){
 	}
 	
-	void MainScene::input(){
+	void ValleyScene::input(){
 		if (!game->shell->active){
 			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
-				game->set_scene(new SecondScene());
+				game->set_scene("firework");
 
 			}
 		}

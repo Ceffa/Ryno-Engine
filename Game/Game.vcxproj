@@ -70,7 +70,7 @@
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;$(SolutionDir)x64/Release;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(ProjectDir)Headers/Scenes;$(SolutionDir)Ryno Engine\Headers\Particles;$(SolutionDir)Ryno Engine\Headers\Memory;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(ProjectDir)Headers/Preferences;$(ProjectDir)Headers/Scenes;$(SolutionDir)Ryno Engine\Headers\Particles;$(SolutionDir)Ryno Engine\Headers\Memory;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;$(SolutionDir)x64/Debug;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -129,15 +129,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\Scenes\MainScene.cpp" />
-    <ClCompile Include="Source\Scenes\SecondScene.cpp" />
-    <ClCompile Include="Source\Scenes\ShowScene.cpp" />
+    <ClCompile Include="Source\Scenes\ValleyScene.cpp" />
+    <ClCompile Include="Source\Scenes\FireworkScene.cpp" />
+    <ClCompile Include="Source\Scenes\HouseScene.cpp" />
     <ClCompile Include="Source\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Scenes\MainScene.h" />
-    <ClInclude Include="Headers\Scenes\SecondScene.h" />
-    <ClInclude Include="Headers\Scenes\ShowScene.h" />
+    <ClInclude Include="Headers\Preferences\ScenesList.h" />
+    <ClInclude Include="Headers\Scenes\ValleyScene.h" />
+    <ClInclude Include="Headers\Scenes\FireworkScene.h" />
+    <ClInclude Include="Headers\Scenes\HouseScene.h" />
     <ClInclude Include="Headers\Terrain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

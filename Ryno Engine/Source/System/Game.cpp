@@ -104,9 +104,11 @@ namespace Ryno{
 
 	}
 
-	void Game::set_scene(Scene* _scene)
+	void Game::set_scene(const std::string& scene_name)
 	{
-			new_scene = _scene;
+		Scene* temp_scene = SceneManager::new_scene(scene_name);
+		if (temp_scene)
+			new_scene = temp_scene;
 	}
 
 	//Called the next frame to avoid problems.

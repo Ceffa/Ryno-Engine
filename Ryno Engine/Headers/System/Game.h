@@ -51,7 +51,7 @@ namespace Ryno{
 		static Game* get_instance();
 		void init();
 		void run();
-		void set_scene(Scene* _scene);
+		void set_scene(const std::string& scene_name);
 
 		AudioManager* audio_manager;
 		InputManager* input_manager;

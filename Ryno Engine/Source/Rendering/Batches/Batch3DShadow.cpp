@@ -17,9 +17,6 @@ namespace Ryno {
 		input_instances.clear();
 		m_game_objects.clear();
 	
-
-
-
 	}
 	void Batch3DShadow::end() {
 
@@ -45,9 +42,12 @@ namespace Ryno {
 
 	void Batch3DShadow::create_render_batches(){
 
-		
 	
 		I32 models_size = (I32) m_game_objects.size();
+
+		//Return if no mesh
+		if (models_size==0)
+			return;
 
 		//Resize the MVP vector at the beginning to avoid reallocations
 		input_instances.resize(models_size);
@@ -62,9 +62,7 @@ namespace Ryno {
 		}
 		
 
-		//Return if no mesh
-		if (m_game_objects.empty())
-			return;
+		
 
 		U32 indices_offset = 0;
 		U32 vertex_offset = 0;
@@ -203,9 +201,6 @@ namespace Ryno {
 
 	void Batch3DShadow::render_batch() {
 		
-	
-
-
 		enable_attributes();
 
 		//i can bind the vbo, orphan it, pass the new data, and unbind it.
@@ -213,7 +208,7 @@ namespace Ryno {
 		glBufferData(GL_ARRAY_BUFFER, vertices_positions.size() * sizeof(glm::vec3), vertices_positions.data(), GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), &indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), indices.data(), GL_STATIC_DRAW);
 
 		for (RenderBatchShadow rb : m_render_batches){
 			

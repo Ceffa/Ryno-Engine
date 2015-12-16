@@ -9,11 +9,11 @@
 #include "Scene.h"
 #include "Game.h"
 namespace Ryno{
-	class SecondScene : public Scene
+	class FireworkScene : public Scene
 	{
 
 	public:
-		SecondScene() : Scene(){}
+		FireworkScene() : Scene(){}
 	private:
 	
 		void start() override;

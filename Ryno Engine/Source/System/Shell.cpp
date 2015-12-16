@@ -1,5 +1,6 @@
 #include "Shell.h"
 #include "TextureManager.h"
+#include "Game.h"
 #include <iostream>
 #include <unordered_map>
 
@@ -371,6 +372,14 @@ namespace Ryno {
 				print_message("missing argument(s)."); return;
 			}
 			log->print(s);
+		}
+
+		else if (command.compare("setscene") == 0){
+			std::string s = string_argument();
+			if (s.empty()){
+				print_message("missing argument(s)."); return;
+			}
+			Game::get_instance()->set_scene(s);
 		}
 
 		else if (command.compare("fuckyou") == 0){

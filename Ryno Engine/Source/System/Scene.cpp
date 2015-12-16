@@ -3,6 +3,8 @@
 
 namespace Ryno{
 
+	std::map<std::string, Scene*(*)()> SceneManager::scenes_map;
+
 	Scene::Scene()
 	{
 		game = Game::get_instance();
@@ -36,5 +38,8 @@ namespace Ryno{
 		camera->move_forward(game->delta_time *1.0f * -direction.y);
 		camera->move_right(game->delta_time * 1.0f * direction.x);
 	}
+
+	
+	
 
 }

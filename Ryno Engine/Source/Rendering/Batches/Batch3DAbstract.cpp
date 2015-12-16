@@ -11,6 +11,7 @@ namespace Ryno {
 		set_camera(camera);
 		create_vertex_array();
 		m_mesh_manager = MeshManager::get_instance();
+		indices.resize(0);
 
 	}
 	void Batch3DAbstract::set_camera(Camera3D* camera) {

@@ -11,11 +11,11 @@
 
 namespace Ryno{
 
-	class ShowScene : public Scene
+	class HouseScene : public Scene
 	{
 
 	public:
-		ShowScene() : Scene(){}
+		HouseScene() : Scene(){}
 	private:
 
 		void start() override;

@@ -1,5 +1,5 @@
 #pragma once
-#include "ShowScene.h"
+#include "HouseScene.h"
 #include "Text.h"
 #include "GPUProfiler.h"
 #include "CPUProfiler.h"
@@ -7,11 +7,11 @@
 #include <GLM/gtx/transform.hpp>
 #include "GJK.h"
 #include "Terrain.h"
-#include "MainScene.h"
+#include "ValleyScene.h"
 
 namespace Ryno{
 	
-	void ShowScene::start(){
+	void HouseScene::start(){
 		
 
 		//initializations
@@ -255,7 +255,7 @@ namespace Ryno{
 	}
 
 
-	void ShowScene::update(){
+	void HouseScene::update(){
 
 		for (I32 i = 0; i < 4; i++){
 			spheres[i]->transform->position.y = 40 + sin(game->time_manager->current_time / 1000.0f) * 20;
@@ -263,10 +263,10 @@ namespace Ryno{
 
 	}
 
-	void ShowScene::input(){
+	void HouseScene::input(){
 		if (!game->shell->active){
 			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
-				game->set_scene(new MainScene());
+				game->set_scene("valley");
 
 			}
 			/*if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){

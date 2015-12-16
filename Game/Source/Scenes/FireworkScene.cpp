@@ -1,7 +1,7 @@
 #pragma once
-#include "SecondScene.h"
-#include "MainScene.h"
-#include "ShowScene.h"
+#include "FireworkScene.h"
+#include "ValleyScene.h"
+#include "HouseScene.h"
 
 namespace Ryno{
 
@@ -9,7 +9,7 @@ namespace Ryno{
 		return (std::pow(factor,i) - 1) / (factor -1);
 	}
 
-	void SecondScene::start(){
+	void FireworkScene::start(){
 
 		camera->position = glm::vec4(0, 150, -500, 1);
 
@@ -31,7 +31,7 @@ namespace Ryno{
 		go->transform.create(game->stack_allocator);
 		go->transform->set_scale(100, 100, 100);
 		go->transform->set_position(0, 55, 50);
-		/*go->model.create(game->stack_allocator);
+	/*	go->model.create(game->stack_allocator);
 		go->model->mesh = cube_mesh;
 		go->model->set_texture_normal(white, white_normal);*/
 		go->dir_light.create(game->stack_allocator);
@@ -82,22 +82,22 @@ namespace Ryno{
 			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(5), glm::vec3(30), p->lifetime));
 
-			p->model->set_color(255, ryno_math::lerp(0, 255, 1-power_lerper(p->lifetime,30)),0);
-			
-
+			static ColorRGBA from = ColorRGBA::green;
+			static ColorRGBA to = ColorRGBA::blue;
+			p->model->color = ryno_math::lerp(from,to,power_lerper(p->lifetime,30));
 		};
 		emitter->init(4500);
 	}
 
 
-	void SecondScene::update(){
+	void FireworkScene::update(){
 		
 	}
 
-	void SecondScene::input(){
+	void FireworkScene::input(){
 		if (!game->shell->active){
 			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
-				game->set_scene(new ShowScene());
+				game->set_scene("house");
 
 			}
 			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){

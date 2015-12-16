@@ -214,11 +214,11 @@ namespace Ryno {
 
 		//Vertices data
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), &vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex3D), vertices.data(), GL_STATIC_DRAW);
 
 		//Indices data
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), &indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), indices.data(), GL_STATIC_DRAW);
 		for (RenderBatchGeometry rb : m_render_batches){
 			
 			glActiveTexture(GL_TEXTURE0);
