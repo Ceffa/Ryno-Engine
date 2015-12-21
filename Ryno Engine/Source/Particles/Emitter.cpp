@@ -11,7 +11,7 @@ namespace Ryno{
 		ParticleManager::get_instance()->remove_emitter(game_object);
 	}
 
-	Emitter::Emitter(const Emitter *e) : Emitter(e->game_object){
+	Emitter::Emitter(const Emitter *e, GameObject* go) : Emitter(go){
 		//Instead of copying it, create it anew with the values 
 		//taken by the old emitter.
 		//To know how the particles is build, the first particle
@@ -21,7 +21,10 @@ namespace Ryno{
 		lambda_spawn = e->lambda_spawn;
 		lambda_creation = e->lambda_creation;
 		lambda_particle_update = e->lambda_particle_update;
-		init(e->m_max_particles);
+		m_elapsed_time = e->m_elapsed_time;
+		m_emission_rate = e->m_emission_rate;
+		if (e->m_max_particles>0)
+			init(e->m_max_particles);
 
 		
 	}
@@ -33,7 +36,6 @@ namespace Ryno{
 	}
 
 	void Emitter::init(U32 nr_particles){
-
 		m_max_particles = nr_particles;
 		m_particles.resize(nr_particles);
 		StackAllocator* r = StackAllocator::get_instance();

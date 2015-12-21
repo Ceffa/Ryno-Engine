@@ -1,5 +1,4 @@
-#ifndef emit_def
-#define emit_def
+#pragma once
 #include "Global.h"
 #include "Model.h"
 #include "Structures.h"
@@ -18,8 +17,8 @@ namespace Ryno{
 
 	public:
 
-		Particle3D(GameObject* go) : GameObject(go){}
-		Particle3D() : GameObject(){}
+		Particle3D(GameObject* go) : GameObject(go){  }
+		Particle3D() : GameObject(){  }
 		~Particle3D(){}
 
 		glm::vec3 direction;
@@ -44,7 +43,7 @@ class Emitter{
 		~Emitter();
 
 		Emitter(GameObject* go);
-		Emitter(const Emitter *e);
+		Emitter(const Emitter *e, GameObject* go);
 		
 		void init(U32 nr_particles);
 		Particle3D* new_particle();
@@ -60,7 +59,7 @@ class Emitter{
 		std::function<void(Emitter*)> lambda_spawn;
 		std::function<void(Emitter*,Particle3D*, F32)> lambda_particle_update;
 
-		F32 m_max_particles;
+		F32 m_max_particles = 0;
 		F32 m_elapsed_time;
 		F32 m_emission_rate;
 	private:
@@ -71,4 +70,3 @@ class Emitter{
 
 
 }
-#endif 

@@ -61,6 +61,7 @@ namespace Ryno{
 			if (data){
 				data->~T();
 				allocator->dealloc((void*)data);
+				data = nullptr;
 			}
 		}
 	};

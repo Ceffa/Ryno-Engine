@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include "Camera3D.h"
 #include "MeshManager.h"
-#include "GLSLProgram.h"
+#include "Shader.h"
 #include <GLM/glm.hpp>
 #include <GL/glew.h>
 #include <vector>

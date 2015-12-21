@@ -23,7 +23,9 @@ namespace Ryno{
 		Sound sound;
 		Music music;
 
-		New<GameObject> go;
+		New<GameObject> go[4];
+		int i = 0;
+
 
 	};
 }

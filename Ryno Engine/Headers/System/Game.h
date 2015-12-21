@@ -20,7 +20,7 @@
 
 //other
 #include "Global.h"
-#include "GLSLProgram.h"
+#include "Shader.h"
 #include "GameObject.h"
 #include "Batches/Batch3DGeometry.h"
 #include "Batches/Batch3DShadow.h"

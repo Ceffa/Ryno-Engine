@@ -21,7 +21,6 @@ namespace Ryno {
 	}
 	void Batch3DGeometry::end() {
 
-	
 		//Sort with provided compare function
 		std::stable_sort(m_game_objects.begin(), m_game_objects.end(), compare_models);
 
@@ -41,10 +40,6 @@ namespace Ryno {
 
 	void Batch3DGeometry::create_render_batches(){
 
-		
-		
-
-	
 		I32 models_size = (I32) m_game_objects.size();
 
 		//Resize the MVP vector at the beginning to avoid reallocations
@@ -73,7 +68,6 @@ namespace Ryno {
 		for (I32 cg = 0; cg < m_game_objects.size(); cg++){
 
 			Model* temp_model = *m_game_objects[cg]->model;
-
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
 				|| temp_model->texture.id != m_game_objects[cg - 1]->model->texture.id
@@ -167,9 +161,6 @@ namespace Ryno {
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, tangent));
 
 	
-		
-
-
 		//Create instanced vbo
 		if (!m_i_vbo)
 			glGenBuffers(1, &m_i_vbo);
@@ -198,10 +189,6 @@ namespace Ryno {
 		//Create vbo
 		if (!m_index_vbo)
 			glGenBuffers(1, &m_index_vbo);
-
-		
-
-
 
 	}
 

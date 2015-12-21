@@ -215,7 +215,8 @@
     <ClCompile Include="Source\Rendering\FBOs\FBO_Deferred.cpp" />
     <ClCompile Include="Source\Rendering\FBOs\FBO_Shadow.cpp" />
     <ClCompile Include="Source\Rendering\Font.cpp" />
-    <ClCompile Include="Source\Rendering\GLSLProgram.cpp" />
+    <ClCompile Include="Source\Rendering\Shader.cpp" />
+    <ClCompile Include="Source\Rendering\Material.cpp" />
     <ClCompile Include="Source\Rendering\Model.cpp" />
     <ClCompile Include="Source\Rendering\SimpleDrawer.cpp" />
     <ClCompile Include="Source\System\IConsole.cpp" />
@@ -273,7 +274,8 @@
     <ClInclude Include="Headers\Rendering\FBOs\FBO_Deferred.h" />
     <ClInclude Include="Headers\Rendering\FBOs\FBO_Shadow.h" />
     <ClInclude Include="Headers\Rendering\Font.h" />
-    <ClInclude Include="Headers\Rendering\GLSLProgram.h" />
+    <ClInclude Include="Headers\Rendering\Shader.h" />
+    <ClInclude Include="Headers\Rendering\Material.h" />
     <ClInclude Include="Headers\Rendering\Model.h" />
     <ClInclude Include="Headers\Rendering\SimpleDrawer.h" />
     <ClInclude Include="Headers\System\Scene.h" />

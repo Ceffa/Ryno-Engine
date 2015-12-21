@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Global.h"
-#include "GLSLProgram.h"
+#include "Shader.h"
 #include <GLM/glm.hpp>
 namespace Ryno{
 	class FBO_Shadow

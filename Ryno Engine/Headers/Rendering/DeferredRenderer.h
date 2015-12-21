@@ -11,7 +11,7 @@
 #include "FBOs/FBO_Shadow.h"
 #include "SimpleDrawer.h"
 #include "Global.h"
-#include "GLSLProgram.h"
+#include "Shader.h"
 #include "Batches/Batch3DGeometry.h"
 #include "Batches/Batch3DShadow.h"
 #include "Batches/Batch2DSprite.h"
@@ -127,18 +127,18 @@ namespace Ryno{
 		SimpleDrawer* m_simple_drawer;
 
 		//PROGRAMS
-		GLSLProgram *m_skybox_program;
-		GLSLProgram *m_directional_shadow_program;
-		GLSLProgram *m_spot_shadow_program;
-		GLSLProgram *m_point_shadow_program;
-		GLSLProgram *m_blit_program;
-		GLSLProgram *m_geometry_program;
-		GLSLProgram *m_directional_lighting_program;
-		GLSLProgram *m_point_lighting_program;
-		GLSLProgram *m_spot_lighting_program;
-		GLSLProgram *m_flat_program;
-		GLSLProgram *m_sprite_program;
-		GLSLProgram *m_font_program;
+		Shader *m_skybox_program;
+		Shader *m_directional_shadow_program;
+		Shader *m_spot_shadow_program;
+		Shader *m_point_shadow_program;
+		Shader *m_blit_program;
+		Shader *m_geometry_program;
+		Shader *m_directional_lighting_program;
+		Shader *m_point_lighting_program;
+		Shader *m_spot_lighting_program;
+		Shader *m_flat_program;
+		Shader *m_sprite_program;
+		Shader *m_font_program;
 
 		//BATCHES
 		Batch3DGeometry* m_geometry_batch3d;

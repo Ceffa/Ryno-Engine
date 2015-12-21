@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Global.h"
-#include "GLSLProgram.h"
+#include "Shader.h"
 namespace Ryno{
 	class FBO_Deferred
 	{

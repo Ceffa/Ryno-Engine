@@ -9,9 +9,7 @@ namespace Ryno{
 
 	void ParticleManager::update(F32 delta)
 	{
-		U32 tot = 0;
 		for (GameObject* go : emitters){
-			++tot;
 			go->emitter->update(delta);
 		}
 	}
@@ -19,7 +17,7 @@ namespace Ryno{
 
 	void ParticleManager::reset()
 	{
-		//emitters.clear();
+		emitters.clear();
 	}
 
 }

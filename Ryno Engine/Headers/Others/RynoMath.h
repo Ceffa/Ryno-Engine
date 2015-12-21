@@ -24,6 +24,7 @@ namespace Ryno{
 		static U32 rand_int_range(U32 min, U32 max);
 		static F32 rand_float_range(F32 min, F32 max);
 		static glm::vec3 rand_vec3_range(glm::vec3 min, glm::vec3 max);
+		static ColorRGBA rand_color_range(ColorRGBA& min, ColorRGBA& max);
 
 
 	private:

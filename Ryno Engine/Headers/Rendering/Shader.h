@@ -5,14 +5,26 @@
 #include <GL/gl.h>
 #include "Global.h"
 #include <array>
+#include <unordered_map>
+
 namespace Ryno{
-	class GLSLProgram
+
+	//These are used to build the struct in the material class.
+	//Basically each material creates it based on these parameters
+	struct instance_attributes{
+		U32 index;		//Index of the attribute
+		U32 offset;		//Memory offset of the attribute in the struct
+		U32 size;		//Size of the current attribute
+		U32 type;
+	};
+
+	class Shader
 	{
 
 	public:
 
-		GLSLProgram(){}
-		~GLSLProgram(){}
+		Shader(){}
+		~Shader(){}
 
 		/**
 		This function create a new GLSLProgram, it loads the shaders and everything else.
@@ -44,6 +56,13 @@ namespace Ryno{
 		Attach shaders to this program, and then link it
 		*/
 		void link_shaders();
+
+		/**
+		Get info about attributes. It ignores the vertex attributes 
+		for the time being, it only gets instance one, maybe this will change
+		*/
+
+		void generate_attributes();
 
 		/**
 		Get uniform location used to pass uniforms to the shader
@@ -119,9 +138,21 @@ namespace Ryno{
 		U8 check_link_errors();
 
 
+		//THE FOLLOWING STUFF IS FOR GETTING ATTRIBUTES FROM THE GPU PROGRAM
+
+		//Instance attributes data:
+		std::unordered_map<std::string,instance_attributes> attributes;
 
 
+		//Temporary struct to sort
+		static struct attribute{
+			attribute(U32 _i, U32 _o, U32 _s, GLenum _t, C* _n) : index(_i), offset(_o), size(_s), type(_t), name(_n){}
+			U32 index, offset, size;
+			GLenum type;
+			C* name;
+		};
 
+		U8 get_attribute_size(const C* name);
 
 	};
 }

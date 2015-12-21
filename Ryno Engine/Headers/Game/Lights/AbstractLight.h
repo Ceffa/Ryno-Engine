@@ -4,7 +4,7 @@
 #include "Global.h"
 #include "Camera3D.h"
 #include "Structures.h"
-#include "GLSLProgram.h"
+#include "Shader.h"
 #include <GLM\glm.hpp>
 
 namespace Ryno{

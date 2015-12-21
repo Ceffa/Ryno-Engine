@@ -16,7 +16,7 @@ namespace Ryno{
 	}
 	GameObject::GameObject(const GameObject* go) 
 	{
-		*this = *go;
+		active = go->active;
 
 		if (*go->transform)
 			transform.copy(go->transform);
@@ -29,7 +29,7 @@ namespace Ryno{
 		if (*go->dir_light)
 			dir_light.copy(go->dir_light);
 		if (*go->emitter)
-			emitter.copy(go->emitter);
+			emitter.copy(go->emitter,this);
 		
 		game_objects.push_back(this);
 

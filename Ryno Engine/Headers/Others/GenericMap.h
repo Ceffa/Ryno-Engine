@@ -1,3 +1,4 @@
+#pragma once
 #include <unordered_map>
 
 class GenericMap{
@@ -15,7 +16,7 @@ public:
 	void add(const std::string& name, T& value)
 	{
 		T* new_value = new T(value);
-		saved_vals.insert(std::make_pair(name, static_cast<void*>(new_value)));
+		saved_vals[name] = static_cast<void*>(new_value);
 	}
 	template<typename T>
 	void get(const std::string& name, T* result){
