@@ -4,6 +4,7 @@
 #include "Global.h"
 #include "TextureManager.h"
 #include "Structures.h"
+#include "Material.h"
 #include <list>
 
 namespace Ryno{
@@ -29,6 +30,7 @@ namespace Ryno{
 		glm::vec2 tiling;
 		ColorRGBA color;  //Alpha is flatness
 		bool cast_shadows = true;
+		Material* material;
 		
 	};
 }

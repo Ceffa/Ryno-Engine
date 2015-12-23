@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Batch3DAbstract.h"
+#include "Shader.h"
 #include "Global.h"
 #include "Structures.h"
 #include "GameObject.h"
@@ -14,16 +15,16 @@
 namespace Ryno{
 
 
-	struct InputInstanceGeometry : public InputInstance {
-		glm::vec2 tiling;
-		ColorRGBA color;
+	struct uniform{
+		uniform(std::string n, void* v) : name(n),  value(v){}
+		std::string name;
+		void* value;
 	};
 	class RenderBatchGeometry : public RenderBatch{
 	public:
-		RenderBatchGeometry(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, U32 t, U32 n_m, U32 m) : RenderBatch(v_o, n_v, idx_o, n_idx, i_o, n_i, m), texture(t), normal_map(n_m){}
+		RenderBatchGeometry(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, U32 m) : RenderBatch(v_o, n_v, idx_o, n_idx, i_o, n_i, m){}
 	
-		U32 normal_map;
-		U32 texture;
+		std::vector<uniform> uniforms;
 	};
 
 
@@ -36,11 +37,11 @@ namespace Ryno{
 		void draw(GameObject* go) override;
 
 		void render_batch() override;
-		
+		static Shader* s;
 	protected:
 
 		std::vector<Vertex3D> vertices;
-		std::vector<InputInstanceGeometry> input_instances;
+		void* input_instances;
 		std::vector<RenderBatchGeometry> m_render_batches;
 		
 		static U8 compare_models(GameObject* a, GameObject* b) ;

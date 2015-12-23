@@ -2,6 +2,8 @@
 #include "FireworkScene.h"
 #include "ValleyScene.h"
 #include "HouseScene.h"
+#include "Batches/Batch3DGeometry.h"
+#include "Shader.h"
 
 namespace Ryno{
 
@@ -16,7 +18,6 @@ namespace Ryno{
 
 		Texture white = game->texture_manager->load_png("white_pixel", GAME);
 		Texture white_normal = game->texture_manager->load_png("normal_pixel", GAME);
-		
 		I32 star_mesh = game->mesh_manager->load_mesh("star", 1, GAME);
 		I32 cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
 
@@ -69,9 +70,14 @@ namespace Ryno{
 			p->decay_rate = .0005f;
 			p->speed = .5f;
 			p->model.create(StackAllocator::get_instance());
+			p->model->material = new Material();
+			p->model->material->set_shader(Batch3DGeometry::s);
 			p->model->set_texture_normal(white, normal);
 			p->model->mesh = mesh;
-			p->model->color = ColorRGBA::yellow;
+			p->model->material->set_attribute("in_Color",ColorRGBA::yellow);
+			p->model->material->set_attribute("in_Tiling", glm::vec2(1,1));
+
+			//p->model->color = ColorRGBA::yellow;
 			p->transform->add_rotation(glm::vec3(ryno_math::rand_int_range(0, 360), ryno_math::rand_int_range(0, 360),0));
 			p->model->cast_shadows = false;
 			p->model->set_flatness(255);
@@ -93,7 +99,7 @@ namespace Ryno{
 			ColorRGBA from = ColorRGBA::yellow;
 			ColorRGBA to = ColorRGBA::red;
 
-			p->model->color =  ryno_math::lerp(from, to, power_lerper(p->lifetime,20));
+			p->model->material->set_attribute("in_Color",ryno_math::lerp(from, to, power_lerper(p->lifetime,20)));
 		};
 
 		emitter->init(2200);
@@ -112,7 +118,7 @@ namespace Ryno{
 			ColorRGBA from = ColorRGBA::green;
 			ColorRGBA to = ColorRGBA::blue;
 
-			p->model->color = ryno_math::lerp(from, to, power_lerper(p->lifetime, 20));
+			p->model->material->set_attribute("in_Color", ryno_math::lerp(from, to, power_lerper(p->lifetime, 20)));
 		};
 		go[2]->emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
 		{
@@ -121,7 +127,7 @@ namespace Ryno{
 			ColorRGBA from = ColorRGBA::white;
 			ColorRGBA to = ColorRGBA::magenta;
 
-			p->model->color = ryno_math::lerp(from, to, power_lerper(p->lifetime, 20));
+			p->model->material->set_attribute("in_Color", ryno_math::lerp(from, to, power_lerper(p->lifetime, 20)));
 		};
 
 		go[3]->emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
@@ -137,7 +143,7 @@ namespace Ryno{
 				Particle3D* p = e->new_particle();
 				p->transform->position = e->game_object->transform->position;
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
-				p->model->color = ryno_math::rand_color_range(ColorRGBA(100,100,100,255), ColorRGBA::white);
+				p->model->material->set_attribute("in_Color", ryno_math::rand_color_range(ColorRGBA(100, 100, 100, 255), ColorRGBA::white));
 			}
 		};
 

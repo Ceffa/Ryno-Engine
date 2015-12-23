@@ -69,8 +69,8 @@ namespace Ryno{
 		m_geometry_program->create("GeometryPass/geometry", 1, 0, 1);
 		m_geometry_program->use();
 
-		glUniform1i(m_geometry_program->getUniformLocation("texture_sampler"), 0);
-		glUniform1i(m_geometry_program->getUniformLocation("normal_map_sampler"), 1);
+		/*glUniform1i(m_geometry_program->getUniformLocation("texture_sampler"), 0);
+		glUniform1i(m_geometry_program->getUniformLocation("normal_map_sampler"), 1);*/
 		m_geometry_program->unuse();
 
 		//Point shadow program
@@ -183,6 +183,9 @@ namespace Ryno{
 			0.5, 0.5, 0.5, 1.0
 			);
 
+		m_geometry_batch3d->s = m_geometry_program;
+
+
 	}
 
 
@@ -246,8 +249,8 @@ namespace Ryno{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_geometry_program->use();
 		//Setup geometry m_geometry_program
-		glUniformMatrix4fv(m_geometry_program->getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
-		glUniformMatrix4fv(m_geometry_program->getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_VP_matrix()[0][0]);
+		/*glUniformMatrix4fv(m_geometry_program->getUniformLocation("V"), 1, GL_FALSE, &m_camera->get_V_matrix()[0][0]);
+		glUniformMatrix4fv(m_geometry_program->getUniformLocation("VP"), 1, GL_FALSE, &m_camera->get_VP_matrix()[0][0]);*/
 		m_geometry_batch3d->render_batch();
 		m_geometry_program->unuse();
 	}

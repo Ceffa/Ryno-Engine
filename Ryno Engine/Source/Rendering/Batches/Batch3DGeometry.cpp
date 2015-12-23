@@ -5,15 +5,16 @@
 #include <GLM/gtx/string_cast.hpp>
 #include "Log.h"
 
-
 namespace Ryno {
 
+	Shader* Batch3DGeometry::s;
 	
 	void Batch3DGeometry::begin() {
 
 		m_render_batches.clear();
-		input_instances.clear();
+		free(input_instances);
 		m_game_objects.clear();
+		create_vertex_array();
 	
 
 
@@ -43,14 +44,20 @@ namespace Ryno {
 		I32 models_size = (I32) m_game_objects.size();
 
 		//Resize the MVP vector at the beginning to avoid reallocations
-		input_instances.resize(models_size);
+		input_instances = malloc (models_size * s->attributes_struct_size);
 
 		//Adds MVP to the final instance array.
 		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
-			input_instances[i].color = m_game_objects[i]->model->color;
-			input_instances[i].m = m_game_objects[i]->transform->model_matrix;
-			input_instances[i].tiling = m_game_objects[i]->model->tiling;
+			auto m = m_game_objects[i]->model->material;
+			m->set_attribute("in_M",m_game_objects[i]->transform->model_matrix);
+			std::memcpy((void*)((U64)input_instances + s->attributes_struct_size*i),m->attribute_memory,s->attributes_struct_size);
+		
+			m->set_uniform("texture_sampler", 0);
+			m->set_uniform("normal_map_sampler", 1);
+			m->set_uniform("V", m_camera->get_V_matrix());
+			m->set_uniform("VP", m_camera->get_VP_matrix());
+
 
 		}
 		
@@ -68,12 +75,24 @@ namespace Ryno {
 		for (I32 cg = 0; cg < m_game_objects.size(); cg++){
 
 			Model* temp_model = *m_game_objects[cg]->model;
-			//If a mesh has a different texture or mesh than the one before, i create a new batch
-			if (cg == 0
-				|| temp_model->texture.id != m_game_objects[cg - 1]->model->texture.id
-				|| temp_model->normal_map.id != m_game_objects[cg - 1]->model->normal_map.id
-				|| temp_model->mesh != m_game_objects[cg - 1]->model->mesh)
-			{
+			//Checks to see if the new model has different uniforms than the previous one,
+			//thus requiring a new draw call (and a new render abtch)
+
+			bool equals_uniform = true;
+			
+			if (cg == 0 || temp_model->mesh != m_game_objects[cg - 1]->model->mesh)
+				equals_uniform = false;
+			else {
+				auto a = temp_model->material->uniform_map;
+				auto b = m_game_objects[cg - 1]->model->material->uniform_map;
+				for (auto cnt : s->uniforms_map){
+					if (Shader::compare_uniforms(a[cnt.first], b[cnt.first], cnt.second.size) == false){
+						equals_uniform = false;
+						return;
+					}
+				}
+			}
+			if (!equals_uniform){
 				if (cg != 0){
 					RenderBatchGeometry* last_batch = &m_render_batches.back();
 					vertex_offset += last_batch->num_vertices;
@@ -84,8 +103,11 @@ namespace Ryno {
 				Mesh* temp_mesh = m_mesh_manager->get_mesh(temp_model->mesh);
 				U32 num_indices = temp_mesh->indices_number;
 				U32 num_vertices = temp_mesh->vertices_number;
-	
-				m_render_batches.emplace_back(vertex_offset, num_vertices, indices_offset, num_indices, instance_offset, 1, temp_model->texture.id, temp_model->normal_map.id, temp_model->mesh);
+				m_render_batches.emplace_back(vertex_offset, num_vertices, indices_offset, num_indices, instance_offset, 1, temp_model->mesh);
+				for (auto cnt : s->uniforms_map){
+					m_render_batches.back().uniforms.emplace_back(cnt.first, temp_model->material->uniform_map[cnt.first]);
+
+				}
 			
 			}
 			else
@@ -115,41 +137,9 @@ namespace Ryno {
 		}
 	}
 
+
 	void Batch3DGeometry::enable_attributes(){
 		glBindVertexArray(m_vao);
-
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		//Enable all vertex info
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
-
-		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-		//enable M matrix
-		glEnableVertexAttribArray(4);
-		glEnableVertexAttribArray(5);
-		glEnableVertexAttribArray(6);
-		glEnableVertexAttribArray(7);
-
-		//Enable tiling and color
-		glEnableVertexAttribArray(8);
-		glEnableVertexAttribArray(9);
-	}
-
-	void Batch3DGeometry::create_vertex_array(){
-		//Create vao
-		if (!m_vao){
-			glGenVertexArrays(1, &m_vao);
-		}
-
-		//Bind vao
-		glBindVertexArray(m_vao);
-
-		//Create vbo
-		if (!m_vbo)
-			glGenBuffers(1, &m_vbo);
-
 
 		//temporally bind vbo
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -159,34 +149,35 @@ namespace Ryno {
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, uv));
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, normal));
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, tangent));
+		//Enable all vertex info
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
 
+		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
+
+		s->setup_vbo_attributes();
+
+	}
+
+	
+
+	void Batch3DGeometry::create_vertex_array(){
+		//Create vao
+		if (!m_vao){
+			glGenVertexArrays(1, &m_vao);
+		}
+
+		//Create vbo
+		if (!m_vbo)
+			glGenBuffers(1, &m_vbo);
 	
 		//Create instanced vbo
 		if (!m_i_vbo)
 			glGenBuffers(1, &m_i_vbo);
 
 
-		
-		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-		
-		
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)offsetof(InputInstanceGeometry, m));
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)(offsetof(InputInstanceGeometry, m) + 16));
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)(offsetof(InputInstanceGeometry, m) + 32));
-		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)(offsetof(InputInstanceGeometry, m) + 48));
-		glVertexAttribPointer(8, 2, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)offsetof(InputInstanceGeometry, tiling));
-		glVertexAttribPointer(9, 1, GL_FLOAT, GL_FALSE, sizeof(InputInstanceGeometry), (void*)offsetof(InputInstanceGeometry, color));
-
-		glVertexAttribDivisor(4, 1);
-		glVertexAttribDivisor(5, 1);
-		glVertexAttribDivisor(6, 1);
-		glVertexAttribDivisor(7, 1);
-		glVertexAttribDivisor(8, 1);
-		glVertexAttribDivisor(9, 1);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		//Create vbo
 		if (!m_index_vbo)
 			glGenBuffers(1, &m_index_vbo);
 
@@ -207,14 +198,23 @@ namespace Ryno {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), indices.data(), GL_STATIC_DRAW);
 		for (RenderBatchGeometry rb : m_render_batches){
-			
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, rb.texture);
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, rb.normal_map);
+
+			glUniformMatrix4fv(s->uniforms_map["V"].index, 1, GL_FALSE, &(*((glm::mat4*)rb.uniforms[0].value))[0][0]);
+			glUniformMatrix4fv(s->uniforms_map["VP"].index, 1, GL_FALSE, &(*((glm::mat4*)rb.uniforms[1].value))[0][0]);
+
+			U8 current_sampler = 0;
+			for (auto cnt : rb.uniforms)
+			{
+				if (Shader::is_sampler(s->uniforms_map[cnt.name].type)){
+					glUniform1i(s->uniforms_map[cnt.name].index, current_sampler++);
+					glActiveTexture(GL_TEXTURE0 + current_sampler);
+					glBindTexture(GL_TEXTURE_2D, *(U32*)cnt.value);
+				}
+			}
+
 			
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InputInstanceGeometry), &input_instances[rb.instance_offset], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * s->attributes_struct_size, (void*)((U64)input_instances+rb.instance_offset), GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
 			U32 offset = rb.indices_offset * sizeof(U32);

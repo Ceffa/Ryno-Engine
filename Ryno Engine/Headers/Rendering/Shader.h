@@ -5,15 +5,22 @@
 #include <GL/gl.h>
 #include "Global.h"
 #include <array>
-#include <unordered_map>
+#include <map>
 
 namespace Ryno{
 
 	//These are used to build the struct in the material class.
-	//Basically each material creates it based on these parameters
-	struct instance_attributes{
+	//Basically each material creates it based on these parameters.
+	struct attributes{
 		U32 index;		//Index of the attribute
 		U32 offset;		//Memory offset of the attribute in the struct
+		U32 size;		//Size of the current attribute
+	};
+
+	//These are used to build the struct in the material class.
+	//Basically each material creates it based on these parameters.
+	struct uniforms{
+		U32 index;		//Index of the attribute
 		U32 size;		//Size of the current attribute
 		U32 type;
 	};
@@ -61,8 +68,12 @@ namespace Ryno{
 		Get info about attributes. It ignores the vertex attributes 
 		for the time being, it only gets instance one, maybe this will change
 		*/
+		void get_attributes();
 
-		void generate_attributes();
+		/**
+		Get uniforms from the gpu shader
+		*/
+		void get_uniforms();
 
 		/**
 		Get uniform location used to pass uniforms to the shader
@@ -84,6 +95,25 @@ namespace Ryno{
 		*/
 		void destroy();
 
+
+		//THE FOLLOWING STUFF IS FOR PARSING AND AUTOMATICALLY USE ATTRIBUTES
+		/**
+		Bind all his attributes to the vbo. Must be called by the batch class
+		*/
+		void setup_vbo_attributes();
+
+		//Size of the struct of attribused used by materials
+		U32 attributes_struct_size;
+
+		//Instance attributes data:
+		std::map<std::string, attributes> attributes_map;
+
+		//Uniforms data:
+		std::map<std::string, uniforms> uniforms_map;
+
+
+		static bool compare_uniforms(void* a, void* b, U32 size);
+		static bool is_sampler(GLenum type);
 
 	private:
 
@@ -140,19 +170,15 @@ namespace Ryno{
 
 		//THE FOLLOWING STUFF IS FOR GETTING ATTRIBUTES FROM THE GPU PROGRAM
 
-		//Instance attributes data:
-		std::unordered_map<std::string,instance_attributes> attributes;
-
-
+	
 		//Temporary struct to sort
 		static struct attribute{
-			attribute(U32 _i, U32 _o, U32 _s, GLenum _t, C* _n) : index(_i), offset(_o), size(_s), type(_t), name(_n){}
+			attribute(U32 _i, U32 _o, U32 _s, C* _n) : index(_i), offset(_o), size(_s), name(_n){}
 			U32 index, offset, size;
-			GLenum type;
 			C* name;
 		};
 
-		U8 get_attribute_size(const C* name);
+		U8 get_size_from_type(const GLenum type);
 
 	};
 }

@@ -20,7 +20,8 @@ namespace Ryno{
 		load_shaders(name,ENGINE);
 		compile_shaders();
 		link_shaders();
-		generate_attributes();
+		get_attributes();
+		get_uniforms();
 	}
 	void Shader::init(){
 		m_program_id = 0;
@@ -44,6 +45,9 @@ namespace Ryno{
 		glDeleteProgram(m_program_id);
 
 	}
+
+	
+
 	void Shader::load_shaders(const std::string& name, Owner loc){
 		shader_name = name;
 		static std::string extensions[3]{".vert", ".geom", ".frag"};
@@ -218,12 +222,10 @@ namespace Ryno{
 
 
 
-	void Shader::generate_attributes()
+	void Shader::get_attributes()
 	{
-
 		GLint attr_num;
 		glGetProgramiv(m_program_id, GL_ACTIVE_ATTRIBUTES, &attr_num);
-		std::cout << "Number of attributes: " << attr_num << std::endl;
 		//Temp arrays. They contain only instances attributes, not the vertex ones
 		U8 max_name_char = 30;
 		const int _attr_num = attr_num;
@@ -236,62 +238,131 @@ namespace Ryno{
 
 			glGetActiveAttrib(m_program_id, i, 30, &temp_name_size, &temp_size, &temp_type, temp_name);
 			GLuint loc = glGetAttribLocation(m_program_id, temp_name);
-			//keep only instance data, not vertex attributes
+			//keep only instance data, not vertex attributes.
+			//They are the one with the divisor. For now I'll assume they start from 4
 			if (loc > 3)
-				temp_attribs.push_back(new attribute(loc, 0, get_attribute_size(temp_name) * temp_size, temp_type, temp_name));
+				temp_attribs.push_back(new attribute(loc, 0,  sizeof(U32)*get_size_from_type(temp_type) * temp_size, temp_name));
 			else
 				free(temp_name);
 		}
 
 		std::stable_sort(temp_attribs.begin(), temp_attribs.end(), [](attribute*a, attribute*b){return a->index < b->index; });
 
-		U32 current_size = 0;
+		
 		for (auto _old : temp_attribs){
-			auto _new = &attributes[_old->name];
+			auto _new = &attributes_map[_old->name];
 			_new->index = _old->index;
-			_new->offset = current_size;
+			_new->offset = attributes_struct_size;
 			_new->size = _old->size;
-			current_size += _old->size;
-			_new->type = _old->type;
+			attributes_struct_size += _old->size;
 			delete _old;
 		}
 		temp_attribs.clear();
+	}
 
 
-		for (auto i : attributes){
-			std::cout << "nm: " << std::string(i.first) << " // ";
-			std::cout << "id: " << i.second.index << " // ";
-			std::cout << "sz: " << i.second.size << " // ";
-			std::cout << "of: " << i.second.offset << std::endl;
+	void Shader::get_uniforms()
+	{
+		GLint unif_num;
+		glGetProgramiv(m_program_id, GL_ACTIVE_UNIFORMS, &unif_num);
+		//Temp arrays. They contain only instances attributes, not the vertex ones
+		U8 max_name_char = 30;
+		for (GLuint i = 0; i < unif_num; i++){
+			//Temp return values
+			GLint temp_size, temp_name_size;
+			GLenum temp_type;
+			GLchar* temp_name = (GLchar*)malloc(30);
+
+			glGetActiveUniform(m_program_id, i, 30, &temp_name_size, &temp_size, &temp_type, temp_name);
+			GLuint loc = glGetUniformLocation(m_program_id, temp_name);
+			//keep only instance data, not vertex attributes
+			uniforms_map[temp_name].index = loc;
+			uniforms_map[temp_name].size = get_size_from_type(temp_type);
+			uniforms_map[temp_name].type = temp_type;
+
+			std::cout << "__UNI__: idx: " << loc << " size: " << uniforms_map[temp_name].size << std::endl;
 		}
+		std::cout << "\n";
 
 	}
-	U8 Shader::get_attribute_size(const C* name)
+
+
+	U8 Shader::get_size_from_type(const GLenum type)
 	{
-		U8 final_size = 0;
-		switch (name[0])
+
+		switch (type)
 		{
-		case 'f':
-			final_size += sizeof(F32); break;
-		case 'i':
-			final_size += sizeof(I32); break;
-		case 'b':
-			final_size += sizeof(U8); break;
-		case 's':
-			final_size += sizeof(U16); break;
-		}
-		switch (name[1])
-		{
-		case 'v':
-			final_size *= (name[2] - '0'); break;
-		case 'm':
-			U8 sz = (name[2] - '0');
-			final_size *= sz*sz; break;
+		case GL_FLOAT:
+		case GL_INT:
+		case GL_UNSIGNED_INT:
+		case GL_SAMPLER_2D:
+		case GL_SAMPLER_3D:
+		case GL_SAMPLER_CUBE:
+		case GL_SAMPLER_2D_SHADOW:
+			return 1; 
+		case GL_FLOAT_VEC2:
+		case GL_INT_VEC2:
+		case GL_UNSIGNED_INT_VEC2:
+			return 2;
+		case GL_FLOAT_VEC3:
+		case GL_INT_VEC3:
+		case GL_UNSIGNED_INT_VEC3:
+			return 3;
+		case GL_FLOAT_VEC4:
+		case GL_INT_VEC4:
+		case GL_UNSIGNED_INT_VEC4:
+			return 4;
+		case GL_FLOAT_MAT4:
+			return 16;
 
 		}
-		return final_size;
+		return 0;
 
 
+	}
+
+	void Shader::setup_vbo_attributes()
+	{
+		//This does the binding for the vbo.
+		
+		//For each attribute
+		for (auto a : attributes_map){
+			U32 temp_size = 0;
+			U32 index = a.second.index;
+
+			//If the attribute is a matrix, multiple lines must be added.
+			//This requires to autoincrement the index, the offset and so on.
+			//Very ugly code but very straightforward
+			while (temp_size < a.second.size){
+				U32 how_many = a.second.size - temp_size;
+				if (how_many > 4*sizeof(U32)) how_many = 4 * sizeof(U32); //Max line size
+				glVertexAttribIPointer(index, how_many/sizeof(U32), GL_UNSIGNED_INT, attributes_struct_size, (void*)(how_many*(index - a.second.index) +a.second.offset));
+				temp_size += how_many;
+				glVertexAttribDivisor(index, 1);
+				glEnableVertexAttribArray(index);
+
+				index++;
+			}
+		}
+	}
+
+	
+
+	bool Shader::compare_uniforms(void* a, void* b, U32 size)
+	{
+		U32 i = 0;
+		for (i = 0; i < size; i++){
+			if (*(U8*)a != *(U8*)b)
+				return false;
+		}
+		return true;
+	}
+
+	bool Shader::is_sampler(GLenum type)
+	{
+		if (type == GL_SAMPLER_2D || type == GL_SAMPLER_3D || type == GL_SAMPLER_CUBE || type == GL_SAMPLER_2D_SHADOW)
+			return true;
+		return false;
 	}
 
 }
