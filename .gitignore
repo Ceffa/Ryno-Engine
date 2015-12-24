@@ -9,3 +9,5 @@ Game/x64/
 Game/x86/
 .vs/Ryno Engine
 *.opensdf
+*.psess
+*.vspx

@@ -16,11 +16,12 @@ namespace Ryno{
 		camera->movement_speed = 2;
 		camera->position = glm::vec4(0, 150, -5000, 1);
 
-		Texture white = game->texture_manager->load_png("white_pixel", GAME);
-		Texture white_normal = game->texture_manager->load_png("normal_pixel", GAME);
+		white = game->texture_manager->load_png("white_pixel", GAME);
+		white_normal = game->texture_manager->load_png("normal_pixel", GAME);
+		brick = game->texture_manager->load_png("pack/154", GAME);
+		brick_normal = game->texture_manager->load_png("pack/154_norm", GAME);
 		I32 star_mesh = game->mesh_manager->load_mesh("star", 1, GAME);
 		I32 cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
-
 
 		////loading audio
 		//sound = game->audio_manager->load_sound("stomp.wav", GAME);
@@ -48,9 +49,9 @@ namespace Ryno{
 
 
 		Emitter* emitter = go[0]->emitter.create(game->stack_allocator, *go[0]);
-		emitter->save_map.add("texture", white);
-		emitter->save_map.add("normal", white_normal);
-		emitter->save_map.add("mesh", star_mesh);
+		emitter->save_map.add("texture", &white.id);
+		emitter->save_map.add("normal", &white_normal);
+		emitter->save_map.add("mesh", &star_mesh);
 
 
 
@@ -60,22 +61,24 @@ namespace Ryno{
 
 
 		emitter->lambda_creation = [](Emitter* e, Particle3D* p){
-			Texture white, normal;
+			Texture* white, *normal;
 			//Emitter* emitter;
-			I32 mesh;
-			e->save_map.get("texture", &white);
-			e->save_map.get("normal", &normal);
-			e->save_map.get("mesh", &mesh);
+			I32* mesh;
+			white = e->save_map.get<Texture>("texture");
+			normal = e->save_map.get<Texture>("normal");
+			mesh = e->save_map.get<I32>("mesh");
 
 			p->decay_rate = .0005f;
 			p->speed = .5f;
 			p->model.create(StackAllocator::get_instance());
 			p->model->material = new Material();
 			p->model->material->set_shader(Batch3DGeometry::s);
-			p->model->set_texture_normal(white, normal);
-			p->model->mesh = mesh;
+			//p->model->set_texture_normal(white, normal);
+			p->model->mesh = *mesh;
 			p->model->material->set_attribute("in_Color",ColorRGBA::yellow);
 			p->model->material->set_attribute("in_Tiling", glm::vec2(1,1));
+			p->model->material->set_uniform("texture_sampler", &white->id);
+			p->model->material->set_uniform("normal_map_sampler", &normal->id);
 
 			//p->model->color = ColorRGBA::yellow;
 			p->transform->add_rotation(glm::vec3(ryno_math::rand_int_range(0, 360), ryno_math::rand_int_range(0, 360),0));

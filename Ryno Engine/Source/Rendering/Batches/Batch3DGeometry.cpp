@@ -22,6 +22,17 @@ namespace Ryno {
 	}
 	void Batch3DGeometry::end() {
 
+		number_of_models = (I32)m_game_objects.size();
+
+		//Send last uniforms and attributes to the models
+		for (I32 i = 0; i < number_of_models; i++){
+			auto m = m_game_objects[i]->model->material;
+			m->set_attribute("in_M", m_game_objects[i]->transform->model_matrix);
+			m->set_uniform("V", m_camera->get_V_matrix());
+			m->set_uniform("VP", m_camera->get_VP_matrix());
+
+		}
+
 		//Sort with provided compare function
 		std::stable_sort(m_game_objects.begin(), m_game_objects.end(), compare_models);
 
@@ -41,24 +52,14 @@ namespace Ryno {
 
 	void Batch3DGeometry::create_render_batches(){
 
-		I32 models_size = (I32) m_game_objects.size();
 
 		//Resize the MVP vector at the beginning to avoid reallocations
-		input_instances = malloc (models_size * s->attributes_struct_size);
+		input_instances = malloc(number_of_models * s->attributes_struct_size);
 
-		//Adds MVP to the final instance array.
-		//One for each instance. 
-		for (I32 i = 0; i < models_size; i++){
-			auto m = m_game_objects[i]->model->material;
-			m->set_attribute("in_M",m_game_objects[i]->transform->model_matrix);
-			std::memcpy((void*)((U64)input_instances + s->attributes_struct_size*i),m->attribute_memory,s->attributes_struct_size);
 		
-			m->set_uniform("texture_sampler", 0);
-			m->set_uniform("normal_map_sampler", 1);
-			m->set_uniform("V", m_camera->get_V_matrix());
-			m->set_uniform("VP", m_camera->get_VP_matrix());
-
-
+		for (I32 i = 0; i < number_of_models; i++){
+			auto m = m_game_objects[i]->model->material;
+			std::memcpy((void*)((U64)input_instances + s->attributes_struct_size*i), m->attribute_memory, s->attributes_struct_size);
 		}
 		
 
@@ -83,10 +84,9 @@ namespace Ryno {
 			if (cg == 0 || temp_model->mesh != m_game_objects[cg - 1]->model->mesh)
 				equals_uniform = false;
 			else {
-				auto a = temp_model->material->uniform_map;
-				auto b = m_game_objects[cg - 1]->model->material->uniform_map;
+	
 				for (auto cnt : s->uniforms_map){
-					if (Shader::compare_uniforms(a[cnt.first], b[cnt.first], cnt.second.size) == false){
+					if (0 != Shader::compare_uniforms(temp_model->material->uniform_map[cnt.first], m_game_objects[cg - 1]->model->material->uniform_map[cnt.first])){
 						equals_uniform = false;
 						return;
 					}
@@ -183,9 +183,6 @@ namespace Ryno {
 
 	}
 
-
-
-
 	void Batch3DGeometry::render_batch() {
 
 		enable_attributes();
@@ -197,6 +194,7 @@ namespace Ryno {
 		//Indices data
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), indices.data(), GL_STATIC_DRAW);
+		std::cout << "RB: " << m_render_batches.size() << '\n';
 		for (RenderBatchGeometry rb : m_render_batches){
 
 			glUniformMatrix4fv(s->uniforms_map["V"].index, 1, GL_FALSE, &(*((glm::mat4*)rb.uniforms[0].value))[0][0]);
@@ -224,15 +222,22 @@ namespace Ryno {
 		}
 	}
 
-	U8 Batch3DGeometry::compare_models(GameObject* a, GameObject* b){
-		Model* ma = *a->model;
-		Model* mb = *b->model;
-		if (ma->texture.id == mb->texture.id){
-			if (ma->normal_map.id == mb->normal_map.id)
-				return ma->mesh < mb->mesh;
-			return ma->normal_map.id < mb->normal_map.id;
+	const U8 Batch3DGeometry::compare_models(GameObject* a, GameObject* b){
+		const Material* ma = a->model->material;
+		const Material* mb = b->model->material;
+
+		
+		auto ita = ma->uniform_map.begin();
+		auto itb = mb->uniform_map.begin();
+
+		while (ita != ma->uniform_map.end()){
+			if (ita->second == itb->second){
+				ita++; itb++;
+				continue;
+			}
+			return ita->second < itb->second;
 		}
-		return ma->texture.id < mb->texture.id;
+		return false;
 	}
 
 

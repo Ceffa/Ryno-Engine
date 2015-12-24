@@ -190,27 +190,26 @@ namespace Ryno{
 		emitter_obj->transform.create(game->stack_allocator);
 		emitter_obj->transform->set_position(0, 105, 50);
 		Emitter* emitter = emitter_obj->emitter.create(game->stack_allocator, *emitter_obj);
-		emitter->save_map.add("texture", white);
-		emitter->save_map.add("normal", white_normal);
-		emitter->save_map.add("mesh", sphere_mesh);
+		emitter->save_map.add("texture", &white);
+		emitter->save_map.add("normal", &white_normal);
+		emitter->save_map.add("mesh", &sphere_mesh);
 
 
 
 
 		emitter->lambda_creation = [](Emitter* e, Particle3D* p){
-			Texture white, normal;
+			Texture* white, *normal;
 			//Emitter* emitter;
-			I32 mesh;
-			e->save_map.get("texture", &white);
-			e->save_map.get("normal", &normal);
-			e->save_map.get("mesh", &mesh);
-			//e->save_map.get("emitter", &emitter);
+			I32* mesh;
+			white = e->save_map.get<Texture>("texture");
+			normal = e->save_map.get<Texture>("normal");
+			mesh = e->save_map.get<I32>("mesh");
 
 			p->decay_rate = .001f;
 			p->speed = .05f;
 			p->model.create(StackAllocator::get_instance());
-			p->model->set_texture_normal(white, normal);
-			p->model->mesh = mesh;
+			p->model->set_texture_normal(*white, *normal);
+			p->model->mesh = *mesh;
 			p->model->color = ColorRGBA::yellow;
 			//p->set_emitter(new Emitter(emitter));
 		};

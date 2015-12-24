@@ -112,7 +112,7 @@ namespace Ryno{
 		std::map<std::string, uniforms> uniforms_map;
 
 
-		static bool compare_uniforms(void* a, void* b, U32 size);
+		static I8 compare_uniforms(void* a, void* b);
 		static bool is_sampler(GLenum type);
 
 	private:

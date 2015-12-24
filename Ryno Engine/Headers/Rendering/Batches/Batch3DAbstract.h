@@ -44,6 +44,7 @@ namespace Ryno{
 		
 		
 		std::vector<GameObject*> m_game_objects;
+		U32 number_of_models;
 		std::vector<U32> indices;
 
 		virtual void create_render_batches() = 0;

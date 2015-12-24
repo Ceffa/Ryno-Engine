@@ -13,14 +13,13 @@ public:
 		saved_vals.clear();
 	}
 	template<typename T>
-	void add(const std::string& name, T& value)
+	void add(const std::string& name, T* value)
 	{
-		T* new_value = new T(value);
-		saved_vals[name] = static_cast<void*>(new_value);
+		saved_vals[name] = static_cast<void*>(value);
 	}
 	template<typename T>
-	void get(const std::string& name, T* result){
-		*result = *static_cast<T*>(saved_vals.find(name)->second);
+	T* get(const std::string& name){
+		return static_cast<T*>(saved_vals.find(name)->second);
 	}
 	template<typename T>
 	void replace(const std::string& name, T& value)

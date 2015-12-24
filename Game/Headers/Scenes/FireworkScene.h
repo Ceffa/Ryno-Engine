@@ -24,6 +24,7 @@ namespace Ryno{
 		Music music;
 
 		New<GameObject> go[4];
+		Texture white, white_normal, brick, brick_normal;
 		int i = 0;
 
 
