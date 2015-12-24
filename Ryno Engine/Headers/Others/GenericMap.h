@@ -1,5 +1,5 @@
 #pragma once
-#include <unordered_map>
+#include <map>
 
 class GenericMap{
 	//Provides a "generic" type map.
@@ -21,19 +21,12 @@ public:
 	T* get(const std::string& name){
 		return static_cast<T*>(saved_vals.find(name)->second);
 	}
-	template<typename T>
-	void replace(const std::string& name, T& value)
-	{
-		if (saved_vals.find(name) != saved_vals.end())
-			remove(name);
-		add(name, value);
-	}
+	
 	void remove(const std::string& name){
 		saved_vals.erase(name);
 	}
 
-
-private:
-	std::unordered_map<std::string, void*> saved_vals;
+	std::map<std::string, void*> saved_vals;
+	
 
 };

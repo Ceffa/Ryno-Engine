@@ -74,21 +74,21 @@ namespace Ryno {
 
 		//For each mesh...
 		for (I32 cg = 0; cg < m_game_objects.size(); cg++){
-
-			Model* temp_model = *m_game_objects[cg]->model;
+	
+			auto new_model = *m_game_objects[cg]->model;
 			//Checks to see if the new model has different uniforms than the previous one,
 			//thus requiring a new draw call (and a new render abtch)
 
 			bool equals_uniform = true;
 			
-			if (cg == 0 || temp_model->mesh != m_game_objects[cg - 1]->model->mesh)
+			if (cg == 0 || new_model->mesh != m_game_objects[cg-1]->model->mesh)
 				equals_uniform = false;
 			else {
-	
+
 				for (auto cnt : s->uniforms_map){
-					if (0 != Shader::compare_uniforms(temp_model->material->uniform_map[cnt.first], m_game_objects[cg - 1]->model->material->uniform_map[cnt.first])){
+					if (0 != Shader::compare_uniforms(new_model->material->uniform_map[cnt.first], m_game_objects[cg - 1]->model->material->uniform_map[cnt.first])){
 						equals_uniform = false;
-						return;
+						break;
 					}
 				}
 			}
@@ -100,12 +100,10 @@ namespace Ryno {
 					instance_offset += last_batch->num_instances;
 				}
 
-				Mesh* temp_mesh = m_mesh_manager->get_mesh(temp_model->mesh);
-				U32 num_indices = temp_mesh->indices_number;
-				U32 num_vertices = temp_mesh->vertices_number;
-				m_render_batches.emplace_back(vertex_offset, num_vertices, indices_offset, num_indices, instance_offset, 1, temp_model->mesh);
+				Mesh* temp_mesh = m_mesh_manager->get_mesh(new_model->mesh);
+				m_render_batches.emplace_back(vertex_offset, temp_mesh->vertices_number, indices_offset, temp_mesh->indices_number, instance_offset, 1, new_model->mesh);
 				for (auto cnt : s->uniforms_map){
-					m_render_batches.back().uniforms.emplace_back(cnt.first, temp_model->material->uniform_map[cnt.first]);
+					m_render_batches.back().uniforms.emplace_back(cnt.first, new_model->material->uniform_map[cnt.first]);
 
 				}
 			
@@ -194,25 +192,28 @@ namespace Ryno {
 		//Indices data
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), indices.data(), GL_STATIC_DRAW);
-		std::cout << "RB: " << m_render_batches.size() << '\n';
 		for (RenderBatchGeometry rb : m_render_batches){
 
 			glUniformMatrix4fv(s->uniforms_map["V"].index, 1, GL_FALSE, &(*((glm::mat4*)rb.uniforms[0].value))[0][0]);
 			glUniformMatrix4fv(s->uniforms_map["VP"].index, 1, GL_FALSE, &(*((glm::mat4*)rb.uniforms[1].value))[0][0]);
 
 			U8 current_sampler = 0;
+			
 			for (auto cnt : rb.uniforms)
 			{
 				if (Shader::is_sampler(s->uniforms_map[cnt.name].type)){
 					glUniform1i(s->uniforms_map[cnt.name].index, current_sampler++);
 					glActiveTexture(GL_TEXTURE0 + current_sampler);
 					glBindTexture(GL_TEXTURE_2D, *(U32*)cnt.value);
+					
 				}
+				
 			}
+			
 
 			
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * s->attributes_struct_size, (void*)((U64)input_instances+rb.instance_offset), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * s->attributes_struct_size, (void*)((U64)input_instances+rb.instance_offset* s->attributes_struct_size), GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
 			U32 offset = rb.indices_offset * sizeof(U32);
@@ -226,7 +227,9 @@ namespace Ryno {
 		const Material* ma = a->model->material;
 		const Material* mb = b->model->material;
 
-		
+		if (a->model->mesh != b->model->mesh)
+			return a->model->mesh < b->model->mesh;
+
 		auto ita = ma->uniform_map.begin();
 		auto itb = mb->uniform_map.begin();
 

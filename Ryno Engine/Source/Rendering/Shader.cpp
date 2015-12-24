@@ -280,9 +280,7 @@ namespace Ryno{
 			uniforms_map[temp_name].size = get_size_from_type(temp_type);
 			uniforms_map[temp_name].type = temp_type;
 
-			std::cout << "__UNI__: idx: " << loc << " size: " << uniforms_map[temp_name].size << std::endl;
 		}
-		std::cout << "\n";
 
 	}
 

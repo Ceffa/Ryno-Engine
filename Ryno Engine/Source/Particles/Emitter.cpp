@@ -22,7 +22,6 @@ namespace Ryno{
 		lambda_creation = e->lambda_creation;
 		lambda_particle_update = e->lambda_particle_update;
 		m_elapsed_time = e->m_elapsed_time;
-		m_emission_rate = e->m_emission_rate;
 		if (e->m_max_particles>0)
 			init(e->m_max_particles);
 
@@ -99,11 +98,6 @@ namespace Ryno{
 		ret->save_map.clear();
 		return ret; 
 	}
-
-	
-
-
-	
 
 }
 

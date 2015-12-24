@@ -20,8 +20,13 @@ namespace Ryno{
 		white_normal = game->texture_manager->load_png("normal_pixel", GAME);
 		brick = game->texture_manager->load_png("pack/154", GAME);
 		brick_normal = game->texture_manager->load_png("pack/154_norm", GAME);
+
 		I32 star_mesh = game->mesh_manager->load_mesh("star", 1, GAME);
 		I32 cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
+		I32 sphere_mesh = game->mesh_manager->load_mesh("sphere", 1, GAME);
+		I32 cone_mesh = game->mesh_manager->load_mesh("cone", 1, GAME);
+
+
 
 		////loading audio
 		//sound = game->audio_manager->load_sound("stomp.wav", GAME);
@@ -49,7 +54,7 @@ namespace Ryno{
 
 
 		Emitter* emitter = go[0]->emitter.create(game->stack_allocator, *go[0]);
-		emitter->save_map.add("texture", &white.id);
+		emitter->save_map.add("texture", &white);
 		emitter->save_map.add("normal", &white_normal);
 		emitter->save_map.add("mesh", &star_mesh);
 
@@ -105,12 +110,24 @@ namespace Ryno{
 			p->model->material->set_attribute("in_Color",ryno_math::lerp(from, to, power_lerper(p->lifetime,20)));
 		};
 
-		emitter->init(2200);
 		go[1].create(game->stack_allocator, *go[0]);
 		go[1]->dir_light.~New<DirectionalLight>();
 		go[2].create(game->stack_allocator, *go[1]);
 		go[3].create(game->stack_allocator, *go[1]);
-		
+
+		go[3]->emitter->save_map.add("texture", &brick);
+		go[3]->emitter->save_map.add("normal", &brick_normal);
+		go[3]->emitter->save_map.add("mesh", &sphere_mesh);
+		go[2]->emitter->save_map.add("texture", &brick);
+		go[2]->emitter->save_map.add("normal", &brick_normal);
+		go[2]->emitter->save_map.add("mesh", &cube_mesh);
+		go[2]->emitter->save_map.add("texture", &brick);
+		go[2]->emitter->save_map.add("normal", &brick_normal);
+		go[1]->emitter->save_map.add("mesh", &cone_mesh);
+		go[1]->emitter->save_map.add("texture", &white);
+		go[1]->emitter->save_map.add("normal", &white_normal);
+
+
 
 
 		go[1]->emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
@@ -149,6 +166,11 @@ namespace Ryno{
 				p->model->material->set_attribute("in_Color", ryno_math::rand_color_range(ColorRGBA(100, 100, 100, 255), ColorRGBA::white));
 			}
 		};
+		go[0]->emitter->init(2200);
+		go[1]->emitter->init(2200);
+		go[2]->emitter->init(2200);
+		go[3]->emitter->init(2200);
+
 
 		go[0]->transform->position += glm::vec3(1200, 1200, 0);
 		go[1]->transform->position += glm::vec3(-1200, 1200, 0);
