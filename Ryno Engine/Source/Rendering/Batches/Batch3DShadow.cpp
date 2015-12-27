@@ -88,7 +88,7 @@ namespace Ryno {
 				I32 num_vertices = temp_mesh->vertices_number;
 
 
-				m_render_batches.emplace_back(vertex_offset, num_vertices, indices_offset, num_indices, instance_offset, 1, temp_model->mesh);
+				m_render_batches.emplace_back(vertex_offset, num_vertices, indices_offset, num_indices, instance_offset, 1, temp_model);
 
 				
 			}
@@ -104,7 +104,7 @@ namespace Ryno {
 		I32 cv = 0;
 		vertices_positions.resize(total_vertices);
 		for (RenderBatchShadow rb : m_render_batches){
-			for (Vertex3D v : m_mesh_manager->get_mesh(rb.mesh)->vertices){
+			for (Vertex3D v : m_mesh_manager->get_mesh(rb.model->mesh)->vertices){
 				vertices_positions[cv++] = v.position;
 			}
 		}
@@ -113,7 +113,7 @@ namespace Ryno {
 		cv = 0;
 		indices.resize(total_indices);
 		for (RenderBatchShadow rb : m_render_batches){
-			for (U16 v : m_mesh_manager->get_mesh(rb.mesh)->indices){
+			for (U16 v : m_mesh_manager->get_mesh(rb.model->mesh)->indices){
 				indices[cv++] = v;
 			}
 		}
@@ -178,7 +178,7 @@ namespace Ryno {
 
 	
 
-	void Batch3DShadow::enable_attributes(){
+	void Batch3DShadow::enable_attributes(Shader *s){
 
 	
 
@@ -201,7 +201,7 @@ namespace Ryno {
 
 	void Batch3DShadow::render_batch() {
 		
-		enable_attributes();
+		enable_attributes(nullptr);
 
 		//i can bind the vbo, orphan it, pass the new data, and unbind it.
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);

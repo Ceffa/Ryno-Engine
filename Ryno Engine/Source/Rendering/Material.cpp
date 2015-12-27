@@ -13,7 +13,7 @@ namespace Ryno {
 			std::cout << "Failed to allocate material struct" << std::endl;
 			return false;
 		}
-		for (auto cnt : shader->uniforms_map){
+		for (auto cnt : shader->uniforms_data){
 			uniform_map[cnt.first] = nullptr;
 		}
 		return true;

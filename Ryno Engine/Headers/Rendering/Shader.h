@@ -21,8 +21,12 @@ namespace Ryno{
 	//Basically each material creates it based on these parameters.
 	struct uniforms{
 		U32 index;		//Index of the attribute
-		U32 size;		//Size of the current attribute
 		U32 type;
+	};
+	struct global_uniforms{
+		U32 index;		//Index of the attribute
+		U32 type;
+		void* value;
 	};
 
 	class Shader
@@ -103,18 +107,42 @@ namespace Ryno{
 		void setup_vbo_attributes();
 
 		//Size of the struct of attribused used by materials
-		U32 attributes_struct_size;
+		U32 attributes_struct_size = 0;
 
 		//Instance attributes data:
 		std::map<std::string, attributes> attributes_map;
 
-		//Uniforms data:
-		std::map<std::string, uniforms> uniforms_map;
+		//Uniforms data: (each model has its own)
+		std::map<std::string, uniforms> uniforms_data;
+		//Global uniforms data: (sent one and for only by the shader itself)
+		std::map<std::string, global_uniforms> global_uniforms_data;
 
+		template <class T>
+		bool set_global_uniform(const std::string& attr, T* value){
+			auto res = global_uniforms_data.find(attr);
+			//If the value is present and its not global (starts with "c_")
+			if (res == global_uniforms_data.end()){
+				return false;
+			}
+			global_uniforms_data[attr].value = (void*)value;
+			return true;
+		}
 
+		//Check if two uniforms are equals (just check the pointers).
+		//Be sure to NOT use two copies of a value, or they are identified as different
 		static I8 compare_uniforms(void* a, void* b);
+
+
+		//Check if a uniform is a sampler
 		static bool is_sampler(GLenum type);
 
+		//send uniform tto shader. Depending on its type (matrix, int etc)
+		//a different function is used
+		void send_material_uniform_to_shader(const std::string& name, void* value, U8* sampler_index);
+		void send_global_uniform_to_shader(const std::string& name, void* value, U8* sampler_index);
+
+
+		U8 get_size_from_type(const GLenum type);
 	private:
 
 		//local enum to differentiate the shader type
@@ -178,7 +206,6 @@ namespace Ryno{
 			C* name;
 		};
 
-		U8 get_size_from_type(const GLenum type);
 
 	};
 }

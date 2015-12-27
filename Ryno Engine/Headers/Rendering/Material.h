@@ -7,9 +7,9 @@
 
 namespace Ryno{
 
-	enum Type {VERTEX, INSTANCE, UNIFORM};
+	enum Type { VERTEX, INSTANCE, UNIFORM };
 
-	
+
 
 	class Material{
 	public:
@@ -30,9 +30,9 @@ namespace Ryno{
 			if (res == uniform_map.end()){
 				return false;
 			}
-		
-			uniform_map[attr] = (void*)val;
 
+			uniform_map[attr] = (void*)val;
+			return true;
 		}
 
 
@@ -40,13 +40,8 @@ namespace Ryno{
 		void* attribute_memory = nullptr;
 		std::map<std::string, void*> uniform_map;
 		Shader* shader;
-		
+
 
 
 	};
-
-
-
-
-
 }

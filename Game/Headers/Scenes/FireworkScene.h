@@ -25,6 +25,7 @@ namespace Ryno{
 
 		New<GameObject> go[4];
 		Texture white, white_normal, brick, brick_normal;
+		New<Shader> shader,shader2;
 		int i = 0;
 
 

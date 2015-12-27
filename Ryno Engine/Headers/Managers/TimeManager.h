@@ -9,11 +9,9 @@ namespace Ryno{
 		void init(F32 max_fps);
 		void set_max_fps(F32 max_fps);
 		void begin_frame();
-		F32 end_frame();
+		void TimeManager::end_frame(F32* time, F32* delta_time);
 		void print_fps();
-		F32 delta_time;
 		F32 slow_factor = 1.0f;
-		U32 current_time;
 
 	private:
 		TimeManager();

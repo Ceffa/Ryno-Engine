@@ -69,6 +69,8 @@ namespace Ryno{
 		GameState game_state;
 
 		F32 delta_time = 0;
+		F32 time = 0;
+
 
 	protected:
 

@@ -25,7 +25,7 @@ namespace Ryno{
 	void TimeManager::begin_frame(){
 		initial_ticks = SDL_GetTicks();
 	}
-	F32 TimeManager::end_frame(){
+	void TimeManager::end_frame(F32* time, F32* delta_time){
 
 		calculate_FPS();
 
@@ -35,9 +35,8 @@ namespace Ryno{
 		if ((U32)(1000.0f / target_fps) > time_passed) {
 			SDL_Delay((U32)(1000.0f / target_fps) - time_passed);
 		}
-		delta_time = (F32) SDL_GetTicks() - initial_ticks;
-		current_time = SDL_GetTicks();
-		return slow_factor * delta_time;
+		*delta_time = slow_factor* ((F32) SDL_GetTicks() - initial_ticks);
+		*time += *delta_time;
 
 	}
 	void TimeManager::print_fps(){

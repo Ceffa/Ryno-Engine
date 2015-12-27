@@ -19,14 +19,13 @@ namespace Ryno{
 	};
 	class RenderBatch{
 	public:
-		RenderBatch(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, U32 m) : vertex_offset(v_o), num_vertices(n_v), indices_offset(idx_o), num_indices(n_idx), instance_offset(i_o),num_instances(n_i), mesh(m){}
+		RenderBatch(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i) : vertex_offset(v_o), num_vertices(n_v), indices_offset(idx_o), num_indices(n_idx), instance_offset(i_o),num_instances(n_i){}
 		U32 vertex_offset;
 		U32 num_vertices;
 		U32 indices_offset;
 		U32 num_indices;
 		U32 instance_offset;
 		U32 num_instances;
-		U32 mesh;
 	};
 
 
@@ -49,7 +48,7 @@ namespace Ryno{
 
 		virtual void create_render_batches() = 0;
 		virtual void create_vertex_array() = 0;
-		virtual void enable_attributes() = 0; 
+		virtual void enable_attributes(Shader* s) = 0; 
 
 		U32 m_vbo;
 		U32 m_i_vbo;//instancing vbo

@@ -19,8 +19,8 @@ namespace Ryno{
 
 	class RenderBatchShadow : public RenderBatch{
 	public:
-		RenderBatchShadow(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, U32 m) : RenderBatch(v_o, n_v, idx_o, n_idx, i_o, n_i, m){}
-	
+		RenderBatchShadow(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, Model* mod) : RenderBatch(v_o, n_v, idx_o, n_idx, i_o, n_i), model(mod){}
+		Model* model;
 	};
 
 
@@ -46,7 +46,7 @@ namespace Ryno{
 
 		void create_render_batches() override;
 		void create_vertex_array() override;
-		void enable_attributes() override;
+		void enable_attributes(Shader* s) override;
 
 	};
 

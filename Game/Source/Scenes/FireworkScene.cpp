@@ -53,12 +53,19 @@ namespace Ryno{
 
 
 
+
+		shader.create(game->stack_allocator);
+		shader->create("GeometryPass/geometry", 1, 0, 1);
+		shader2.create(game->stack_allocator);
+		shader2->create("GeometryPass/geometry2", 1, 0, 1);
+		shader2->set_global_uniform("g_Time", &game->delta_time);
+
+
 		Emitter* emitter = go[0]->emitter.create(game->stack_allocator, *go[0]);
 		emitter->save_map.add("texture", &white);
 		emitter->save_map.add("normal", &white_normal);
 		emitter->save_map.add("mesh", &star_mesh);
-
-
+		emitter->save_map.add("shad", *shader);
 
 		
 
@@ -67,17 +74,20 @@ namespace Ryno{
 
 		emitter->lambda_creation = [](Emitter* e, Particle3D* p){
 			Texture* white, *normal;
+			Shader* shader;
 			//Emitter* emitter;
 			I32* mesh;
 			white = e->save_map.get<Texture>("texture");
 			normal = e->save_map.get<Texture>("normal");
 			mesh = e->save_map.get<I32>("mesh");
+			shader = e->save_map.get<Shader>("shad");
+
 
 			p->decay_rate = .0005f;
 			p->speed = .5f;
 			p->model.create(StackAllocator::get_instance());
-			p->model->material = new Material();
-			p->model->material->set_shader(Batch3DGeometry::s);
+			p->model->material.create(StackAllocator::get_instance());
+			p->model->material->set_shader(shader);
 			//p->model->set_texture_normal(white, normal);
 			p->model->mesh = *mesh;
 			p->model->material->set_attribute("in_Color",ColorRGBA::yellow);
@@ -118,11 +128,10 @@ namespace Ryno{
 		go[3]->emitter->save_map.add("texture", &brick);
 		go[3]->emitter->save_map.add("normal", &brick_normal);
 		go[3]->emitter->save_map.add("mesh", &sphere_mesh);
-		go[2]->emitter->save_map.add("texture", &brick);
-		go[2]->emitter->save_map.add("normal", &brick_normal);
+		go[2]->emitter->save_map.add("texture", &white);
+		go[2]->emitter->save_map.add("normal", &white_normal);
 		go[2]->emitter->save_map.add("mesh", &cube_mesh);
-		go[2]->emitter->save_map.add("texture", &brick);
-		go[2]->emitter->save_map.add("normal", &brick_normal);
+		go[2]->emitter->save_map.add("shad", *shader2);
 		go[1]->emitter->save_map.add("mesh", &cone_mesh);
 		go[1]->emitter->save_map.add("texture", &white);
 		go[1]->emitter->save_map.add("normal", &white_normal);
@@ -144,10 +153,10 @@ namespace Ryno{
 		{
 			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
-			ColorRGBA from = ColorRGBA::white;
-			ColorRGBA to = ColorRGBA::magenta;
+			p->model->material->set_attribute("in_Color", ColorRGBA::black);
+			p->model->material->set_attribute("in_Color2", ColorRGBA::red);
 
-			p->model->material->set_attribute("in_Color", ryno_math::lerp(from, to, power_lerper(p->lifetime, 20)));
+
 		};
 
 		go[3]->emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
@@ -180,8 +189,9 @@ namespace Ryno{
 	}
 
 
-	void FireworkScene::update(){
-		
+	void FireworkScene::update()
+	{
+		shader2->set_global_uniform("g_Time", &game->time);
 	}
 
 	void FireworkScene::input(){

@@ -95,7 +95,7 @@ namespace Ryno{
 			scene->camera_update();
 			if (game_state != GameState::Paused) update();
 			draw();
-			delta_time = time_manager->end_frame();
+			time_manager->end_frame(&time, &delta_time);
 			if (game_state != GameState::Paused) time_manager->print_fps();
 		}
 		end();

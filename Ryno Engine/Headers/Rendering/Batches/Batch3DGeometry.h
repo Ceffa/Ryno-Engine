@@ -22,9 +22,8 @@ namespace Ryno{
 	};
 	class RenderBatchGeometry : public RenderBatch{
 	public:
-		RenderBatchGeometry(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, U32 m) : RenderBatch(v_o, n_v, idx_o, n_idx, i_o, n_i, m){}
-	
-		std::vector<uniform> uniforms;
+		RenderBatchGeometry(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, Model* mod) : RenderBatch(v_o, n_v, idx_o, n_idx, i_o, n_i), model(mod){}
+		Model* model;
 	};
 
 
@@ -37,7 +36,8 @@ namespace Ryno{
 		void draw(GameObject* go) override;
 
 		void render_batch() override;
-		static Shader* s;
+		std::list<Shader*> shaders;
+
 	protected:
 
 		std::vector<Vertex3D> vertices;
@@ -47,8 +47,8 @@ namespace Ryno{
 		const static U8 compare_models(GameObject* a, GameObject* b) ;
 
 		void create_render_batches();
+		void enable_attributes(Shader* s);
 		void create_vertex_array();
-		void enable_attributes();
 	};
 
 

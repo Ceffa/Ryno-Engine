@@ -257,7 +257,7 @@ namespace Ryno{
 	void HouseScene::update(){
 
 		for (I32 i = 0; i < 4; i++){
-			spheres[i]->transform->position.y = 40 + sin(game->time_manager->current_time / 1000.0f) * 20;
+			spheres[i]->transform->position.y = 40 + sin(game->time / 1000.0f) * 20;
 		}
 
 	}

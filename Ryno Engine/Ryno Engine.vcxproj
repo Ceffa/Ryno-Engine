@@ -22,6 +22,8 @@
     <None Include="Resources\Music\cthulhu.ogg" />
     <None Include="Resources\Shaders\GeometryPass\geometry.frag" />
     <None Include="Resources\Shaders\GeometryPass\geometry.vert" />
+    <None Include="Resources\Shaders\GeometryPass\geometry2.frag" />
+    <None Include="Resources\Shaders\GeometryPass\geometry2.vert" />
     <None Include="Resources\Shaders\GUIPass\font.frag" />
     <None Include="Resources\Shaders\GUIPass\font.vert" />
     <None Include="Resources\Shaders\GUIPass\sprite.frag" />

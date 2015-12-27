@@ -132,7 +132,6 @@ namespace Ryno{
 		Shader *m_spot_shadow_program;
 		Shader *m_point_shadow_program;
 		Shader *m_blit_program;
-		Shader *m_geometry_program;
 		Shader *m_directional_lighting_program;
 		Shader *m_point_lighting_program;
 		Shader *m_spot_lighting_program;

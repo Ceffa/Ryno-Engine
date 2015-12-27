@@ -30,7 +30,7 @@ namespace Ryno{
 		glm::vec2 tiling;
 		ColorRGBA color;  //Alpha is flatness
 		bool cast_shadows = true;
-		Material* material;
+		New<Material> material;
 		
 	};
 }

@@ -241,7 +241,7 @@ namespace Ryno{
 			//keep only instance data, not vertex attributes.
 			//They are the one with the divisor. For now I'll assume they start from 4
 			if (loc > 3)
-				temp_attribs.push_back(new attribute(loc, 0,  sizeof(U32)*get_size_from_type(temp_type) * temp_size, temp_name));
+				temp_attribs.push_back(new attribute(loc, 0, sizeof(U32)*get_size_from_type(temp_type) * temp_size, temp_name));
 			else
 				free(temp_name);
 		}
@@ -275,49 +275,21 @@ namespace Ryno{
 
 			glGetActiveUniform(m_program_id, i, 30, &temp_name_size, &temp_size, &temp_type, temp_name);
 			GLuint loc = glGetUniformLocation(m_program_id, temp_name);
-			//keep only instance data, not vertex attributes
-			uniforms_map[temp_name].index = loc;
-			uniforms_map[temp_name].size = get_size_from_type(temp_type);
-			uniforms_map[temp_name].type = temp_type;
+			if (temp_name[0] == 'g' && temp_name[1] == '_'){
+				global_uniforms_data[temp_name].index = loc;
+				global_uniforms_data[temp_name].type = temp_type;
+			}
+			else{
+				uniforms_data[temp_name].index = loc;
+				uniforms_data[temp_name].type = temp_type;
+			}
 
 		}
 
 	}
 
 
-	U8 Shader::get_size_from_type(const GLenum type)
-	{
-
-		switch (type)
-		{
-		case GL_FLOAT:
-		case GL_INT:
-		case GL_UNSIGNED_INT:
-		case GL_SAMPLER_2D:
-		case GL_SAMPLER_3D:
-		case GL_SAMPLER_CUBE:
-		case GL_SAMPLER_2D_SHADOW:
-			return 1; 
-		case GL_FLOAT_VEC2:
-		case GL_INT_VEC2:
-		case GL_UNSIGNED_INT_VEC2:
-			return 2;
-		case GL_FLOAT_VEC3:
-		case GL_INT_VEC3:
-		case GL_UNSIGNED_INT_VEC3:
-			return 3;
-		case GL_FLOAT_VEC4:
-		case GL_INT_VEC4:
-		case GL_UNSIGNED_INT_VEC4:
-			return 4;
-		case GL_FLOAT_MAT4:
-			return 16;
-
-		}
-		return 0;
-
-
-	}
+	
 
 	void Shader::setup_vbo_attributes()
 	{
@@ -364,4 +336,87 @@ namespace Ryno{
 		return false;
 	}
 
+	void Shader::send_material_uniform_to_shader(const std::string& name, void* value, U8* sampler_index)
+	{
+		
+		if (Shader::is_sampler(uniforms_data[name].type)){
+			glUniform1i(uniforms_data[name].index, *sampler_index);
+			glActiveTexture(GL_TEXTURE0 + *sampler_index++);
+			glBindTexture(GL_TEXTURE_2D, *(U32*)value);
+			return;
+		}
+
+		switch (uniforms_data[name].type){
+		case GL_INT: 
+			glUniform1i(uniforms_data[name].index, *(I32*)value);
+			break;
+		case GL_FLOAT:
+			glUniform1f(uniforms_data[name].index, *(F32*)value);
+			break;
+		case GL_FLOAT_MAT4:
+			glUniformMatrix4fv(uniforms_data[name].index, 1, GL_FALSE, &(*((glm::mat4*)value))[0][0]);
+			break;
+		default:
+			std::cout << "Shader " << name << ": uniform type not found. ";
+			std::cout << "If possible add it to the switch in the \"send_uniform_to_shader\" functions in the shader class" << std::endl;
+		}
+	}
+	void Shader::send_global_uniform_to_shader(const std::string& name, void* value, U8* sampler_index)
+	{
+
+		if (Shader::is_sampler(global_uniforms_data[name].type)){
+			glUniform1i(global_uniforms_data[name].index, *sampler_index);
+			glActiveTexture(GL_TEXTURE0 + *sampler_index++);
+			glBindTexture(GL_TEXTURE_2D, *(U32*)value);
+			return;
+		}
+
+		switch (global_uniforms_data[name].type){
+		case GL_INT:
+			glUniform1i(global_uniforms_data[name].index, *(I32*)value);
+			break;
+		case GL_FLOAT:
+			glUniform1f(global_uniforms_data[name].index, *(F32*)value);
+			break;
+		case GL_FLOAT_MAT4:
+			glUniformMatrix4fv(global_uniforms_data[name].index, 1, GL_FALSE, &(*((glm::mat4*)value))[0][0]);
+			break;
+		default:
+			std::cout << "Shader " << name <<": global uniform type not found. ";
+			std::cout << "If possible add it to the switch in the \"send_uniform_to_shader\" functions in the shader class" << std::endl;
+		}
+	}
+	U8 Shader::get_size_from_type(const GLenum type)
+	{
+
+		switch (type)
+		{
+		case GL_FLOAT:
+		case GL_INT:
+		case GL_UNSIGNED_INT:
+		case GL_SAMPLER_2D:
+		case GL_SAMPLER_3D:
+		case GL_SAMPLER_CUBE:
+		case GL_SAMPLER_2D_SHADOW:
+			return 1;
+		case GL_FLOAT_VEC2:
+		case GL_INT_VEC2:
+		case GL_UNSIGNED_INT_VEC2:
+			return 2;
+		case GL_FLOAT_VEC3:
+		case GL_INT_VEC3:
+		case GL_UNSIGNED_INT_VEC3:
+			return 3;
+		case GL_FLOAT_VEC4:
+		case GL_INT_VEC4:
+		case GL_UNSIGNED_INT_VEC4:
+			return 4;
+		case GL_FLOAT_MAT4:
+			return 16;
+
+		}
+		return 0;
+
+
+	}
 }
