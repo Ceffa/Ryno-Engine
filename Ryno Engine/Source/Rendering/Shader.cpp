@@ -11,6 +11,23 @@
 
 namespace Ryno{
 
+	//Holds info about the vertex 3D data
+	std::map<std::string, static_vertex_attr> Shader::vertex_3d_map{
+			{ "in_Position", static_vertex_attr(3, (void*)offsetof(Vertex3D, position)) },
+			{ "in_Uv", static_vertex_attr(2, (void*)offsetof(Vertex3D, uv)) },
+			{ "in_Tangent", static_vertex_attr(3, (void*)offsetof(Vertex3D, tangent)) },
+			{ "in_Normal", static_vertex_attr(3, (void*)offsetof(Vertex3D, normal)) }
+	};
+	I32 vertex_3d_locations[4];
+
+	bool Shader::is_vertex_attribute(const std::string& name)
+	{
+		//Check if an attribute is a vertex one by scanning the
+		//map that holds vertex 3d informations
+		if (vertex_3d_map.find(name) != vertex_3d_map.end())
+			return true;
+		return false;
+	}
 
 	void Shader::create(const std::string& name, bool vert, bool geom, bool frag){
 		is_shader_present[VERT] = vert;
@@ -240,10 +257,13 @@ namespace Ryno{
 			GLuint loc = glGetAttribLocation(m_program_id, temp_name);
 			//keep only instance data, not vertex attributes.
 			//They are the one with the divisor. For now I'll assume they start from 4
-			if (loc > 3)
-				temp_attribs.push_back(new attribute(loc, 0, sizeof(U32)*get_size_from_type(temp_type) * temp_size, temp_name));
+			if (is_vertex_attribute(temp_name)){
+				vertex_3d_locations[temp_name].loc = loc;
+				vertex_3d_locations[temp_name].nr = vertex_3d_map[temp_name].nr;
+				vertex_3d_locations[temp_name].offset = vertex_3d_map[temp_name].offset;
+			}
 			else
-				free(temp_name);
+				temp_attribs.push_back(new attribute(loc, 0, sizeof(U32)*get_size_from_type(temp_type) * temp_size, temp_name));
 		}
 
 		std::stable_sort(temp_attribs.begin(), temp_attribs.end(), [](attribute*a, attribute*b){return a->index < b->index; });

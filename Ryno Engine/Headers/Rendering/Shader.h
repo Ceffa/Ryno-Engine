@@ -9,6 +9,23 @@
 
 namespace Ryno{
 
+	//Info about a vertex 3D (static)
+	struct static_vertex_attr{
+		static_vertex_attr(){}
+		static_vertex_attr(U32 _nr, void* off) : nr(_nr), offset(off){}
+		U32 nr;
+		void* offset;
+	};
+
+	//Info about a vertex 3D (of the single shader)
+	struct vertex_attr{
+		vertex_attr() : loc(-1){}
+		vertex_attr(I32 loc, U32 _nr, void* off) : nr(_nr), offset(off){}
+		I32 loc = -1;
+		U32 nr;
+		void* offset;
+	};
+
 	//These are used to build the struct in the material class.
 	//Basically each material creates it based on these parameters.
 	struct attributes{
@@ -116,6 +133,15 @@ namespace Ryno{
 		std::map<std::string, uniforms> uniforms_data;
 		//Global uniforms data: (sent one and for only by the shader itself)
 		std::map<std::string, global_uniforms> global_uniforms_data;
+		
+		//This holds info about the vertex 3d struct.
+		//It is manually created, and it is shared among the shaders.
+		//Each shader will then keep track of the attributes it has and their locations
+		//with the vertex_3d_locations array below.
+		static std::map<std::string, static_vertex_attr> vertex_3d_map;
+		std::map<std::string, vertex_attr> vertex_3d_locations;
+		bool is_vertex_attribute(const std::string& name);
+
 
 		template <class T>
 		bool set_global_uniform(const std::string& attr, T* value){

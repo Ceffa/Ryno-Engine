@@ -139,20 +139,15 @@ namespace Ryno {
 
 	void Batch3DGeometry::enable_attributes(Shader* s){
 
-		//temporally bind vbo
+		//Bind vertex-vbo and specify vertex attributes
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		
+		for (auto cnt : s->vertex_3d_locations){
+			glVertexAttribPointer(cnt.second.loc, cnt.second.nr, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), cnt.second.offset);
+			glEnableVertexAttribArray(cnt.second.loc);
+		}
 
-		//Tell vbo how to use the data it will receive
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, position));
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, uv));
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, normal));
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, tangent));
-		//Enable all vertex info
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
-
+		//bind instance-vbo and specify instance attributes
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 
 		s->setup_vbo_attributes();
