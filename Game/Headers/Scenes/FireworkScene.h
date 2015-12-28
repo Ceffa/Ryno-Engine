@@ -20,12 +20,13 @@ namespace Ryno{
 		void input() override;
 		void update() override;
 
-		Sound sound;
-		Music music;
+		New<Sound> sound;
+		New<Music> music;
 
 		New<GameObject> go[4];
-		Texture white, white_normal, brick, brick_normal;
+		New<Texture> white, white_normal, brick, brick_normal;
 		New<Shader> shader,shader2;
+		New<I32> star_mesh, cube_mesh, sphere_mesh, cone_mesh;
 		int i = 0;
 
 

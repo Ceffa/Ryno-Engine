@@ -16,15 +16,15 @@ namespace Ryno{
 		camera->movement_speed = 2;
 		camera->position = glm::vec4(0, 150, -5000, 1);
 
-		white = game->texture_manager->load_png("white_pixel", GAME);
-		white_normal = game->texture_manager->load_png("normal_pixel", GAME);
-		brick = game->texture_manager->load_png("pack/154", GAME);
-		brick_normal = game->texture_manager->load_png("pack/154_norm", GAME);
+		white.create(game->stack_allocator, game->texture_manager->load_png("white_pixel", GAME));
+		white_normal.create(game->stack_allocator, game->texture_manager->load_png("normal_pixel", GAME));
+		brick.create(game->stack_allocator, game->texture_manager->load_png("pack/154", GAME));
+		brick_normal.create(game->stack_allocator, game->texture_manager->load_png("pack/154_norm", GAME));
 
-		I32 star_mesh = game->mesh_manager->load_mesh("star", 1, GAME);
-		I32 cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
-		I32 sphere_mesh = game->mesh_manager->load_mesh("sphere", 1, GAME);
-		I32 cone_mesh = game->mesh_manager->load_mesh("cone", 1, GAME);
+		star_mesh.create(game->stack_allocator,game->mesh_manager->load_mesh("star", 1, GAME));
+		cube_mesh.create(game->stack_allocator, game->mesh_manager->load_mesh("cube", 1, GAME));
+		sphere_mesh.create(game->stack_allocator, game->mesh_manager->load_mesh("sphere", 1, GAME));
+		cone_mesh.create(game->stack_allocator, game->mesh_manager->load_mesh("cone", 1, GAME));
 
 
 
@@ -62,9 +62,9 @@ namespace Ryno{
 
 
 		Emitter* emitter = go[0]->emitter.create(game->stack_allocator, *go[0]);
-		emitter->save_map.add("texture", &white);
-		emitter->save_map.add("normal", &white_normal);
-		emitter->save_map.add("mesh", &star_mesh);
+		emitter->save_map.add("texture", *white);
+		emitter->save_map.add("normal", *white_normal);
+		emitter->save_map.add("mesh", *star_mesh);
 		emitter->save_map.add("shad", *shader);
 
 		
@@ -102,7 +102,7 @@ namespace Ryno{
 			
 		};
 		emitter->lambda_spawn = [](Emitter* e){
-			for (U8 i = 0; i < 15; i++){
+			for (U8 i = 0; i < 20; i++){
 				Particle3D* p = e->new_particle();
 				p->transform->position = e->game_object->transform->position;
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
@@ -125,16 +125,16 @@ namespace Ryno{
 		go[2].create(game->stack_allocator, *go[1]);
 		go[3].create(game->stack_allocator, *go[1]);
 
-		go[3]->emitter->save_map.add("texture", &brick);
-		go[3]->emitter->save_map.add("normal", &brick_normal);
-		go[3]->emitter->save_map.add("mesh", &sphere_mesh);
-		go[2]->emitter->save_map.add("texture", &white);
-		go[2]->emitter->save_map.add("normal", &white_normal);
-		go[2]->emitter->save_map.add("mesh", &cube_mesh);
+		go[3]->emitter->save_map.add("texture", *brick);
+		go[3]->emitter->save_map.add("normal", *brick_normal);
+		go[3]->emitter->save_map.add("mesh", *sphere_mesh);
+		go[2]->emitter->save_map.add("texture", *white);
+		go[2]->emitter->save_map.add("normal", *white_normal);
+		go[2]->emitter->save_map.add("mesh", *cube_mesh);
 		go[2]->emitter->save_map.add("shad", *shader2);
-		go[1]->emitter->save_map.add("mesh", &cone_mesh);
-		go[1]->emitter->save_map.add("texture", &white);
-		go[1]->emitter->save_map.add("normal", &white_normal);
+		go[1]->emitter->save_map.add("mesh", *cone_mesh);
+		go[1]->emitter->save_map.add("texture", *white);
+		go[1]->emitter->save_map.add("normal", *white_normal);
 
 
 
@@ -168,17 +168,17 @@ namespace Ryno{
 		};
 		
 		go[3]->emitter->lambda_spawn = [](Emitter* e){
-			for (U8 i = 0; i < 15; i++){
+			for (U8 i = 0; i < 20; i++){
 				Particle3D* p = e->new_particle();
 				p->transform->position = e->game_object->transform->position;
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 				p->model->material->set_attribute("in_Color", ryno_math::rand_color_range(ColorRGBA(100, 100, 100, 255), ColorRGBA::white));
 			}
 		};
-		go[0]->emitter->init(2200);
-		go[1]->emitter->init(2200);
-		go[2]->emitter->init(2200);
-		go[3]->emitter->init(2200);
+		go[0]->emitter->init(2700);
+		go[1]->emitter->init(2700);
+		go[2]->emitter->init(2700);
+		go[3]->emitter->init(2700);
 
 
 		go[0]->transform->position += glm::vec3(1200, 1200, 0);

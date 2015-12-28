@@ -203,11 +203,11 @@ namespace Ryno {
 			curr_shader->use();
 
 			U32 old_shader_size = 0;//keep track of the size of the last used shader
+			if (old_shader)old_shader_size = old_shader->attributes_struct_size;
 
 			//If the new batch has a different shader than the one before, 
 			//enable attributes and send global data
 			if (old_shader != curr_shader){
-				if (old_shader)old_shader_size = old_shader->attributes_struct_size;
 				old_shader = curr_shader;
 				enable_attributes(curr_shader);
 				U8 curr_samp = 0;
