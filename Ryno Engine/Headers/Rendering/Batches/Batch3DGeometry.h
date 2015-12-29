@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Batch3DAbstract.h"
 #include "Shader.h"
 #include "Global.h"
 #include "Structures.h"
-#include "GameObject.h"
+#include "Model.h"
 #include "Camera3D.h"
 #include "MeshManager.h"
 #include "Shader.h"
@@ -14,37 +13,56 @@
 
 namespace Ryno{
 
-
 	struct uniform{
 		uniform(std::string n, void* v) : name(n),  value(v){}
 		std::string name;
 		void* value;
 	};
-	class RenderBatchGeometry : public RenderBatch{
+	class RenderBatchStruct{
 	public:
-		RenderBatchGeometry(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, Model* mod) : RenderBatch(v_o, n_v, idx_o, n_idx, i_o, n_i), model(mod){}
+		RenderBatchStruct(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, Model* _m) : vertex_offset(v_o), num_vertices(n_v), indices_offset(idx_o), num_indices(n_idx), instance_offset(i_o), num_instances(n_i), model(_m){}
+		U32 vertex_offset;
+		U32 num_vertices;
+		U32 indices_offset;
+		U32 num_indices;
+		U32 instance_offset;
+		U32 num_instances;
 		Model* model;
 	};
 
 
-	class Batch3DGeometry : public Batch3DAbstract{
+	class Batch3DGeometry{
 	public:
 		
-		void begin() override;
-		void end() override;
-		
-		void draw(GameObject* go) override;
 
-		void render_batch() override;
+		void init(Camera3D* cam);
+		void set_camera(Camera3D* camera);
+		void begin();
+		void end();
+		
+		void draw(Model* go);
+
+		void render_batch();
 		std::list<Shader*> shaders;
+		std::vector<Model*> m_models;
 
 	protected:
+		U32 m_vbo;
+		U32 m_i_vbo;//instancing vbo
+		U32 m_index_vbo;
+		U32 m_vao;
+
+		Camera3D* m_camera;
+		MeshManager* m_mesh_manager;
+
+		std::vector<U32> indices;
+
 
 		std::vector<Vertex3D> vertices;
 		void* input_instances;
-		std::vector<RenderBatchGeometry> m_render_batches;
+		std::vector<RenderBatchStruct> m_render_batches;
 		
-		const static U8 compare_models(GameObject* a, GameObject* b) ;
+		const static U8 compare_models(Model* a, Model* b) ;
 
 		void create_render_batches();
 		void enable_attributes(Shader* s);

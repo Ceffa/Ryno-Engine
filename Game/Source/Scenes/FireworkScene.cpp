@@ -44,7 +44,7 @@ namespace Ryno{
 		go[0]->model->set_texture_normal(white, white_normal);*/
 		go[0]->dir_light.create(game->stack_allocator);
 		go[0]->dir_light->set_direction(-65, 150);
-		go[0]->dir_light->diffuse_intensity = 0.2;
+		go[0]->dir_light->diffuse_intensity = 0.7;
 		go[0]->dir_light->set_diffuse_color(255, 255, 200);
 		go[0]->dir_light->specular_intensity = .05;
 		go[0]->dir_light->set_specular_color(255, 255, 200);
@@ -58,7 +58,6 @@ namespace Ryno{
 		shader->create("GeometryPass/geometry", 1, 0, 1);
 		shader2.create(game->stack_allocator);
 		shader2->create("GeometryPass/geometry2", 1, 0, 1);
-		shader2->set_global_uniform("g_Time", &game->delta_time);
 
 
 		Emitter* emitter = go[0]->emitter.create(game->stack_allocator, *go[0]);
@@ -92,13 +91,12 @@ namespace Ryno{
 			p->model->mesh = *mesh;
 			p->model->material->set_attribute("in_Color",ColorRGBA::yellow);
 			p->model->material->set_attribute("in_Tiling", glm::vec2(1,1));
-			p->model->material->set_uniform("texture_sampler", &white->id);
-			p->model->material->set_uniform("normal_map_sampler", &normal->id);
+			p->model->material->set_uniform("texture_sampler", white->id);
+			p->model->material->set_uniform("normal_map_sampler", normal->id);
 
 			//p->model->color = ColorRGBA::yellow;
 			p->transform->add_rotation(glm::vec3(ryno_math::rand_int_range(0, 360), ryno_math::rand_int_range(0, 360),0));
 			p->model->cast_shadows = false;
-			p->model->set_flatness(255);
 			
 		};
 		emitter->lambda_spawn = [](Emitter* e){
@@ -120,10 +118,10 @@ namespace Ryno{
 			p->model->material->set_attribute("in_Color",ryno_math::lerp(from, to, power_lerper(p->lifetime,20)));
 		};
 
-		go[1].create(game->stack_allocator, *go[0]);
+		go[1].copy(go[0]);
 		go[1]->dir_light.~New<DirectionalLight>();
-		go[2].create(game->stack_allocator, *go[1]);
-		go[3].create(game->stack_allocator, *go[1]);
+		go[2].copy(go[1]);
+		go[3].copy(go[1]);
 
 		go[3]->emitter->save_map.add("texture", *brick);
 		go[3]->emitter->save_map.add("normal", *brick_normal);
@@ -162,23 +160,23 @@ namespace Ryno{
 		go[3]->emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
 		{
 			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
-			p->transform->set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
+			p->transform->set_scale(ryno_math::lerp(glm::vec3(60), glm::vec3(100), p->lifetime));
 
 			
 		};
 		
 		go[3]->emitter->lambda_spawn = [](Emitter* e){
-			for (U8 i = 0; i < 20; i++){
+			for (U8 i = 0; i < 15; i++){
 				Particle3D* p = e->new_particle();
 				p->transform->position = e->game_object->transform->position;
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
-				p->model->material->set_attribute("in_Color", ryno_math::rand_color_range(ColorRGBA(100, 100, 100, 255), ColorRGBA::white));
+				p->model->material->set_attribute("in_Color", ryno_math::rand_color_range(ColorRGBA(100, 100, 100, 0), ColorRGBA(255,255,255,0)));
 			}
 		};
 		go[0]->emitter->init(2700);
 		go[1]->emitter->init(2700);
 		go[2]->emitter->init(2700);
-		go[3]->emitter->init(2700);
+		go[3]->emitter->init(2200);
 
 
 		go[0]->transform->position += glm::vec3(1200, 1200, 0);
@@ -191,7 +189,7 @@ namespace Ryno{
 
 	void FireworkScene::update()
 	{
-		shader2->set_global_uniform("g_Time", &game->time);
+		shader2->set_global_uniform("g_Time", game->time);
 	}
 
 	void FireworkScene::input(){
@@ -201,19 +199,19 @@ namespace Ryno{
 
 			}
 			if (game->input_manager->is_key_pressed(SDLK_n, KEYBOARD)){
-				i = ++i % 4;
+				idx = ++idx % 4;
 			}
 			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
-				go[i]->transform->position += game->delta_time * 1.0f * glm::vec3(1, 0, 0);
+				go[idx]->transform->position += game->delta_time * 1.0f * glm::vec3(1, 0, 0);
 			}
 			if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
-				go[i]->transform->position += game->delta_time * 1.0f * glm::vec3(-1, 0, 0);
+				go[idx]->transform->position += game->delta_time * 1.0f * glm::vec3(-1, 0, 0);
 			}
 			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)){
-				go[i]->transform->position += game->delta_time * 1.0f * glm::vec3(0,1, 0);
+				go[idx]->transform->position += game->delta_time * 1.0f * glm::vec3(0,1, 0);
 			}
 			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)){
-				go[i]->transform->position += game->delta_time * 1.0f * glm::vec3(0,-1, 0);
+				go[idx]->transform->position += game->delta_time * 1.0f * glm::vec3(0,-1, 0);
 			}
 		}
 	}

@@ -599,9 +599,6 @@
     <ClCompile Include="Source\GUI\Text.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\System\IConsole.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\System\Log.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -785,9 +782,6 @@
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\System\Global.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\System\IConsole.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\System\Log.h">

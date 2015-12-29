@@ -8,21 +8,18 @@ namespace Ryno{
 	GUIObject::GUIObject(){
 		gui_objects.push_back(this);
 	}
-	GUIObject::GUIObject(const GUIObject* go) 
+	GUIObject::GUIObject(const GUIObject& go) : GUIObject()
 	{
-		*this = *go;
 
-		if (*go->sprite)
-			sprite.copy(go->sprite);
-		if (*go->text)
-			text.copy(go->text);
-		
-		gui_objects.push_back(this);
-
+		if (*go.sprite)
+			sprite.copy(go.sprite);
+		if (*go.text)
+			text.copy(go.text);
 
 	}
 	GUIObject::~GUIObject(){
-		gui_objects.remove(this);
+		if (this)
+			gui_objects.remove(this);
 	}
 
 }

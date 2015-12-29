@@ -13,18 +13,42 @@ namespace Ryno {
 
 
 
-
+	Shell* Shell::instance = nullptr;
 
 	Shell* Shell::get_instance()
 	{
-		static Shell instance;//only at the beginning
-		return &instance;
+		if(!instance);//only at the beginning
+			instance = new Shell();
+		return instance;
 	}
 
 	void Shell::init()
 	{
-		IConsole::init();
+		log = Log::get_instance();
+		input_manager = InputManager::get_instance();
 
+		//Load textures
+		TextureManager* texture_manager = TextureManager::get_instance();
+		Texture background_texture = texture_manager->load_png("background", ENGINE);
+
+		//Create background
+		Mallocator* r = Mallocator::get_instance();
+		background.create(r);
+
+		Sprite* s = background->sprite.create(r);
+		s->set_texture(background_texture);
+		s->angle = 0;
+		s->set_color(0, 0, 0, 240);
+		s->depth = 5;
+		s->use = SHELL;
+
+
+
+		font.create(r, "inconsolata", 24, ENGINE);
+
+
+		iterator = history.begin();
+		history_length = 0;
 		input_manager = InputManager::get_instance();
 		time_manager = TimeManager::get_instance();
 		base_path_size = (U8)base_path.size();
@@ -36,8 +60,6 @@ namespace Ryno {
 		background->sprite->set_scale(350, WINDOW_HEIGHT / 3.06f);
 
 		//Create Texts 
-		Mallocator* r = Mallocator::get_instance();
-		lines.resize(NUM_LINES);
 		lines[0].create(r);
 		Text *t = lines[0]->text.create(r);
 		t->anchor_point = BOTTOM_LEFT;
@@ -52,7 +74,7 @@ namespace Ryno {
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
 			lines[i].create(r);
-			lines[i]->text.create(r,t);
+			lines[i]->text.copy(lines[0]->text);
 			lines[i]->text->set_position(0.005f, 0.003f + 0.33f * i / NUM_LINES);
 		}
 				
@@ -61,7 +83,12 @@ namespace Ryno {
 
 		
 	}
-
+	void Shell::set_text_color(U8 r, U8 g, U8 b)
+	{
+		for (auto& go : lines){
+			go->text->set_color(r, g, b, 255);
+		}
+	}
 	void Shell::set(bool b)
 	{
 		active = b;

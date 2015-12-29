@@ -9,29 +9,57 @@
 
 namespace Ryno {
 
+	Log* Log::instance = nullptr;
 
 
-	Log Log::instance;
+	void Log::set_text_color(U8 r, U8 g, U8 b)
+	{
+		for (auto& go : lines){
+			go->text->set_color(r, g, b, 255);
+		}
+	}
+
 
 	Log* Log::get_instance()
 	{
-		return &instance;
+		if (!instance)
+			instance = new Log();
+		return instance;
 	}
 
 	void Log::init()
 	{
-		IConsole::init();
+		input_manager = InputManager::get_instance();
 
+		//Load textures
+		TextureManager* texture_manager = TextureManager::get_instance();
+		Texture background_texture = texture_manager->load_png("background", ENGINE);
+
+		//Create background
+		Mallocator* r = Mallocator::get_instance();
+		background.create(r);
+
+		Sprite* s = background->sprite.create(r);
+		s->set_texture(background_texture);
+		s->angle = 0;
+		s->set_color(0, 0, 0, 240);
+		s->depth = 5;
+		s->use = SHELL;
+
+
+
+		font.create(r, "inconsolata", 24, ENGINE);
+
+
+		iterator = history.begin();
+		history_length = 0;
 		input_manager = InputManager::get_instance();
 		
 		background->sprite->anchor_point = TOP_LEFT;
 		background->sprite->set_position(0, 1);
 		background->sprite->set_scale(350, WINDOW_HEIGHT / 1.506f);
 
-		//Create Texts
-		lines.resize(NUM_LINES);
-		
-		Mallocator* r = Mallocator::get_instance();
+				
 
 		lines[0].create(r);
 		Text* t = lines[0]->text.create(r);
@@ -48,7 +76,7 @@ namespace Ryno {
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
 			lines[i].create(r);
-			lines[i]->text.create(r, t);
+			lines[i]->text.copy(lines[0]->text);
 			lines[i]->text->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
 		}
 
@@ -61,7 +89,7 @@ namespace Ryno {
 	void Log::set(bool b)
 	{
 		active = b;
-		for (New<GUIObject>& go : lines)
+		for (auto& go : lines)
 			go->text->active = b;
 		background->sprite->active = b;
 	}
@@ -116,15 +144,15 @@ namespace Ryno {
 
 	void Log::println(const std::string& message)
 	{
-		if (instance.history_length < HISTORY_LENGTH)
-			instance.history_length++;
+		if (instance->history_length < HISTORY_LENGTH)
+			instance->history_length++;
 		else{
-			instance.history.pop_back();
+			instance->history.pop_back();
 		}
-		instance.history.push_front(message);
-		instance.iterator = instance.history.begin();
+		instance->history.push_front(message);
+		instance->iterator = instance->history.begin();
 		
-		instance.refresh();
+		instance->refresh();
 
 	}
 
@@ -151,12 +179,12 @@ namespace Ryno {
 
 	void Log::print(const std::string& message)
 	{
-		instance.iterator = instance.history.begin();
-		if (instance.iterator == instance.history.end())
+		instance->iterator = instance->history.begin();
+		if (instance->iterator == instance->history.end())
 			println(message);
 		else{
-			*instance.iterator += message;
-			instance.refresh();
+			*instance->iterator += message;
+			instance->refresh();
 		}
 	}
 

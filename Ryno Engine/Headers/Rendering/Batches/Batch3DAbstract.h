@@ -38,12 +38,11 @@ namespace Ryno{
 		virtual void end() = 0;
 		virtual void draw(GameObject* go) = 0;
 		virtual void render_batch() = 0;
+		std::vector<GameObject*> m_models;
 
 	protected:
 		
 		
-		std::vector<GameObject*> m_game_objects;
-		U32 number_of_models;
 		std::vector<U32> indices;
 
 		virtual void create_render_batches() = 0;

@@ -1,7 +1,7 @@
 #pragma once
 #include "Global.h"
 #include "Sprite.h"
-#include "Text.h"
+#include "Text.h"	
 #include <list>
 
 namespace Ryno{
@@ -13,7 +13,7 @@ namespace Ryno{
 		GUIObject();
 		~GUIObject();
 
-		GUIObject(const GUIObject* go);
+		GUIObject(const GUIObject& go);
 
 		//Status
 		bool active = true;

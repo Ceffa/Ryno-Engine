@@ -27,7 +27,7 @@ namespace Ryno{
 		New<Texture> white, white_normal, brick, brick_normal;
 		New<Shader> shader,shader2;
 		New<I32> star_mesh, cube_mesh, sphere_mesh, cone_mesh;
-		int i = 0;
+		int idx = 0;
 
 
 	};

@@ -20,7 +20,7 @@ namespace Ryno{
 		GameObject();
 		~GameObject();
 
-		GameObject(const GameObject* go);
+		GameObject(const GameObject& go);
 
 		//Status
 		bool active = true;

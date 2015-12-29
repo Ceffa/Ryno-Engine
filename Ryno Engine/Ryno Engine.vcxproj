@@ -221,7 +221,6 @@
     <ClCompile Include="Source\Rendering\Material.cpp" />
     <ClCompile Include="Source\Rendering\Model.cpp" />
     <ClCompile Include="Source\Rendering\SimpleDrawer.cpp" />
-    <ClCompile Include="Source\System\IConsole.cpp" />
     <ClCompile Include="Source\System\Log.cpp" />
     <ClCompile Include="Source\System\Game.cpp" />
     <ClCompile Include="Source\System\Scene.cpp" />
@@ -282,7 +281,6 @@
     <ClInclude Include="Headers\Rendering\SimpleDrawer.h" />
     <ClInclude Include="Headers\System\Scene.h" />
     <ClInclude Include="Headers\System\Global.h" />
-    <ClInclude Include="Headers\System\IConsole.h" />
     <ClInclude Include="Headers\System\Log.h" />
     <ClInclude Include="Headers\System\Game.h" />
     <ClInclude Include="Headers\System\Shell.h" />

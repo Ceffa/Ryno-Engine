@@ -11,26 +11,25 @@ namespace Ryno{
 		ParticleManager::get_instance()->remove_emitter(game_object);
 	}
 
-	Emitter::Emitter(const Emitter *e, GameObject* go) : Emitter(go){
+	Emitter::Emitter(const Emitter& e, GameObject* go) : Emitter(go){
 		//Instead of copying it, create it anew with the values 
 		//taken by the old emitter.
 		//To know how the particles is build, the first particle
 		//in the old pool is casted to GameObject
 		//and passed to the init method.
-		save_map = e->save_map;
-		lambda_spawn = e->lambda_spawn;
-		lambda_creation = e->lambda_creation;
-		lambda_particle_update = e->lambda_particle_update;
-		m_elapsed_time = e->m_elapsed_time;
-		if (e->m_max_particles>0)
-			init(e->m_max_particles);
+		save_map = e.save_map;
+		lambda_spawn = e.lambda_spawn;
+		lambda_creation = e.lambda_creation;
+		lambda_particle_update = e.lambda_particle_update;
+		m_elapsed_time = e.m_elapsed_time;
+		if (e.m_max_particles>0)
+			init(e.m_max_particles);
 
 		
 	}
 	
-	Emitter::Emitter(GameObject* go)
+	Emitter::Emitter(GameObject *go) : game_object(go)
 	{
-		game_object = go;
 		ParticleManager::get_instance()->add_emitter(go);
 	}
 

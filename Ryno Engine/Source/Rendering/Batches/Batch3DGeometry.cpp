@@ -7,39 +7,41 @@
 
 namespace Ryno {
 
-	
+	void Batch3DGeometry::init(Camera3D* cam) {
+		set_camera(cam);
+		create_vertex_array();
+		m_mesh_manager = MeshManager::get_instance();
+		indices.resize(0);
+
+	}
+	void Batch3DGeometry::set_camera(Camera3D* camera) {
+		m_camera = camera;
+	}
+
 	void Batch3DGeometry::begin() {
 
 		m_render_batches.clear();
 		free(input_instances);
-		m_game_objects.clear();
+		m_models.clear();
 		shaders.clear();
 		create_vertex_array();
 	
 	}
 	void Batch3DGeometry::end() {
 
-		number_of_models = (I32)m_game_objects.size();
 
-		//Send model attribute to each model
-		for (I32 i = 0; i < number_of_models; i++){
-			auto m = *m_game_objects[i]->model->material;
-			m->set_attribute("in_M", m_game_objects[i]->transform->model_matrix);
-		}
-
-		
 
 		//Sort with provided compare function
-		std::stable_sort(m_game_objects.begin(), m_game_objects.end(), compare_models);
+		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
 
 		//Create batches
 		create_render_batches();
 
 	}
 
-	void Batch3DGeometry::draw(GameObject* go) {
+	void Batch3DGeometry::draw(Model* mod) {
 
-		m_game_objects.push_back(go);
+		m_models.push_back(mod);
 
 	}
 
@@ -49,15 +51,15 @@ namespace Ryno {
 	void Batch3DGeometry::create_render_batches(){
 
 		U32 total_size = 0;
-		for (auto go : m_game_objects){
-			total_size += go->model->material->shader->attributes_struct_size;
+		for (auto mod : m_models){
+			total_size += mod->material->shader->attributes_struct_size;
 		}
 		//Resize the MVP vector at the beginning to avoid reallocations
 		input_instances = malloc(total_size);
 
 		U32 temp_size = 0;
-		for (I32 i = 0; i < number_of_models; i++){
-			auto m = *m_game_objects[i]->model->material;
+		for (auto mod : m_models){
+			auto m = *mod->material;
 			U32 curr_size = m->shader->attributes_struct_size;
 			std::memcpy((void*)((U64)input_instances + temp_size), m->attribute_memory, curr_size);
 			temp_size += curr_size;
@@ -65,48 +67,52 @@ namespace Ryno {
 		}
 		
 		//Return if no mesh
-		if (m_game_objects.empty())
+		if (m_models.empty())
 			return;
 
 		U32 indices_offset = 0;
 		U32 vertex_offset = 0;
 		U32 instance_offset = 0;
 		
-
+		bool first_iter = true;
+		Model* last_mod = nullptr;
 		//For each mesh...
-		for (I32 cg = 0; cg < m_game_objects.size(); cg++){
+		for (auto new_mod : m_models){
 	
-			auto new_model = *m_game_objects[cg]->model;
 			//Checks to see if the new model has different uniforms than the previous one,
 			//thus requiring a new draw call (and a new render abtch)
 
 			bool equals_uniform = true;
 			
-			if (cg == 0 || new_model->material->shader != m_game_objects[cg - 1]->model->material->shader){
+			if (first_iter || new_mod->material->shader != last_mod->material->shader){
 				equals_uniform = false;
-				shaders.push_back(new_model->material->shader);
+				shaders.push_back(new_mod->material->shader);
 			}
-			else if ( new_model->mesh != m_game_objects[cg-1]->model->mesh)
+			else if ( new_mod->mesh != last_mod->mesh)
 				equals_uniform = false;
 			else {
 
-				for (auto cnt : new_model->material->shader->uniforms_data){
-					if (0 != Shader::compare_uniforms(new_model->material->uniform_map[cnt.first], m_game_objects[cg - 1]->model->material->uniform_map[cnt.first])){
+				for (const auto& cnt : new_mod->material->shader->uniforms_data){
+					if (0 != Shader::compare_uniforms(new_mod->material->uniform_map[cnt.first], last_mod->material->uniform_map[cnt.first])){
 						equals_uniform = false;
 						break;
 					}
 				}
 			}
+
+			last_mod = new_mod;
+
 			if (!equals_uniform){
-				if (cg != 0){
-					RenderBatchGeometry* last_batch = &m_render_batches.back();
+				if (!first_iter){
+					RenderBatchStruct* last_batch = &m_render_batches.back();
 					vertex_offset += last_batch->num_vertices;
 					indices_offset += last_batch->num_indices;
 					instance_offset += last_batch->num_instances;
 				}
+				
 
-				Mesh* temp_mesh = m_mesh_manager->get_mesh(new_model->mesh);
-				m_render_batches.emplace_back(vertex_offset, temp_mesh->vertices_number, indices_offset, temp_mesh->indices_number, instance_offset, 1, new_model);
+				Mesh* temp_mesh = m_mesh_manager->get_mesh(new_mod->mesh);
+				m_render_batches.emplace_back(vertex_offset, temp_mesh->vertices_number, indices_offset, temp_mesh->indices_number, instance_offset, 1, new_mod);
 	
 			}
 			else
@@ -115,12 +121,13 @@ namespace Ryno {
 				m_render_batches.back().num_instances ++;
 			}
 
-		
+			first_iter = false;
+
 		}
 		I32 total_vertices = m_render_batches.back().vertex_offset + m_render_batches.back().num_vertices;
 		I32 cv = 0;
 		vertices.resize(total_vertices);
-		for (RenderBatchGeometry rb : m_render_batches){
+		for (const auto& rb : m_render_batches){
 			for (Vertex3D v : m_mesh_manager->get_mesh(rb.model->mesh)->vertices){
 				vertices[cv++] = v;
 			}
@@ -129,11 +136,12 @@ namespace Ryno {
 		I32 total_indices = m_render_batches.back().indices_offset + m_render_batches.back().num_indices;
 		cv = 0;
 		indices.resize(total_indices);
-		for (RenderBatchGeometry rb : m_render_batches){
+		for (const auto& rb : m_render_batches){
 			for (U32 v : m_mesh_manager->get_mesh(rb.model->mesh)->indices){
 				indices[cv++] = v;
 			}
 		}
+
 	}
 
 
@@ -142,7 +150,7 @@ namespace Ryno {
 		//Bind vertex-vbo and specify vertex attributes
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		
-		for (auto cnt : s->vertex_3d_locations){
+		for (const auto& cnt : s->vertex_3d_locations){
 			glVertexAttribPointer(cnt.second.loc, cnt.second.nr, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), cnt.second.offset);
 			glEnableVertexAttribArray(cnt.second.loc);
 		}
@@ -192,9 +200,9 @@ namespace Ryno {
 		Shader* old_shader = nullptr;
 		
 		
-		for (RenderBatchGeometry rb : m_render_batches){
+		for (const auto& rb : m_render_batches){
 
-			Shader* curr_shader = rb.model->material->shader;
+			auto curr_shader = rb.model->material->shader;
 			curr_shader->use();
 
 			U32 old_shader_size = 0;//keep track of the size of the last used shader
@@ -207,14 +215,14 @@ namespace Ryno {
 				enable_attributes(curr_shader);
 				U8 curr_samp = 0;
 				//Send global shader uniforms
-				for (auto cnt : curr_shader->global_uniforms_data){
+				for (const auto& cnt : curr_shader->global_uniforms_data){
 					curr_shader->send_global_uniform_to_shader(cnt.first, cnt.second.value, &curr_samp);
 				}
 			}
 
 			U8 current_sampler = 0;
 			
-			for (auto cnt : rb.model->material->uniform_map)
+			for (const auto& cnt : rb.model->material->uniform_map)
 			{
 				curr_shader->send_material_uniform_to_shader(cnt.first, cnt.second, &current_sampler);
 			}
@@ -231,15 +239,15 @@ namespace Ryno {
 		}
 	}
 
-	const U8 Batch3DGeometry::compare_models(GameObject* a, GameObject* b){
-		const auto ma = *a->model->material;
-		const auto mb = *b->model->material;
+	const U8 Batch3DGeometry::compare_models(Model* a, Model* b){
+		const auto ma = *a->material;
+		const auto mb = *b->material;
 
 		if (ma->shader != mb->shader)
 			return ma->shader < mb->shader;
 
-		if (a->model->mesh != b->model->mesh)
-			return a->model->mesh < b->model->mesh;
+		if (a->mesh != b->mesh)
+			return a->mesh < b->mesh;
 
 		auto ita = ma->uniform_map.begin();
 		auto itb = mb->uniform_map.begin();

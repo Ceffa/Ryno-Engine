@@ -18,9 +18,7 @@ namespace Ryno{
 	};
 
 	struct ColliderMesh{
-		ColliderMesh() : size(0){
-			vertices.clear();
-		}
+		ColliderMesh() : size(0){}
 		std::vector<glm::vec3> vertices;
 		I32 size;
 	};

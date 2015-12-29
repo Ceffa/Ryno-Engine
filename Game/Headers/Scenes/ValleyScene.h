@@ -20,14 +20,13 @@ namespace Ryno{
 		void input() override;
 		void update() override;
 
-		Sound sound;
-		Music music;
-
-		glm::vec3 velocity = glm::vec3(0, 0, 0);
-		glm::vec3 acceleration = glm::vec3(0, 0, 0);
-		
+		New<Sound> sound;
+		New<Music> music;
+		New<Shader> shader;
+		New<Texture> bt, bn;
+		New<I32> terrain_mesh;
 		New<GameObject> go;
-
+		New<Model> mod;
 	
 	};
 }

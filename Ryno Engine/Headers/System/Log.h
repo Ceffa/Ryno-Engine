@@ -3,7 +3,8 @@
 #include "TextureManager.h"
 #include "InputManager.h"
 #include "DeferredRenderer.h"
-#include "IConsole.h"
+#include "GUIObject.h"
+#include "Mallocator.h"
 #include <list>
 
 
@@ -11,16 +12,19 @@
 #define HISTORY_LENGTH 50
 
 namespace Ryno{
-	class Log : public IConsole{
+	class Log{
 		friend class Shell;
 	public:
 		
 		~Log(){}
 		static Log* get_instance();
 		void init();
-		void show() override;
-		void hide() override;
-		void toggle() override;
+		void show();
+		void hide();
+		void toggle();
+		void set_text_color(U8 r, U8 g, U8 b);
+
+		bool active = true;
 		static void print(const std::string& message);
 		static void print(F32 f);
 		static void println(const std::string& message);
@@ -32,8 +36,16 @@ namespace Ryno{
 	
 	private:
 		Log(){}
-		static Log instance;
-		void set(bool b) override;
+		InputManager* input_manager;
+		New<Font> font;
+		New<GUIObject> background;
+
+		New<GUIObject> lines[NUM_LINES];
+		std::list<std::string> history;
+		std::list<std::string>::iterator iterator;
+		U32 history_length;
+		static Log* instance;
+		void set(bool b);
 		void refresh();
 		void read_up();
 		void read_down();

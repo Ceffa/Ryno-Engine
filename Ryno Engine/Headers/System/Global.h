@@ -45,7 +45,7 @@ namespace Ryno{
 		template<typename ...Args>
 		T* copy(const New<T>& old, Args... args){
 			allocator = old.allocator;
-			data = new (allocator->alloc(sizeof(T), __alignof(T))) T(*old,args...);
+			data = new (allocator->alloc(sizeof(T), __alignof(T))) T(**old,args...);
 			if (data)
 				return data;
 			return nullptr;

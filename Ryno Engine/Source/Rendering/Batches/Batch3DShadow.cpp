@@ -15,14 +15,14 @@ namespace Ryno {
 
 		m_render_batches.clear();
 		input_instances.clear();
-		m_game_objects.clear();
+		m_models.clear();
 	
 	}
 	void Batch3DShadow::end() {
 
 	
 		//Sort with provided compare function
-		std::stable_sort(m_game_objects.begin(), m_game_objects.end(), compare_models);
+		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
 
 
 		//Create batches
@@ -33,7 +33,7 @@ namespace Ryno {
 
 		//discard light-emitting models
 		if (go->model->cast_shadows)
-			m_game_objects.push_back(go);
+			m_models.push_back(go);
 
 	}
 
@@ -43,7 +43,7 @@ namespace Ryno {
 	void Batch3DShadow::create_render_batches(){
 
 	
-		I32 models_size = (I32) m_game_objects.size();
+		I32 models_size = (I32) m_models.size();
 
 		//Return if no mesh
 		if (models_size==0)
@@ -56,7 +56,7 @@ namespace Ryno {
 		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
 		
-			input_instances[i].m = m_game_objects[i]->transform->model_matrix;
+			input_instances[i].m = m_models[i]->transform->model_matrix;
 		
 
 		}
@@ -70,13 +70,13 @@ namespace Ryno {
 		
 
 		//For each mesh...
-		for (I32 cg = 0; cg < m_game_objects.size(); cg++){
+		for (I32 cg = 0; cg < m_models.size(); cg++){
 
-			Model* temp_model = *m_game_objects[cg]->model;
+			Model* temp_model = *m_models[cg]->model;
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
-				|| m_game_objects[cg]->model->mesh != m_game_objects[cg - 1]->model->mesh)
+				|| m_models[cg]->model->mesh != m_models[cg - 1]->model->mesh)
 			{
 				if (cg != 0){
 					indices_offset += m_render_batches.back().num_indices;
@@ -139,7 +139,7 @@ namespace Ryno {
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
 		//Tell vbo how to use the data it will receive
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12, 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 
 		//Create instanced vbo

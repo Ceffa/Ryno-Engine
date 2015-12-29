@@ -10,29 +10,36 @@ namespace Ryno{
 		camera->position = glm::vec4(0,200,0, 1);
 		camera->movement_speed = .01f;
 
-		Texture bt = game->texture_manager->load_png("nipple", GAME);
-		Texture bn = game->texture_manager->load_png("nipple_normal", GAME);
+		bt.create(game->stack_allocator, game->texture_manager->load_png("nipple", GAME));
+		bn.create(game->stack_allocator, game->texture_manager->load_png("nipple_normal", GAME));
 
-		I32 terrain_mesh = game->mesh_manager->create_empty_mesh(GAME);
+		terrain_mesh.create(game->stack_allocator, game->mesh_manager->create_empty_mesh(GAME));
 
-		game->mesh_builder->set_mesh(terrain_mesh);
+		game->mesh_builder->set_mesh(**terrain_mesh);
 		NewTerrain(game->mesh_builder, 100, 2,2, 200);
 
 		camera->skybox = game->texture_manager->load_cube_map("day", GAME);
 		
-		////loading audio
-		//sound = game->audio_manager->load_sound("stomp.wav", GAME);
-		//music = game->audio_manager->load_music("journey.ogg", GAME);
-		//sound.set_volume(1.0f);
-		//music.set_volume(1.0f);
-		//music.play();
+		shader.create(game->stack_allocator);
+		shader->create("GeometryPass/geometry", 1, 0, 1);
+		
+
+		mod.create(game->stack_allocator);
+		mod->material.create(game->stack_allocator);
+		mod->material->set_shader(*shader);
+		mod->material->set_attribute("in_Color", ColorRGBA(255, 255, 255, 0));
+		mod->material->set_attribute("in_Tiling", glm::vec2(10, 10));
+		mod->material->set_uniform("texture_sampler", bt->id);
+		mod->material->set_uniform("normal_map_sampler", bn->id);
+		mod->mesh = **terrain_mesh;
+		mod->cast_shadows = false;
 
 		go.create(game->stack_allocator);
-		go->model.create(game->stack_allocator);
-		go->model->set_color_and_flatness(255, 255, 255, 0);
-		go->model->set_tiling(10, 10);
-		go->model->set_texture_normal(bt, bn);
-		go->model->mesh = terrain_mesh;
+
+		go->model.copy(mod);
+		
+		
+		
 		go->transform.create(game->stack_allocator);
 		go->transform->set_scale(1,1,1);
 		go->transform->set_position(0, 55, 50);

@@ -360,9 +360,10 @@ namespace Ryno{
 	{
 		
 		if (Shader::is_sampler(uniforms_data[name].type)){
-			glUniform1i(uniforms_data[name].index, *sampler_index);
-			glActiveTexture(GL_TEXTURE0 + *sampler_index++);
+			glActiveTexture(GL_TEXTURE0 + *sampler_index);
 			glBindTexture(GL_TEXTURE_2D, *(U32*)value);
+			glUniform1i(uniforms_data[name].index, *sampler_index);
+			*sampler_index = *sampler_index + 1;
 			return;
 		}
 

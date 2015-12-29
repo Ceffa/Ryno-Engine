@@ -13,22 +13,10 @@ namespace Ryno{
 	public:
 	
 
-		Model();
+		Model(){}
 		~Model(){}
-		Model(const Model *m);
-		void set_color(U8 r, U8 g, U8 b);
-		void set_alpha(U8 f);
-		void set_color_and_flatness(U8 r, U8 g, U8 b, U8 f);
-		void set_flatness(U8 f);
-			
-		void set_tiling(U32 u, U32 v);
-		void set_texture_normal(Texture t, Texture n);
-
-		Texture texture,normal_map;
-	
+		Model(const Model& copy);
 		I32 mesh;
-		glm::vec2 tiling;
-		ColorRGBA color;  //Alpha is flatness
 		bool cast_shadows = true;
 		New<Material> material;
 		

@@ -17,7 +17,7 @@ namespace Ryno{
 
 	public:
 
-		Particle3D(GameObject* go) : GameObject(go){  }
+		Particle3D(GameObject& go) : GameObject(go){  }
 		Particle3D() : GameObject(){  }
 		~Particle3D(){}
 
@@ -43,7 +43,7 @@ class Emitter{
 		~Emitter();
 
 		Emitter(GameObject* go);
-		Emitter(const Emitter *e, GameObject* go);
+		Emitter(const Emitter& e, GameObject* go);
 		
 		void init(U32 nr_particles);
 		Particle3D* new_particle();

@@ -158,6 +158,9 @@ namespace Ryno{
 	}
 
 	void Game::exit_game(){
+	
+		delete log;
+		delete shell;
 		SDL_Quit();
 		exit(0);
 	}	

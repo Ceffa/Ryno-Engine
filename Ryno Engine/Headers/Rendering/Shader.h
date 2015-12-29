@@ -144,13 +144,13 @@ namespace Ryno{
 
 
 		template <class T>
-		bool set_global_uniform(const std::string& attr, T* value){
+		bool set_global_uniform(const std::string& attr, const T& value){
 			auto res = global_uniforms_data.find(attr);
 			//If the value is present and its not global (starts with "c_")
 			if (res == global_uniforms_data.end()){
 				return false;
 			}
-			global_uniforms_data[attr].value = (void*)value;
+			global_uniforms_data[attr].value = (void*)&value;
 			return true;
 		}
 

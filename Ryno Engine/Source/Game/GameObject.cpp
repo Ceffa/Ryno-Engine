@@ -14,22 +14,22 @@ namespace Ryno{
 	GameObject::GameObject(){
 		game_objects.push_back(this);
 	}
-	GameObject::GameObject(const GameObject* go) 
+	GameObject::GameObject(const GameObject& go) 
 	{
-		active = go->active;
+		active = go.active;
 
-		if (*go->transform)
-			transform.copy(go->transform);
-		if (*go->model)
-			model.copy(go->model);
-		if (*go->point_light)
-			point_light.copy(go->point_light);
-		if (*go->spot_light)
-			spot_light.copy(go->spot_light);
-		if (*go->dir_light)
-			dir_light.copy(go->dir_light);
-		if (*go->emitter)
-			emitter.copy(go->emitter,this);
+		if (*go.transform)
+			transform.copy(go.transform);
+		if (*go.model)
+			model.copy(go.model);
+		if (*go.point_light)
+			point_light.copy(go.point_light);
+		if (*go.spot_light)
+			spot_light.copy(go.spot_light);
+		if (*go.dir_light)
+			dir_light.copy(go.dir_light);
+		if (*go.emitter)
+			emitter.copy(go.emitter,this);
 		
 		game_objects.push_back(this);
 

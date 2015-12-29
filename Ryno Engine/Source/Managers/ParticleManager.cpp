@@ -9,7 +9,7 @@ namespace Ryno{
 
 	void ParticleManager::update(F32 delta)
 	{
-		for (GameObject* go : emitters){
+		for (const auto go : emitters){
 			go->emitter->update(delta);
 		}
 	}

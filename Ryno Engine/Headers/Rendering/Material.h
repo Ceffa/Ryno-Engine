@@ -16,7 +16,7 @@ namespace Ryno{
 
 		bool set_shader(Shader * _shader);
 		template <class T>
-		bool set_attribute(const std::string& attr, T val){
+		bool set_attribute(const std::string& attr, const T& val){
 			auto res = shader->attributes_map.find(attr);
 			if (res == shader->attributes_map.end()){
 				std::cout << "Attribute " << attr << " not found in shader" << '\n';
@@ -25,18 +25,20 @@ namespace Ryno{
 			*(T*)((U64)attribute_memory + res->second.offset) = val;
 		}
 		template <class T>
-		bool set_uniform(const std::string& attr, T* val){
+		bool set_uniform(const std::string& attr, const T& val){
 			auto res = uniform_map.find(attr);
 			if (res == uniform_map.end()){
 				return false;
 			}
 
-			uniform_map[attr] = (void*)val;
+			uniform_map[attr] = (void*)&val;
 			return true;
 		}
 
 
 		~Material(){ free(attribute_memory); }
+		Material(const Material& copy);
+		Material(){}
 		void* attribute_memory = nullptr;
 		std::map<std::string, void*> uniform_map;
 		Shader* shader;
