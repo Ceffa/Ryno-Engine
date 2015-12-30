@@ -1,60 +1,126 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="Source">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
+    <Filter Include="Source\Scenes">
+      <UniqueIdentifier>{43853a61-452d-4bf7-87a3-cdf96185b525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="Header\Scenes">
+      <UniqueIdentifier>{5487e009-a553-4c73-b497-7cba20c0afc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Preferences">
+      <UniqueIdentifier>{99da4cfd-facf-4d00-846d-bd4c4663ab43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Scenes">
-      <UniqueIdentifier>{5487e009-a553-4c73-b497-7cba20c0afc2}</UniqueIdentifier>
+    <Filter Include="Resources\Fonts">
+      <UniqueIdentifier>{48d49ea0-f738-45eb-899f-dc6304464ce4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Scenes">
-      <UniqueIdentifier>{43853a61-452d-4bf7-87a3-cdf96185b525}</UniqueIdentifier>
+    <Filter Include="Resources\Models">
+      <UniqueIdentifier>{d1ca8bb6-151b-401e-a439-3a1a4dbae3ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Preferences">
-      <UniqueIdentifier>{99da4cfd-facf-4d00-846d-bd4c4663ab43}</UniqueIdentifier>
+    <Filter Include="Resources\Music">
+      <UniqueIdentifier>{58858f2e-9a69-4cb3-b1c9-1674c37672c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{9ee7dfbe-b220-47c2-9813-3e155430ba77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Geometry">
+      <UniqueIdentifier>{7fd33f44-4d38-4650-b38a-aa8942136895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Sounds">
+      <UniqueIdentifier>{392dbd2f-94ca-4a00-832a-6287b867f18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{963b2b1c-f3f5-4ba4-a046-5631e9132b93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures\2D">
+      <UniqueIdentifier>{b8cd38f7-dd42-48d5-9d2a-a58439f18f06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures\2D\pack">
+      <UniqueIdentifier>{bccaa015-66ea-442f-90b3-049c12564414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures\3D">
+      <UniqueIdentifier>{a2a72fcf-69a5-46cc-9ae7-3214d09d526a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Terrain.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scenes\ValleyScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
+      <Filter>Source\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scenes\FireworkScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
+      <Filter>Source\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scenes\HouseScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
+      <Filter>Source\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Terrain.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Scenes\ValleyScene.h">
-      <Filter>Header Files\Scenes</Filter>
+      <Filter>Header\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Preferences\ScenesList.h">
-      <Filter>Header Files\Preferences</Filter>
+      <Filter>Header\Preferences</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Scenes\FireworkScene.h">
-      <Filter>Header Files\Scenes</Filter>
+      <Filter>Header\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Scenes\HouseScene.h">
-      <Filter>Header Files\Scenes</Filter>
+      <Filter>Header\Scenes</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resources\Fonts\Aaargh.ttf">
+      <Filter>Resources\Fonts</Filter>
+    </Font>
+    <Font Include="Resources\Fonts\Roboto-Thin.ttf">
+      <Filter>Resources\Fonts</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Music\journey.ogg">
+      <Filter>Resources\Music</Filter>
+    </None>
+    <None Include="Resources\Music\cthulhu.ogg">
+      <Filter>Resources\Music</Filter>
+    </None>
+    <None Include="Resources\Shaders\Geometry\geometry.frag">
+      <Filter>Resources\Shaders\Geometry</Filter>
+    </None>
+    <None Include="Resources\Shaders\Geometry\geometry.vert">
+      <Filter>Resources\Shaders\Geometry</Filter>
+    </None>
+    <None Include="Resources\Shaders\Geometry\geometry2.frag">
+      <Filter>Resources\Shaders\Geometry</Filter>
+    </None>
+    <None Include="Resources\Shaders\Geometry\geometry2.vert">
+      <Filter>Resources\Shaders\Geometry</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\Sounds\hum.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="Resources\Sounds\stomp.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
   </ItemGroup>
 </Project>

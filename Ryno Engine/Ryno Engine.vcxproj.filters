@@ -129,12 +129,6 @@
     <None Include="Resources\Music\cthulhu.ogg">
       <Filter>Resource Files\Music</Filter>
     </None>
-    <None Include="Resources\Shaders\GeometryPass\geometry.frag">
-      <Filter>Resource Files\Shaders\GeometryPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\GeometryPass\geometry.vert">
-      <Filter>Resource Files\Shaders\GeometryPass</Filter>
-    </None>
     <None Include="Resources\Shaders\LightPass\directional.frag">
       <Filter>Resource Files\Shaders\LightPass</Filter>
     </None>
@@ -198,8 +192,6 @@
     <None Include="Resources\Shaders\GUIPass\sprite.vert">
       <Filter>Resource Files\Shaders\GUIPass</Filter>
     </None>
-    <None Include="Resources\Shaders\GeometryPass\geometry2.frag" />
-    <None Include="Resources\Shaders\GeometryPass\geometry2.vert" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">

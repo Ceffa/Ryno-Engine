@@ -18,7 +18,7 @@ namespace Ryno{
 
 		//shader
 		shader.create(game->stack_allocator);
-		shader->create("GeometryPass/geometry", 1, 0, 1);
+		shader->create("Geometry/geometry",GAME);
 		//loading graphics
 	
 		 bt.create(game->stack_allocator,game->texture_manager->load_png("pack/161", GAME));
@@ -54,12 +54,11 @@ namespace Ryno{
 		//Center big Cone
 		cones[0].create(game->stack_allocator);
 		cones[0]->model.create(game->stack_allocator);
-		cones[0]->model->material.create(game->stack_allocator);
-		cones[0]->model->material->set_shader(*shader);
-		cones[0]->model->material->set_attribute("in_Color", ColorRGBA(255, 255, 255, 0));
-		cones[0]->model->material->set_attribute("in_Tiling", glm::vec2(1,1));
-		cones[0]->model->material->set_uniform("texture_sampler", white->id);
-		cones[0]->model->material->set_uniform("normal_map_sampler", white_normal->id);
+		cones[0]->model->material.set_shader(*shader);
+		cones[0]->model->material.set_attribute("in_Color", ColorRGBA(255, 255, 255, 0));
+		cones[0]->model->material.set_attribute("in_Tiling", glm::vec2(1,1));
+		cones[0]->model->material.set_uniform("texture_sampler", white->id);
+		cones[0]->model->material.set_uniform("normal_map_sampler", white_normal->id);
 		cones[0]->model->mesh = **cone_mesh;
 		cones[0]->transform.create(game->stack_allocator);
 		cones[0]->transform->set_scale(100, 100, 100);
@@ -77,11 +76,11 @@ namespace Ryno{
 		//Base
 		walls[0].copy(cones[2]);
 		walls[0]->transform->set_scale(1, 1, 1);
-		walls[0]->model->material->set_uniform("texture_sampler", bt->id);
-		walls[0]->model->material->set_uniform("normal_map_sampler", bn->id);
+		walls[0]->model->material.set_uniform("texture_sampler", bt->id);
+		walls[0]->model->material.set_uniform("normal_map_sampler", bn->id);
 
 		walls[0]->model->mesh = **terrain_mesh;
-		walls[0]->model->material->set_attribute("in_Tiling", glm::vec2(3,3));
+		walls[0]->model->material.set_attribute("in_Tiling", glm::vec2(3,3));
 
 		walls[0]->transform->set_position(5, -15, -5);
 
@@ -125,9 +124,9 @@ namespace Ryno{
 		//Point lights
 		//Point light 1
 		spheres[0].copy(walls[3]);
-		spheres[0]->model->material->set_attribute("in_Color", ColorRGBA::white);
-		spheres[0]->model->material->set_uniform("texture_sampler", white->id);
-		spheres[0]->model->material->set_uniform("normal_map_sampler", white_normal->id);
+		spheres[0]->model->material.set_attribute("in_Color", ColorRGBA::white);
+		spheres[0]->model->material.set_uniform("texture_sampler", white->id);
+		spheres[0]->model->material.set_uniform("normal_map_sampler", white_normal->id);
 		spheres[0]->model->cast_shadows = false;
 
 		spheres[0]->transform->set_scale(12, 12, 12);
@@ -215,13 +214,12 @@ namespace Ryno{
 			p->decay_rate = .001f;
 			p->speed = .05f;
 			p->model.create(StackAllocator::get_instance());
-			p->model->material.create(StackAllocator::get_instance());
-			p->model->material->set_shader(shad);
-			p->model->material->set_uniform("texture_sampler", white->id);
-			p->model->material->set_uniform("normal_map_sampler", normal->id);
+			p->model->material.set_shader(shad);
+			p->model->material.set_uniform("texture_sampler", white->id);
+			p->model->material.set_uniform("normal_map_sampler", normal->id);
 
 			p->model->mesh = *mesh;
-			p->model->material->set_attribute("in_Color", ColorRGBA::yellow);
+			p->model->material.set_attribute("in_Color", ColorRGBA::yellow);
 			//p->set_emitter(new Emitter(emitter));
 		};
 		emitter->lambda_spawn = [](Emitter* e){
@@ -243,7 +241,7 @@ namespace Ryno{
 			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(.1), glm::vec3(5), p->lifetime));
 
-			p->model->material->set_attribute("in_Color",ColorRGBA(255, ryno_math::lerp(0, 255, p->lifetime), 0,255));
+			p->model->material.set_attribute("in_Color",ColorRGBA(255, ryno_math::lerp(0, 255, p->lifetime), 0,255));
 			//}
 
 			/*if (p->lifetime > .75f && p->lifetime < .82f){

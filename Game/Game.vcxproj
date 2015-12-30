@@ -141,6 +141,22 @@
     <ClInclude Include="Headers\Scenes\HouseScene.h" />
     <ClInclude Include="Headers\Terrain.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resources\Fonts\Aaargh.ttf" />
+    <Font Include="Resources\Fonts\Roboto-Thin.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Music\cthulhu.ogg" />
+    <None Include="Resources\Music\journey.ogg" />
+    <None Include="Resources\Shaders\Geometry\geometry.frag" />
+    <None Include="Resources\Shaders\Geometry\geometry.vert" />
+    <None Include="Resources\Shaders\Geometry\geometry2.frag" />
+    <None Include="Resources\Shaders\Geometry\geometry2.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\Sounds\hum.wav" />
+    <Media Include="Resources\Sounds\stomp.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

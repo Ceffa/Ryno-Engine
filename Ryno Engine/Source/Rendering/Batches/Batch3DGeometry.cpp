@@ -52,16 +52,16 @@ namespace Ryno {
 
 		U32 total_size = 0;
 		for (auto mod : m_models){
-			total_size += mod->material->shader->attributes_struct_size;
+			total_size += mod->material.shader->attributes_struct_size;
 		}
 		//Resize the MVP vector at the beginning to avoid reallocations
 		input_instances = malloc(total_size);
 
 		U32 temp_size = 0;
 		for (auto mod : m_models){
-			auto m = *mod->material;
-			U32 curr_size = m->shader->attributes_struct_size;
-			std::memcpy((void*)((U64)input_instances + temp_size), m->attribute_memory, curr_size);
+			const auto& m = mod->material;
+			U32 curr_size = m.shader->attributes_struct_size;
+			std::memcpy((void*)((U64)input_instances + temp_size), m.attribute_memory, curr_size);
 			temp_size += curr_size;
 
 		}
@@ -84,16 +84,16 @@ namespace Ryno {
 
 			bool equals_uniform = true;
 			
-			if (first_iter || new_mod->material->shader != last_mod->material->shader){
+			if (first_iter || new_mod->material.shader != last_mod->material.shader){
 				equals_uniform = false;
-				shaders.push_back(new_mod->material->shader);
+				shaders.push_back(new_mod->material.shader);
 			}
 			else if ( new_mod->mesh != last_mod->mesh)
 				equals_uniform = false;
 			else {
 
-				for (const auto& cnt : new_mod->material->shader->uniforms_data){
-					if (0 != Shader::compare_uniforms(new_mod->material->uniform_map[cnt.first], last_mod->material->uniform_map[cnt.first])){
+				for (const auto& cnt : new_mod->material.shader->uniforms_data){
+					if (0 != Shader::compare_uniforms(new_mod->material.uniform_map[cnt.first], last_mod->material.uniform_map[cnt.first])){
 						equals_uniform = false;
 						break;
 					}
@@ -202,7 +202,7 @@ namespace Ryno {
 		
 		for (const auto& rb : m_render_batches){
 
-			auto curr_shader = rb.model->material->shader;
+			auto curr_shader = rb.model->material.shader;
 			curr_shader->use();
 
 			U32 old_shader_size = 0;//keep track of the size of the last used shader
@@ -222,7 +222,7 @@ namespace Ryno {
 
 			U8 current_sampler = 0;
 			
-			for (const auto& cnt : rb.model->material->uniform_map)
+			for (const auto& cnt : rb.model->material.uniform_map)
 			{
 				curr_shader->send_material_uniform_to_shader(cnt.first, cnt.second, &current_sampler);
 			}
@@ -240,19 +240,19 @@ namespace Ryno {
 	}
 
 	const U8 Batch3DGeometry::compare_models(Model* a, Model* b){
-		const auto ma = *a->material;
-		const auto mb = *b->material;
+		const auto& ma = a->material;
+		const auto& mb = b->material;
 
-		if (ma->shader != mb->shader)
-			return ma->shader < mb->shader;
+		if (ma.shader != mb.shader)
+			return ma.shader < mb.shader;
 
 		if (a->mesh != b->mesh)
 			return a->mesh < b->mesh;
 
-		auto ita = ma->uniform_map.begin();
-		auto itb = mb->uniform_map.begin();
+		auto ita = ma.uniform_map.begin();
+		auto itb = mb.uniform_map.begin();
 
-		while (ita != ma->uniform_map.end()){
+		while (ita != ma.uniform_map.end()){
 			if (ita->second == itb->second){
 				ita++; itb++;
 				continue;

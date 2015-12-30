@@ -8,8 +8,13 @@
 #include <string>
 
 
-
 namespace Ryno{
+
+	bool file_exists(const std::string& fileName)
+	{
+		std::ifstream infile(fileName);
+		return infile.good();
+	}
 
 	//Holds info about the vertex 3D data
 	std::map<std::string, static_vertex_attr> Shader::vertex_3d_map{
@@ -29,12 +34,10 @@ namespace Ryno{
 		return false;
 	}
 
-	void Shader::create(const std::string& name, bool vert, bool geom, bool frag){
-		is_shader_present[VERT] = vert;
-		is_shader_present[GEOM] = geom;
-		is_shader_present[FRAG] = frag;
+	void Shader::create(const std::string& name, Owner location){
+	
 		init();
-		load_shaders(name,ENGINE);
+		load_shaders(name,location);
 		compile_shaders();
 		link_shaders();
 		get_attributes();
@@ -65,6 +68,8 @@ namespace Ryno{
 
 	
 
+	
+
 	void Shader::load_shaders(const std::string& name, Owner loc){
 		shader_name = name;
 		static std::string extensions[3]{".vert", ".geom", ".frag"};
@@ -72,8 +77,10 @@ namespace Ryno{
 
 
 		for (U8 i = VERT; i < VERT + 3; i++){
+			std::string path_and_name = BASE_PATHS[loc] + middle_path + name + extensions[i - VERT];
+			is_shader_present[i] = file_exists(path_and_name);
 			if (is_shader_present[i])
-				load_shader((ShadersIndex)i , BASE_PATHS[loc] + middle_path + name + extensions[i-VERT]);
+				load_shader((ShadersIndex)i , path_and_name );
 		}
 		
 	}

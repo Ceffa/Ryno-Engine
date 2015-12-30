@@ -61,8 +61,10 @@ namespace Ryno{
 		separate these steps.
 		@Param name of the shader
 		*/
-		void create(const std::string& name, bool geom, bool vert, bool frag);
+		void create(const std::string& name, Owner location);
 
+
+		
 
 		/**
 		Initialize the GLSLProgram

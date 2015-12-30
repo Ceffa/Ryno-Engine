@@ -21,16 +21,15 @@ namespace Ryno{
 		camera->skybox = game->texture_manager->load_cube_map("day", GAME);
 		
 		shader.create(game->stack_allocator);
-		shader->create("GeometryPass/geometry", 1, 0, 1);
+		shader->create("Geometry/geometry",GAME);
 		
 
 		mod.create(game->stack_allocator);
-		mod->material.create(game->stack_allocator);
-		mod->material->set_shader(*shader);
-		mod->material->set_attribute("in_Color", ColorRGBA(255, 255, 255, 0));
-		mod->material->set_attribute("in_Tiling", glm::vec2(10, 10));
-		mod->material->set_uniform("texture_sampler", bt->id);
-		mod->material->set_uniform("normal_map_sampler", bn->id);
+		mod->material.set_shader(*shader);
+		mod->material.set_attribute("in_Color", ColorRGBA(255, 255, 255, 0));
+		mod->material.set_attribute("in_Tiling", glm::vec2(10, 10));
+		mod->material.set_uniform("texture_sampler", bt->id);
+		mod->material.set_uniform("normal_map_sampler", bn->id);
 		mod->mesh = **terrain_mesh;
 		mod->cast_shadows = false;
 

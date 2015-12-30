@@ -32,7 +32,7 @@ void main(){
 
 	gl_Position = MVP * vec4(in_Position, 1);
 	middle_uv = in_Uv * in_Tiling;
-	middle_color = split_Color + split_Color2 + vec4(1,1,1,1) * (1.0+sin(g_Time/100.0))/2.0f;
+	middle_color = mix(split_Color, split_Color2, (1.0+sin(g_Time/100.0))/2.0);
 
 	vec3 normal = normalize((MV * vec4(in_Normal, 0)).xyz);
 	vec3 tangent = normalize((MV * vec4(in_Tangent, 0)).xyz);

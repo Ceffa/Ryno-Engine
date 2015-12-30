@@ -18,7 +18,7 @@ namespace Ryno{
 		Model(const Model& copy);
 		I32 mesh;
 		bool cast_shadows = true;
-		New<Material> material;
+		Material material;
 		
 	};
 }

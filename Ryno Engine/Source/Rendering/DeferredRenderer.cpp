@@ -69,11 +69,11 @@ namespace Ryno{
 
 		//Point shadow program
 		m_point_shadow_program = new Shader();
-		m_point_shadow_program->create("ShadowPass/point", 1, 1, 1);
+		m_point_shadow_program->create("ShadowPass/point", ENGINE);
 	
 		//Point light program
 		m_point_lighting_program = new Shader();
-		m_point_lighting_program->create("LightPass/point", 1, 0, 1);
+		m_point_lighting_program->create("LightPass/point", ENGINE);
 		m_point_lighting_program->use();
 		glUniform1i(m_point_lighting_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_point_lighting_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
@@ -88,11 +88,11 @@ namespace Ryno{
 
 		//Spot shadow program
 		m_spot_shadow_program = new Shader();
-		m_spot_shadow_program->create("ShadowPass/spot", 1, 0, 1);
+		m_spot_shadow_program->create("ShadowPass/spot", ENGINE);
 
 		//Spot lighting program
 		m_spot_lighting_program = new Shader();
-		m_spot_lighting_program->create("LightPass/spot", 1, 0, 1);
+		m_spot_lighting_program->create("LightPass/spot", ENGINE);
 		m_spot_lighting_program->use();
 		glUniform1i(m_spot_lighting_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_spot_lighting_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
@@ -108,11 +108,11 @@ namespace Ryno{
 
 		//Directional shadow program
 		m_directional_shadow_program = new Shader();
-		m_directional_shadow_program->create("ShadowPass/directional", 1, 0, 1);
+		m_directional_shadow_program->create("ShadowPass/directional", ENGINE);
 	
 		//Directional light program
 		m_directional_lighting_program = new Shader();
-		m_directional_lighting_program->create("LightPass/directional", 1, 0, 1);
+		m_directional_lighting_program->create("LightPass/directional", ENGINE);
 		m_directional_lighting_program->use();
 		glUniform1i(m_directional_lighting_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_directional_lighting_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
@@ -129,11 +129,11 @@ namespace Ryno{
 
 		//Skybox program 
 		m_skybox_program = new Shader();
-		m_skybox_program->create("SkyboxPass/skybox",1,0,1);
+		m_skybox_program->create("SkyboxPass/skybox",ENGINE);
 		
 		//Blit program
 		m_blit_program = new Shader();
-		m_blit_program->create("Others/blit",1,0,1);
+		m_blit_program->create("Others/blit", ENGINE);
 		m_blit_program->use();
 		glUniform1i(m_blit_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
 		glUniform1i(m_blit_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
@@ -142,14 +142,14 @@ namespace Ryno{
 
 		//Sprite program
 		m_sprite_program = new Shader();
-		m_sprite_program->create("GUIPass/sprite", 1, 0, 1);
+		m_sprite_program->create("GUIPass/sprite", ENGINE);
 		m_sprite_program->use();
 		glUniform1i(m_sprite_program->getUniformLocation("m_texture"), 0);
 		m_sprite_program->unuse();
 
 		//Font program
 		m_font_program = new Shader();
-		m_font_program->create("GUIPass/font", 1, 0, 1);
+		m_font_program->create("GUIPass/font", ENGINE);
 		m_font_program->use();
 		glUniform1i(m_font_program->getUniformLocation("m_texture"), 0);
 		m_font_program->unuse();
@@ -207,7 +207,7 @@ namespace Ryno{
 			if (geometry_enabled){
 				if (go->active && *go->model){
 					m_geometry_batch3d->draw(*go->model);
-					go->model->material->set_attribute("in_M", go->transform->model_matrix);
+					go->model->material.set_attribute("in_M", go->transform->model_matrix);
 				}
 			}
 			//Fill shadow batch
