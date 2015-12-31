@@ -7,14 +7,21 @@
 
 namespace Ryno {
 
-	
+	void Batch3DShadow::init(Camera3D* camera) {
+		set_camera(camera);
+		create_vertex_array();
+		m_mesh_manager = MeshManager::get_instance();
+		indices.resize(0);
 
-
+	}
+	void Batch3DShadow::set_camera(Camera3D* camera) {
+		m_camera = camera;
+	}
 
 	void Batch3DShadow::begin() {
 
 		m_render_batches.clear();
-		input_instances.clear();
+		models_matrices.clear();
 		m_models.clear();
 	
 	}
@@ -32,8 +39,9 @@ namespace Ryno {
 	void Batch3DShadow::draw(GameObject* go) {
 
 		//discard light-emitting models
-		if (go->model->cast_shadows)
+		if (go->model->cast_shadows){
 			m_models.push_back(go);
+		}
 
 	}
 
@@ -50,19 +58,16 @@ namespace Ryno {
 			return;
 
 		//Resize the MVP vector at the beginning to avoid reallocations
-		input_instances.resize(models_size);
+		models_matrices.resize(models_size);
 
 		//Adds MVP to the final instance array.
 		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
-		
-			input_instances[i].m = m_models[i]->transform->model_matrix;
-		
+
+			models_matrices[i] = m_models[i]->transform->model_matrix;
+
 
 		}
-		
-
-		
 
 		U32 indices_offset = 0;
 		U32 vertex_offset = 0;
@@ -72,23 +77,23 @@ namespace Ryno {
 		//For each mesh...
 		for (I32 cg = 0; cg < m_models.size(); cg++){
 
-			Model* temp_model = *m_models[cg]->model;
+			auto new_model = *m_models[cg]->model;
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
-				|| m_models[cg]->model->mesh != m_models[cg - 1]->model->mesh)
+				|| new_model->mesh != m_models[cg - 1]->model->mesh)
 			{
 				if (cg != 0){
 					indices_offset += m_render_batches.back().num_indices;
 					vertex_offset += m_render_batches.back().num_vertices;
 					instance_offset += m_render_batches.back().num_instances;
 				}
-				Mesh* temp_mesh = m_mesh_manager->get_mesh(temp_model->mesh);
+				Mesh* temp_mesh = m_mesh_manager->get_mesh(new_model->mesh);
 				I32 num_indices = temp_mesh->indices_number;
 				I32 num_vertices = temp_mesh->vertices_number;
 
 
-				m_render_batches.emplace_back(vertex_offset, num_vertices, indices_offset, num_indices, instance_offset, 1, temp_model);
+				m_render_batches.emplace_back(vertex_offset, num_vertices, indices_offset, num_indices, instance_offset, 1, new_model);
 
 				
 			}
@@ -150,11 +155,11 @@ namespace Ryno {
 		
 		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		
-		
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceShadow),(void*)offsetof(InputInstanceShadow, m));
-		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceShadow), (void*)(offsetof(InputInstanceShadow, m) + 16));
-		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceShadow), (void*)(offsetof(InputInstanceShadow, m) + 32));
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(InputInstanceShadow), (void*)(offsetof(InputInstanceShadow, m) + 48));
+		auto size = sizeof(glm::mat4);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, size, 0);
+		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, size,(void*) (size/4));
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, size, (void*)(2 * size/4));
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, size, (void*)(3 * size/4));
 		
 
 		glVertexAttribDivisor(1, 1);
@@ -178,7 +183,7 @@ namespace Ryno {
 
 	
 
-	void Batch3DShadow::enable_attributes(Shader *s){
+	void Batch3DShadow::enable_attributes(){
 
 	
 
@@ -201,7 +206,7 @@ namespace Ryno {
 
 	void Batch3DShadow::render_batch() {
 		
-		enable_attributes(nullptr);
+		enable_attributes();
 
 		//i can bind the vbo, orphan it, pass the new data, and unbind it.
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -214,25 +219,23 @@ namespace Ryno {
 			
 			
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(InputInstanceShadow), nullptr, GL_STATIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(InputInstanceShadow), &input_instances[rb.instance_offset]);
+			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(glm::mat4), &models_matrices[rb.instance_offset]);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			
 			U32 offset = rb.indices_offset * sizeof(U32);
 
 			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_INT, (void*)offset, rb.num_instances, rb.vertex_offset);
 
-			//glDrawArraysInstanced(GL_TRIANGLES,rb.vertex_offset ,rb.num_vertices,rb.num_instances);
 		}
 
-		
 
 	}
 
 	U8 Batch3DShadow::compare_models(GameObject* a, GameObject* b){
 	
 		return a->model->mesh < b->model->mesh;
-		
+
 	}
 
 

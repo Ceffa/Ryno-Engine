@@ -287,7 +287,6 @@ namespace Ryno{
 		}
 	}	
 
-
 	void DeferredRenderer::point_shadow_subpass(GameObject* go)
 	{
 		
@@ -330,7 +329,6 @@ namespace Ryno{
 			//Multiply view by a perspective matrix large as the light radius
 			light_VP_matrices[i] = point_shadow_projection_matrix * view_matrix;
 		}
-
 
 		//Send Vp matrix and world light position to shader, then render
 		m_point_shadow_program->use();

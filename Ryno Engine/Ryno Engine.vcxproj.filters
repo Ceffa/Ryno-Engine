@@ -147,22 +147,13 @@
     <None Include="Resources\Shaders\LightPass\spot.vert">
       <Filter>Resource Files\Shaders\LightPass</Filter>
     </None>
-    <None Include="Resources\Shaders\ShadowPass\directional.frag">
-      <Filter>Resource Files\Shaders\ShadowPass</Filter>
-    </None>
     <None Include="Resources\Shaders\ShadowPass\directional.vert">
-      <Filter>Resource Files\Shaders\ShadowPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\ShadowPass\point.frag">
       <Filter>Resource Files\Shaders\ShadowPass</Filter>
     </None>
     <None Include="Resources\Shaders\ShadowPass\point.geom">
       <Filter>Resource Files\Shaders\ShadowPass</Filter>
     </None>
     <None Include="Resources\Shaders\ShadowPass\point.vert">
-      <Filter>Resource Files\Shaders\ShadowPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\ShadowPass\spot.frag">
       <Filter>Resource Files\Shaders\ShadowPass</Filter>
     </None>
     <None Include="Resources\Shaders\ShadowPass\spot.vert">
@@ -621,9 +612,6 @@
     <ClCompile Include="Source\Rendering\Batches\Batch2DSprite.cpp">
       <Filter>Source Files\Rendering\Batches</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Rendering\Batches\Batch3DAbstract.cpp">
-      <Filter>Source Files\Rendering\Batches</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Rendering\Batches\Batch3DGeometry.cpp">
       <Filter>Source Files\Rendering\Batches</Filter>
     </ClCompile>
@@ -804,9 +792,6 @@
       <Filter>Header Files\Rendering\Batches</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Rendering\Batches\Batch2DSprite.h">
-      <Filter>Header Files\Rendering\Batches</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Rendering\Batches\Batch3DAbstract.h">
       <Filter>Header Files\Rendering\Batches</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Rendering\Batches\Batch3DGeometry.h">

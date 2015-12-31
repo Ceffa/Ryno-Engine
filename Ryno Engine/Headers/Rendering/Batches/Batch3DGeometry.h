@@ -42,7 +42,11 @@ namespace Ryno{
 		
 		void draw(Model* go);
 
+		//Render batches with material-defined shaders
 		void render_batch();
+		//Render batches with external shader
+		void render_batch(Shader* shad);
+
 		std::list<Shader*> shaders;
 		std::vector<Model*> m_models;
 

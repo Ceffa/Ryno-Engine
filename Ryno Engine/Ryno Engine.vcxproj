@@ -32,12 +32,9 @@
     <None Include="Resources\Shaders\LightPass\spot.vert" />
     <None Include="Resources\Shaders\Others\blit.frag" />
     <None Include="Resources\Shaders\Others\blit.vert" />
-    <None Include="Resources\Shaders\ShadowPass\directional.frag" />
     <None Include="Resources\Shaders\ShadowPass\directional.vert" />
-    <None Include="Resources\Shaders\ShadowPass\point.frag" />
     <None Include="Resources\Shaders\ShadowPass\point.geom" />
     <None Include="Resources\Shaders\ShadowPass\point.vert" />
-    <None Include="Resources\Shaders\ShadowPass\spot.frag" />
     <None Include="Resources\Shaders\ShadowPass\spot.vert" />
     <None Include="Resources\Shaders\SkyboxPass\skybox.frag" />
     <None Include="Resources\Shaders\SkyboxPass\skybox.vert" />
@@ -206,7 +203,6 @@
     <ClCompile Include="Source\Physics\SphereCollider.cpp" />
     <ClCompile Include="Source\Rendering\Batches\Batch2DFont.cpp" />
     <ClCompile Include="Source\Rendering\Batches\Batch2DSprite.cpp" />
-    <ClCompile Include="Source\Rendering\Batches\Batch3DAbstract.cpp" />
     <ClCompile Include="Source\Rendering\Batches\Batch3DGeometry.cpp" />
     <ClCompile Include="Source\Rendering\Batches\Batch3DShadow.cpp" />
     <ClCompile Include="Source\Rendering\DeferredRenderer.cpp" />
@@ -264,7 +260,6 @@
     <ClInclude Include="Headers\Physics\SphereCollider.h" />
     <ClInclude Include="Headers\Rendering\Batches\Batch2DFont.h" />
     <ClInclude Include="Headers\Rendering\Batches\Batch2DSprite.h" />
-    <ClInclude Include="Headers\Rendering\Batches\Batch3DAbstract.h" />
     <ClInclude Include="Headers\Rendering\Batches\Batch3DGeometry.h" />
     <ClInclude Include="Headers\Rendering\Batches\Batch3DShadow.h" />
     <ClInclude Include="Headers\Rendering\DeferredRenderer.h" />

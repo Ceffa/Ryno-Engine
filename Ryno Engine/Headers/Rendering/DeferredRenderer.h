@@ -16,6 +16,7 @@
 #include "Batches/Batch3DShadow.h"
 #include "Batches/Batch2DSprite.h"
 #include "Batches/Batch2DFont.h"
+#include "GameObject.h"
 
 #define NUM_OF_LAYERS 6
 namespace Ryno{

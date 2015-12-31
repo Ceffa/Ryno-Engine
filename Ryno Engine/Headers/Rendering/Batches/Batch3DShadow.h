@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Batch3DAbstract.h"
 #include "Global.h"
 #include "Structures.h"
 #include "Model.h"
 #include "Camera3D.h"
 #include "MeshManager.h"
+#include "GameObject.h"
 #include "Shader.h"
 #include <GLM/glm.hpp>
 #include <GL/glew.h>
@@ -13,40 +13,56 @@
 
 namespace Ryno{
 
-	//These two struct are identical to the superclass ones
-	struct InputInstanceShadow : public InputInstance{
-	};
 
-	class RenderBatchShadow : public RenderBatch{
+	class RenderBatchShadow{
 	public:
-		RenderBatchShadow(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, Model* mod) : RenderBatch(v_o, n_v, idx_o, n_idx, i_o, n_i), model(mod){}
+		RenderBatchShadow(U32 v_o, U32 n_v, U32 idx_o, U32 n_idx, U32 i_o, U32 n_i, Model* mod) : vertex_offset(v_o), num_vertices(n_v), indices_offset(idx_o), num_indices(n_idx), instance_offset(i_o), num_instances(n_i), model(mod){}
+		U32 vertex_offset;
+		U32 num_vertices;
+		U32 indices_offset;
+		U32 num_indices;
+		U32 instance_offset;
+		U32 num_instances;
 		Model* model;
 	};
 
 
-	class Batch3DShadow : public Batch3DAbstract{
+	class Batch3DShadow{
 	public:
 		
-		void begin() override;
-		void end() override;
+		void begin();
+		void end();
 		
-		void draw(GameObject* go) override;
+		void init(Camera3D* camera);
+		void set_camera(Camera3D* camera);
 
-		void render_batch() override;
+		void draw(GameObject* go);
 
+		void render_batch();
 
-	protected:
+		std::vector<GameObject*> m_models;
+
+	private:
 		
 		
 		std::vector<glm::vec3> vertices_positions; //just position instead of whole vertex
-		std::vector<InputInstanceShadow> input_instances;
+		std::vector<glm::mat4> models_matrices;
 		std::vector<RenderBatchShadow> m_render_batches;
 		
 		static U8 compare_models(GameObject* a, GameObject* b);
+		
+		std::vector<U32> indices;
 
-		void create_render_batches() override;
-		void create_vertex_array() override;
-		void enable_attributes(Shader* s) override;
+		void create_render_batches();
+		void create_vertex_array();
+		void enable_attributes();
+		U32 m_vbo;
+		U32 m_i_vbo;//instancing vbo
+		U32 m_index_vbo;
+		U32 m_vao;
+
+		Camera3D* m_camera;
+		MeshManager* m_mesh_manager;
 
 	};
 
