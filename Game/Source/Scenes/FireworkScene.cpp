@@ -27,6 +27,8 @@ namespace Ryno{
 		cone_mesh.create(game->stack_allocator, game->mesh_manager->load_mesh("cone", 1, GAME));
 
 
+		light_shader.create(game->stack_allocator);
+		light_shader->create("LightPass/directional", ENGINE);
 
 		////loading audio
 		//sound = game->audio_manager->load_sound("stomp.wav", GAME);
@@ -43,6 +45,7 @@ namespace Ryno{
 		go[0]->model->mesh = cube_mesh;
 		go[0]->model->set_texture_normal(white, white_normal);*/
 		go[0]->dir_light.create(game->stack_allocator);
+		go[0]->dir_light->set_shader(*light_shader);
 		go[0]->dir_light->set_direction(-65, 150);
 		go[0]->dir_light->diffuse_intensity = 0.7;
 		go[0]->dir_light->set_diffuse_color(255, 255, 200);

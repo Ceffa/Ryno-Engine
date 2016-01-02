@@ -24,6 +24,12 @@ namespace Ryno{
 		ColorRGB diffuse_color, specular_color;
 		F32 diffuse_intensity, specular_intensity;
 
+		void set_shader(Shader* _shader){ shader = _shader; }
+		Shader* get_shader(){ return shader; }
+
+	private: 
+		Shader* shader;
+
 	};
 
 }

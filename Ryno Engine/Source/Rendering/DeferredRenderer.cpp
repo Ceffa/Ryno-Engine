@@ -110,23 +110,7 @@ namespace Ryno{
 		m_directional_shadow_program = new Shader();
 		m_directional_shadow_program->create("ShadowPass/directional", ENGINE);
 	
-		//Directional light program
-		m_directional_lighting_program = new Shader();
-		m_directional_lighting_program->create("LightPass/directional", ENGINE);
-		m_directional_lighting_program->use();
-		glUniform1i(m_directional_lighting_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
-		glUniform1i(m_directional_lighting_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(m_directional_lighting_program->getUniformLocation("g_color_tex"), 0);
-		glUniform1i(m_directional_lighting_program->getUniformLocation("g_normal_tex"), 1);
-		glUniform1i(m_directional_lighting_program->getUniformLocation("g_depth_tex"), 2);
-		glUniform1i(m_directional_lighting_program->getUniformLocation("shadow_tex"), 3);
-		directional_uni_loc.direction = m_directional_lighting_program->getUniformLocation("dir_light.direction");
-		directional_uni_loc.diffuse = m_directional_lighting_program->getUniformLocation("dir_light.diffuse");
-		directional_uni_loc.specular = m_directional_lighting_program->getUniformLocation("dir_light.specular");
-		directional_uni_loc.ambient = m_directional_lighting_program->getUniformLocation("dir_light.ambient");
-		m_directional_lighting_program->unuse();
-
-
+	
 		//Skybox program 
 		m_skybox_program = new Shader();
 		m_skybox_program->create("SkyboxPass/skybox",ENGINE);
@@ -530,8 +514,8 @@ namespace Ryno{
 	void DeferredRenderer::directional_lighting_subpass(GameObject* go)
 	{
 
-		DirectionalLight* d = *go->dir_light;
-
+		auto d = *go->dir_light;
+		auto s = d->get_shader();
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_directional_lighting_pass();
 
@@ -551,7 +535,18 @@ namespace Ryno{
 		glm::vec3 dir_in_view_space = glm::vec3(glm::transpose(glm::inverse(m_camera->get_V_matrix()))*
 			glm::vec4(d->direction, 0));
 
-		m_directional_lighting_program->use();
+
+		s->use();
+		glUniform1i(s->getUniformLocation("screen_width"), WINDOW_WIDTH);
+		glUniform1i(s->getUniformLocation("screen_height"), WINDOW_HEIGHT);
+		glUniform1i(s->getUniformLocation("g_color_tex"), 0);
+		glUniform1i(s->getUniformLocation("g_normal_tex"), 1);
+		glUniform1i(s->getUniformLocation("g_depth_tex"), 2);
+		glUniform1i(s->getUniformLocation("shadow_tex"), 3);
+		directional_uni_loc.direction = s->getUniformLocation("dir_light.direction");
+		directional_uni_loc.diffuse = s->getUniformLocation("dir_light.diffuse");
+		directional_uni_loc.specular = s->getUniformLocation("dir_light.specular");
+		directional_uni_loc.ambient = s->getUniformLocation("dir_light.ambient");
 		//SEND DIR LIGHT UNIFORMS
 		glUniform3f(directional_uni_loc.direction, dir_in_view_space.x, dir_in_view_space.y, dir_in_view_space.z);
 		glUniform4f(directional_uni_loc.diffuse, d->diffuse_color.r / 256.0f, d->diffuse_color.g / 256.0f, d->diffuse_color.b / 256.0f, d->diffuse_intensity);
@@ -559,10 +554,10 @@ namespace Ryno{
 		glUniform4f(directional_uni_loc.ambient, d->ambient_color.r / 256.0f, d->ambient_color.g / 256.0f, d->ambient_color.b / 256.0f, d->ambient_intensity);
 
 		//SEND OTHER UNIFORMS
-		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &dir_light_VPB[0][0]);
-		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
-		glUniformMatrix4fv(m_directional_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
-		glUniform1i(m_directional_lighting_program->getUniformLocation("shadows_enabled"), directional_shadow_enabled);
+		glUniformMatrix4fv(s->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &dir_light_VPB[0][0]);
+		glUniformMatrix4fv(s->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
+		glUniformMatrix4fv(s->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
+		glUniform1i(s->getUniformLocation("shadows_enabled"), directional_shadow_enabled);
 
 
 		
@@ -570,8 +565,8 @@ namespace Ryno{
 		m_simple_drawer->draw(*m_fullscreen_quad);
 
 		//The draw is done, unuse the program
-		m_directional_lighting_program->unuse();
-
+		s->unuse();
+		
 		glDisable(GL_BLEND);
 	}
 
@@ -686,13 +681,11 @@ namespace Ryno{
 		m_sprite_program->destroy();
 		m_skybox_program->destroy();
 		m_directional_shadow_program->destroy();
-		m_directional_lighting_program->destroy();
 		m_point_shadow_program->destroy();
 		m_point_lighting_program->destroy();
 		m_spot_shadow_program->destroy();
 		m_spot_lighting_program->destroy();
 		m_directional_shadow_program->destroy();
-		m_directional_lighting_program->destroy();
 
 
 
