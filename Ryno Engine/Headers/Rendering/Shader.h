@@ -164,11 +164,11 @@ namespace Ryno{
 		//Check if a uniform is a sampler
 		static bool is_sampler(GLenum type);
 
-		//send uniform tto shader. Depending on its type (matrix, int etc)
-		//a different function is used
+		//send uniform to shader. Depending on its type (matrix, int etc)
+		//the template function send_uniform_to_shader is called with a different argument
 		void send_material_uniform_to_shader(const std::string& name, void* value, U8* sampler_index);
 		void send_global_uniform_to_shader(const std::string& name, void* value, U8* sampler_index);
-
+		
 
 		U8 get_size_from_type(const GLenum type);
 	private:
@@ -234,6 +234,33 @@ namespace Ryno{
 			C* name;
 		};
 
+
+		template <class T>
+		void send_uniform_to_shader(const std::string& name, void* value, U8* sampler_index, T& map)
+		{
+			if (Shader::is_sampler(map[name].type)){
+				glActiveTexture(GL_TEXTURE0 + *sampler_index);
+				glBindTexture(GL_TEXTURE_2D, *(U32*)value);
+				glUniform1i(map[name].index, *sampler_index);
+				*sampler_index = *sampler_index + 1;
+				return;
+			}
+
+			switch (map[name].type){
+			case GL_INT:
+				glUniform1i(map[name].index, *(I32*)value);
+				break;
+			case GL_FLOAT:
+				glUniform1f(map[name].index, *(F32*)value);
+				break;
+			case GL_FLOAT_MAT4:
+				glUniformMatrix4fv(map[name].index, 1, GL_FALSE, &(*((glm::mat4*)value))[0][0]);
+				break;
+			default:
+				std::cout << "Shader " << name << ": uniform type not found. ";
+				std::cout << "If possible add it to the switch in the \"send_uniform_to_shader\" function in the shader class" << std::endl;
+			}
+		}
 
 	};
 }

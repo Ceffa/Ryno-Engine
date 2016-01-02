@@ -12,7 +12,12 @@ namespace Ryno{
 	
 		DirectionalLight(){}
 		~DirectionalLight(){}
-		DirectionalLight(const DirectionalLight *d){ *this = *d; }
+		DirectionalLight(const New<DirectionalLight> &copy)
+		{ 
+			*this = copy;
+			model.copy(copy->model);
+		}
+
 
 		
 	

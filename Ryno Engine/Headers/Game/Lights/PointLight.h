@@ -11,8 +11,11 @@ namespace Ryno{
 		//Constructors
 		PointLight(){}
 		~PointLight(){}
-		PointLight(const PointLight *p){ *this = *p; }
-		
+		PointLight(const New<PointLight> &copy)
+		{
+			*this = copy;
+			model.copy(copy->model);
+		}
 
 	
 

@@ -365,55 +365,15 @@ namespace Ryno{
 
 	void Shader::send_material_uniform_to_shader(const std::string& name, void* value, U8* sampler_index)
 	{
-		
-		if (Shader::is_sampler(uniforms_data[name].type)){
-			glActiveTexture(GL_TEXTURE0 + *sampler_index);
-			glBindTexture(GL_TEXTURE_2D, *(U32*)value);
-			glUniform1i(uniforms_data[name].index, *sampler_index);
-			*sampler_index = *sampler_index + 1;
-			return;
-		}
-
-		switch (uniforms_data[name].type){
-		case GL_INT: 
-			glUniform1i(uniforms_data[name].index, *(I32*)value);
-			break;
-		case GL_FLOAT:
-			glUniform1f(uniforms_data[name].index, *(F32*)value);
-			break;
-		case GL_FLOAT_MAT4:
-			glUniformMatrix4fv(uniforms_data[name].index, 1, GL_FALSE, &(*((glm::mat4*)value))[0][0]);
-			break;
-		default:
-			std::cout << "Shader " << name << ": uniform type not found. ";
-			std::cout << "If possible add it to the switch in the \"send_uniform_to_shader\" functions in the shader class" << std::endl;
-		}
+		send_uniform_to_shader(name,value,sampler_index,uniforms_data);
 	}
 	void Shader::send_global_uniform_to_shader(const std::string& name, void* value, U8* sampler_index)
 	{
-
-		if (Shader::is_sampler(global_uniforms_data[name].type)){
-			glUniform1i(global_uniforms_data[name].index, *sampler_index);
-			glActiveTexture(GL_TEXTURE0 + *sampler_index++);
-			glBindTexture(GL_TEXTURE_2D, *(U32*)value);
-			return;
-		}
-
-		switch (global_uniforms_data[name].type){
-		case GL_INT:
-			glUniform1i(global_uniforms_data[name].index, *(I32*)value);
-			break;
-		case GL_FLOAT:
-			glUniform1f(global_uniforms_data[name].index, *(F32*)value);
-			break;
-		case GL_FLOAT_MAT4:
-			glUniformMatrix4fv(global_uniforms_data[name].index, 1, GL_FALSE, &(*((glm::mat4*)value))[0][0]);
-			break;
-		default:
-			std::cout << "Shader " << name <<": global uniform type not found. ";
-			std::cout << "If possible add it to the switch in the \"send_uniform_to_shader\" functions in the shader class" << std::endl;
-		}
+		send_uniform_to_shader(name, value, sampler_index, global_uniforms_data);
 	}
+
+
+
 	U8 Shader::get_size_from_type(const GLenum type)
 	{
 

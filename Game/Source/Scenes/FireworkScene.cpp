@@ -45,7 +45,8 @@ namespace Ryno{
 		go[0]->model->mesh = cube_mesh;
 		go[0]->model->set_texture_normal(white, white_normal);*/
 		go[0]->dir_light.create(game->stack_allocator);
-		go[0]->dir_light->set_shader(*light_shader);
+		go[0]->dir_light->model.create(game->stack_allocator);
+		go[0]->dir_light->model->material.set_shader(*light_shader);
 		go[0]->dir_light->set_direction(-65, 150);
 		go[0]->dir_light->diffuse_intensity = 0.7;
 		go[0]->dir_light->set_diffuse_color(255, 255, 200);
@@ -154,7 +155,7 @@ namespace Ryno{
 			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
 			p->model->material.set_attribute("in_Color", ColorRGBA::black);
-			p->model->material.set_attribute("in_Color2", ryno_math::rand_color_range(ColorRGBA(255, 0, 255, 255), ColorRGBA(0, 0, 255, 255)));
+			p->model->material.set_attribute("in_Color2", ryno_math::rand_color_range(ColorRGBA(0, 0, 255, 255), ColorRGBA(255, 0, 255, 255)));
 
 
 		};

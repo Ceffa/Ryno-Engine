@@ -515,7 +515,8 @@ namespace Ryno{
 	{
 
 		auto d = *go->dir_light;
-		auto s = d->get_shader();
+		auto m = *d->model;
+		auto s = m->material.shader;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_directional_lighting_pass();
 

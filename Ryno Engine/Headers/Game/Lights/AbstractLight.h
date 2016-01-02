@@ -4,7 +4,7 @@
 #include "Global.h"
 #include "Camera3D.h"
 #include "Structures.h"
-#include "Shader.h"
+#include "Model.h"
 #include <GLM\glm.hpp>
 
 namespace Ryno{
@@ -12,7 +12,6 @@ namespace Ryno{
 	
 	class AbstractLight{
 	public:
-
 		void set_diffuse_color(U8 r, U8 g, U8 b);
 		void set_specular_color(U8 r, U8 g, U8 b);
 
@@ -24,12 +23,7 @@ namespace Ryno{
 		ColorRGB diffuse_color, specular_color;
 		F32 diffuse_intensity, specular_intensity;
 
-		void set_shader(Shader* _shader){ shader = _shader; }
-		Shader* get_shader(){ return shader; }
-
-	private: 
-		Shader* shader;
-
+		New<Model> model;
 	};
 
 }
