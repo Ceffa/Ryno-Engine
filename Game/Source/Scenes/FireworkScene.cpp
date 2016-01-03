@@ -123,6 +123,7 @@ namespace Ryno{
 
 		go[1].copy(go[0]);
 		go[1]->dir_light.~New<DirectionalLight>();
+
 		go[2].copy(go[1]);
 		go[3].copy(go[1]);
 

@@ -20,7 +20,7 @@ namespace Ryno{
 		glm::vec3 get_diffuse_color();
 		glm::vec3 get_specular_color();
 		
-		ColorRGB diffuse_color, specular_color;
+		ColorRGBA diffuse_color, specular_color;
 		F32 diffuse_intensity, specular_intensity;
 
 		New<Model> model;

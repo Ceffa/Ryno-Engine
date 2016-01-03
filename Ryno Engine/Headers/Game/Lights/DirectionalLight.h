@@ -12,10 +12,12 @@ namespace Ryno{
 	
 		DirectionalLight(){}
 		~DirectionalLight(){}
-		DirectionalLight(const New<DirectionalLight> &copy)
+		DirectionalLight(const DirectionalLight &copy)
 		{ 
+
 			*this = copy;
-			model.copy(copy->model);
+			model.copy(copy.model);
+
 		}
 
 
@@ -27,7 +29,7 @@ namespace Ryno{
 		glm::vec3 get_ambient_color();
 
 		//Since i only use one directional light, i calculate here the ambient light
-		ColorRGB ambient_color;
+		ColorRGBA ambient_color;
 		F32 ambient_intensity;
 		glm::vec3 direction;
 		F32 pitch, yaw;

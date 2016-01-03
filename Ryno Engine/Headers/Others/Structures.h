@@ -34,6 +34,7 @@ namespace Ryno{
 
 			ColorRGBA() : r(0), g(0), b(0), a(0){}
 			ColorRGBA(U8 R, U8 G, U8 B, U8 A) : r(R), g(G), b(B), a(A){}
+			ColorRGBA(const ColorRGB& rgb, U8 intensity) : r(rgb.r), g(rgb.g), b(rgb.b), a(intensity){}
 			void set_color(U8 _r, U8 _g, U8 _b){
 				r = _r;
 				g = _g;

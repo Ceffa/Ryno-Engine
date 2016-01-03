@@ -15,10 +15,12 @@ namespace Ryno{
 		
 		static SimpleDrawer* get_instance();
 		void draw(Model* model);
-		
+		void draw_new(Model* model);
+
 	private:
 		SimpleDrawer();
 		void create_vertex_array();
+		void enable_attributes_and_uniforms(const Material& s);
 
 		U32 m_vbo;
 		U32 m_vao;

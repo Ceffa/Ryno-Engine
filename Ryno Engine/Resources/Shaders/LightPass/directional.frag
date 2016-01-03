@@ -1,16 +1,19 @@
 #version 430
 
 struct DirectionalLight{
-	vec4 diffuse;	//Intensity in alpha
-	vec4 specular;	//Intensity in alpha
-	vec4 ambient;	//Intensity in alpha
+	uint diffuse;	
+	uint specular;	
+	uint ambient;	
+	float diffuse_intensity;
+	float specular_intensity;
+	float ambient_intensity;
 	vec3 direction; 
 };
 
-//uniform sampler2D g_position_tex;
-uniform sampler2D g_color_tex;
-uniform sampler2D g_normal_tex;
-uniform sampler2D g_depth_tex;
+//uniform sampler2D position_tex;
+uniform sampler2D color_tex;
+uniform sampler2D normal_tex;
+uniform sampler2D depth_tex;
 uniform sampler2DShadow shadow_tex;
 uniform int shadows_enabled;
 
@@ -23,18 +26,20 @@ uniform DirectionalLight dir_light;
 uniform int screen_width;
 uniform int screen_height;
 
-out vec3 frag_color;
+out vec3 fracolor;
 
 
+float split(uint color, int n);
 
 void main(){
+
 	//Get uvs of the current fragment
 	vec2 uv_coords = gl_FragCoord.xy / vec2(screen_width,screen_height);
-	float depth = texture(g_depth_tex, uv_coords).r *2.0 - 1.0;
+	float depth = texture(depth_tex, uv_coords).r *2.0 - 1.0;
 	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
 
 	vec4 position_view_space = inverse_P_matrix * position_screen_space;
-	vec3 g_position = position_view_space.xyz / position_view_space.w;
+	vec3 position = position_view_space.xyz / position_view_space.w;
 	
 	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
 	vec4 position_light_ortho_matrix = light_VP_matrix * position_world_space;
@@ -47,27 +52,28 @@ void main(){
 	
 
 	//Get color and flatness from g buffer
-	vec4 g_RGBF = texture(g_color_tex, uv_coords);
-	vec3 g_color = g_RGBF.rgb;
-	float g_flatness = g_RGBF.a;
+	vec4 RGBF = texture(color_tex, uv_coords);
+	vec3 color = RGBF.rgb;
+	float flatness = RGBF.a;
 
 	//Get normal (and rebuilt it's z axis) from g buffer
-	vec2 n = texture(g_normal_tex, uv_coords).xy;
-	vec3 g_normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
+	vec2 n = texture(normal_tex, uv_coords).xy;
+	vec3 normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
 
 	//Important vectors
-	vec3 view_dir = normalize(-g_position);
+	vec3 view_dir = normalize(-position);
 	vec3 half_dir = normalize(normalize(dir_light.direction) + view_dir);
 
 	//Calculate base colors
-	vec3 diff_color = dir_light.diffuse.xyz * dir_light.diffuse.w;
-	vec3 spec_color = dir_light.specular.xyz * dir_light.specular.w;
+
+	vec3 diff_color = vec3(split(dir_light.diffuse, 0), split(dir_light.diffuse, 1), split(dir_light.diffuse, 2)) * dir_light.diffuse_intensity;
+	vec3 spec_color = vec3(split(dir_light.specular, 0), split(dir_light.specular, 1), split(dir_light.specular, 2)) * dir_light.specular_intensity;
+	vec3 amb_final = vec3(split(dir_light.ambient, 0), split(dir_light.ambient, 1), split(dir_light.ambient, 2)) * dir_light.ambient_intensity;
 
 	//final colors for diffuse, specular and ambient
-	float dotNL = max(0, dot(g_normal, dir_light.direction));
+	float dotNL = max(0, dot(normal, dir_light.direction));
 	vec3 diffuse_final =  dotNL * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, g_normal), 0.0001), dir_light.specular.w) ;
-	vec3 amb_final = dir_light.ambient.xyz * dir_light.ambient.w;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.specular_intensity) ;
 
 
 
@@ -98,6 +104,12 @@ void main(){
 	
 	
 	//fragment color
-	frag_color = g_flatness * g_color + (1.0 - g_flatness)*g_color *(amb_final + visibility *( diffuse_final + specular_final));
+	fracolor =  flatness * color + (1.0 - flatness)*color *(amb_final + visibility *(diffuse_final + specular_final));
 
+}
+
+
+float split(uint color, int n){
+	int index = n * 8;
+	return bitfieldExtract(color, index, 8) / 256.0f;
 }

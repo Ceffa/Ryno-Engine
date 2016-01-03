@@ -11,6 +11,7 @@
 #include "Emitter.h"
 #include "Mallocator.h"
 
+
 #define PI 3.14159265359
 #define HALF_PI 1.57079632679489661923
 
@@ -515,8 +516,10 @@ namespace Ryno{
 	{
 
 		auto d = *go->dir_light;
-		auto m = *d->model;
-		auto s = m->material.shader;
+		auto mod = *d->model;
+		mod->mesh = m_fullscreen_quad->mesh;
+		auto& mat = mod->material;
+		auto s =mat.shader;
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_directional_lighting_pass();
 
@@ -537,36 +540,33 @@ namespace Ryno{
 			glm::vec4(d->direction, 0));
 
 
-		s->use();
-		glUniform1i(s->getUniformLocation("screen_width"), WINDOW_WIDTH);
-		glUniform1i(s->getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(s->getUniformLocation("g_color_tex"), 0);
-		glUniform1i(s->getUniformLocation("g_normal_tex"), 1);
-		glUniform1i(s->getUniformLocation("g_depth_tex"), 2);
-		glUniform1i(s->getUniformLocation("shadow_tex"), 3);
-		directional_uni_loc.direction = s->getUniformLocation("dir_light.direction");
-		directional_uni_loc.diffuse = s->getUniformLocation("dir_light.diffuse");
-		directional_uni_loc.specular = s->getUniformLocation("dir_light.specular");
-		directional_uni_loc.ambient = s->getUniformLocation("dir_light.ambient");
+		mat.set_uniform("screen_width", WINDOW_WIDTH);
+		mat.set_uniform("screen_height", WINDOW_HEIGHT);
+		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
+		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
+		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
+		mat.set_uniform("shadow_tex", m_fbo_shadow->m_directional_texture);
+	
+
 		//SEND DIR LIGHT UNIFORMS
-		glUniform3f(directional_uni_loc.direction, dir_in_view_space.x, dir_in_view_space.y, dir_in_view_space.z);
-		glUniform4f(directional_uni_loc.diffuse, d->diffuse_color.r / 256.0f, d->diffuse_color.g / 256.0f, d->diffuse_color.b / 256.0f, d->diffuse_intensity);
-		glUniform4f(directional_uni_loc.specular, d->specular_color.r / 256.0f, d->specular_color.g / 256.0f, d->specular_color.b / 256.0f, d->specular_intensity);
-		glUniform4f(directional_uni_loc.ambient, d->ambient_color.r / 256.0f, d->ambient_color.g / 256.0f, d->ambient_color.b / 256.0f, d->ambient_intensity);
+		mat.set_uniform("dir_light.direction", dir_in_view_space);
+		mat.set_uniform("dir_light.diffuse", d->diffuse_color);
+		mat.set_uniform("dir_light.specular", d->specular_color);
+		mat.set_uniform("dir_light.ambient", d->ambient_color);
+		mat.set_uniform("dir_light.diffuse_intensity", d->diffuse_intensity);
+		mat.set_uniform("dir_light.specular_intensity", d->specular_intensity);
+		mat.set_uniform("dir_light.ambient_intensity", d->ambient_intensity);
 
 		//SEND OTHER UNIFORMS
-		glUniformMatrix4fv(s->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &dir_light_VPB[0][0]);
-		glUniformMatrix4fv(s->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
-		glUniformMatrix4fv(s->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
-		glUniform1i(s->getUniformLocation("shadows_enabled"), directional_shadow_enabled);
+		mat.set_uniform("light_VP_matrix",dir_light_VPB);
+		mat.set_uniform("inverse_P_matrix",inverse_P_matrix);
+		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
+		mat.set_uniform("shadows_enabled", directional_shadow_enabled);
 
+
+		m_simple_drawer->draw_new(mod);
 
 		
-
-		m_simple_drawer->draw(*m_fullscreen_quad);
-
-		//The draw is done, unuse the program
-		s->unuse();
 		
 		glDisable(GL_BLEND);
 	}

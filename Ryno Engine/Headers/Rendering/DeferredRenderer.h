@@ -33,6 +33,7 @@ namespace Ryno{
 		I32 diffuse;
 		I32 specular;
 		I32 ambient;
+		I32 intensities;
 	} ;
 
 	struct point_uniforms_locations{

@@ -58,7 +58,7 @@ namespace Ryno{
 		
 
 		~New<T>() { 
-			if (data){
+			if (data!=nullptr){
 				data->~T();
 				allocator->dealloc((void*)data);
 				data = nullptr;

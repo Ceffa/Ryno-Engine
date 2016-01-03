@@ -23,6 +23,7 @@ namespace Ryno {
 
 	Material::Material(const Material& copy)
 	{
+
 		//Set same shader
 		set_shader(copy.shader);
 		//Copy entry of uniform map
@@ -31,7 +32,6 @@ namespace Ryno {
 		}
 		//Copy attributes memory
 		std::memcpy(attribute_memory, copy.attribute_memory, shader->attributes_struct_size);
-
 
 	}
 

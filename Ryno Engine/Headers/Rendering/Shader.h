@@ -250,9 +250,33 @@ namespace Ryno{
 			case GL_INT:
 				glUniform1i(map[name].index, *(I32*)value);
 				break;
+			case GL_UNSIGNED_INT:
+				glUniform1ui(map[name].index, *(U32*)value);
+				break;
 			case GL_FLOAT:
 				glUniform1f(map[name].index, *(F32*)value);
 				break;
+			//NEEDS A REFACTORING, USE glUniform3iv 
+			case GL_INT_VEC3:
+				glUniform3i(map[name].index, *(I32*)value, *(I32*)((U64)value + sizeof(I32)), *(I32*)((U64)value + 2 * sizeof(I32)));
+				break;
+			case GL_UNSIGNED_INT_VEC3:
+				glUniform3ui(map[name].index, *(U32*)value, *(U32*)((U64)value + sizeof(U32)), *(U32*)((U64)value + 2 * sizeof(U32)));
+				break;
+			case GL_FLOAT_VEC3:
+				glUniform3f(map[name].index, *(F32*)value, *(F32*)((U64)value + sizeof(F32)), *(F32*)((U64)value + 2 * sizeof(F32)));
+				break;
+
+			case GL_INT_VEC4:
+				glUniform4i(map[name].index, *(I32*)value, *(I32*)((U64)value + sizeof(I32)), *(I32*)((U64)value + 2 * sizeof(I32)), *(I32*)((U64)value + 3 * sizeof(I32)));
+				break;
+			case GL_UNSIGNED_INT_VEC4:
+				glUniform4ui(map[name].index, *(U32*)value, *(U32*)((U64)value + sizeof(U32)), *(U32*)((U64)value + 2 * sizeof(U32)), *(U32*)((U64)value + 3 * sizeof(U32)));
+				break;
+			case GL_FLOAT_VEC4:
+				glUniform4f(map[name].index, *(F32*)value, *(F32*)((U64)value + sizeof(F32)), *(F32*)((U64)value + 2 * sizeof(F32)), *(F32*)((U64)value + 3 * sizeof(F32)));
+				break;
+
 			case GL_FLOAT_MAT4:
 				glUniformMatrix4fv(map[name].index, 1, GL_FALSE, &(*((glm::mat4*)value))[0][0]);
 				break;
