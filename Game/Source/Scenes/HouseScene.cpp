@@ -133,7 +133,14 @@ namespace Ryno{
 		spheres[0]->transform->set_position(180, 20, 180);
 		spheres[0]->model->mesh = **sphere_mesh;
 
+
+		point_light_shader.create(game->stack_allocator);
+		point_light_shader->create("LightPass/point", ENGINE);
+
+
 		PointLight* p = spheres[0]->point_light.create(game->stack_allocator);
+		p->model.create(game->stack_allocator);
+		p->model->material.set_shader(*point_light_shader);
 		p->set_diffuse_color(255, 80, 0);
 		p->diffuse_intensity = 3;
 		p->attenuation = .001;
@@ -153,15 +160,15 @@ namespace Ryno{
 		spheres[3]->transform->set_position(180, 20, -180);
 
 		//Directional light
-		light_shader.create(game->stack_allocator);
-		light_shader->create("LightPass/directional", ENGINE);
+		dir_light_shader.create(game->stack_allocator);
+		dir_light_shader->create("LightPass/directional", ENGINE);
 
 		directional_light_go.create(game->stack_allocator);
 		directional_light_go->transform.create(game->stack_allocator);
 
 		DirectionalLight* l = directional_light_go->dir_light.create(game->stack_allocator);
 		l->model.create(game->stack_allocator);
-		l->model->material.set_shader(*light_shader);
+		l->model->material.set_shader(*dir_light_shader);
 		l->set_direction(-65, 150);
 		l->diffuse_intensity = 0.2;
 		l->set_diffuse_color(255, 255, 200);
@@ -271,8 +278,8 @@ namespace Ryno{
 
 	void HouseScene::update(){
 
-		for (I32 i = 0; i < 4; i++){
-			spheres[i]->transform->position.y = 40 + sin(game->time / 1000.0f) * 20;
+		for (const auto & sphere : spheres){
+			sphere->transform->position.y = 40 + sin(game->time / 1000.0f) * 20;
 		}
 
 	}

@@ -238,7 +238,12 @@ namespace Ryno{
 		template <class T>
 		void send_uniform_to_shader(const std::string& name, void* value, U8* sampler_index, T& map)
 		{
+			if (value == nullptr){
+				std::cout << "Shader: value required by shader not found in local map: " << name << std::endl;
+				exit(-1);
+			}
 			if (Shader::is_sampler(map[name].type)){
+				
 				glActiveTexture(GL_TEXTURE0 + *sampler_index);
 				glBindTexture(GL_TEXTURE_2D, *(U32*)value);
 				glUniform1i(map[name].index, *sampler_index);
@@ -283,6 +288,7 @@ namespace Ryno{
 			default:
 				std::cout << "Shader " << name << ": uniform type not found. ";
 				std::cout << "If possible add it to the switch in the \"send_uniform_to_shader\" function in the shader class" << std::endl;
+				exit(-1);
 			}
 		}
 

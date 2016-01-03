@@ -42,7 +42,7 @@ namespace Ryno{
 		glm::vec3 acceleration = glm::vec3(0, 0, 0);
 		New<Texture> bt, bn, solaire, sun, doge, white, white_normal;
 		New<I32> sphere_mesh, cone_mesh, cube_mesh, terrain_mesh;
-		New<Shader> shader,light_shader;
+		New<Shader> shader,dir_light_shader, point_light_shader;
 
 
 	};

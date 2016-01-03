@@ -75,17 +75,7 @@ namespace Ryno{
 		//Point light program
 		m_point_lighting_program = new Shader();
 		m_point_lighting_program->create("LightPass/point", ENGINE);
-		m_point_lighting_program->use();
-		glUniform1i(m_point_lighting_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
-		glUniform1i(m_point_lighting_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(m_point_lighting_program->getUniformLocation("g_color_tex"), 0);
-		glUniform1i(m_point_lighting_program->getUniformLocation("g_normal_tex"), 1);
-		glUniform1i(m_point_lighting_program->getUniformLocation("g_depth_tex"), 2);
-		glUniform1i(m_point_lighting_program->getUniformLocation("shadow_cube"), 3);
-		point_uni_loc.position = m_point_lighting_program->getUniformLocation("point_light.position_and_attenuation");
-		point_uni_loc.diffuse = m_point_lighting_program->getUniformLocation("point_light.diffuse");
-		point_uni_loc.specular = m_point_lighting_program->getUniformLocation("point_light.specular");
-		m_point_lighting_program->unuse();
+		
 
 		//Spot shadow program
 		m_spot_shadow_program = new Shader();
@@ -334,7 +324,12 @@ namespace Ryno{
 
 	void DeferredRenderer::point_lighting_subpass(GameObject* go){
 
-		PointLight* p = *go->point_light;
+		auto p = *go->point_light;
+		auto mod = *p->model;
+		mod->mesh = m_bounding_sphere->mesh;
+		auto& mat = mod->material;
+		auto s = mat.shader;
+
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_point_lighting_pass();
 
@@ -348,28 +343,38 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		glm::vec3 temp_pos = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
+		glm::vec3 light_pos = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
 		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(p->max_radius));
-		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), temp_pos);
+		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), light_pos);
 
 		MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box;
 
-		m_point_lighting_program->use();
-		//SEND POINT LIGHT UNIFORMS
-		glUniform4f(point_uni_loc.position, temp_pos.x, temp_pos.y, temp_pos.z, p->attenuation);
-		glUniform4f(point_uni_loc.diffuse, p->diffuse_color.r / 256.0f, p->diffuse_color.g / 256.0f, p->diffuse_color.b / 256.0f, p->diffuse_intensity);
-		glUniform4f(point_uni_loc.specular, p->specular_color.r / 256.0f, p->specular_color.g / 256.0f, p->specular_color.b / 256.0f, p->specular_intensity);
-		
-		//SEND OTHER UNIFORMS
-		glUniform1f(m_point_lighting_program->getUniformLocation("max_fov"), p->max_radius);
-		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
-		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
-		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("V_matrix"), 1, GL_FALSE, &(m_camera->get_V_matrix())[0][0]);
-		glUniformMatrix4fv(m_point_lighting_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
-		glUniform1i(m_point_lighting_program->getUniformLocation("shadows_enabled"), point_shadow_enabled);
 
-		m_simple_drawer->draw(*m_bounding_sphere);
-		m_point_lighting_program->unuse();
+		//SEND POINT LIGHT UNIFORMS (each for light)
+		mat.set_uniform("point_light.position", light_pos);
+		mat.set_uniform("point_light.attenuation", p->attenuation);
+		mat.set_uniform("point_light.diffuse", p->diffuse_color);
+		mat.set_uniform("point_light.specular", p->specular_color);
+		mat.set_uniform("point_light.specular_intensity", p->specular_intensity);
+		mat.set_uniform("point_light.diffuse_intensity", p->diffuse_intensity);
+
+		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM GLOBAL
+		mat.set_uniform("screen_width", WINDOW_WIDTH);
+		mat.set_uniform("screen_height", WINDOW_HEIGHT);
+		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
+		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
+		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
+		mat.set_uniform("shadow_cube", m_fbo_shadow->m_point_cube);
+	
+		//SEND OTHER UNIFORMS
+		mat.set_uniform("max_fov", p->max_radius);
+		mat.set_uniform("inverse_P_matrix",inverse_P_matrix);
+		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
+		mat.set_uniform("V_matrix",m_camera->get_V_matrix());
+		mat.set_uniform("MVP", MVP_camera);
+		mat.set_uniform("shadows_enabled", point_shadow_enabled);
+
+		m_simple_drawer->draw_new(mod);
 
 		glDisable(GL_BLEND);
 
