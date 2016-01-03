@@ -56,6 +56,9 @@ namespace Ryno{
 		m_fbo_deferred.create(allocator,WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_fbo_shadow.create(allocator, WINDOW_WIDTH, WINDOW_HEIGHT);
 
+		screen_width = WINDOW_WIDTH;
+		screen_height = WINDOW_HEIGHT;
+
 		//BATCHES SETUP
 		m_geometry_batch3d = new Batch3DGeometry();
 		m_shadow_batch3d = new Batch3DShadow();
@@ -337,8 +340,8 @@ namespace Ryno{
 		mat.set_uniform("point_light.diffuse_intensity", p->diffuse_intensity);
 
 		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM GLOBAL
-		mat.set_uniform("screen_width", WINDOW_WIDTH);
-		mat.set_uniform("screen_height", WINDOW_HEIGHT);
+		mat.set_uniform("screen_width", screen_width);
+		mat.set_uniform("screen_height", screen_height);
 		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
 		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
 		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
@@ -451,8 +454,8 @@ namespace Ryno{
 		mat.set_uniform("spot_light.specular",s->specular_color);
 		mat.set_uniform("spot_light.diffuse_intensity", s->diffuse_intensity);
 		mat.set_uniform("spot_light.specular_intensity", s->specular_intensity);
-		mat.set_uniform("screen_width", WINDOW_WIDTH);
-		mat.set_uniform("screen_height", WINDOW_HEIGHT);
+		mat.set_uniform("screen_width", screen_width);
+		mat.set_uniform("screen_height", screen_height);
 		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
 		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
 		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
@@ -535,8 +538,8 @@ namespace Ryno{
 			glm::vec4(d->direction, 0));
 
 
-		mat.set_uniform("screen_width", WINDOW_WIDTH);
-		mat.set_uniform("screen_height", WINDOW_HEIGHT);
+		mat.set_uniform("screen_width", screen_width);
+		mat.set_uniform("screen_height", screen_height);
 		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
 		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
 		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);

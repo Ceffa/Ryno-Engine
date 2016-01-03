@@ -82,6 +82,7 @@ namespace Ryno{
 
 	private:
 
+		U32 screen_width, screen_height;
 		DeferredRenderer();
 
 		//Shadow subpass for point light
