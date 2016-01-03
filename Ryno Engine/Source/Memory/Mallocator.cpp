@@ -2,10 +2,15 @@
 
 namespace Ryno{
 
+	Mallocator* Mallocator::instance = nullptr;
+
+
 	Mallocator* Mallocator::get_instance(){
 
-		static Mallocator instance;//only at the beginning
-		return &instance;
+		if (instance == nullptr) {//only at the beginning
+			instance = new Mallocator();
+		}
+		return instance;
 	}
 
 	void* Mallocator::alloc(size_t obj_size, U8 alignement)
@@ -31,5 +36,7 @@ namespace Ryno{
 		std::cout << "Mallocator: deallocating" << std::endl;
 #endif
 	}
+
+
 
 }

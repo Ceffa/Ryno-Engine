@@ -28,26 +28,6 @@ namespace Ryno{
 		glm::vec3 Up;
 	};
 
-	struct directional_uniforms_locations{
-		I32 direction;
-		I32 diffuse;
-		I32 specular;
-		I32 ambient;
-		I32 intensities;
-	} ;
-
-	struct point_uniforms_locations{
-		I32 position;
-		I32 diffuse;
-		I32 specular;
-	};
-
-	struct spot_uniforms_locations{
-		I32 position;
-		I32 direction;
-		I32 diffuse;
-		I32 specular;
-	};
 
 	class DeferredRenderer{
 		friend class Shell;
@@ -124,31 +104,22 @@ namespace Ryno{
 
 	
 		Camera3D* m_camera;
-		FBO_Deferred* m_fbo_deferred;
-		FBO_Shadow* m_fbo_shadow;
+		New<FBO_Deferred> m_fbo_deferred;
+		New<FBO_Shadow> m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
 
 		//PROGRAMS
-		Shader *m_skybox_program;
-		Shader *m_directional_shadow_program;
-		Shader *m_spot_shadow_program;
-		Shader *m_point_shadow_program;
-		Shader *m_blit_program;
-		Shader *m_point_lighting_program;
-		Shader *m_spot_lighting_program;
-		Shader *m_flat_program;
-		Shader *m_sprite_program;
-		Shader *m_font_program;
+		New<Shader> m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_blit_program,m_flat_program,m_sprite_program,m_font_program;
 
 		//BATCHES
 		Batch3DGeometry* m_geometry_batch3d;
-		Batch3DShadow* m_shadow_batch3d;
+		Batch3DShadow*  m_shadow_batch3d;
 		Batch2DSprite* m_sprite_batch2d;
 		Batch2DFont* m_font_batch2d;
 
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
-		New<Model> m_bounding_sphere, m_fullscreen_quad, m_cube_box, m_bounding_pyramid;
+		Model* m_bounding_sphere, * m_fullscreen_quad, *m_cube_box, *m_bounding_pyramid;
 		glm::mat4 MVP_camera;
 		glm::mat4 inverse_P_matrix;
 		glm::mat4 inverse_VP_matrix;
@@ -156,9 +127,6 @@ namespace Ryno{
 		glm::mat4 directional_light_VP;
 		glm::mat4 bias;
 		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 
-		spot_uniforms_locations spot_uni_loc;
-		point_uniforms_locations point_uni_loc;
-		directional_uniforms_locations directional_uni_loc;
 
 		std::vector<GameObject*> point_lights;
 		std::vector<GameObject*> spot_lights;

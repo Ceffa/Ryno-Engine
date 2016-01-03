@@ -40,6 +40,7 @@ namespace Ryno{
 			data = new (all->alloc(sizeof(T),__alignof(T))) T(args...);
 			if (data)
 				return data;
+			std::cout << "Problem allocating data." << std::endl;
 			return nullptr;
 		}
 		template<typename ...Args>

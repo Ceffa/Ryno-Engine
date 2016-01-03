@@ -11,10 +11,10 @@ namespace Ryno{
 	
 		SpotLight(){}
 		~SpotLight(){}
-		SpotLight(const New<SpotLight> &copy)
+		SpotLight(const SpotLight &copy)
 		{
 			*this = copy;
-			model.copy(copy->model);
+			model.copy(copy.model);
 		}
 	
 		void set_direction(F32 _pitch, F32 _yaw);

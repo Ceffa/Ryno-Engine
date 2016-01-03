@@ -52,7 +52,7 @@ namespace Ryno{
 	public:
 
 		Shader(){}
-		~Shader(){}
+		~Shader(){ destroy(); }
 
 		/**
 		This function create a new GLSLProgram, it loads the shaders and everything else.

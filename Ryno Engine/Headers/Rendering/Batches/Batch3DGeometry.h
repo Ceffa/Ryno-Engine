@@ -33,8 +33,7 @@ namespace Ryno{
 
 	class Batch3DGeometry{
 	public:
-		
-
+		Batch3DGeometry(){}
 		void init(Camera3D* cam);
 		void set_camera(Camera3D* camera);
 		void begin();
@@ -63,7 +62,7 @@ namespace Ryno{
 
 
 		std::vector<Vertex3D> vertices;
-		void* input_instances;
+		void* input_instances = nullptr;
 		std::vector<RenderBatchStruct> m_render_batches;
 		
 		const static U8 compare_models(Model* a, Model* b) ;

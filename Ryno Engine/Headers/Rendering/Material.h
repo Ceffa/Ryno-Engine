@@ -37,7 +37,7 @@ namespace Ryno{
 	
 		~Material(){ free(attribute_memory); }
 		Material(const Material& copy);
-		Material(){}
+		Material(){ attribute_memory = nullptr; }
 		void* attribute_memory = nullptr;
 		std::map<std::string, void*> uniform_map;
 		Shader* shader = nullptr;

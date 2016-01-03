@@ -50,8 +50,11 @@ namespace Ryno{
 		m_mesh_manager = MeshManager::get_instance();
 		m_texture_manager = TextureManager::get_instance();
 		m_simple_drawer = SimpleDrawer::get_instance();
-		m_fbo_deferred = new FBO_Deferred(WINDOW_WIDTH, WINDOW_HEIGHT);
-		m_fbo_shadow = new FBO_Shadow(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+		
+		Mallocator* allocator = Mallocator::get_instance();
+		m_fbo_deferred.create(allocator,WINDOW_WIDTH, WINDOW_HEIGHT);
+		m_fbo_shadow.create(allocator, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		//BATCHES SETUP
 		m_geometry_batch3d = new Batch3DGeometry();
@@ -63,51 +66,27 @@ namespace Ryno{
 		m_font_batch2d->init();
 
 
-		//PROGRAMS SETUP
-		//Geometry program
-
-		
+	
 
 		//Point shadow program
-		m_point_shadow_program = new Shader();
+		m_point_shadow_program.create(allocator);
 		m_point_shadow_program->create("ShadowPass/point", ENGINE);
 	
-		//Point light program
-		m_point_lighting_program = new Shader();
-		m_point_lighting_program->create("LightPass/point", ENGINE);
-		
-
 		//Spot shadow program
-		m_spot_shadow_program = new Shader();
+		m_spot_shadow_program.create(allocator);
 		m_spot_shadow_program->create("ShadowPass/spot", ENGINE);
 
-		//Spot lighting program
-		m_spot_lighting_program = new Shader();
-		m_spot_lighting_program->create("LightPass/spot", ENGINE);
-		m_spot_lighting_program->use();
-		glUniform1i(m_spot_lighting_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
-		glUniform1i(m_spot_lighting_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(m_spot_lighting_program->getUniformLocation("g_color_tex"), 0);
-		glUniform1i(m_spot_lighting_program->getUniformLocation("g_normal_tex"), 1);
-		glUniform1i(m_spot_lighting_program->getUniformLocation("g_depth_tex"), 2);
-		glUniform1i(m_spot_lighting_program->getUniformLocation("shadow_tex"), 3);
-		spot_uni_loc.position = m_spot_lighting_program->getUniformLocation("spot_light.position_and_attenuation");
-		spot_uni_loc.direction = m_spot_lighting_program->getUniformLocation("spot_light.direction_and_cutoff");
-		spot_uni_loc.diffuse = m_spot_lighting_program->getUniformLocation("spot_light.diffuse");
-		spot_uni_loc.specular = m_spot_lighting_program->getUniformLocation("spot_light.specular");
-		m_spot_lighting_program->unuse();
-
 		//Directional shadow program
-		m_directional_shadow_program = new Shader();
+		m_directional_shadow_program.create(allocator);
 		m_directional_shadow_program->create("ShadowPass/directional", ENGINE);
 	
 	
 		//Skybox program 
-		m_skybox_program = new Shader();
+		m_skybox_program.create(allocator);
 		m_skybox_program->create("SkyboxPass/skybox",ENGINE);
 		
 		//Blit program
-		m_blit_program = new Shader();
+		m_blit_program.create(allocator);
 		m_blit_program->create("Others/blit", ENGINE);
 		m_blit_program->use();
 		glUniform1i(m_blit_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
@@ -116,32 +95,31 @@ namespace Ryno{
 		m_blit_program->unuse();
 
 		//Sprite program
-		m_sprite_program = new Shader();
+		m_sprite_program.create(allocator);
 		m_sprite_program->create("GUIPass/sprite", ENGINE);
 		m_sprite_program->use();
 		glUniform1i(m_sprite_program->getUniformLocation("m_texture"), 0);
 		m_sprite_program->unuse();
 
 		//Font program
-		m_font_program = new Shader();
+		m_font_program.create(allocator);
 		m_font_program->create("GUIPass/font", ENGINE);
 		m_font_program->use();
 		glUniform1i(m_font_program->getUniformLocation("m_texture"), 0);
 		m_font_program->unuse();
 
 		//MODEL LOADING
-		Mallocator* r = Mallocator::get_instance();
 
-		m_bounding_sphere.create(r);
+		m_bounding_sphere = new Model();
 		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
 
-		m_bounding_pyramid.create(r);
+		m_bounding_pyramid = new Model();
 		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
 
-		m_fullscreen_quad.create(r);
+		m_fullscreen_quad = new Model();
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
 
-		m_cube_box.create(r);
+		m_cube_box = new Model();
 		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
 
 		//BIAS MATRIX
@@ -262,6 +240,7 @@ namespace Ryno{
 		}
 	}	
 
+
 	void DeferredRenderer::point_shadow_subpass(GameObject* go)
 	{
 		
@@ -328,7 +307,6 @@ namespace Ryno{
 		auto mod = *p->model;
 		mod->mesh = m_bounding_sphere->mesh;
 		auto& mat = mod->material;
-		auto s = mat.shader;
 
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_point_lighting_pass();
@@ -435,7 +413,10 @@ namespace Ryno{
 
 	void DeferredRenderer::spot_lighting_subpass(GameObject* go)
 	{
-		SpotLight* s = *go->spot_light;
+		auto s = *go->spot_light;
+		auto mod = *s->model;
+		mod->mesh = m_bounding_pyramid->mesh;
+		auto& mat = mod->material;
 
 		m_fbo_deferred->bind_for_light_pass();
 		m_fbo_shadow->bind_for_spot_lighting_pass();
@@ -450,33 +431,42 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 	
-		glm::vec3 temp_pos = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
+		glm::vec3 light_pos = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
 		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
 		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(width, s->max_radius, width));
-		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), temp_pos);
+		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), light_pos);
 		glm::mat4 rot_box = glm::toMat4(glm::quat(glm::vec3(0, -s->yaw -M_HALF_PI,0)) * glm::quat(glm::vec3(s->pitch,0, 0)));
 	
 		MVP_camera = m_camera->get_VP_matrix() * trans_box * rot_box  * scale_box;
-
-
-		m_spot_lighting_program->use();
-		//SEND SPOT LIGHT UNIFORMS
-		glUniform4f(spot_uni_loc.position, temp_pos.x, temp_pos.y, temp_pos.z, s->attenuation);
-		glUniform4f(spot_uni_loc.direction, s->direction.x, s->direction.y, s->direction.z, cos(s->cutoff * DEG_TO_RAD));
-		glUniform4f(spot_uni_loc.diffuse, s->diffuse_color.r / 256.0f, s->diffuse_color.g / 256.0f, s->diffuse_color.b / 256.0f, s->diffuse_intensity);
-		glUniform4f(spot_uni_loc.specular, s->specular_color.r / 256.0f, s->specular_color.g / 256.0f, s->specular_color.b / 256.0f, s->specular_intensity);
-
-		//SEND OTHER UNIFORMS
 		glm::mat4 biased_light_VP_matrix = bias * spot_VP_matrix;
-		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("light_VP_matrix"), 1, GL_FALSE, &biased_light_VP_matrix[0][0]);
-		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("inverse_P_matrix"), 1, GL_FALSE, &inverse_P_matrix[0][0]);
-		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("inverse_VP_matrix"), 1, GL_FALSE, &inverse_VP_matrix[0][0]);
-		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("V_matrix"), 1, GL_FALSE, &(m_camera->get_V_matrix())[0][0]);
-		glUniformMatrix4fv(m_spot_lighting_program->getUniformLocation("MVP"), 1, GL_FALSE, &MVP_camera[0][0]);
-		glUniform1i(m_spot_lighting_program->getUniformLocation("shadows_enabled"), spot_shadow_enabled);
 
-		m_simple_drawer->draw(*m_bounding_pyramid);
-		m_spot_lighting_program->unuse();
+		F32 cutoff_value = cos(s->cutoff * DEG_TO_RAD);
+
+		//SEND SPOT LIGHT UNIFORMS
+		mat.set_uniform("spot_light.position", light_pos);
+		mat.set_uniform("spot_light.attenuation", s->attenuation);
+		mat.set_uniform("spot_light.direction", s->direction);
+		mat.set_uniform("spot_light.cutoff", cutoff_value);
+		mat.set_uniform("spot_light.diffuse", s->diffuse_color);
+		mat.set_uniform("spot_light.specular",s->specular_color);
+		mat.set_uniform("spot_light.diffuse_intensity", s->diffuse_intensity);
+		mat.set_uniform("spot_light.specular_intensity", s->specular_intensity);
+		mat.set_uniform("screen_width", WINDOW_WIDTH);
+		mat.set_uniform("screen_height", WINDOW_HEIGHT);
+		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
+		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
+		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
+		mat.set_uniform("shadow_tex", m_fbo_shadow->m_spot_texture);
+
+		
+		mat.set_uniform("light_VP_matrix", biased_light_VP_matrix);
+		mat.set_uniform("inverse_P_matrix", inverse_P_matrix);
+		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
+		mat.set_uniform("V_matrix",m_camera->get_V_matrix());
+		mat.set_uniform("MVP",MVP_camera);
+		mat.set_uniform("shadows_enabled", spot_shadow_enabled);
+
+		m_simple_drawer->draw_new(mod);
 
 		glDisable(GL_BLEND);
 	}
@@ -588,7 +578,7 @@ namespace Ryno{
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_blit_program->use();
-		m_simple_drawer->draw(*m_fullscreen_quad);
+		m_simple_drawer->draw(m_fullscreen_quad);
 		m_blit_program->unuse();
 
 		glDepthMask(GL_FALSE);
@@ -610,7 +600,7 @@ namespace Ryno{
 		glUniform1i(m_skybox_program->getUniformLocation("cube_map"), 0);
 
 
-		m_simple_drawer->draw(*m_cube_box);
+		m_simple_drawer->draw(m_cube_box);
 
 		m_skybox_program->unuse();
 
@@ -679,22 +669,7 @@ namespace Ryno{
 
 
 	void DeferredRenderer::destroy(){
-		delete m_fbo_deferred;
-		delete m_fbo_shadow;
-		//delete m_bounding_sphere;
-		//delete m_fullscreen_quad;
-		m_blit_program->destroy();
-		m_sprite_program->destroy();
-		m_skybox_program->destroy();
-		m_directional_shadow_program->destroy();
-		m_point_shadow_program->destroy();
-		m_point_lighting_program->destroy();
-		m_spot_shadow_program->destroy();
-		m_spot_lighting_program->destroy();
-		m_directional_shadow_program->destroy();
-
-
-
+		
 	}
 
 

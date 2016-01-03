@@ -12,6 +12,7 @@ namespace Ryno {
 		create_vertex_array();
 		m_mesh_manager = MeshManager::get_instance();
 		indices.resize(0);
+		input_instances = nullptr;
 
 	}
 	void Batch3DGeometry::set_camera(Camera3D* camera) {

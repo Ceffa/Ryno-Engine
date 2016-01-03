@@ -106,11 +106,16 @@ namespace Ryno{
 		walls[4]->transform->set_position(0, 205, 0);
 
 		//Spot light
-		spot_light.create(game->stack_allocator);
-		spot_light->transform.create(game->stack_allocator);
-		spot_light->transform->set_position(0, 190, 50);
-		SpotLight* s = spot_light->spot_light.create(game->stack_allocator);
+		//Directional light
+		spot_light_shader.create(game->stack_allocator);
+		spot_light_shader->create("LightPass/spot", ENGINE);
 
+		spot_light_go.create(game->stack_allocator);
+		spot_light_go->transform.create(game->stack_allocator);
+		spot_light_go->transform->set_position(0, 190, 50);
+		SpotLight* s = spot_light_go->spot_light.create(game->stack_allocator);
+		s->model.create(game->stack_allocator);
+		s->model->material.set_shader(*spot_light_shader);
 		s->set_direction(-90, 0);
 		s->cutoff = 30;
 		s->set_diffuse_color(0, 255, 0);
@@ -287,7 +292,7 @@ namespace Ryno{
 	void HouseScene::input(){
 		if (!game->shell->active){
 			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
-				game->set_scene("valley");
+				game->set_scene("firework");
 			}
 		}
 	}

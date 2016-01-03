@@ -8,7 +8,7 @@
 #define MALLOCATOR_LOG 0
 namespace Ryno{
 
-	
+
 	class Mallocator : public Allocator{
 	public:
 		static Mallocator* get_instance();
@@ -20,5 +20,8 @@ namespace Ryno{
 
 		void* alloc(size_t obj_size, U8 alignement) override;
 		void dealloc(void* p) override;
+
+		static Mallocator* instance;
+
 	};
 }
