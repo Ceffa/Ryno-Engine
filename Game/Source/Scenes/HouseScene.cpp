@@ -153,9 +153,15 @@ namespace Ryno{
 		spheres[3]->transform->set_position(180, 20, -180);
 
 		//Directional light
-		directional_light.create(game->stack_allocator);
-		DirectionalLight* l = directional_light->dir_light.create(game->stack_allocator);
-		directional_light->transform.create(game->stack_allocator);
+		light_shader.create(game->stack_allocator);
+		light_shader->create("LightPass/directional", ENGINE);
+
+		directional_light_go.create(game->stack_allocator);
+		directional_light_go->transform.create(game->stack_allocator);
+
+		DirectionalLight* l = directional_light_go->dir_light.create(game->stack_allocator);
+		l->model.create(game->stack_allocator);
+		l->model->material.set_shader(*light_shader);
 		l->set_direction(-65, 150);
 		l->diffuse_intensity = 0.2;
 		l->set_diffuse_color(255, 255, 200);

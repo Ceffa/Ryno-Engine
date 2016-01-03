@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
 
 	Ryno::Game* game = Ryno::Game::get_instance();
 	Ryno::ScenesList::create_scenes();
-	game->set_scene("firework");
+	game->set_scene("house");
 	game->init();
 	game->run();
 	

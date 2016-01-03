@@ -30,7 +30,7 @@ namespace Ryno{
 		New<GameObject> cones[3];
 		New<GameObject> walls[5];
 		New<GameObject> spot_light;
-		New<GameObject> directional_light;
+		New<GameObject> directional_light_go;
 		New<GameObject> spheres[4];
 		New<GameObject> emitter_obj;
 
@@ -42,7 +42,7 @@ namespace Ryno{
 		glm::vec3 acceleration = glm::vec3(0, 0, 0);
 		New<Texture> bt, bn, solaire, sun, doge, white, white_normal;
 		New<I32> sphere_mesh, cone_mesh, cube_mesh, terrain_mesh;
-		New<Shader> shader;
+		New<Shader> shader,light_shader;
 
 
 	};
