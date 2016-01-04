@@ -65,7 +65,7 @@ namespace Ryno{
 		input_manager = InputManager::get_instance();
 		input_manager->init(window);
 		mesh_manager = MeshManager::get_instance();
-		deferred_renderer = DeferredRenderer::get_instance();
+		deferred_renderer.create(mallocator);
 		deferred_renderer->init();
 		simple_drawer = SimpleDrawer::get_instance();
 		mesh_builder = MeshBuilder::get_instance();

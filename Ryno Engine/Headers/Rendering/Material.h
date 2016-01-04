@@ -31,7 +31,7 @@ namespace Ryno{
 				return false;
 			}
 			if (uniform_map[attr] == nullptr){
-				uniform_map[attr] = new T();
+				uniform_map[attr] = malloc(sizeof(T));
 			}
 			*(T*)uniform_map[attr] = val;
 			return true;

@@ -349,16 +349,7 @@ namespace Ryno{
 
 	
 
-	I8 Shader::compare_uniforms(void* a, void* b)
-	{
-		U64 first = (U64)a;
-		U64 second = (U64)b;
-		if (a == b) return 0;
-		if (a < b) return -1;
-		if (a > b) return 1;
-
-		return 0;
-	}
+	
 
 	bool Shader::is_sampler(GLenum type)
 	{

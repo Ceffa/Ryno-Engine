@@ -38,18 +38,22 @@ namespace Ryno{
 		go->model.copy(mod);
 		
 		
-		
+		dir_shader.create(game->stack_allocator);
+		dir_shader->create("LightPass/directional", ENGINE);
+
 		go->transform.create(game->stack_allocator);
 		go->transform->set_scale(1,1,1);
 		go->transform->set_position(0, 55, 50);
-		go->dir_light.create(game->stack_allocator);
-		go->dir_light->set_direction(-45, 150);
-		go->dir_light->diffuse_intensity = 0.7f;
-		go->dir_light->set_diffuse_color(255, 255, 200);
-		go->dir_light->specular_intensity = 0.1f;
-		go->dir_light->set_specular_color(255, 255, 200);
-		go->dir_light->ambient_intensity = 0.05f;
-		go->dir_light->set_ambient_color(255, 255, 200);
+		auto l = go->dir_light.create(game->stack_allocator);
+		l->model.create(game->stack_allocator);
+		l->model->material.set_shader(*dir_shader);
+		l->set_direction(-45, 150);
+		l->diffuse_intensity = 0.7f;
+		l->set_diffuse_color(255, 255, 200);
+		l->specular_intensity = 0.1f;
+		l->set_specular_color(255, 255, 200);
+		l->ambient_intensity = 0.05f;
+		l->set_ambient_color(255, 255, 200);
 
 	}
 		

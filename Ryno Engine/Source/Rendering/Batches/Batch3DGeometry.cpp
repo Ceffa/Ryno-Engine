@@ -55,6 +55,7 @@ namespace Ryno {
 		for (auto mod : m_models){
 			total_size += mod->material.shader->attributes_struct_size;
 		}
+
 		//Resize the MVP vector at the beginning to avoid reallocations
 		input_instances = malloc(total_size);
 
@@ -94,7 +95,7 @@ namespace Ryno {
 			else {
 
 				for (const auto& cnt : new_mod->material.shader->uniforms_data){
-					if (0 != Shader::compare_uniforms(new_mod->material.uniform_map[cnt.first], last_mod->material.uniform_map[cnt.first])){
+					if (0 != memcmp(new_mod->material.uniform_map[cnt.first], last_mod->material.uniform_map[cnt.first], cnt.second.size)){
 						equals_uniform = false;
 						break;
 					}
@@ -126,6 +127,7 @@ namespace Ryno {
 
 		}
 		I32 total_vertices = m_render_batches.back().vertex_offset + m_render_batches.back().num_vertices;
+
 		I32 cv = 0;
 		vertices.resize(total_vertices);
 		for (const auto& rb : m_render_batches){
@@ -254,11 +256,12 @@ namespace Ryno {
 		auto itb = mb.uniform_map.begin();
 
 		while (ita != ma.uniform_map.end()){
-			if (ita->second == itb->second){
+			I8 res = memcmp(ita->second, itb->second, ma.shader->uniforms_data[ita->first].size);
+			if (res == 0){
 				ita++; itb++;
 				continue;
 			}
-			return ita->second < itb->second;
+			return res < 0 ? true: false;
 		}
 		return false;
 	}

@@ -56,10 +56,10 @@ namespace Ryno{
 		void create_render_batches();
 		void create_vertex_array();
 		void enable_attributes();
-		U32 m_vbo;
-		U32 m_i_vbo;//instancing vbo
-		U32 m_index_vbo;
-		U32 m_vao;
+		U32 m_vbo=0;
+		U32 m_i_vbo=0;//instancing vbo
+		U32 m_index_vbo=0;
+		U32 m_vao=0;
 
 		Camera3D* m_camera;
 		MeshManager* m_mesh_manager;

@@ -33,7 +33,7 @@ namespace Ryno{
 		friend class Shell;
 	public:
 		~DeferredRenderer(){}
-		static DeferredRenderer* get_instance();
+		DeferredRenderer(){}
 
 		bool geometry_enabled = true;
 		bool directional_light_enabled = true;
@@ -82,9 +82,6 @@ namespace Ryno{
 
 	private:
 
-		U32 screen_width, screen_height;
-		DeferredRenderer();
-
 		//Shadow subpass for point light
 		void point_shadow_subpass(GameObject* go);
 
@@ -113,14 +110,14 @@ namespace Ryno{
 		New<Shader> m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_blit_program,m_flat_program,m_sprite_program,m_font_program;
 
 		//BATCHES
-		Batch3DGeometry* m_geometry_batch3d;
-		Batch3DShadow*  m_shadow_batch3d;
-		Batch2DSprite* m_sprite_batch2d;
-		Batch2DFont* m_font_batch2d;
+		New<Batch3DGeometry> m_geometry_batch3d;
+		New<Batch3DShadow>  m_shadow_batch3d;
+		New<Batch2DSprite> m_sprite_batch2d;
+		New<Batch2DFont> m_font_batch2d;
 
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
-		Model* m_bounding_sphere, * m_fullscreen_quad, *m_cube_box, *m_bounding_pyramid;
+		New<Model> m_bounding_sphere, m_fullscreen_quad, m_cube_box, m_bounding_pyramid;
 		glm::mat4 MVP_camera;
 		glm::mat4 inverse_P_matrix;
 		glm::mat4 inverse_VP_matrix;

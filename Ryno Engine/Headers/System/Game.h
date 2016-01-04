@@ -59,7 +59,7 @@ namespace Ryno{
 		TextureManager* texture_manager;
 		MeshManager* mesh_manager;
 		SimpleDrawer* simple_drawer;
-		DeferredRenderer* deferred_renderer;
+		New<DeferredRenderer> deferred_renderer;
 		ParticleManager* particle_manager;
 		MeshBuilder* mesh_builder;
 		Mallocator* mallocator;

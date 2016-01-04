@@ -160,10 +160,7 @@ namespace Ryno{
 			return true;
 		}
 
-		//Check if two uniforms are equals (just check the pointers).
-		//Be sure to NOT use two copies of a value, or they are identified as different
-		static I8 compare_uniforms(void* a, void* b);
-
+	
 
 		//Check if a uniform is a sampler
 		static bool is_sampler(GLenum type);

@@ -18,11 +18,6 @@
 
 namespace Ryno{
 
-
-	DeferredRenderer* DeferredRenderer::get_instance(){
-		static DeferredRenderer instance;//only at the beginning
-		return &instance;
-	}
 	const CameraDirection DeferredRenderer::camera_directions[NUM_OF_LAYERS]=
 	{
 		{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f) },
@@ -33,10 +28,7 @@ namespace Ryno{
 		{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f) }
 	};
 
-	DeferredRenderer::DeferredRenderer()
-	{
-
-	}
+	
 
 	void DeferredRenderer::set_camera(Camera3D* camera)
 	{
@@ -56,14 +48,12 @@ namespace Ryno{
 		m_fbo_deferred.create(allocator,WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_fbo_shadow.create(allocator, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-		screen_width = WINDOW_WIDTH;
-		screen_height = WINDOW_HEIGHT;
-
+	
 		//BATCHES SETUP
-		m_geometry_batch3d = new Batch3DGeometry();
-		m_shadow_batch3d = new Batch3DShadow();
-		m_sprite_batch2d = new Batch2DSprite();
-		m_font_batch2d = new Batch2DFont();
+		m_geometry_batch3d.create(allocator);
+		m_shadow_batch3d.create(allocator);
+		m_sprite_batch2d.create(allocator);
+		m_font_batch2d.create(allocator);
 
 		m_sprite_batch2d->init();
 		m_font_batch2d->init();
@@ -113,16 +103,16 @@ namespace Ryno{
 
 		//MODEL LOADING
 
-		m_bounding_sphere = new Model();
+		m_bounding_sphere.create(allocator);
 		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
 
-		m_bounding_pyramid = new Model();
+		m_bounding_pyramid.create(allocator);
 		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
 
-		m_fullscreen_quad = new Model();
+		m_fullscreen_quad.create(allocator);
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
 
-		m_cube_box = new Model();
+		m_cube_box.create(allocator);
 		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
 
 		//BIAS MATRIX
@@ -340,8 +330,8 @@ namespace Ryno{
 		mat.set_uniform("point_light.diffuse_intensity", p->diffuse_intensity);
 
 		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM GLOBAL
-		mat.set_uniform("screen_width", screen_width);
-		mat.set_uniform("screen_height", screen_height);
+		mat.set_uniform("screen_width", WINDOW_WIDTH);
+		mat.set_uniform("screen_height", WINDOW_HEIGHT);
 		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
 		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
 		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
@@ -454,8 +444,8 @@ namespace Ryno{
 		mat.set_uniform("spot_light.specular",s->specular_color);
 		mat.set_uniform("spot_light.diffuse_intensity", s->diffuse_intensity);
 		mat.set_uniform("spot_light.specular_intensity", s->specular_intensity);
-		mat.set_uniform("screen_width", screen_width);
-		mat.set_uniform("screen_height", screen_height);
+		mat.set_uniform("screen_width", WINDOW_WIDTH);
+		mat.set_uniform("screen_height", WINDOW_HEIGHT);
 		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
 		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
 		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
@@ -538,8 +528,8 @@ namespace Ryno{
 			glm::vec4(d->direction, 0));
 
 
-		mat.set_uniform("screen_width", screen_width);
-		mat.set_uniform("screen_height", screen_height);
+		mat.set_uniform("screen_width", WINDOW_WIDTH);
+		mat.set_uniform("screen_height", WINDOW_HEIGHT);
 		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
 		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
 		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
@@ -581,7 +571,7 @@ namespace Ryno{
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_blit_program->use();
-		m_simple_drawer->draw(m_fullscreen_quad);
+		m_simple_drawer->draw(*m_fullscreen_quad);
 		m_blit_program->unuse();
 
 		glDepthMask(GL_FALSE);
@@ -603,7 +593,7 @@ namespace Ryno{
 		glUniform1i(m_skybox_program->getUniformLocation("cube_map"), 0);
 
 
-		m_simple_drawer->draw(m_cube_box);
+		m_simple_drawer->draw(*m_cube_box);
 
 		m_skybox_program->unuse();
 

@@ -22,7 +22,7 @@ namespace Ryno{
 
 		New<Sound> sound;
 		New<Music> music;
-		New<Shader> shader;
+		New<Shader> shader, dir_shader;
 		New<Texture> bt, bn;
 		New<I32> terrain_mesh;
 		New<GameObject> go;

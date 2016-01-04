@@ -36,10 +36,10 @@ namespace Ryno{
 	protected:
 
 		std::vector<Sprite*> m_sprites;
-		U32 m_vbo;
-		U32 m_i_vbo;//instancing vbo
-		U32 m_indices_vbo;
-		U32 m_vao;
+		U32 m_vbo=0;
+		U32 m_i_vbo=0;//instancing vbo
+		U32 m_indices_vbo=0;
+		U32 m_vao=0;
 
 		std::vector<InstanceValues> input_instances;
 		std::vector<RenderBatch2D> m_render_batches;

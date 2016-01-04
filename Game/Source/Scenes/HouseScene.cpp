@@ -292,7 +292,7 @@ namespace Ryno{
 	void HouseScene::input(){
 		if (!game->shell->active){
 			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
-				game->set_scene("firework");
+				game->set_scene("valley");
 			}
 		}
 	}
