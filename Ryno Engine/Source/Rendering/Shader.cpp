@@ -271,6 +271,7 @@ namespace Ryno{
 			}
 			else
 				temp_attribs.push_back(new attribute(loc, 0, sizeof(U32)*get_size_from_type(temp_type) * temp_size, temp_name));
+
 		}
 
 		std::stable_sort(temp_attribs.begin(), temp_attribs.end(), [](attribute*a, attribute*b){return a->index < b->index; });
@@ -305,10 +306,13 @@ namespace Ryno{
 			if (temp_name[0] == 'g' && temp_name[1] == '_'){
 				global_uniforms_data[temp_name].index = loc;
 				global_uniforms_data[temp_name].type = temp_type;
+				global_uniforms_data[temp_name].value = nullptr;
 			}
 			else{
 				uniforms_data[temp_name].index = loc;
 				uniforms_data[temp_name].type = temp_type;
+				uniforms_data[temp_name].size = sizeof(U32) * get_size_from_type(temp_type) * temp_size;
+
 			}
 
 		}

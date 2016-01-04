@@ -59,8 +59,8 @@ namespace Ryno{
 
 
 		shader.create(game->stack_allocator);
-		shader->create("Geometry/geometry",GAME);
 		shader2.create(game->stack_allocator);
+		shader->create("Geometry/geometry",GAME);
 		shader2->create("Geometry/geometry2",GAME);
 
 
@@ -90,7 +90,6 @@ namespace Ryno{
 			p->speed = .5f;
 			p->model.create(StackAllocator::get_instance());
 			p->model->material.set_shader(shader);
-			//p->model->set_texture_normal(white, normal);
 			p->model->mesh = *mesh;
 			p->model->material.set_attribute("in_Color",ColorRGBA::yellow);
 			p->model->material.set_attribute("in_Tiling", glm::vec2(1,1));
@@ -155,8 +154,8 @@ namespace Ryno{
 		{
 			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
-			p->model->material.set_attribute("in_Color", ColorRGBA::black);
-			p->model->material.set_attribute("in_Color2", ryno_math::rand_color_range(ColorRGBA(0, 0, 255, 255), ColorRGBA(255, 0, 255, 255)));
+			p->model->material.set_attribute("in_Color", ColorRGBA::white);
+			p->model->material.set_attribute("in_Color2", ColorRGBA::red);
 
 
 		};

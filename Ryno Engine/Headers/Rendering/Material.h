@@ -30,12 +30,20 @@ namespace Ryno{
 			if (res == uniform_map.end()){
 				return false;
 			}
-
-			uniform_map[attr] = (void*)&val;
+			if (uniform_map[attr] == nullptr){
+				uniform_map[attr] = new T();
+			}
+			*(T*)uniform_map[attr] = val;
 			return true;
 		}
 	
-		~Material(){ free(attribute_memory); }
+		~Material(){ 
+			free(attribute_memory);
+			for (auto& entry : uniform_map){
+				delete entry.second;
+			}
+			uniform_map.clear();
+		}
 		Material(const Material& copy);
 		Material(){ attribute_memory = nullptr; }
 		void* attribute_memory = nullptr;

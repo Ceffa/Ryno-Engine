@@ -28,7 +28,9 @@ namespace Ryno {
 		set_shader(copy.shader);
 		//Copy entry of uniform map
 		for (const auto& entry : copy.uniform_map){
-			uniform_map[entry.first] = entry.second;
+			if (entry.second == nullptr) continue;
+			uniform_map[entry.first] = malloc(shader->uniforms_data[entry.first].size);
+			std::memcpy(uniform_map[entry.first], entry.second, shader->uniforms_data[entry.first].size);
 		}
 		//Copy attributes memory
 		std::memcpy(attribute_memory, copy.attribute_memory, shader->attributes_struct_size);

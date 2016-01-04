@@ -200,7 +200,7 @@ namespace Ryno {
 
 		Shader* old_shader = nullptr;
 		
-		
+		U64 buffer_data_offset = 0;
 		for (const auto& rb : m_render_batches){
 
 			auto curr_shader = rb.model->material.shader;
@@ -229,9 +229,9 @@ namespace Ryno {
 			}
 		
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
-			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * curr_shader->attributes_struct_size, (void*)((U64)input_instances + rb.instance_offset* old_shader_size), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * curr_shader->attributes_struct_size, (void*)((U64)input_instances + buffer_data_offset ), GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
-		
+			buffer_data_offset += rb.num_instances* curr_shader->attributes_struct_size;
 			U32 offset = rb.indices_offset * sizeof(U32);
 
 			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_INT, (void*)offset, rb.num_instances, rb.vertex_offset);

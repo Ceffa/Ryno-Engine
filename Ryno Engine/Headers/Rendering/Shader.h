@@ -39,6 +39,7 @@ namespace Ryno{
 	struct uniforms{
 		U32 index;		//Index of the attribute
 		U32 type;
+		U32 size;
 	};
 	struct global_uniforms{
 		U32 index;		//Index of the attribute
@@ -152,7 +153,10 @@ namespace Ryno{
 			if (res == global_uniforms_data.end()){
 				return false;
 			}
-			global_uniforms_data[attr].value = (void*)&value;
+			if (global_uniforms_data[attr].value == nullptr){
+				global_uniforms_data[attr].value = new T();
+			}
+			*(T*)global_uniforms_data[attr].value = value;
 			return true;
 		}
 
