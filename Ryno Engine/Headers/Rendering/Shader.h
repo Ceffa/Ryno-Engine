@@ -163,7 +163,7 @@ namespace Ryno{
 	
 
 		//Check if a uniform is a sampler
-		static bool is_sampler(GLenum type);
+		static bool is_sampler(GLenum type, I32* type_of_texture);
 
 		//send uniform to shader. Depending on its type (matrix, int etc)
 		//the template function send_uniform_to_shader is called with a different argument
@@ -243,10 +243,13 @@ namespace Ryno{
 				std::cout << "Shader: value required by shader not found in local map: " << name << std::endl;
 				exit(-1);
 			}
-			if (Shader::is_sampler(map[name].type)){
+			I32 type_of_texture;
+			if (Shader::is_sampler(map[name].type, &type_of_texture)){
 				
 				glActiveTexture(GL_TEXTURE0 + *sampler_index);
-				glBindTexture(GL_TEXTURE_2D, *(U32*)value);
+				
+				glBindTexture(type_of_texture, *(U32*)value);
+		
 				glUniform1i(map[name].index, *sampler_index);
 				*sampler_index = *sampler_index + 1;
 				return;

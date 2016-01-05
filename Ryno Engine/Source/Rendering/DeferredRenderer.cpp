@@ -73,7 +73,6 @@ namespace Ryno{
 		m_directional_shadow_program.create(allocator);
 		m_directional_shadow_program->create("ShadowPass/directional", ENGINE);
 	
-	
 		//Skybox program 
 		m_skybox_program.create(allocator);
 		m_skybox_program->create("SkyboxPass/skybox",ENGINE);
@@ -112,8 +111,9 @@ namespace Ryno{
 		m_fullscreen_quad.create(allocator);
 		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
 
-		m_cube_box.create(allocator);
-		m_cube_box->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
+		skybox_model.create(allocator);
+		skybox_model->material.set_shader(*m_skybox_program);
+		skybox_model->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
 
 		//BIAS MATRIX
 		bias = glm::mat4(
@@ -302,8 +302,6 @@ namespace Ryno{
 		auto& mat = mod->material;
 
 		m_fbo_deferred->bind_for_light_pass();
-		m_fbo_shadow->bind_for_point_lighting_pass();
-
 
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
@@ -412,7 +410,6 @@ namespace Ryno{
 		auto& mat = mod->material;
 
 		m_fbo_deferred->bind_for_light_pass();
-		m_fbo_shadow->bind_for_spot_lighting_pass();
 
 
 		glDisable(GL_DEPTH_TEST);
@@ -509,7 +506,6 @@ namespace Ryno{
 		auto& mat = mod->material;
 		auto s =mat.shader;
 		m_fbo_deferred->bind_for_light_pass();
-		m_fbo_shadow->bind_for_directional_lighting_pass();
 
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
@@ -582,20 +578,17 @@ namespace Ryno{
 
 		
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
-		m_skybox_program->use();
+
 
 		//Remove translation from VP matrix
 		glm::mat4 no_trans_VP = m_camera->get_P_matrix() *  glm::mat4(glm::mat3(m_camera->get_V_matrix()));
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_camera->skybox.id);
-		glUniformMatrix4fv(m_skybox_program->getUniformLocation("no_trans_VP"), 1, GL_FALSE, &no_trans_VP[0][0]);
-		glUniform1i(m_skybox_program->getUniformLocation("cube_map"), 0);
+	
+		skybox_model->material.set_uniform("no_trans_VP",no_trans_VP);
+		skybox_model->material.set_uniform("cube_map", m_camera->skybox.id);
 
-
-		m_simple_drawer->draw(*m_cube_box);
-
-		m_skybox_program->unuse();
+		
+		m_simple_drawer->draw_new(*skybox_model);
 
 		//Restore depth
 		glDepthRange(0.0, 1.0);

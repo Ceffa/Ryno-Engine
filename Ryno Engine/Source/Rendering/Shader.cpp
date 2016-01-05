@@ -351,10 +351,20 @@ namespace Ryno{
 
 	
 
-	bool Shader::is_sampler(GLenum type)
+	bool Shader::is_sampler(GLenum type, I32* type_of_texture)
 	{
-		if (type == GL_SAMPLER_2D || type == GL_SAMPLER_3D || type == GL_SAMPLER_CUBE || type == GL_SAMPLER_CUBE_SHADOW || type == GL_SAMPLER_2D_SHADOW)
+		if (type == GL_SAMPLER_2D || type == GL_SAMPLER_2D_SHADOW){
+			*type_of_texture = GL_TEXTURE_2D;
 			return true;
+		}
+		if (type == GL_SAMPLER_CUBE || type == GL_SAMPLER_CUBE_SHADOW){
+			*type_of_texture = GL_TEXTURE_CUBE_MAP;
+			return true;
+		}
+		if (type == GL_SAMPLER_3D){
+			*type_of_texture = GL_TEXTURE_3D;
+			return true;
+		}
 		return false;
 	}
 

@@ -15,11 +15,8 @@ namespace Ryno{
 		void start_frame();
 		
 		void bind_for_point_shadow_pass();
-		void bind_for_point_lighting_pass();
 		void bind_for_spot_shadow_pass();
-		void bind_for_spot_lighting_pass();
 		void bind_for_directional_shadow_pass();
-		void bind_for_directional_lighting_pass();
 
 		U32 m_fbo;
 		U32 m_directional_texture;

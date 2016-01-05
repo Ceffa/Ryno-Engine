@@ -104,12 +104,6 @@ namespace Ryno {
 
 		}
 
-	void FBO_Shadow::bind_for_directional_lighting_pass(){
-
-		//bind shadow map so it can be used in the lighting shader
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, m_directional_texture);
-	}
 
 	void FBO_Shadow::bind_for_point_shadow_pass()
 	{
@@ -121,12 +115,7 @@ namespace Ryno {
 
 	}
 
-	void FBO_Shadow::bind_for_point_lighting_pass()
-	{
-		//bind shadow map so it can be used in the lighting shader
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_point_cube);
-	}
+	
 
 
 	void FBO_Shadow::bind_for_spot_shadow_pass()
@@ -137,14 +126,6 @@ namespace Ryno {
 		//Draw only depth
 		glDrawBuffer(GL_NONE);
 	}
-
-	void FBO_Shadow::bind_for_spot_lighting_pass()
-	{
-		//bind shadow map so it can be used in the lighting shader
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, m_spot_texture);
-	}
-
 	
 	
 
@@ -159,9 +140,5 @@ void FBO_Shadow::bind_fbo()
 
 
 
-
-
-
-	 
 }
 	

@@ -110,15 +110,7 @@ namespace Ryno {
 
 		//Draw in the final_texture of fbo, not yet in the screen buffer
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
-
-		//Bind the textures correspondent to the buffers of the gbuffer.
-		//The light shader needs textures position (like GL_TEXTURE0), not texture ids.
-		//So we need to bind the id to the location.
-
-		for (U8 i = 0; i < FRAME_NUM_TEXTURES; i++) {
-			glActiveTexture(GL_TEXTURE0 + i);
-			glBindTexture(GL_TEXTURE_2D, m_textures[i]);
-		}
+				
 		
 	}
 
