@@ -339,7 +339,7 @@ namespace Ryno{
 		mat.set_uniform("MVP", MVP_camera);
 		mat.set_uniform("shadows_enabled", point_shadow_enabled);
 
-		m_simple_drawer->draw_new(mod);
+		m_simple_drawer->draw(mod);
 
 		glDisable(GL_BLEND);
 
@@ -452,7 +452,7 @@ namespace Ryno{
 		mat.set_uniform("MVP",MVP_camera);
 		mat.set_uniform("shadows_enabled", spot_shadow_enabled);
 
-		m_simple_drawer->draw_new(mod);
+		m_simple_drawer->draw(mod);
 
 		glDisable(GL_BLEND);
 	}
@@ -544,7 +544,7 @@ namespace Ryno{
 		mat.set_uniform("shadows_enabled", directional_shadow_enabled);
 
 
-		m_simple_drawer->draw_new(mod);
+		m_simple_drawer->draw(mod);
 
 		
 		
@@ -564,7 +564,7 @@ namespace Ryno{
 		m_blit_model->material.set_uniform("source_buffer", m_fbo_deferred->m_textures[2]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
-		m_simple_drawer->draw_new(*m_blit_model);
+		m_simple_drawer->draw(*m_blit_model);
 
 		glDepthMask(GL_FALSE);
 		
@@ -584,7 +584,7 @@ namespace Ryno{
 		m_skybox_model->material.set_uniform("cube_map", m_camera->skybox.id);
 
 		
-		m_simple_drawer->draw_new(*m_skybox_model);
+		m_simple_drawer->draw(*m_skybox_model);
 
 		//Restore depth
 		glDepthRange(0.0, 1.0);

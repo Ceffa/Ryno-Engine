@@ -267,27 +267,27 @@ namespace Ryno{
 				break;
 			//NEEDS A REFACTORING, USE glUniform3iv 
 			case GL_INT_VEC3:
-				glUniform3i(map[name].index, *(I32*)value, *(I32*)((U64)value + sizeof(I32)), *(I32*)((U64)value + 2 * sizeof(I32)));
+				glUniform3iv(map[name].index, 1, (I32*)value);
 				break;
 			case GL_UNSIGNED_INT_VEC3:
-				glUniform3ui(map[name].index, *(U32*)value, *(U32*)((U64)value + sizeof(U32)), *(U32*)((U64)value + 2 * sizeof(U32)));
+				glUniform3uiv(map[name].index, 1, (U32*)value);
 				break;
 			case GL_FLOAT_VEC3:
-				glUniform3f(map[name].index, *(F32*)value, *(F32*)((U64)value + sizeof(F32)), *(F32*)((U64)value + 2 * sizeof(F32)));
+				glUniform3fv(map[name].index, 1, (F32*)value);
 				break;
 
 			case GL_INT_VEC4:
-				glUniform4i(map[name].index, *(I32*)value, *(I32*)((U64)value + sizeof(I32)), *(I32*)((U64)value + 2 * sizeof(I32)), *(I32*)((U64)value + 3 * sizeof(I32)));
+				glUniform4iv(map[name].index, 1, (I32*)value);
 				break;
 			case GL_UNSIGNED_INT_VEC4:
-				glUniform4ui(map[name].index, *(U32*)value, *(U32*)((U64)value + sizeof(U32)), *(U32*)((U64)value + 2 * sizeof(U32)), *(U32*)((U64)value + 3 * sizeof(U32)));
+				glUniform4uiv(map[name].index, 1, (U32*)value);
 				break;
 			case GL_FLOAT_VEC4:
-				glUniform4f(map[name].index, *(F32*)value, *(F32*)((U64)value + sizeof(F32)), *(F32*)((U64)value + 2 * sizeof(F32)), *(F32*)((U64)value + 3 * sizeof(F32)));
+				glUniform4fv(map[name].index, 1, (F32*)value);
 				break;
 
 			case GL_FLOAT_MAT4:
-				glUniformMatrix4fv(map[name].index, 1, GL_FALSE, &(*((glm::mat4*)value))[0][0]);
+				glUniformMatrix4fv(map[name].index, 1, GL_FALSE, (F32*)value);
 				break;
 			default:
 				std::cout << "Shader " << name << ": uniform type not found. ";
