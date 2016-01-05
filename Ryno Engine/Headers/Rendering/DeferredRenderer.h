@@ -117,7 +117,7 @@ namespace Ryno{
 
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
-		New<Model> m_bounding_sphere, m_fullscreen_quad, skybox_model, m_bounding_pyramid;
+		New<Model> m_bounding_sphere, m_blit_model, m_skybox_model, m_bounding_pyramid;
 		glm::mat4 MVP_camera;
 		glm::mat4 inverse_P_matrix;
 		glm::mat4 inverse_VP_matrix;

@@ -58,33 +58,42 @@ namespace Ryno{
 		m_sprite_batch2d->init();
 		m_font_batch2d->init();
 
-
 	
+		//MODEL LOADING
 
-		//Point shadow program
+		m_bounding_sphere.create(allocator);
+		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
+
+		m_bounding_pyramid.create(allocator);
+		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
+
+		m_blit_model.create(allocator);
+		m_blit_model->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
+
+		m_skybox_model.create(allocator);
+		m_skybox_model->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
+
+
+		//SHADER PROGRAMS LOADING
+
 		m_point_shadow_program.create(allocator);
 		m_point_shadow_program->create("ShadowPass/point", ENGINE);
 	
-		//Spot shadow program
 		m_spot_shadow_program.create(allocator);
 		m_spot_shadow_program->create("ShadowPass/spot", ENGINE);
 
-		//Directional shadow program
 		m_directional_shadow_program.create(allocator);
 		m_directional_shadow_program->create("ShadowPass/directional", ENGINE);
 	
-		//Skybox program 
 		m_skybox_program.create(allocator);
 		m_skybox_program->create("SkyboxPass/skybox",ENGINE);
-		
-		//Blit program
+		m_skybox_model->material.set_shader(*m_skybox_program);
+
 		m_blit_program.create(allocator);
 		m_blit_program->create("Others/blit", ENGINE);
-		m_blit_program->use();
-		glUniform1i(m_blit_program->getUniformLocation("screen_width"), WINDOW_WIDTH);
-		glUniform1i(m_blit_program->getUniformLocation("screen_height"), WINDOW_HEIGHT);
-		glUniform1i(m_blit_program->getUniformLocation("source_buffer"), 0);
-		m_blit_program->unuse();
+		m_blit_model->material.set_shader(*m_blit_program);
+		m_blit_model->material.set_uniform("screen_width", WINDOW_WIDTH);
+		m_blit_model->material.set_uniform("screen_height", WINDOW_HEIGHT);
 
 		//Sprite program
 		m_sprite_program.create(allocator);
@@ -100,20 +109,7 @@ namespace Ryno{
 		glUniform1i(m_font_program->getUniformLocation("m_texture"), 0);
 		m_font_program->unuse();
 
-		//MODEL LOADING
-
-		m_bounding_sphere.create(allocator);
-		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
-
-		m_bounding_pyramid.create(allocator);
-		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
-
-		m_fullscreen_quad.create(allocator);
-		m_fullscreen_quad->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
-
-		skybox_model.create(allocator);
-		skybox_model->material.set_shader(*m_skybox_program);
-		skybox_model->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
+		
 
 		//BIAS MATRIX
 		bias = glm::mat4(
@@ -502,7 +498,7 @@ namespace Ryno{
 
 		auto d = *go->dir_light;
 		auto mod = *d->model;
-		mod->mesh = m_fullscreen_quad->mesh;
+		mod->mesh = m_blit_model->mesh;
 		auto& mat = mod->material;
 		auto s =mat.shader;
 		m_fbo_deferred->bind_for_light_pass();
@@ -565,10 +561,10 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
+		m_blit_model->material.set_uniform("source_buffer", m_fbo_deferred->m_textures[2]);
+
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
-		m_blit_program->use();
-		m_simple_drawer->draw(*m_fullscreen_quad);
-		m_blit_program->unuse();
+		m_simple_drawer->draw_new(*m_blit_model);
 
 		glDepthMask(GL_FALSE);
 		
@@ -584,11 +580,11 @@ namespace Ryno{
 		glm::mat4 no_trans_VP = m_camera->get_P_matrix() *  glm::mat4(glm::mat3(m_camera->get_V_matrix()));
 
 	
-		skybox_model->material.set_uniform("no_trans_VP",no_trans_VP);
-		skybox_model->material.set_uniform("cube_map", m_camera->skybox.id);
+		m_skybox_model->material.set_uniform("no_trans_VP",no_trans_VP);
+		m_skybox_model->material.set_uniform("cube_map", m_camera->skybox.id);
 
 		
-		m_simple_drawer->draw_new(*skybox_model);
+		m_simple_drawer->draw_new(*m_skybox_model);
 
 		//Restore depth
 		glDepthRange(0.0, 1.0);

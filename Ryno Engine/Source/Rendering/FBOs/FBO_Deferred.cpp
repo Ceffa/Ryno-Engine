@@ -118,10 +118,7 @@ namespace Ryno {
 	void FBO_Deferred::bind_for_skybox_pass(){
 
 		glDrawBuffer(GL_NONE);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_textures[2]);
-
-
+	
 	}
 
 	void FBO_Deferred::bind_for_final_rendering_pass()

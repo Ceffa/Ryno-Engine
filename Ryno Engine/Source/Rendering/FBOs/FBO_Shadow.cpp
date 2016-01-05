@@ -138,7 +138,5 @@ void FBO_Shadow::bind_fbo()
 
 	}
 
-
-
 }
 	
