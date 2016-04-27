@@ -23,7 +23,7 @@ namespace Ryno{
 		ColorRGBA diffuse_color, specular_color;
 		F32 diffuse_intensity, specular_intensity;
 
-		New<Model> model;
+		Model* model;
 	};
 
 }

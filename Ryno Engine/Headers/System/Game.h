@@ -37,6 +37,7 @@ namespace Ryno{
 	enum GameState
 	{
 		Running,
+		ChangeScene,
 		Paused,
 		Exit,
 		None
@@ -73,8 +74,6 @@ namespace Ryno{
 
 
 	protected:
-
-		void select_scene();
 
 		void destroy_scene(Scene* s);
 		void init_external_systems();

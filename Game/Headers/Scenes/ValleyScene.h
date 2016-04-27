@@ -20,13 +20,12 @@ namespace Ryno{
 		void input() override;
 		void update() override;
 
-		New<Sound> sound;
-		New<Music> music;
-		New<Shader> shader, dir_shader;
-		New<Texture> bt, bn;
-		New<I32> terrain_mesh;
-		New<GameObject> go;
-		New<Model> mod;
+		Sound sound;
+		Music music;
+		Shader shader, dir_shader;
+		Texture bt, bn;
+		I32 terrain_mesh;
+		GameObject go;
 	
 	};
 }

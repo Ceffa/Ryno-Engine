@@ -42,7 +42,7 @@ namespace Ryno{
 
 		for (U32 i = 0; i < nr_particles; i++){
 			Particle3D* p = m_particles[i].create(*pool);
-			p->transform.create(r);
+			p->transform = new Transform();
 			lambda_creation(this, p);
 			p->active = false;
 			m_pool.push_back(p);
@@ -73,7 +73,7 @@ namespace Ryno{
 
 	void Emitter::remove_particle(Particle3D* p){
 		
-		Emitter* e = *p->emitter;
+		Emitter* e = p->emitter;
 		if (e) e->disable();
 		m_pool.push_back(p);
 		p->active = false;

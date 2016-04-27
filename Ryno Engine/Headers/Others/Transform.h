@@ -8,7 +8,7 @@ namespace Ryno{
 	public:
 		Transform(){}
 		~Transform(){}
-		Transform(const Transform *t);
+		Transform(const Transform& t);
 
 		//Rotation
 		glm::vec3 rotation;

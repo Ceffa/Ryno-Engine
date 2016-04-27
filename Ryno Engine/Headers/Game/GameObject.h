@@ -21,17 +21,18 @@ namespace Ryno{
 		~GameObject();
 
 		GameObject(const GameObject& go);
-
+		void copy(const GameObject& go);
+		void reset_to_null();
 		//Status
 		bool active = true;
 
 		//Components
-		New<Model> model;
-		New<Transform> transform;
-		New<PointLight> point_light;
-		New<DirectionalLight> dir_light;
-		New<SpotLight> spot_light;
-		New<Emitter> emitter;
+		Model* model;
+		Transform* transform;
+		PointLight* point_light;
+		DirectionalLight* dir_light;
+		SpotLight* spot_light;
+		Emitter* emitter;
 
 		static std::list<GameObject*> game_objects;
 		

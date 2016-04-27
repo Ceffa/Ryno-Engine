@@ -5,9 +5,9 @@
 
 namespace Ryno{
 
-	Transform::Transform(const Transform *t)
+	Transform::Transform(const Transform& t)
 	{
-		*this = *t;
+		*this = t;
 	}
 
 	void Transform::generate_model_matrix(){

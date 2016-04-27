@@ -53,7 +53,7 @@ namespace Ryno{
 
 		mallocator = Mallocator::get_instance();
 		stack_allocator = StackAllocator::get_instance();
-		stack_allocator->init(4096);
+		stack_allocator->init(8192);
 
 		particle_manager = ParticleManager::get_instance();
 		particle_manager->init();
@@ -84,14 +84,17 @@ namespace Ryno{
 	{
 		init_external_systems();
 		init_internal_systems();
+		set_scene("house");
 	}
 
 	void Game::run(){
 	
 		while (game_state != GameState::Exit){
-			select_scene();
+			game_state = GameState::Running;
 			time_manager->begin_frame();
 			handle_input();
+			if (game_state == GameState::ChangeScene)
+				continue;
 			scene->camera_update();
 			if (game_state != GameState::Paused) update();
 			draw();
@@ -106,20 +109,13 @@ namespace Ryno{
 
 	void Game::set_scene(const std::string& scene_name)
 	{
-		Scene* temp_scene = SceneManager::new_scene(scene_name);
-		if (temp_scene)
-			new_scene = temp_scene;
-	}
-
-	//Called the next frame to avoid problems.
-	void Game::select_scene(){
-		if (new_scene != scene){
-			if (scene)
-				destroy_scene(scene);
-			scene = new_scene;
-			deferred_renderer->set_camera(scene->camera);
-			scene->start();
-		}
+		if (scene)
+			destroy_scene(scene);
+		scene = SceneManager::new_scene(scene_name);
+		deferred_renderer->set_camera(scene->camera);
+		game_state = GameState::ChangeScene;
+		scene->start();
+		
 	}
 
 	void Game::destroy_scene(Scene* s){
@@ -131,6 +127,7 @@ namespace Ryno{
 		CPUProfiler::reset();
 		GPUProfiler::reset();
 		delete scene;
+		scene = nullptr;
 		stack_allocator->wipe_all();
 	}
 

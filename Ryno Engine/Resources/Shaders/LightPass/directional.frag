@@ -82,8 +82,9 @@ void main(){
 	//SHADOWS
 
 	float visibility = 1.0f;
+	vec2 poissonDisk[4];
 	if (shadows_enabled > 0.5){
-		vec2 poissonDisk[4] = vec2[](
+		poissonDisk = vec2[](
 			vec2(-0.94201624, -0.39906216),
 			vec2(0.94558609, -0.76890725),
 			vec2(-0.094184101, -0.92938870),

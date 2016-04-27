@@ -11,3 +11,6 @@ Game/x86/
 *.opensdf
 *.psess
 *.vspx
+*.tlog
+Ryno Engine/Debug/
+Game/Debug/

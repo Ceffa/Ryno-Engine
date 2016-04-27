@@ -45,7 +45,6 @@ namespace Ryno{
 			frame_count = 0;
 			Log::println(current_fps);
 			//Log::message(current_fps);
-
 		}
 	}
 
@@ -69,7 +68,7 @@ namespace Ryno{
 		U64 count;
 		count = current_frame < NUM_SAMPLES ? current_frame : NUM_SAMPLES;
 
-		//get som of last NUM_SAMPLES fps
+		//get some of last NUM_SAMPLES fps
 		F32 frame_average = 0;
 		for (U8 i = 0; i < count; i++) {
 			frame_average += frame_times[i];
@@ -82,9 +81,5 @@ namespace Ryno{
 			current_fps = 1000.0f / frame_average;
 		else
 			current_fps = 60.0f; //it shouldn't happen
-
-
 	}
-
-
 }

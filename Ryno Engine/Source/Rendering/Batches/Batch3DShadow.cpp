@@ -77,7 +77,7 @@ namespace Ryno {
 		//For each mesh...
 		for (I32 cg = 0; cg < m_models.size(); cg++){
 
-			auto new_model = *m_models[cg]->model;
+			auto* new_model = m_models[cg]->model;
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0

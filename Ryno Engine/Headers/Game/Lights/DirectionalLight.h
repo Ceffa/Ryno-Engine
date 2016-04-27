@@ -10,13 +10,15 @@ namespace Ryno{
 	public:
 
 	
-		DirectionalLight(){}
+		DirectionalLight() { model = nullptr; }
 		~DirectionalLight(){}
 		DirectionalLight(const DirectionalLight &copy)
 		{ 
 
 			*this = copy;
-			model.copy(copy.model);
+			if(copy.model)
+				model = new Model(*copy.model);
+			else model = nullptr;
 
 		}
 

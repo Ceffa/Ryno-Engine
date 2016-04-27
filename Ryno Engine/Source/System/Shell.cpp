@@ -33,9 +33,9 @@ namespace Ryno {
 
 		//Create background
 		Mallocator* r = Mallocator::get_instance();
-		background.create(r);
-
-		Sprite* s = background->sprite.create(r);
+	
+		background.sprite = new Sprite();
+		auto* s = background.sprite;
 		s->set_texture(background_texture);
 		s->angle = 0;
 		s->set_color(0, 0, 0, 240);
@@ -44,7 +44,7 @@ namespace Ryno {
 
 
 
-		font.create(r, "inconsolata", 24, ENGINE);
+		font.create("inconsolata", 24, ENGINE);
 
 
 		iterator = history.begin();
@@ -55,15 +55,15 @@ namespace Ryno {
 		deferred_renderer = *Game::get_instance()->deferred_renderer;
 		log = Log::get_instance();
 		
-		background->sprite->anchor_point = BOTTOM_LEFT;
-		background->sprite->set_position(0, 0);
-		background->sprite->set_scale(350, WINDOW_HEIGHT / 3.06f);
+		background.sprite->anchor_point = BOTTOM_LEFT;
+		background.sprite->set_position(0, 0);
+		background.sprite->set_scale(350, WINDOW_HEIGHT / 3.06f);
 
 		//Create Texts 
-		lines[0].create(r);
-		Text *t = lines[0]->text.create(r);
+		lines[0].text = new Text();
+		auto *t = lines[0].text;
 		t->anchor_point = BOTTOM_LEFT;
-		t->font = *font;
+		t->font = &font;
 		t->text = base_path;
 		t->set_scale(0.7f,0.7f);
 		t->depth = 4;
@@ -73,9 +73,8 @@ namespace Ryno {
 
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
-			lines[i].create(r);
-			lines[i]->text.copy(lines[0]->text);
-			lines[i]->text->set_position(0.005f, 0.003f + 0.33f * i / NUM_LINES);
+			lines[i].text = new Text(lines[0].text);
+			lines[i].text->set_position(0.005f, 0.003f + 0.33f * i / NUM_LINES);
 		}
 				
 		iterator = history.begin();
@@ -86,15 +85,15 @@ namespace Ryno {
 	void Shell::set_text_color(U8 r, U8 g, U8 b)
 	{
 		for (auto& go : lines){
-			go->text->set_color(r, g, b, 255);
+			go.text->set_color(r, g, b, 255);
 		}
 	}
 	void Shell::set(bool b)
 	{
 		active = b;
-		for (New<GUIObject>& go : lines)
-			go->text->active = b;
-		background->sprite->active = b;
+		for (GUIObject& go : lines)
+			go.text->active = b;
+		background.sprite->active = b;
 	}
 
 	void Shell::show()
@@ -136,7 +135,7 @@ namespace Ryno {
 		if (!active)
 			return;
 
-		active_line_size = (U32)lines[0]->text->text.size();
+		active_line_size = (U32)lines[0].text->text.size();
 
 		if (input_manager->is_key_pressed(SDLK_RETURN, KEYBOARD)){
 			parse_input();
@@ -157,7 +156,7 @@ namespace Ryno {
 		else if (input_manager->is_key_pressed(SDLK_UP, KEYBOARD)){
 
 			if (iterator != history.end()){
-				lines[0]->text->text = base_path + *iterator;
+				lines[0].text->text = base_path + *iterator;
 				iterator++;
 			}
 		}
@@ -166,13 +165,13 @@ namespace Ryno {
 		}
 		else if (input_manager->is_key_pressed(SDLK_DOWN, KEYBOARD)){
 			if (iterator == history.begin())
-				lines[0]->text->text = base_path;
+				lines[0].text->text = base_path;
 			else{
 				iterator--;
 				if (iterator == history.begin())
-					lines[0]->text->text = base_path;
+					lines[0].text->text = base_path;
 				else{
-					lines[0]->text->text = base_path + *(--iterator);
+					lines[0].text->text = base_path + *(--iterator);
 					iterator++;
 				}
 
@@ -185,10 +184,10 @@ namespace Ryno {
 		if (input_manager->is_key_pressed(SDLK_BACKSPACE, KEYBOARD)){
 			
 			if (active_line_size > base_path_size)
-				lines[0]->text->text = lines[0]->text->text.substr(0, active_line_size - 1);
+				lines[0].text->text = lines[0].text->text.substr(0, active_line_size - 1);
 		}
 		
-		lines[0]->text->text += input_manager->frame_text;
+		lines[0].text->text += input_manager->frame_text;
 
 
 	}
@@ -198,7 +197,7 @@ namespace Ryno {
 	{
 
 		
-		active_line = lines[0]->text->text;
+		active_line = lines[0].text->text;
 		if (active_line.compare(base_path) == 0)
 			return;
 
@@ -351,7 +350,7 @@ namespace Ryno {
 				}
 			}
 			
-			background->sprite->set_color(args[0], args[1], args[2], args[3]);
+			background.sprite->set_color(args[0], args[1], args[2], args[3]);
 
 		}
 
@@ -389,7 +388,7 @@ namespace Ryno {
 				}
 			}
 
-			log->background->sprite->set_color(args[0], args[1], args[2], args[3]);
+			log->background.sprite->set_color(args[0], args[1], args[2], args[3]);
 
 		}
 
@@ -419,8 +418,8 @@ namespace Ryno {
 			iterator = history.begin();
 		}
 		else if (command.compare("clearshellscreen") == 0){
-			for (New<GUIObject>& go : lines)
-				go->text->text = base_path;
+			for (GUIObject& go : lines)
+				go.text->text = base_path;
 
 		}
 		else if (command.compare("clearloghistory") == 0){
@@ -429,8 +428,8 @@ namespace Ryno {
 			log->iterator = log->history.begin();
 		}
 		else if (command.compare("clearlogscreen") == 0){
-			for (New<GUIObject>& go : lines)
-				go->text->text = "";
+			for (GUIObject& go : lines)
+				go.text->text = "";
 
 		}
 		else if (command.compare("exit") == 0){
@@ -526,9 +525,9 @@ namespace Ryno {
 	{
 		for (U8 i = NUM_LINES-1; i > 0; i--)
 		{
-			lines[i]->text->text = lines[i - 1]->text->text;
+			lines[i].text->text = lines[i - 1].text->text;
 		}
-		lines[0]->text->text = base_path;
+		lines[0].text->text = base_path;
 		
 	}
 
@@ -538,7 +537,7 @@ namespace Ryno {
 	void Shell::print_message(const std::string& message)
 	{
 		rotate_lines();
-		lines[0]->text->text += message;
+		lines[0].text->text += message;
 	}
 
 	

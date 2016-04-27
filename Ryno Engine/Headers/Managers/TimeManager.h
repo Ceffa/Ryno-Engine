@@ -17,7 +17,7 @@ namespace Ryno{
 		TimeManager();
 		void calculate_FPS();
 		F32 current_fps;
-		F32 target_fps;
+		F32 target_fps = 60;
 		U32 frame_time;
 		U32 initial_ticks;
 	};

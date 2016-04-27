@@ -25,24 +25,24 @@ namespace Ryno{
 
 		Sound sound;
 		Music music;
-		New<Font> font;
+		Font font;
 
-		New<GameObject> cones[3];
-		New<GameObject> walls[5];
-		New<GameObject> spot_light_go;
-		New<GameObject> directional_light_go;
-		New<GameObject> spheres[4];
-		New<GameObject> emitter_obj;
+		GameObject cones[3];
+		GameObject walls[5];
+		GameObject spot_light_go;
+		GameObject directional_light_go;
+		GameObject spheres[4];
+		GameObject emitter_obj;
 
-		New<GUIObject> gui;
+		GUIObject gui;
 
 
 		I32 marker_mesh;
 		glm::vec3 velocity = glm::vec3(0, 0, 0);
 		glm::vec3 acceleration = glm::vec3(0, 0, 0);
-		New<Texture> bt, bn, solaire, sun, doge, white, white_normal;
-		New<I32> sphere_mesh, cone_mesh, cube_mesh, terrain_mesh;
-		New<Shader> shader,dir_light_shader, point_light_shader, spot_light_shader;
+		Texture bt, bn, solaire, sun, doge, white, white_normal;
+		I32 sphere_mesh, cone_mesh, cube_mesh, terrain_mesh;
+		Shader shader,dir_light_shader, point_light_shader, spot_light_shader;
 
 
 	};

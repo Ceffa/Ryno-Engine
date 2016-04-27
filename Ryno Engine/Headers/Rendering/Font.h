@@ -64,9 +64,10 @@ namespace Ryno {
 		friend class FontGlyph;
 
     public:
-		Font(std::string font, U32 size, Owner loc, C cs, C ce);
-		Font(std::string font, U32 size, Owner loc) :
-			Font(font, size,loc, FIRST_PRINTABLE_CHAR, LAST_PRINTABLE_CHAR) {
+		Font() {}
+		void create(std::string font, U32 size, Owner loc, C cs, C ce);
+		void create(std::string font, U32 size, Owner loc) {
+			create(font, size, loc, FIRST_PRINTABLE_CHAR, LAST_PRINTABLE_CHAR);
         }
 
 		Texture t;

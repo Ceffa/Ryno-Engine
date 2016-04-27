@@ -51,11 +51,11 @@ namespace Ryno{
 		U32 parse_starting_point;
 		void set_text_color(U8 r, U8 g, U8 b);
 
-		New<GUIObject> background;
+		GUIObject background;
 	
 		InputManager* input_manager;
-		New<Font> font;
-		New<GUIObject> lines[NUM_LINES];
+		Font font;
+		GUIObject lines[NUM_LINES];
 		std::list<std::string> history;
 		std::list<std::string>::iterator iterator;
 		U32 history_length;

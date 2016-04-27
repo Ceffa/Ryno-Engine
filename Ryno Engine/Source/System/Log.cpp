@@ -15,7 +15,7 @@ namespace Ryno {
 	void Log::set_text_color(U8 r, U8 g, U8 b)
 	{
 		for (auto& go : lines){
-			go->text->set_color(r, g, b, 255);
+			go.text->set_color(r, g, b, 255);
 		}
 	}
 
@@ -37,9 +37,9 @@ namespace Ryno {
 
 		//Create background
 		Mallocator* r = Mallocator::get_instance();
-		background.create(r);
-
-		Sprite* s = background->sprite.create(r);
+	
+		background.sprite = new Sprite();
+		Sprite* s = background.sprite;
 		s->set_texture(background_texture);
 		s->angle = 0;
 		s->set_color(0, 0, 0, 240);
@@ -48,23 +48,22 @@ namespace Ryno {
 
 
 
-		font.create(r, "inconsolata", 24, ENGINE);
+		font.create("inconsolata", 24, ENGINE);
 
 
 		iterator = history.begin();
 		history_length = 0;
 		input_manager = InputManager::get_instance();
 		
-		background->sprite->anchor_point = TOP_LEFT;
-		background->sprite->set_position(0, 1);
-		background->sprite->set_scale(350, WINDOW_HEIGHT / 1.506f);
+		background.sprite->anchor_point = TOP_LEFT;
+		background.sprite->set_position(0, 1);
+		background.sprite->set_scale(350, WINDOW_HEIGHT / 1.506f);
 
-				
-
-		lines[0].create(r);
-		Text* t = lines[0]->text.create(r);
+			
+		lines[0].text = new Text();
+		auto* t = lines[0].text;
 		t->anchor_point = BOTTOM_LEFT;
-		t->font = *font;
+		t->font = &font;
 		t->text = "";
 		t->set_scale(0.7f,0.7f);
 		t->depth = 4;
@@ -75,9 +74,8 @@ namespace Ryno {
 
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
-			lines[i].create(r);
-			lines[i]->text.copy(lines[0]->text);
-			lines[i]->text->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
+			lines[i].text = new Text(lines[0].text);
+			lines[i].text->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
 		}
 
 		
@@ -90,8 +88,8 @@ namespace Ryno {
 	{
 		active = b;
 		for (auto& go : lines)
-			go->text->active = b;
-		background->sprite->active = b;
+			go.text->active = b;
+		background.sprite->active = b;
 	}
 
 	void Log::show()
@@ -125,13 +123,13 @@ namespace Ryno {
 		bool write = true;
 		for (U8 i = 0; i < NUM_LINES; i++){
 			if (write && temp == history.end()){
-				lines[i]->text->text = "";
+				lines[i].text->text = "";
 				write = false;
 			}
 			else if (!write)
-				lines[i]->text->text = "";
+				lines[i].text->text = "";
 			else
-				lines[i]->text->text = *temp;
+				lines[i].text->text = *temp;
 
 			if (temp!= history.end()) temp++;
 		}

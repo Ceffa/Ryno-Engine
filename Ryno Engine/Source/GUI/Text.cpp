@@ -21,7 +21,7 @@ namespace Ryno {
 	{
 		FontGlyph::current_glyph = 0;
 		for (GUIObject* go : GUIObject::gui_objects){
-			if (*go->text)
+			if (go->text)
 				FontGlyph::current_glyph += go->text->text.length();
 		}
 		

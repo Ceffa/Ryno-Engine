@@ -9,12 +9,14 @@ namespace Ryno{
 	public:
 
 		//Constructors
-		PointLight(){}
+		PointLight(){ model = nullptr; }
 		~PointLight(){}
 		PointLight(const PointLight &copy)
 		{
 			*this = copy;
-			model.copy(copy.model);
+			if (copy.model)
+				model = new Model(*copy.model);
+			else model = nullptr;
 		}
 
 	

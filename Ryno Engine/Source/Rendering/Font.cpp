@@ -50,7 +50,8 @@ namespace Ryno {
 	}
 
 
-	Font::Font(std::string font, U32 size,Owner loc, C cs, C ce) {
+
+	void Font::create(std::string font, U32 size,Owner loc, C cs, C ce) {
 
 	
         // Initialize SDL_ttf

@@ -50,13 +50,6 @@ namespace Ryno{
 		void create_vertex_array();
 		void enable_attributes();
 
-		
-
-		
 	};
-
-
-
-
 
 }

@@ -37,10 +37,10 @@ namespace Ryno{
 	private:
 		Log(){}
 		InputManager* input_manager;
-		New<Font> font;
-		New<GUIObject> background;
+		Font font;
+		GUIObject background;
 
-		New<GUIObject> lines[NUM_LINES];
+		GUIObject lines[NUM_LINES];
 		std::list<std::string> history;
 		std::list<std::string>::iterator iterator;
 		U32 history_length;
@@ -51,10 +51,6 @@ namespace Ryno{
 		void read_down();
 		void read_beginning();
 		void read_end();
-
-		
-
-
 	};
 
 }

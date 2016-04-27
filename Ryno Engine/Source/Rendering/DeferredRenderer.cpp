@@ -143,26 +143,27 @@ namespace Ryno{
 
 		for (GameObject* go : GameObject::game_objects)
 		{
+		
 			go->transform->generate_model_matrix();
 
 			//Fill geometry batch
 			if (geometry_enabled){
-				if (go->active && *go->model){
-					m_geometry_batch3d->draw(*go->model);
+				if (go->active && go->model){
+					m_geometry_batch3d->draw(go->model);
 					go->model->material.set_attribute("in_M", go->transform->model_matrix);
 				}
 			}
 			//Fill shadow batch
 			if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled){
-				if (go->active && *go->model)
+				if (go->active && go->model)
 					m_shadow_batch3d->draw(go);
 			}
 			//Add ligths
-			if (*go->point_light && go->point_light->active)
+			if (go->point_light && go->point_light->active)
 				point_lights.push_back(go);
-			if (*go->spot_light && go->spot_light->active)
+			if (go->spot_light && go->spot_light->active)
 				spot_lights.push_back(go);
-			if (*go->dir_light && go->dir_light->active)
+			if (go->dir_light && go->dir_light->active)
 				directional_lights.push_back(go);
 
 		}
@@ -236,7 +237,7 @@ namespace Ryno{
 		if (!point_shadow_enabled)
 			return;
 
-		PointLight* p = *go->point_light;
+		PointLight* p = go->point_light;
 
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
@@ -292,8 +293,8 @@ namespace Ryno{
 
 	void DeferredRenderer::point_lighting_subpass(GameObject* go){
 
-		auto p = *go->point_light;
-		auto mod = *p->model;
+		auto* p = go->point_light;
+		auto* mod = p->model;
 		mod->mesh = m_bounding_sphere->mesh;
 		auto& mat = mod->material;
 
@@ -352,7 +353,7 @@ namespace Ryno{
 		if (!spot_shadow_enabled)
 			return;
 
-		SpotLight* s = *go->spot_light;
+		SpotLight* s = go->spot_light;
 
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
@@ -400,8 +401,8 @@ namespace Ryno{
 
 	void DeferredRenderer::spot_lighting_subpass(GameObject* go)
 	{
-		auto s = *go->spot_light;
-		auto mod = *s->model;
+		auto* s = go->spot_light;
+		auto* mod = s->model;
 		mod->mesh = m_bounding_pyramid->mesh;
 		auto& mat = mod->material;
 
@@ -460,7 +461,7 @@ namespace Ryno{
 
 	void DeferredRenderer::directional_shadow_subpass(GameObject* go){
 
-		DirectionalLight* d = *go->dir_light;
+		DirectionalLight* d = go->dir_light;
 
 		if (!directional_shadow_enabled)
 			return;
@@ -496,8 +497,8 @@ namespace Ryno{
 	void DeferredRenderer::directional_lighting_subpass(GameObject* go)
 	{
 
-		auto d = *go->dir_light;
-		auto mod = *d->model;
+		auto* d = go->dir_light;
+		auto* mod = d->model;
 		mod->mesh = m_blit_model->mesh;
 		auto& mat = mod->material;
 		auto s =mat.shader;
@@ -609,12 +610,12 @@ namespace Ryno{
 
 		for (GUIObject* go : GUIObject::gui_objects)
 		{
-			if (*go->sprite && (gui_sprites_enabled || go->sprite->use == SHELL)) {
+			if (go->sprite && (gui_sprites_enabled || go->sprite->use == SHELL)) {
 				go->sprite->generate_model_matrix();
-				m_sprite_batch2d->draw(*go->sprite);
+				m_sprite_batch2d->draw(go->sprite);
 			}
-			if (*go->text && (gui_text_enabled || go->text->use == SHELL)) {
-				m_font_batch2d->draw_font(*go->text);
+			if (go->text && (gui_text_enabled || go->text->use == SHELL)) {
+				m_font_batch2d->draw_font(go->text);
 			}
 		}
 		

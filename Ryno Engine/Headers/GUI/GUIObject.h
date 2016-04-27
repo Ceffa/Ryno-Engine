@@ -19,8 +19,8 @@ namespace Ryno{
 		bool active = true;
 
 		//Components
-		New<Text> text;
-		New<Sprite> sprite;
+		Text* text;
+		Sprite* sprite;
 	
 		//Static GUIObjects List
 		static std::list<GUIObject*> gui_objects;

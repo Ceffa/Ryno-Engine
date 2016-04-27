@@ -7,14 +7,19 @@ namespace Ryno{
 
 	GUIObject::GUIObject(){
 		gui_objects.push_back(this);
+		sprite = nullptr;
+		text = nullptr;
 	}
 	GUIObject::GUIObject(const GUIObject& go) : GUIObject()
 	{
 
-		if (*go.sprite)
-			sprite.copy(go.sprite);
-		if (*go.text)
-			text.copy(go.text);
+		if (go.sprite)
+			sprite = new Sprite(go.sprite);
+		else
+			sprite = nullptr;
+		if (go.text)
+			text = new Text(go.text);
+		else text = nullptr;
 
 	}
 	GUIObject::~GUIObject(){
