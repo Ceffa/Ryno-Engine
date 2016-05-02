@@ -22,10 +22,11 @@ namespace Ryno{
 
 		Sound sound;
 		Music music;
-		Shader shader, dir_shader;
-		Texture bt, bn;
-		I32 terrain_mesh;
-		GameObject go;
+		Shader shader, dir_shader, point_light_shader;
+		Texture bt, bn, white,white_normal;
+		I32 terrain_mesh, cube_mesh,sphere_mesh;
+		GameObject go,sphere;
+		std::vector<GameObject> poles;
 	
 	};
 }

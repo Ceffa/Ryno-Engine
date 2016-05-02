@@ -537,7 +537,7 @@ namespace Ryno{
 
 		//SEND OTHER UNIFORMS
 
-		mat.set_uniform("light_VP_matrix", inverse_VP_matrix);
+		mat.set_uniform("light_VP_matrix", dir_light_VPB);
 		mat.set_uniform("inverse_P_matrix",inverse_P_matrix);
 		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
 		mat.set_uniform("shadows_enabled", directional_shadow_enabled);

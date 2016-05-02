@@ -169,7 +169,7 @@ namespace Ryno{
 		auto* l = directional_light_go.dir_light;
 		l->model = new Model();
 		l->model->material.set_shader(&dir_light_shader);
-		l->set_direction(-80, 90);
+		l->set_direction(-65, 150);
 		l->diffuse_intensity = 0.2;
 		l->set_diffuse_color(255, 255, 200);
 		l->specular_intensity = .05;
