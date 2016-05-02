@@ -14,3 +14,4 @@ Game/x86/
 *.tlog
 Ryno Engine/Debug/
 Game/Debug/
+*.opendb

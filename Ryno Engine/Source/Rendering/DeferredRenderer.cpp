@@ -537,7 +537,6 @@ namespace Ryno{
 
 		//SEND OTHER UNIFORMS
 
-		mat.set_uniform("light_V_matrix", glm::transpose(glm::inverse(m_camera->get_V_matrix())));
 		mat.set_uniform("light_VP_matrix", inverse_VP_matrix);
 		mat.set_uniform("inverse_P_matrix",inverse_P_matrix);
 		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);

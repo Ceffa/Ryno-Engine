@@ -52,8 +52,9 @@ namespace Ryno {
 		input_manager = InputManager::get_instance();
 		time_manager = TimeManager::get_instance();
 		base_path_size = (U8)base_path.size();
-		deferred_renderer = *Game::get_instance()->deferred_renderer;
+		deferred_renderer = Game::get_instance()->deferred_renderer;
 		log = Log::get_instance();
+	
 		
 		background.sprite->anchor_point = BOTTOM_LEFT;
 		background.sprite->set_position(0, 0);

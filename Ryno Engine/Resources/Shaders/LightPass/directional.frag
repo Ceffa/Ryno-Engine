@@ -21,7 +21,6 @@ uniform int shadows_enabled;
 uniform mat4 inverse_P_matrix;
 uniform mat4 inverse_VP_matrix;
 uniform mat4 light_VP_matrix;
-uniform mat4 light_V_matrix;
 uniform DirectionalLight dir_light;
 
 uniform int screen_width;
@@ -45,11 +44,6 @@ void main(){
 	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
 	vec4 position_light_ortho_matrix = light_VP_matrix * position_world_space;
 	vec3 position_light_ortho_matrix_norm = position_light_ortho_matrix.xyz / position_light_ortho_matrix.w;
-
-	
-
-	
-	
 	
 
 	//Get color and flatness from g buffer

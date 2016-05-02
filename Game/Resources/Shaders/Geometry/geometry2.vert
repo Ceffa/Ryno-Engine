@@ -33,7 +33,9 @@ void main(){
 	gl_Position = MVP * vec4(in_Position, 1);
 	middle_uv = in_Uv * in_Tiling;
 	middle_color = mix(split_Color, split_Color2, (1.0+sin(g_Time/100.0))/2.0);
-	TBN = mat3(in_Tangent, cross(in_Normal, in_Tangent), in_Normal);
+	vec3 tangent = normalize(vec3(in_M * vec4(in_Tangent,0)));
+	vec3 normal = normalize(vec3(in_M * vec4(in_Normal,0)));
+	TBN = mat3(tangent, cross(normal, tangent), normal);
 }
 
 float split(uint color, int n){
