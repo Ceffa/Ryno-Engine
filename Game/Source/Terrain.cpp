@@ -25,22 +25,22 @@ namespace Ryno{
 		}
 	}
 
-	void NewTerrain(MeshBuilder* builder, I32 m_SegmentCount, F32 m_Length, F32 m_Width, F32 m_Height){
+	void NewTerrain(MeshBuilder* builder, I32 m_SegmentCount, F32 m_Length, F32 m_Width, F32 m_Height, F32 freq){
 		
 
 		for (int i = 0; i < m_SegmentCount; i++)
 		{
 			float z = m_Length * i;
-			float v = (1.0f / m_SegmentCount) * i;
+			float v = freq * i;
 
 			for (int j = 0; j < m_SegmentCount; j++)
 			{
 				float x = m_Width * j;
-				float u = (1.0f / m_SegmentCount) * j;
+				float u = freq * j;
 
 				glm::vec3 offset;
 			
-				offset = glm::vec3(x - m_Width * m_SegmentCount / 2.0f, m_Height * PerlinNoise::octave_perlin(x, z, 1.0f / m_SegmentCount,3,.4f), z - m_Length * m_SegmentCount / 2.0f);
+				offset = glm::vec3(x - m_Width * m_SegmentCount / 2.0f, m_Height * PerlinNoise::octave_perlin(x, z, freq,3,.4f), z - m_Length * m_SegmentCount / 2.0f);
 
 				glm::vec2 uv = glm::vec2(u, v);
 				bool buildTriangles = i > 0 && j > 0;

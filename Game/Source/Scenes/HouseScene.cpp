@@ -36,7 +36,7 @@ namespace Ryno{
 		 terrain_mesh = game->mesh_manager->create_empty_mesh(GAME);
 
 		game->mesh_builder->set_mesh(terrain_mesh);
-		NewTerrain(game->mesh_builder,80,5,5,50);
+		NewTerrain(game->mesh_builder,80,5,5,50,.01f);
 
 
 		//loading skyboxes

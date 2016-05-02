@@ -501,7 +501,7 @@ namespace Ryno{
 		auto* mod = d->model;
 		mod->mesh = m_blit_model->mesh;
 		auto& mat = mod->material;
-		auto s =mat.shader;
+		auto* s =mat.shader;
 		m_fbo_deferred->bind_for_light_pass();
 
 		glEnable(GL_BLEND);
@@ -517,10 +517,7 @@ namespace Ryno{
 		
 		glm::mat4 dir_light_VPB = bias * directional_light_VP;
 
-		glm::vec3 dir_in_view_space = glm::vec3(glm::transpose(glm::inverse(m_camera->get_V_matrix()))*
-			glm::vec4(d->direction, 0));
-
-
+	
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
 		mat.set_uniform("screen_height", WINDOW_HEIGHT);
 		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
@@ -530,7 +527,7 @@ namespace Ryno{
 	
 
 		//SEND DIR LIGHT UNIFORMS
-		mat.set_uniform("dir_light.direction", dir_in_view_space);
+		mat.set_uniform("dir_light.direction", d->direction);
 		mat.set_uniform("dir_light.diffuse", d->diffuse_color);
 		mat.set_uniform("dir_light.specular", d->specular_color);
 		mat.set_uniform("dir_light.ambient", d->ambient_color);
@@ -539,7 +536,9 @@ namespace Ryno{
 		mat.set_uniform("dir_light.ambient_intensity", d->ambient_intensity);
 
 		//SEND OTHER UNIFORMS
-		mat.set_uniform("light_VP_matrix",dir_light_VPB);
+
+		mat.set_uniform("light_V_matrix", glm::transpose(glm::inverse(m_camera->get_V_matrix())));
+		mat.set_uniform("light_VP_matrix", inverse_VP_matrix);
 		mat.set_uniform("inverse_P_matrix",inverse_P_matrix);
 		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
 		mat.set_uniform("shadows_enabled", directional_shadow_enabled);

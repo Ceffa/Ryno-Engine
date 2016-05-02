@@ -84,7 +84,7 @@ namespace Ryno{
 	{
 		init_external_systems();
 		init_internal_systems();
-		set_scene("house");
+		set_scene("valley");
 	}
 
 	void Game::run(){

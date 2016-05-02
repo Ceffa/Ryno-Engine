@@ -25,14 +25,12 @@ void main(){
 	
 		
 	mat4 MVP = g_VP * in_M;
-	mat4 MV = g_V * in_M;
 
 	gl_Position = MVP * vec4(in_Position, 1);
 	middle_uv = in_Uv * in_Tiling;
 	middle_color = split_Color;
-
-	vec3 normal = normalize((MV * vec4(in_Normal, 0)).xyz);
-	vec3 tangent = normalize((MV * vec4(in_Tangent, 0)).xyz);
+	vec3 tangent = normalize(vec3(in_M * vec4(in_Tangent,0)));
+	vec3 normal = normalize(vec3(in_M * vec4(in_Normal,0)));
 	TBN = mat3(tangent, cross(normal, tangent), normal);
 }
 

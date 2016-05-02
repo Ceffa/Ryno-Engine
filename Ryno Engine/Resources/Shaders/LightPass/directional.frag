@@ -7,7 +7,7 @@ struct DirectionalLight{
 	float diffuse_intensity;
 	float specular_intensity;
 	float ambient_intensity;
-	vec3 direction; 
+	vec3 direction;
 };
 
 //uniform sampler2D position_tex;
@@ -21,6 +21,7 @@ uniform int shadows_enabled;
 uniform mat4 inverse_P_matrix;
 uniform mat4 inverse_VP_matrix;
 uniform mat4 light_VP_matrix;
+uniform mat4 light_V_matrix;
 uniform DirectionalLight dir_light;
 
 uniform int screen_width;
@@ -65,7 +66,6 @@ void main(){
 	vec3 half_dir = normalize(normalize(dir_light.direction) + view_dir);
 
 	//Calculate base colors
-
 	vec3 diff_color = vec3(split(dir_light.diffuse, 0), split(dir_light.diffuse, 1), split(dir_light.diffuse, 2)) * dir_light.diffuse_intensity;
 	vec3 spec_color = vec3(split(dir_light.specular, 0), split(dir_light.specular, 1), split(dir_light.specular, 2)) * dir_light.specular_intensity;
 	vec3 amb_final = vec3(split(dir_light.ambient, 0), split(dir_light.ambient, 1), split(dir_light.ambient, 2)) * dir_light.ambient_intensity;

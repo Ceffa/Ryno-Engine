@@ -1,14 +1,14 @@
 #pragma once
-#include "ValleyScene.h"
+#include "ShadowScene.h"
 #include "FireworkScene.h"
 #include "Terrain.h"
 
 namespace Ryno{
 
-	void ValleyScene::start(){
+	void ShadowScene::start(){
 
 		camera->position = glm::vec4(0,200,0, 1);
-		camera->movement_speed = .05f;
+		camera->movement_speed = .01f;
 
 		bt = game->texture_manager->load_png("nipple", GAME);
 		bn = game->texture_manager->load_png("nipple_normal", GAME);
@@ -16,7 +16,7 @@ namespace Ryno{
 		terrain_mesh = game->mesh_manager->create_empty_mesh(GAME);
 
 		game->mesh_builder->set_mesh(terrain_mesh);
-		NewTerrain(game->mesh_builder, 100, 2,2, 10,.1f);
+		NewTerrain(game->mesh_builder, 100, 2,2, 200);
 
 		camera->skybox = game->texture_manager->load_cube_map("day", GAME);
 	
@@ -41,9 +41,9 @@ namespace Ryno{
 		l->model = new Model();
 		l->model->material.set_shader(&dir_shader);
 		l->set_direction(-45, 150);
-		l->diffuse_intensity = 0.5f;
+		l->diffuse_intensity = 0.7f;
 		l->set_diffuse_color(255, 255, 200);
-		l->specular_intensity = 0;
+		l->specular_intensity = 0.1f;
 		l->set_specular_color(255, 255, 200);
 		l->ambient_intensity = 0.05f;
 		l->set_ambient_color(255, 255, 200);
@@ -51,10 +51,10 @@ namespace Ryno{
 	}
 		
 
-	void ValleyScene::update(){
+	void ShadowScene::update(){
 	}
 	
-	void ValleyScene::input(){
+	void ShadowScene::input(){
 		if (!game->shell->active){
 			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
 				game->set_scene("firework");
