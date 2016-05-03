@@ -1,6 +1,7 @@
 #pragma once
 #include "Global.h"
 #include <GLM/glm.hpp>
+#include <list>
 
 namespace Ryno{
 
@@ -36,10 +37,26 @@ namespace Ryno{
 
 		//Model matrix
 		glm::mat4 model_matrix;
+		glm::mat4 hinerited_matrix;
 		glm::mat4 rotation_matrix;
 		
-
 		void generate_model_matrix();
+		void combine_model_matrices();
+
+		void set_parent(Transform* t);
+		void remove_parent();
+		Transform* get_parent() { return parent; }
+
+	private:
+		//parent and children
+		Transform* parent = nullptr;
+		std::list<Transform*> children;
+		U32 child_nr = 0;
+		void add_child(Transform* child);
+		void remove_child(Transform* child);
+		Transform* get_child(U32 idx);
+
+
 
 	};
 

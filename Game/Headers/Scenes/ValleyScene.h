@@ -27,6 +27,6 @@ namespace Ryno{
 		I32 terrain_mesh, cube_mesh,sphere_mesh;
 		GameObject go,sphere;
 		std::vector<GameObject> poles;
-	
+		std::vector<GameObject> balls;
 	};
 }

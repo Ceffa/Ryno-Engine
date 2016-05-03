@@ -26,7 +26,50 @@ namespace Ryno{
 	}
 
 
-	void Transform::add_rotation(F32 p, F32 y, F32 r){
+	void Transform::combine_model_matrices()
+	{
+		Transform* curr_parent = parent;
+		hinerited_matrix = glm::mat4();
+		while (curr_parent != nullptr) {
+			hinerited_matrix = parent->model_matrix * hinerited_matrix;
+			curr_parent = curr_parent->parent;
+		}
+	}
+
+	void Transform::set_parent(Transform* t)
+	{
+		parent = t;
+		t->add_child(this);
+	}
+
+	void Transform::remove_parent()
+	{
+		parent->remove_child(this);
+		parent = nullptr;
+	}
+
+	void Transform::add_child(Transform* child)
+	{
+		children.push_back(child);
+		child_nr++;
+	}
+
+	void Transform::remove_child(Transform* child)
+	{
+		children.remove(child);
+		child_nr--;
+	}
+
+	Transform* Transform::get_child(U32 idx)
+	{
+		if (idx > children.size()) {
+			std::list<Transform*>::iterator it = std::next(children.begin(), idx);
+			return *it;
+		}
+		return nullptr;
+	}
+
+	void Transform::add_rotation(F32 p, F32 y, F32 r) {
 
 		rotation.y += y* DEG_TO_RAD;
 		rotation.x += p* DEG_TO_RAD;

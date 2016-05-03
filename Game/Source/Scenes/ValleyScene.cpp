@@ -2,6 +2,7 @@
 #include "ValleyScene.h"
 #include "FireworkScene.h"
 #include "Terrain.h"
+#define DEG_TO_RAD 0.0174532925199433
 
 namespace Ryno{
 
@@ -48,30 +49,6 @@ namespace Ryno{
 		l->ambient_intensity = 0.05f;
 		l->set_ambient_color(255, 255, 200);
 
-		I32 s = 15;//size
-		poles.resize(s*s);
-		cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
-
-		poles[0].model = new Model();
-		auto* m = poles[0].model;
-		m->material.set_shader(&shader);
-		m->material.set_attribute("in_Color", ColorRGBA(255, 255, 255, 0));
-		m->material.set_attribute("in_Tiling", glm::vec2(10, 10));
-		m->material.set_uniform("texture_sampler", bt.id);
-		m->material.set_uniform("normal_map_sampler", bn.id);
-		m->mesh = cube_mesh;
-		m->cast_shadows = true;
-		poles[0].transform = new Transform();
-		poles[0].transform->set_scale(2, 20, 2);
-		poles[0].transform->set_position(0, 0,0);
-		for (I32 i = 0; i < s;i++)
-			for (I32 j = 0; j < s; j++)
-			{
-				if (i == j && i == 0)continue;
-				poles[i*s + j].copy(poles[0]);
-				poles[i*s + j].transform->set_position((i-s/2) * 20, 10, (j-s/2) * 20);
-			
-			}
 
 		white = game->texture_manager->load_png("white_pixel", GAME);
 		white_normal = game->texture_manager->load_png("normal_pixel", GAME);
@@ -96,9 +73,54 @@ namespace Ryno{
 		p->model->material.set_shader(&point_light_shader);
 		p->set_diffuse_color(255, 80, 0);
 		p->diffuse_intensity = 10;
-		p->attenuation = .0001;
-		p->specular_intensity = 10;
+		p->attenuation = .001;
+		p->specular_intensity = 0;
 		p->set_specular_color(255, 80, 0);
+
+
+		I32 s = 18;//size
+		poles.resize(s*s);
+		cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
+
+		poles[0].model = new Model();
+		auto* m = poles[0].model;
+		m->material.set_shader(&shader);
+		m->material.set_attribute("in_Color", ColorRGBA(255, 255, 255, 0));
+		m->material.set_attribute("in_Tiling", glm::vec2(10, 10));
+		m->material.set_uniform("texture_sampler", bt.id);
+		m->material.set_uniform("normal_map_sampler", bn.id);
+		m->mesh = cube_mesh;
+		m->cast_shadows = true;
+		poles[0].transform = new Transform();
+		poles[0].transform->set_scale(2, 20, 2);
+		poles[0].transform->set_position(0, 0,0);
+		for (I32 i = 0; i < s; i++)
+		{
+			for (I32 j = 0; j < s; j++)
+			{
+				if (i == j && i == 0)continue;
+				poles[i*s + j].copy(poles[0]);
+				poles[i*s + j].transform->set_position((i - s / 2) * 20, 10, (j - s / 2) * 20);
+			}
+		}
+
+		U32 nr = 8;
+		balls.resize(nr);
+		for (I32 i = 0; i < nr; i++) {
+			balls[i].copy(sphere);
+			balls[i].transform->set_position(10 * sin(i * 360/nr * DEG_TO_RAD), 0, 10*cos(i * 360 / nr * DEG_TO_RAD));
+			balls[i].transform->set_scale(1, 1, 1);
+			balls[i].point_light->diffuse_color = ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white);
+		}
+		for (I32 i = 0; i < nr; i++) {
+			balls[i].transform->set_parent(sphere.transform);
+		}
+
+		delete sphere.model;
+		sphere.model = nullptr;
+		delete sphere.point_light;
+		sphere.point_light = nullptr;
+	
 	}
 		
 
