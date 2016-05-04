@@ -12,7 +12,7 @@ namespace Ryno{
 
 	void Transform::generate_model_matrix(){
 
-		rotation_matrix = glm::toMat4(glm::quat(glm::vec3(0, 0, rotation.z))*glm::quat(glm::vec3(rotation.x, 0, 0))*glm::quat(glm::vec3(0, rotation.y, 0)));
+		rotation_matrix = glm::toMat4(rotation);
 
 		model_matrix = glm::scale(
 			//Translate matrix
@@ -68,29 +68,5 @@ namespace Ryno{
 		}
 		return nullptr;
 	}
-
-	void Transform::add_rotation(F32 p, F32 y, F32 r) {
-
-		rotation.y += y* DEG_TO_RAD;
-		rotation.x += p* DEG_TO_RAD;
-		rotation.z += r* DEG_TO_RAD;
-
-		if (rotation.y > M_PI_2 || rotation.y <0) rotation.y -= (F32)((I32)(rotation.y / M_PI_2))*M_PI_2;
-
-		if (rotation.x > M_PI_2 || rotation.x <0) rotation.x -= (F32)((I32)(rotation.x / M_PI_2))*M_PI_2;
-
-		if (rotation.z > M_PI_2 || rotation.z < 0) rotation.z -= (F32)((I32)(rotation.z / M_PI_2))*M_PI_2;
-	}
-	void Transform::set_rotation(F32 p, F32 y, F32 r){
-
-		rotation.y = y * DEG_TO_RAD;
-		rotation.x = p * DEG_TO_RAD;
-		rotation.z = r * DEG_TO_RAD;
-
-		if (rotation.y > M_PI_2 || rotation.y <0) rotation.y -= (F32)((I32)(rotation.y / M_PI_2))*M_PI_2;
-
-		if (rotation.x > M_PI_2 || rotation.x <0) rotation.x -= (F32)((I32)(rotation.x / M_PI_2))*M_PI_2;
-
-		if (rotation.z > M_PI_2 || rotation.z < 0) rotation.z -= (F32)((I32)(rotation.z / M_PI_2))*M_PI_2;
-	}
+	
 }

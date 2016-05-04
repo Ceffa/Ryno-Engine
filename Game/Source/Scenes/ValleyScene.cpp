@@ -149,10 +149,10 @@ namespace Ryno{
 			sphere.transform->position += game->delta_time * speed * glm::vec3(0, 0, -1);
 		}
 		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
-			sphere.transform->rotation += game->delta_time * speed* glm::vec3(0, .02f, 0);
+			sphere.transform->rotation = glm::quat(game->delta_time * speed* glm::vec3(0, +.02f, 0)) * sphere.transform->rotation;
 		}
 		if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)) {
-			sphere.transform->rotation += game->delta_time * speed* glm::vec3(0, -.02f, 0);
+			sphere.transform->rotation = glm::quat(game->delta_time * speed* glm::vec3(0, -.02f, 0)) * sphere.transform->rotation;
 		}
 	}
 

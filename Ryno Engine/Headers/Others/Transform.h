@@ -1,6 +1,7 @@
 #pragma once
 #include "Global.h"
 #include <GLM/glm.hpp>
+#include <GLM/gtx/quaternion.hpp>
 #include <list>
 
 namespace Ryno{
@@ -12,12 +13,7 @@ namespace Ryno{
 		Transform(const Transform& t);
 
 		//Rotation
-		glm::vec3 rotation;
-
-		void set_rotation(F32 y, F32 p, F32 r);
-		void add_rotation(F32 y, F32 p, F32 r);
-		void set_rotation(glm::vec3 rot){ set_rotation(rot.x, rot.y, rot.z); }
-		void add_rotation(glm::vec3 rot){ add_rotation(rot.x, rot.y, rot.z); }
+		glm::quat rotation;
 
 		//Position
 		glm::vec3 position;

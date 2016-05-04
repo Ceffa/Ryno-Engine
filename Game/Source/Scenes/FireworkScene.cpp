@@ -89,7 +89,7 @@ namespace Ryno{
 			p->model->material.set_uniform("normal_map_sampler", normal->id);
 
 			//p->model->color = ColorRGBA::yellow;
-			p->transform->add_rotation(glm::vec3(ryno_math::rand_int_range(0, 360), ryno_math::rand_int_range(0, 360),0));
+			p->transform->rotation = glm::quat(glm::vec3(ryno_math::rand_int_range(0, 360), ryno_math::rand_int_range(0, 360),0)) * p->transform->rotation;
 			p->model->cast_shadows = false;
 			
 		};
