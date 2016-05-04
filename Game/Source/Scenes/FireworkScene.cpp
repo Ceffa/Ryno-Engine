@@ -89,21 +89,21 @@ namespace Ryno{
 			p->model->material.set_uniform("normal_map_sampler", normal->id);
 
 			//p->model->color = ColorRGBA::yellow;
-			p->transform->rotation = glm::quat(glm::vec3(ryno_math::rand_int_range(0, 360), ryno_math::rand_int_range(0, 360),0)) * p->transform->rotation;
+			p->transform->set_rotation(ryno_math::rand_int_range(0, 360), ryno_math::rand_int_range(0, 360), 0);
 			p->model->cast_shadows = false;
 			
 		};
 		emitter->lambda_spawn = [](Emitter* e){
 			for (U8 i = 0; i < 20; i++){
 				Particle3D* p = e->new_particle();
-				p->transform->position = e->game_object->transform->position;
+				p->transform->set_position(e->game_object->transform->get_position());
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 			}
 		};
 
 		emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
 		{
-			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
+			p->transform->add_position(p->direction * p->speed * _delta_time);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
 
 			ColorRGBA from = ColorRGBA::yellow;
@@ -135,7 +135,7 @@ namespace Ryno{
 
 		go[1].emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
 		{
-			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
+			p->transform->add_position(p->direction * p->speed * _delta_time);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
 
 			ColorRGBA from = ColorRGBA::green;
@@ -145,7 +145,7 @@ namespace Ryno{
 		};
 		go[2].emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
 		{
-			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
+			p->transform->add_position(p->direction * p->speed * _delta_time);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
 			p->model->material.set_attribute("in_Color", ColorRGBA::white);
 			p->model->material.set_attribute("in_Color2", ColorRGBA::red);
@@ -155,7 +155,7 @@ namespace Ryno{
 
 		go[3].emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
 		{
-			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
+			p->transform->add_position(p->direction * p->speed * _delta_time);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(60), glm::vec3(100), p->lifetime));
 
 			
@@ -164,7 +164,7 @@ namespace Ryno{
 		go[3].emitter->lambda_spawn = [](Emitter* e){
 			for (U8 i = 0; i < 15; i++){
 				Particle3D* p = e->new_particle();
-				p->transform->position = e->game_object->transform->position;
+				p->transform->set_position(e->game_object->transform->get_position());
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 				p->model->material.set_attribute("in_Color", ryno_math::rand_color_range(ColorRGBA(100, 100, 100, 0), ColorRGBA(255,255,255,0)));
 			}
@@ -175,17 +175,17 @@ namespace Ryno{
 		go[3].emitter->init(2200);
 
 
-		go[0].transform->position += glm::vec3(1200, 1200, 0);
-		go[1].transform->position += glm::vec3(-1200, 1200, 0);
-		go[2].transform->position += glm::vec3(1200, -1200, 0);
-		go[3].transform->position += glm::vec3(-1200, -1200, 0);
+		go[0].transform->add_position(glm::vec3(1200, 1200, 0));
+		go[1].transform->add_position(glm::vec3(-1200, 1200, 0));
+		go[2].transform->add_position(glm::vec3(1200, -1200, 0));
+		go[3].transform->add_position(glm::vec3(-1200, -1200, 0));
 
 	}
 
 
 	void FireworkScene::update()
 	{
-		shader2.set_global_uniform("g_Time", game->time);
+		shader2.set_uniform("g_Time", game->time);
 	}
 
 	void FireworkScene::input(){
@@ -199,16 +199,16 @@ namespace Ryno{
 				idx = ++idx % 4;
 			}
 			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
-				go[idx].transform->position += game->delta_time * 1.0f * glm::vec3(1, 0, 0);
+				go[idx].transform->add_position(game->delta_time * 1.0f * glm::vec3(1, 0, 0));
 			}
 			if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
-				go[idx].transform->position += game->delta_time * 1.0f * glm::vec3(-1, 0, 0);
+				go[idx].transform->add_position(game->delta_time * 1.0f * glm::vec3(-1, 0, 0));
 			}
 			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)){
-				go[idx].transform->position += game->delta_time * 1.0f * glm::vec3(0,1, 0);
+				go[idx].transform->add_position(game->delta_time * 1.0f * glm::vec3(0,1, 0));
 			}
 			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)){
-				go[idx].transform->position += game->delta_time * 1.0f * glm::vec3(0,-1, 0);
+				go[idx].transform->add_position(game->delta_time * 1.0f * glm::vec3(0, -1, 0));
 			}
 		}
 	}

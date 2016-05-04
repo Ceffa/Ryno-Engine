@@ -28,8 +28,8 @@ namespace Ryno{
 	void SphereCollider::adapt_to_transform(Transform* t)
 	{
 		
-		transformed_center = center + glm::dvec3(t->position);
-		transformed_radius = radius * t->scale.x;	//meh
+		transformed_center = center + glm::dvec3(t->get_position());
+		transformed_radius = radius * t->get_scale().x;	//meh
 	
 	}
 

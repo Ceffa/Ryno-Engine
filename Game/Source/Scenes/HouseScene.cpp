@@ -239,7 +239,7 @@ namespace Ryno{
 		emitter->lambda_spawn = [](Emitter* e){
 			for (U8 t = 0; t < 2; t++){
 				Particle3D* p = e->new_particle();
-				p->transform->position = e->game_object->transform->position;
+				p->transform->set_position(e->game_object->transform->get_position());
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 				//bool b = false;
 				//p->get_emitter()->save_map.replace("go_crazy", b);
@@ -252,7 +252,7 @@ namespace Ryno{
 			//bool f = false;
 			//bool t = true;
 			//if (p->lifetime < .75f){
-			p->transform->set_position(p->direction * p->speed * _delta_time + p->transform->position);
+			p->transform->add_position(p->direction * p->speed * _delta_time);
 			p->transform->set_scale(ryno_math::lerp(glm::vec3(.1), glm::vec3(5), p->lifetime));
 
 			p->model->material.set_attribute("in_Color",ColorRGBA(255, ryno_math::lerp(0, 255, p->lifetime), 0,255));
@@ -280,7 +280,9 @@ namespace Ryno{
 	void HouseScene::update(){
 
 		for (const auto & sphere : spheres){
-			sphere.transform->position.y = 40 + sin(game->time / 1000.0f) * 20;
+			glm::vec3 m = sphere.transform->get_position();
+			m.y = 40 + sin(game->time / 1000.0f) * 20;
+			sphere.transform->set_position(m);
 		}
 
 	}

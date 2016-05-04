@@ -52,7 +52,7 @@ namespace Ryno{
 
 		white = game->texture_manager->load_png("white_pixel", GAME);
 		white_normal = game->texture_manager->load_png("normal_pixel", GAME);
-		sphere_mesh = game->mesh_manager->load_mesh("sphere", 1, GAME);
+		sphere_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
 
 		sphere.copy(go);
 		sphere.model->material.set_attribute("in_Color", ColorRGBA::white);
@@ -60,7 +60,7 @@ namespace Ryno{
 		sphere.model->material.set_uniform("normal_map_sampler", white_normal.id);
 		sphere.model->cast_shadows = false;
 
-		sphere.transform->set_scale(12, 12, 12);
+		sphere.transform->set_scale(7, 7, 7);
 		sphere.transform->set_position(0, 40, 0);
 		sphere.model->mesh = sphere_mesh;
 
@@ -127,35 +127,38 @@ namespace Ryno{
 	void ValleyScene::update(){
 	}
 	
-	void ValleyScene::input(){
-		if (!game->shell->active){
-			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
+	void ValleyScene::input() {
+		if (!game->shell->active) {
+			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)) {
 				game->set_scene("firework");
 				return;
-			
+
 			}
 		}
 		float speed = .1f;
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-			sphere.transform->position += game->delta_time * speed* glm::vec3(1, 0, 0);
+			sphere.transform->add_position(game->delta_time * speed* glm::vec3(1, 0, 0));
 		}
 		if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-			sphere.transform->position += game->delta_time * speed * glm::vec3(-1, 0, 0);
+			sphere.transform->add_position(game->delta_time * speed* glm::vec3(-1, 0, 0));
 		}
 		if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-			sphere.transform->position += game->delta_time * speed * glm::vec3(0, 0, 1);
+			sphere.transform->add_position(game->delta_time * speed* glm::vec3(0, 0, 1));
 		}
 		if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-			sphere.transform->position += game->delta_time * speed * glm::vec3(0, 0, -1);
+			sphere.transform->add_position(game->delta_time * speed* glm::vec3(0, 0, -1));
 		}
 		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
-			sphere.transform->rotation = glm::quat(game->delta_time * speed* glm::vec3(0, +.02f, 0)) * sphere.transform->rotation;
+			sphere.transform->add_rotation(glm::quat(game->delta_time * speed* glm::vec3(0, +.02f, 0)));
 		}
 		if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)) {
-			sphere.transform->rotation = glm::quat(game->delta_time * speed* glm::vec3(0, -.02f, 0)) * sphere.transform->rotation;
+			sphere.transform->add_rotation(glm::quat(game->delta_time * speed* glm::vec3(0, -.02f, 0)));
+			
+		}
+		if (game->input_manager->is_key_down(SDLK_SPACE, KEYBOARD)) {
+			for (GameObject& g : balls) {
+				g.transform->add_rotation(glm::quat(game->delta_time * speed* glm::vec3(0, -.02f, 0)));
+			}
 		}
 	}
-
-
-
-}
+	}

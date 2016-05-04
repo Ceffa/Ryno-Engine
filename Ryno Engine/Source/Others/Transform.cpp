@@ -10,7 +10,8 @@ namespace Ryno{
 		*this = t;
 	}
 
-	void Transform::generate_model_matrix(){
+
+	void Transform::generate_model_matrix() {
 
 		rotation_matrix = glm::toMat4(rotation);
 
@@ -21,8 +22,6 @@ namespace Ryno{
 			rotation_matrix,
 			//Scaling the rot-trans matrix
 			scale);
-
-
 	}
 
 

@@ -12,24 +12,31 @@ namespace Ryno{
 		~Transform(){}
 		Transform(const Transform& t);
 
-		//Rotation
-		glm::quat rotation;
-
 		//Position
-		glm::vec3 position;
+		void set_position(glm::vec3 pos) { position = pos; }
+		void add_position(glm::vec3 pos) { set_position(pos + position); }
+		void set_position(F32 x, F32 y, F32 z) { set_position(glm::vec3(x, y, z)); }
+		void add_position(F32 x, F32 y, F32 z){ add_position(glm::vec3(x, y, z)); }
 
-		void set_position(F32 x, F32 y, F32 z){ position = glm::vec3(x, y, z); }
-		void add_position(F32 x, F32 y, F32 z){ position += glm::vec3(x, y, z); }
-		void set_position(glm::vec3 pos){ set_position(pos.x, pos.y, pos.z); }
-		void add_position(glm::vec3 pos){ add_position(pos.x, pos.y, pos.z); }
-
+		glm::vec3 get_position() { return position; }
+	
 		//Scale
-		glm::vec3 scale;
+		void set_scale(glm::vec3 sc) { scale = sc; }
+		void add_scale(glm::vec3 sc) { set_scale(sc + scale); }
+		void set_scale(F32 x, F32 y, F32 z) { set_scale(glm::vec3(x, y, z)); }
+		void add_scale(F32 x, F32 y, F32 z){ add_scale(glm::vec3(x, y, z)); }
 
-		void set_scale(F32 x, F32 y, F32 z){ scale = glm::vec3(x, y, z); }
-		void add_scale(F32 x, F32 y, F32 z){ scale += glm::vec3(x, y, z); }
-		void set_scale(glm::vec3 sc){ set_scale(sc.x, sc.y, sc.z); }
-		void add_scale(glm::vec3 sc){ add_scale(sc.x, sc.y, sc.z); }
+		glm::vec3 get_scale() { return scale; }
+
+		//Rotation
+		void set_rotation(glm::quat q) { rotation = q; }
+		void add_rotation(glm::quat q) { set_rotation(q * rotation); }
+		void set_rotation(glm::vec3 v) { set_rotation(glm::quat(v)); }
+		void add_rotation(glm::vec3 v) { add_rotation(glm::quat(v)); }
+		void set_rotation(F32 x, F32 y, F32 z) { set_rotation(glm::vec3(x, y, z)); }
+		void add_rotation(F32 x, F32 y, F32 z) { add_rotation(glm::vec3(x, y, z)); }
+
+		glm::quat get_rotation() { return rotation; }
 
 		//Model matrix
 		glm::mat4 model_matrix;
@@ -44,6 +51,14 @@ namespace Ryno{
 		Transform* get_parent() { return parent; }
 
 	private:
+
+		//Rotation
+		glm::quat rotation;
+		//Position
+		glm::vec3 position;
+		//Scale
+		glm::vec3 scale;
+
 		//parent and children
 		Transform* parent = nullptr;
 		std::list<Transform*> children;

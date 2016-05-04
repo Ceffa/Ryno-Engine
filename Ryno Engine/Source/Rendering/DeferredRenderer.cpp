@@ -190,8 +190,8 @@ namespace Ryno{
 
 		
 		for (Shader* s : m_geometry_batch3d->shaders){
-			s->set_global_uniform("g_V", m_camera->get_V_matrix());
-			s->set_global_uniform("g_VP", m_camera->get_VP_matrix());
+			s->set_uniform("g_V", m_camera->get_V_matrix());
+			s->set_uniform("g_VP", m_camera->get_VP_matrix());
 		}
 		m_geometry_batch3d->render_batch();
 	}
@@ -259,7 +259,8 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 correct_position = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
+		glm::vec3 gp = go->transform->get_position();
+		glm::vec3 correct_position = glm::vec3(gp.x, gp.y, -gp.z);
 
 		glm::mat4 light_VP_matrices[NUM_OF_LAYERS];
 
@@ -314,7 +315,8 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		glm::vec4 light_pos = glm::vec4(go->transform->position.x, go->transform->position.y, -go->transform->position.z,1);
+		glm::vec3 gp = go->transform->get_position();
+		glm::vec4 light_pos = glm::vec4(gp.x, gp.y, -gp.z,1);
 		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(p->max_radius));
 		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), glm::vec3(light_pos));
 
@@ -374,7 +376,8 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 correct_position = glm::vec3(go->transform->position.x, go->transform->position.y, -go->transform->position.z);
+		glm::vec3 gp = go->transform->get_position();
+		glm::vec3 correct_position = glm::vec3(gp.x, gp.y, -gp.z);
 		
 		
 		s->calculate_max_radius();
@@ -423,7 +426,8 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 	
-		glm::vec4 light_pos = glm::vec4(go->transform->position.x, go->transform->position.y, -go->transform->position.z,1);
+		glm::vec3 gp = go->transform->get_position();
+		glm::vec4 light_pos = glm::vec4(gp.x, gp.y, -gp.z, 1);
 		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
 		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(width, s->max_radius, width));
 		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), glm::vec3(light_pos));

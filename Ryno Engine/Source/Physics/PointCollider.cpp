@@ -25,7 +25,7 @@ namespace Ryno{
 
 	void PointCollider::adapt_to_transform(Transform* t)
 	{
-		transformed_center = center + glm::dvec3(t->position);
+		transformed_center = center + glm::dvec3(t->get_position());
 	}
 
 }

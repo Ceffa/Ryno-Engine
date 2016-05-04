@@ -35,8 +35,8 @@ namespace Ryno{
 
 	void AABBCollider::adapt_to_transform(Transform* t)
 	{	
-		transformed_center = center + glm::dvec3(t->position);
-		transformed_size = size * glm::dvec3(t->scale);
+		transformed_center = center + glm::dvec3(t->get_position());
+		transformed_size = size * glm::dvec3(t->get_scale());
 	}
 
 }
