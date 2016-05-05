@@ -39,8 +39,8 @@ namespace Ryno{
 		return normalize(glm::vec3(x, y, z));
 	}
 
-	U32 ryno_math::rand_int_range(U32 min, U32 max){
-		return (U32)rand_float_range(min, max);
+	I32 ryno_math::rand_int_range(I32 min, I32 max){
+		return (I32)rand_float_range(min, max);
 	}
 
 	F32 ryno_math::rand_float_range(F32 min, F32 max){

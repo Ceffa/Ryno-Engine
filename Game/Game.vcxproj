@@ -66,11 +66,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(ProjectDir)Headers/Scenes;$(ProjectDir)Headers/Preferences;$(SolutionDir)Ryno Engine\Headers\Memory;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Particles;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(ProjectDir)Headers/Scenes;$(ProjectDir)Headers/Scripts;$(ProjectDir)Headers/Preferences;$(SolutionDir)Ryno Engine\Headers\Memory;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Particles;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Dlls;$(SolutionDir)Deps/Libs;$(SolutionDir)x64/Release;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(ProjectDir)Headers/Preferences;$(ProjectDir)Headers/Scenes;$(SolutionDir)Ryno Engine\Headers\Particles;$(SolutionDir)Ryno Engine\Headers\Memory;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Headers;$(ProjectDir)Headers/Scripts;$(ProjectDir)Headers/Preferences;$(ProjectDir)Headers/Scenes;$(SolutionDir)Ryno Engine\Headers\Particles;$(SolutionDir)Ryno Engine\Headers\Memory;$(SolutionDir)Ryno Engine\Headers\Game;$(SolutionDir)Ryno Engine\Headers\Physics;$(SolutionDir)Ryno Engine\Headers\GUI;$(SolutionDir)Ryno Engine\Headers\System;$(SolutionDir)Ryno Engine\Headers\Rendering;$(SolutionDir)Ryno Engine\Headers\Others;$(SolutionDir)Ryno Engine\Headers\Managers;$(SolutionDir)Deps/Includes;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Deps/Libs;$(SolutionDir)x64/Debug;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -156,6 +156,10 @@
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav" />
     <Media Include="Resources\Sounds\stomp.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Headers\Scripts\ColorLights.h" />
+    <Text Include="Headers\Scripts\MoveLights.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,6 +7,8 @@
 #include "Emitter.h"
 #include "Scene.h"
 #include "Game.h"
+#include "MoveLights.h"
+#include "ColorLights.h"
 
 namespace Ryno{
 
@@ -28,5 +30,7 @@ namespace Ryno{
 		GameObject go,sphere;
 		std::vector<GameObject> poles;
 		std::vector<GameObject> balls;
+		MoveLights move_lights;
+		ColorLights color_lights;
 	};
 }

@@ -64,7 +64,7 @@ namespace Ryno {
 		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
 
-			models_matrices[i] = m_models[i]->transform->model_matrix;
+			models_matrices[i] = m_models[i]->transform.model_matrix;
 
 
 		}

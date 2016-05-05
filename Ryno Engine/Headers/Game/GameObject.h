@@ -1,5 +1,3 @@
-#ifndef go_def
-#define go_def
 #pragma once
 #include "Global.h"
 #include "Model.h"
@@ -7,7 +5,6 @@
 #include "Lights/PointLight.h"
 #include "Lights/SpotLight.h"
 #include "Lights/DirectionalLight.h"
-#include "SphereCollider.h"
 #include <list>
 
 namespace Ryno{
@@ -37,7 +34,7 @@ namespace Ryno{
 
 		//Components
 		Model* model;
-		Transform* transform;
+		Transform transform;
 		PointLight* point_light;
 		DirectionalLight* dir_light;
 		SpotLight* spot_light;
@@ -53,5 +50,3 @@ namespace Ryno{
 
 
 }
-
-#endif

@@ -42,7 +42,6 @@ namespace Ryno{
 
 		for (U32 i = 0; i < nr_particles; i++){
 			Particle3D* p = m_particles[i].create(*pool);
-			p->transform = new Transform();
 			lambda_creation(this, p);
 			p->active = false;
 			m_pool.push_back(p);

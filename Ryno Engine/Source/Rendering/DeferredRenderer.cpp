@@ -144,11 +144,11 @@ namespace Ryno{
 		//First generate individual model matrices
 		for (GameObject* go : GameObject::game_objects)
 			if(go->active)
-				go->transform->generate_model_matrix();
+				go->transform.generate_model_matrix();
 		//Then combine them
 		for (GameObject* go : GameObject::game_objects)
 			if (go->active)
-				go->transform->combine_model_matrices();
+				go->transform.combine_model_matrices();
 
 		for (GameObject* go : GameObject::game_objects)
 		{
@@ -156,7 +156,7 @@ namespace Ryno{
 			if (geometry_enabled){
 				if (go->active && go->model){
 					m_geometry_batch3d->draw(go->model);
-					go->model->material.set_attribute("in_M", go->transform->hinerited_matrix * go->transform->model_matrix);
+					go->model->material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
 				}
 			}
 			//Fill shadow batch
@@ -261,7 +261,7 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 gp = go->transform->get_position();
+		glm::vec3 gp = go->transform.get_position();
 		glm::vec3 correct_position = glm::vec3(gp.x, gp.y, -gp.z);
 
 		glm::mat4 light_VP_matrices[NUM_OF_LAYERS];
@@ -317,7 +317,7 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		glm::vec3 gp = go->transform->get_position();
+		glm::vec3 gp = go->transform.get_position();
 		glm::vec4 light_pos = glm::vec4(gp.x, gp.y, -gp.z,1);
 		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(p->max_radius));
 		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), glm::vec3(light_pos));
@@ -326,7 +326,7 @@ namespace Ryno{
 
 
 		//SEND POINT LIGHT UNIFORMS (each for light)
-		mat.set_uniform("point_light.position", go->transform->hinerited_matrix * light_pos);
+		mat.set_uniform("point_light.position", go->transform.hinerited_matrix * light_pos);
 		mat.set_uniform("point_light.attenuation", p->attenuation);
 		mat.set_uniform("point_light.diffuse", p->diffuse_color);
 		mat.set_uniform("point_light.specular", p->specular_color);
@@ -378,7 +378,7 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 gp = go->transform->get_position();
+		glm::vec3 gp = go->transform.get_position();
 		glm::vec3 correct_position = glm::vec3(gp.x, gp.y, -gp.z);
 		
 		
@@ -428,7 +428,7 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 	
-		glm::vec3 gp = go->transform->get_position();
+		glm::vec3 gp = go->transform.get_position();
 		glm::vec4 light_pos = glm::vec4(gp.x, gp.y, -gp.z, 1);
 		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
 		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(width, s->max_radius, width));
@@ -441,7 +441,7 @@ namespace Ryno{
 		F32 cutoff_value = cos(s->cutoff * DEG_TO_RAD);
 
 		//SEND SPOT LIGHT UNIFORMS
-		mat.set_uniform("spot_light.position", go->transform->hinerited_matrix *light_pos);
+		mat.set_uniform("spot_light.position", go->transform.hinerited_matrix *light_pos);
 		mat.set_uniform("spot_light.attenuation", s->attenuation);
 		mat.set_uniform("spot_light.direction", s->direction);
 		mat.set_uniform("spot_light.cutoff", cutoff_value);

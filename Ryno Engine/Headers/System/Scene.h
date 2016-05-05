@@ -1,5 +1,6 @@
 #pragma once
 #include "Global.h"
+#include "Transform.h"
 namespace Ryno{
 
 	class Game;
@@ -14,13 +15,14 @@ namespace Ryno{
 		virtual ~Scene() = 0{}
 		virtual void start() = 0;
 		virtual void input() = 0;
+		virtual void input_scripts() final;
 		virtual void update() = 0;
 		virtual void update_scripts() final;
 		void camera_update();
 
 		
 
-	protected:
+	
 		Game* game;
 
 	};
@@ -28,11 +30,23 @@ namespace Ryno{
 	template<typename T> Scene * create_scene() { return new T; }
 
 	class SceneManager{
+		
 	public:
 		static Scene * new_scene(std::string const& s)
 		{
 			auto it = scenes_map.find(s);
 			if (it == scenes_map.end()){
+				std::cout << "Scene manager: Scene doesn't exist" << std::endl;
+				return nullptr;
+			}
+			current = s;
+			return it->second();
+		}
+
+		static Scene * reset_scene()
+		{
+			auto it = scenes_map.find(current);
+			if (it == scenes_map.end()) {
 				std::cout << "Scene manager: Scene doesn't exist" << std::endl;
 				return nullptr;
 			}
@@ -45,6 +59,7 @@ namespace Ryno{
 			scenes_map[scene_name] = &create_scene < T > ;
 		}
 	protected: 
+		static std::string current;
 		static std::map<std::string, Scene*(*)()> scenes_map;
 
 

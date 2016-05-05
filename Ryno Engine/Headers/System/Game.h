@@ -53,6 +53,7 @@ namespace Ryno{
 		void init();
 		void run();
 		void set_scene(const std::string& scene_name);
+		void reset_scene();
 
 		AudioManager* audio_manager;
 		InputManager* input_manager;

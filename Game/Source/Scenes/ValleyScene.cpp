@@ -4,11 +4,11 @@
 #include "Terrain.h"
 #define DEG_TO_RAD 0.0174532925199433
 
-namespace Ryno{
+namespace Ryno {
 
-	void ValleyScene::start(){
+	void ValleyScene::start() {
 
-		camera->position = glm::vec4(-100,50,-100, 1);
+		camera->position = glm::vec4(-100, 50, -100, 1);
 		camera->movement_speed = .05f;
 
 		bt = game->texture_manager->load_png("pack/161", GAME);
@@ -17,12 +17,12 @@ namespace Ryno{
 		terrain_mesh = game->mesh_manager->create_empty_mesh(GAME);
 
 		game->mesh_builder->set_mesh(terrain_mesh);
-		NewTerrain(game->mesh_builder, 100, 2,2, 10,.02f);
+		NewTerrain(game->mesh_builder, 100, 2, 2, 10, .02f);
 		cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
 		camera->skybox = game->texture_manager->load_cube_map("full_moon", GAME);
-	
-		shader.create("Geometry/geometry",GAME);
-		
+
+		shader.create("Geometry/geometry", GAME);
+
 		go.model = new Model();
 		go.model->material.set_shader(&shader);
 		go.model->material.set_attribute("in_Color", ColorRGBA(255, 255, 255, 0));
@@ -34,9 +34,9 @@ namespace Ryno{
 
 		dir_shader.create("LightPass/directional", ENGINE);
 
-		go.transform = new Transform();
-		go.transform->set_scale(200,1,200);
-		go.transform->set_position(0, 0, 0);
+
+		go.transform.set_scale(200, 1, 200);
+		go.transform.set_position(0, 0, 0);
 		go.dir_light = new DirectionalLight();
 		auto* l = go.dir_light;
 		l->model = new Model();
@@ -60,8 +60,8 @@ namespace Ryno{
 		sphere.model->material.set_uniform("normal_map_sampler", white_normal.id);
 		sphere.model->cast_shadows = false;
 
-		sphere.transform->set_scale(7, 7, 7);
-		sphere.transform->set_position(0, 40, 0);
+		sphere.transform.set_scale(5,5,5);
+		sphere.transform.set_position(0, 35, 0);
 		sphere.model->mesh = sphere_mesh;
 
 
@@ -72,7 +72,7 @@ namespace Ryno{
 		p->model = new Model();
 		p->model->material.set_shader(&point_light_shader);
 		p->set_diffuse_color(255, 80, 0);
-		p->diffuse_intensity = 10;
+		p->diffuse_intensity = 1.5f;
 		p->attenuation = .001;
 		p->specular_intensity = 0;
 		p->set_specular_color(255, 80, 0);
@@ -91,42 +91,43 @@ namespace Ryno{
 		m->material.set_uniform("normal_map_sampler", bn.id);
 		m->mesh = cube_mesh;
 		m->cast_shadows = true;
-		poles[0].transform = new Transform();
-		poles[0].transform->set_scale(2, 20, 2);
-		poles[0].transform->set_position(0, 0,0);
+
+		poles[0].transform.set_scale(2, 20, 2);
+		poles[0].transform.set_position(0, 0, 0);
 		for (I32 i = 0; i < s; i++)
 		{
 			for (I32 j = 0; j < s; j++)
 			{
 				if (i == j && i == 0)continue;
 				poles[i*s + j].copy(poles[0]);
-				poles[i*s + j].transform->set_position((i - s / 2) * 20, 10, (j - s / 2) * 20);
+				poles[i*s + j].transform.set_position((i - s / 2) * 20, 10, (j - s / 2) * 20);
 			}
 		}
 
-		U32 nr = 8;
+		U32 nr = 20;
 		balls.resize(nr);
 		for (I32 i = 0; i < nr; i++) {
 			balls[i].copy(sphere);
-			balls[i].transform->set_position(10 * sin(i * 360/nr * DEG_TO_RAD), 0, 10*cos(i * 360 / nr * DEG_TO_RAD));
-			balls[i].transform->set_scale(1, 1, 1);
-			balls[i].point_light->diffuse_color = ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white);
+			balls[i].transform.set_position(20 * sin(i * 360 / nr * DEG_TO_RAD), 0, 20 * cos(i * 360 / nr * DEG_TO_RAD));
+			balls[i].transform.set_scale(1, 1, 1);
+			delete balls[i].dir_light;
+			balls[i].dir_light = nullptr;
 		}
 		for (I32 i = 0; i < nr; i++) {
-			balls[i].transform->set_parent(sphere.transform);
+			balls[i].transform.set_parent(&sphere.transform);
 		}
 
-		delete sphere.model;
-		sphere.model = nullptr;
-		delete sphere.point_light;
-		sphere.point_light = nullptr;
 	
-	}
 		
+		sphere.addScript(&color_lights);
+		sphere.addScript(&move_lights);
 
-	void ValleyScene::update(){
 	}
-	
+
+
+	void ValleyScene::update() {
+	}
+
 	void ValleyScene::input() {
 		if (!game->shell->active) {
 			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)) {
@@ -136,29 +137,9 @@ namespace Ryno{
 			}
 		}
 		float speed = .1f;
-		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-			sphere.transform->add_position(game->delta_time * speed* glm::vec3(1, 0, 0));
-		}
-		if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-			sphere.transform->add_position(game->delta_time * speed* glm::vec3(-1, 0, 0));
-		}
-		if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-			sphere.transform->add_position(game->delta_time * speed* glm::vec3(0, 0, 1));
-		}
-		if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-			sphere.transform->add_position(game->delta_time * speed* glm::vec3(0, 0, -1));
-		}
-		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
-			sphere.transform->add_rotation(glm::quat(game->delta_time * speed* glm::vec3(0, +.02f, 0)));
-		}
-		if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)) {
-			sphere.transform->add_rotation(glm::quat(game->delta_time * speed* glm::vec3(0, -.02f, 0)));
-			
-		}
+
 		if (game->input_manager->is_key_down(SDLK_SPACE, KEYBOARD)) {
-			for (GameObject& g : balls) {
-				g.transform->add_rotation(glm::quat(game->delta_time * speed* glm::vec3(0, -.02f, 0)));
-			}
+			sphere.GetScript<MoveLights>()->set_speed(speed < .2f ? 1 : .1f);
 		}
 	}
-	}
+}

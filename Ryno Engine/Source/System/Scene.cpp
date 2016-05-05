@@ -4,6 +4,7 @@
 namespace Ryno{
 
 	std::map<std::string, Scene*(*)()> SceneManager::scenes_map;
+	std::string SceneManager::current;
 
 	Scene::Scene()
 	{
@@ -18,6 +19,14 @@ namespace Ryno{
 			for (auto* s : g->scripts)
 				s->update();
 	}
+
+	void Scene::input_scripts()
+	{
+		for (auto* g : GameObject::game_objects)
+			for (auto* s : g->scripts)
+				s->input();
+	}
+
 
 
 

@@ -296,7 +296,7 @@ namespace Ryno {
 			request_pause = !request_pause;
 		}
 		else if (command.compare("r") == 0){
-			restart_physics = true;
+			Game::get_instance()->reset_scene();
 		}
 		else if (command.compare("sf") == 0){
 

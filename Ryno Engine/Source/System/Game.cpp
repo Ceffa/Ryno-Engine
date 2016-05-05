@@ -115,7 +115,15 @@ namespace Ryno{
 		deferred_renderer->set_camera(scene->camera);
 		game_state = GameState::ChangeScene;
 		scene->start();
-		
+	}
+	void Game::reset_scene()
+	{
+		if (scene)
+			destroy_scene(scene);
+		scene = SceneManager::reset_scene();
+		deferred_renderer->set_camera(scene->camera);
+		game_state = GameState::ChangeScene;
+		scene->start();
 	}
 
 	void Game::destroy_scene(Scene* s){
@@ -184,7 +192,10 @@ namespace Ryno{
 		 
 
 		//Process user inputs
-		if (game_state != GameState::Paused) scene->input();
+		 if (game_state != GameState::Paused) {
+			 scene->input();
+			 scene->input_scripts();
+		 }
 	}
 
 		
@@ -192,6 +203,7 @@ namespace Ryno{
 	{
 		particle_manager->update(delta_time);
 		scene->update();
+		scene->update_scripts();
 	}
 
 }

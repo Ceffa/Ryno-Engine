@@ -52,6 +52,9 @@
     <Filter Include="Resources\Textures\3D">
       <UniqueIdentifier>{a2a72fcf-69a5-46cc-9ae7-3214d09d526a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header\Scripts">
+      <UniqueIdentifier>{0d952eea-d11b-47d4-9324-838771f499a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -122,5 +125,13 @@
     <Media Include="Resources\Sounds\stomp.wav">
       <Filter>Resources\Sounds</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Headers\Scripts\ColorLights.h">
+      <Filter>Header\Scripts</Filter>
+    </Text>
+    <Text Include="Headers\Scripts\MoveLights.h">
+      <Filter>Header\Scripts</Filter>
+    </Text>
   </ItemGroup>
 </Project>

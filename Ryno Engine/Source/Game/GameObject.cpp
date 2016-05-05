@@ -5,6 +5,7 @@
 #include <GLM/gtx/quaternion.hpp>
 #include "ParticleManager.h"
 #include "Script.h"
+#include "Transform.h"
 
 namespace Ryno{
 
@@ -15,10 +16,11 @@ namespace Ryno{
 	GameObject::GameObject(){
 		game_objects.push_back(this);
 		reset_to_null();
+		transform.game_object = this;
 	}
 
 	void GameObject::reset_to_null() {
-		transform = nullptr;
+
 		model = nullptr;
 		point_light = nullptr;
 		dir_light = nullptr;
@@ -28,7 +30,7 @@ namespace Ryno{
 	GameObject::GameObject(const GameObject& go) 
 	{
 		copy(go);
-		game_objects.push_back(this);
+		
 	}
 
 
@@ -38,8 +40,8 @@ namespace Ryno{
 
 		reset_to_null();
 
-		if (go.transform)
-			transform = new Transform(*go.transform);
+		transform.copy(go.transform);
+		transform.game_object = this;
 		if (go.model)
 			model = new Model(*go.model);
 		if (go.point_light)
@@ -50,12 +52,14 @@ namespace Ryno{
 			dir_light = new DirectionalLight(*go.dir_light);
 		if (go.emitter)
 			emitter = new Emitter(*go.emitter, this);
+
+		game_objects.push_back(this);
+		
 	}
 
 	GameObject::~GameObject() {
 		game_objects.remove(this);
-		if (transform)
-			delete transform;
+		
 		if (model)
 			delete model;
 		if (point_light)
@@ -72,6 +76,7 @@ namespace Ryno{
 	void GameObject::addScript(Script* s) {
 		s->gameObject = this;
 		scripts.emplace_back(s);
+		s->start();
 	}
 
 	

@@ -2,10 +2,15 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include <GLM/gtx/quaternion.hpp>
+#include "GameObject.h"
 
 namespace Ryno{
 
 	Transform::Transform(const Transform& t)
+	{
+		copy(t);
+	}
+	void Transform::copy(const Transform& t)
 	{
 		*this = t;
 	}

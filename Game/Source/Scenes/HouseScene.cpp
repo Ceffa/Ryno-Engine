@@ -58,57 +58,56 @@ namespace Ryno{
 		cones[0].model->material.set_uniform("texture_sampler", white.id);
 		cones[0].model->material.set_uniform("normal_map_sampler", white_normal.id);
 		cones[0].model->mesh = cone_mesh;
-		cones[0].transform = new Transform();
-		cones[0].transform->set_scale(100, 100, 100);
-		cones[0].transform->set_position(0, 55, 50);
+
+		cones[0].transform.set_scale(100, 100, 100);
+		cones[0].transform.set_position(0, 55, 50);
 
 		//Left small cone
 		cones[1].copy(cones[0]);
-		cones[1].transform->set_scale(30, 30, 30);
-		cones[1].transform->set_position(-150, 20, -170);
+		cones[1].transform.set_scale(30, 30, 30);
+		cones[1].transform.set_position(-150, 20, -170);
 
 		//Right small cone
 		cones[2].copy(cones[1]);
-		cones[2].transform->set_position(150, 20, -170);
+		cones[2].transform.set_position(150, 20, -170);
 
 		//Base
 		walls[0].copy(cones[2]);
-		walls[0].transform->set_scale(1, 1, 1);
+		walls[0].transform.set_scale(1, 1, 1);
 		walls[0].model->material.set_uniform("texture_sampler", bt.id);
 		walls[0].model->material.set_uniform("normal_map_sampler", bn.id);
 
 		walls[0].model->mesh = terrain_mesh;
 		walls[0].model->material.set_attribute("in_Tiling", glm::vec2(3,3));
 
-		walls[0].transform->set_position(5, -15, -5);
+		walls[0].transform.set_position(5, -15, -5);
 
 		//Left
 		walls[1].copy(walls[0]);
 		walls[1].model->mesh = cube_mesh;
-		walls[1].transform->set_scale(5, 100, 200);
-		walls[1].transform->set_position(-200, 105, 0);
+		walls[1].transform.set_scale(5, 100, 200);
+		walls[1].transform.set_position(-200, 105, 0);
 
 		//Right
 		walls[2].copy(walls[1]);
-		walls[2].transform->set_scale(5, 100, 200);
-		walls[2].transform->set_position(200, 105, 0);
+		walls[2].transform.set_scale(5, 100, 200);
+		walls[2].transform.set_position(200, 105, 0);
 
 		//Front
 		walls[3].copy(walls[2]);
-		walls[3].transform->set_scale(200, 100, 5);
-		walls[3].transform->set_position(0, 105, 200);
+		walls[3].transform.set_scale(200, 100, 5);
+		walls[3].transform.set_position(0, 105, 200);
 
 		//Roof
 		walls[4].copy(walls[3]);
-		walls[4].transform->set_scale(200, 5, 200);
-		walls[4].transform->set_position(0, 205, 0);
+		walls[4].transform.set_scale(200, 5, 200);
+		walls[4].transform.set_position(0, 205, 0);
 
 		//Spot light
 		//Directional light
 		spot_light_shader.create("LightPass/spot", ENGINE);
 
-		spot_light_go.transform = new Transform();
-		spot_light_go.transform->set_position(0, 190, 50);
+		spot_light_go.transform.set_position(0, 190, 50);
 		spot_light_go.spot_light = new SpotLight();
 		auto* s = spot_light_go.spot_light;
 		s->model = new Model();
@@ -131,8 +130,8 @@ namespace Ryno{
 		spheres[0].model->material.set_uniform("normal_map_sampler", white_normal.id);
 		spheres[0].model->cast_shadows = false;
 
-		spheres[0].transform->set_scale(12, 12, 12);
-		spheres[0].transform->set_position(180, 20, 180);
+		spheres[0].transform.set_scale(12, 12, 12);
+		spheres[0].transform.set_position(180, 20, 180);
 		spheres[0].model->mesh = sphere_mesh;
 
 
@@ -150,21 +149,20 @@ namespace Ryno{
 
 		//Point light 2
 		spheres[1].copy(spheres[0]);
-		spheres[1].transform->set_position(-180, 20, 180);
+		spheres[1].transform.set_position(-180, 20, 180);
 
 		//Point light 3
 		spheres[2].copy(spheres[1]);
-		spheres[2].transform->set_position(-180, 20, -180);
+		spheres[2].transform.set_position(-180, 20, -180);
 
 		//Point light 4
 		spheres[3].copy(spheres[2]);
-		spheres[3].transform->set_position(180, 20, -180);
+		spheres[3].transform.set_position(180, 20, -180);
 
 		//Directional light
 		dir_light_shader.create("LightPass/directional", ENGINE);
 
 	
-		directional_light_go.transform = new Transform();
 		directional_light_go.dir_light = new DirectionalLight();
 		auto* l = directional_light_go.dir_light;
 		l->model = new Model();
@@ -201,8 +199,7 @@ namespace Ryno{
 		t->set_color(255, 255, 0, 255);
 		t->text = "Ryno Engine";
 
-		emitter_obj.transform = new Transform();
-		emitter_obj.transform->set_position(0, 105, 50);
+		emitter_obj.transform.set_position(0, 105, 50);
 		emitter_obj.emitter = new Emitter(&emitter_obj);
 		Emitter* emitter = emitter_obj.emitter;
 		emitter->save_map.add("texture", &white);
@@ -239,7 +236,7 @@ namespace Ryno{
 		emitter->lambda_spawn = [](Emitter* e){
 			for (U8 t = 0; t < 2; t++){
 				Particle3D* p = e->new_particle();
-				p->transform->set_position(e->game_object->transform->get_position());
+				p->transform.set_position(e->game_object->transform.get_position());
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 				//bool b = false;
 				//p->get_emitter()->save_map.replace("go_crazy", b);
@@ -252,16 +249,16 @@ namespace Ryno{
 			//bool f = false;
 			//bool t = true;
 			//if (p->lifetime < .75f){
-			p->transform->add_position(p->direction * p->speed * _delta_time);
-			p->transform->set_scale(ryno_math::lerp(glm::vec3(.1), glm::vec3(5), p->lifetime));
+			p->transform.add_position(p->direction * p->speed * _delta_time);
+			p->transform.set_scale(ryno_math::lerp(glm::vec3(.1), glm::vec3(5), p->lifetime));
 
 			p->model->material.set_attribute("in_Color",ColorRGBA(255, ryno_math::lerp(0, 255, p->lifetime), 0,255));
 			//}
 
 			/*if (p->lifetime > .75f && p->lifetime < .82f){
 			p->get_emitter()->save_map.replace("go_crazy", t);
-			if (p.transform->scale.x > 1)
-			p.transform->set_scale(0,0,0);
+			if (p.transform.scale.x > 1)
+			p.transform.set_scale(0,0,0);
 			}
 			else p->get_emitter()->save_map.replace("go_crazy", f);*/
 
@@ -279,10 +276,10 @@ namespace Ryno{
 
 	void HouseScene::update(){
 
-		for (const auto & sphere : spheres){
-			glm::vec3 m = sphere.transform->get_position();
+		for (auto & sphere : spheres){
+			glm::vec3 m = sphere.transform.get_position();
 			m.y = 40 + sin(game->time / 1000.0f) * 20;
-			sphere.transform->set_position(m);
+			sphere.transform.set_position(m);
 		}
 
 	}

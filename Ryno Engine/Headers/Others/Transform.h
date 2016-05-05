@@ -4,13 +4,16 @@
 #include <GLM/gtx/quaternion.hpp>
 #include <list>
 
+
 namespace Ryno{
 
+	class GameObject;
 	class Transform{
 	public:
 		Transform(){}
 		~Transform(){}
 		Transform(const Transform& t);
+		void copy(const Transform& t);
 
 		//Position
 		void set_position(glm::vec3 pos) { position = pos; }
@@ -50,6 +53,8 @@ namespace Ryno{
 		void remove_parent();
 		Transform* get_parent() { return parent; }
 
+		std::list<Transform*> children;
+		GameObject* game_object = nullptr;
 	private:
 
 		//Rotation
@@ -61,7 +66,7 @@ namespace Ryno{
 
 		//parent and children
 		Transform* parent = nullptr;
-		std::list<Transform*> children;
+		
 		U32 child_nr = 0;
 		void add_child(Transform* child);
 		void remove_child(Transform* child);
