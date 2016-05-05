@@ -15,6 +15,7 @@ namespace Ryno{
 		virtual void start() = 0;
 		virtual void input() = 0;
 		virtual void update() = 0;
+		virtual void update_scripts() final;
 		void camera_update();
 
 		

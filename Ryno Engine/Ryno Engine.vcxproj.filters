@@ -878,5 +878,8 @@
     <ClInclude Include="Headers\Rendering\Shader.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Game\Script.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

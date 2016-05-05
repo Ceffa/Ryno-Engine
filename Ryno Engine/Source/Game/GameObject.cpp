@@ -4,6 +4,7 @@
 #include <GLM/gtc/quaternion.hpp>
 #include <GLM/gtx/quaternion.hpp>
 #include "ParticleManager.h"
+#include "Script.h"
 
 namespace Ryno{
 
@@ -66,6 +67,11 @@ namespace Ryno{
 		if (emitter)
 			delete emitter;
 		reset_to_null();
+	}
+
+	void GameObject::addScript(Script* s) {
+		s->gameObject = this;
+		scripts.emplace_back(s);
 	}
 
 	

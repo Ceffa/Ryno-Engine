@@ -143,10 +143,12 @@ namespace Ryno{
 
 		//First generate individual model matrices
 		for (GameObject* go : GameObject::game_objects)
-			go->transform->generate_model_matrix();
+			if(go->active)
+				go->transform->generate_model_matrix();
 		//Then combine them
 		for (GameObject* go : GameObject::game_objects)
-			go->transform->combine_model_matrices();
+			if (go->active)
+				go->transform->combine_model_matrices();
 
 		for (GameObject* go : GameObject::game_objects)
 		{

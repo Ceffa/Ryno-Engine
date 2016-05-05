@@ -13,8 +13,9 @@
 namespace Ryno{
 
 	class Emitter;
+	class Script;
 	class GameObject{
-
+		friend class Scene;
 	public:
 		
 		GameObject();
@@ -23,6 +24,14 @@ namespace Ryno{
 		GameObject(const GameObject& go);
 		void copy(const GameObject& go);
 		void reset_to_null();
+		void addScript(Script* s);
+		template<class T>
+		T* GetScript() {
+			for (auto* s : scripts)
+				if (T* v = dynamic_cast<T*>(s))
+					return v;
+			return nullptr;
+		}
 		//Status
 		bool active = true;
 
@@ -33,8 +42,12 @@ namespace Ryno{
 		DirectionalLight* dir_light;
 		SpotLight* spot_light;
 		Emitter* emitter;
+		
 
 		static std::list<GameObject*> game_objects;
+
+	private:
+		std::list<Script*> scripts;
 		
 	};
 

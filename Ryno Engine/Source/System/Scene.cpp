@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Scene.h"
-
+#include "Script.h"
 namespace Ryno{
 
 	std::map<std::string, Scene*(*)()> SceneManager::scenes_map;
@@ -11,6 +11,16 @@ namespace Ryno{
 		camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	}
+
+	void Scene::update_scripts()
+	{
+		for (auto* g : GameObject::game_objects)
+			for (auto* s : g->scripts)
+				s->update();
+	}
+
+
+
 	void Scene::camera_update()
 	{
 		if (!game->shell->active){

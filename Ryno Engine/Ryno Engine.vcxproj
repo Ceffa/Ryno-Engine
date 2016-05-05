@@ -225,6 +225,7 @@
     <ClInclude Include="Headers\Game\Lights\DirectionalLight.h" />
     <ClInclude Include="Headers\Game\Lights\PointLight.h" />
     <ClInclude Include="Headers\Game\Lights\SpotLight.h" />
+    <ClInclude Include="Headers\Game\Script.h" />
     <ClInclude Include="Headers\GUI\GUIObject.h" />
     <ClInclude Include="Headers\GUI\Sprite.h" />
     <ClInclude Include="Headers\GUI\Text.h" />
