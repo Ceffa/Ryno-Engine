@@ -81,5 +81,11 @@ namespace Ryno{
 
 	
 
+	void GameObject::removeScript(Script* s)
+	{
+		scripts.remove(s);
+		s->gameObject = nullptr;
+	}
+
 }
 
