@@ -261,10 +261,11 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 gp = go->transform.get_position();
-		glm::vec3 correct_position = glm::vec3(gp.x, gp.y, -gp.z);
+		glm::vec3 correct_position = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0,0,0,1));
+		
 
 		glm::mat4 light_VP_matrices[NUM_OF_LAYERS];
+
 
 
 		p->calculate_max_radius();
@@ -317,16 +318,35 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		glm::vec3 gp = go->transform.get_position();
-		glm::vec4 light_pos = glm::vec4(gp.x, gp.y, -gp.z,1);
-		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(p->max_radius));
-		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), glm::vec3(light_pos));
 
-		MVP_camera = m_camera->get_VP_matrix() * trans_box * scale_box;
+		//Generate a special model matrix with the following differences:
+		//1) scale is not considered, we use the light one
+		//2) translation is precalculated from the hinerited and model matrices, we don't care HOW we get there
+		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
+		//we just need to orient the bounding box
+
+		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0,0,0, 1));
+		
+		glm::vec3 scale = glm::vec3(p->max_radius);
+		glm::quat rot = go->transform.get_rotation();
+		Transform* parent = go->transform.get_parent();
+		while (parent != nullptr) {
+			rot = parent->get_rotation() * rot;
+			parent = parent->get_parent();
+		}
+		glm::mat4 model_matrix = glm::scale(
+			//Translate matrix
+			glm::translate(glm::mat4(1.0f), glm::vec3(trans)) *
+			//Rotation matrix built from three quaternions
+			glm::toMat4(rot),
+			//Scaling the rot-trans matrix
+			scale);
+
+		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
 
 
 		//SEND POINT LIGHT UNIFORMS (each for light)
-		mat.set_uniform("point_light.position", go->transform.hinerited_matrix * light_pos);
+		mat.set_uniform("point_light.position", trans);
 		mat.set_uniform("point_light.attenuation", p->attenuation);
 		mat.set_uniform("point_light.diffuse", p->diffuse_color);
 		mat.set_uniform("point_light.specular", p->specular_color);

@@ -104,12 +104,12 @@ namespace Ryno {
 			}
 		}
 
-		U32 nr = 20;
+		U32 nr = 4;
 		balls.resize(nr);
 		for (I32 i = 0; i < nr; i++) {
 			balls[i].copy(sphere);
 			balls[i].transform.set_position(20 * sin(i * 360 / nr * DEG_TO_RAD), 0, 20 * cos(i * 360 / nr * DEG_TO_RAD));
-			balls[i].transform.set_scale(1, 1, 1);
+			balls[i].transform.set_scale(.4f, .4f, .4f);
 			delete balls[i].dir_light;
 			balls[i].dir_light = nullptr;
 		}

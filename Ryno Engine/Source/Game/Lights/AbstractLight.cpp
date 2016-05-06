@@ -16,6 +16,8 @@ namespace Ryno{
 	glm::vec3 AbstractLight::get_specular_color(){
 		return specular_color.to_vec3();
 	}
+
 	
+
 
 }
