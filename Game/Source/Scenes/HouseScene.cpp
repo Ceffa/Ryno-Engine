@@ -119,6 +119,7 @@ namespace Ryno{
 		s->attenuation = .001;
 		s->specular_intensity = 10;
 		s->set_specular_color(0, 255, 0);
+		s->absolute_movement = true;
 
 
 		

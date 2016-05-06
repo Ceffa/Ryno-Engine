@@ -78,6 +78,7 @@ namespace Ryno {
 		p->set_specular_color(255, 80, 0);
 		p->set_rotation(-90, 0,0);
 		p->cutoff = 30;
+		p->absolute_movement = false;
 		
 
 
@@ -141,7 +142,7 @@ namespace Ryno {
 
 			}
 		}
-		float speed = .1f;
+		float speed = .5f;
 
 		if (game->input_manager->is_key_down(SDLK_SPACE, KEYBOARD)) {
 			sphere.GetScript<MoveLights>()->set_speed(speed < .2f ? 1 : .1f);

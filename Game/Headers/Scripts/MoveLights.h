@@ -12,7 +12,7 @@ namespace Ryno {
 		F32 speed;
 		void start() override {
 			game = Game::get_instance();
-			speed = .01f;
+			speed = .05f;
 		}
 		void input() override {
 			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
@@ -35,9 +35,7 @@ namespace Ryno {
 			}
 			if (game->input_manager->is_key_pressed(SDLK_v, KEYBOARD)) {
 				for (auto* c : gameObject->transform.children) {
-					glm::vec3 position = c->get_position();
-					position.y = ryno_math::rand_int_range(-4, 4);
-					c->set_position(position);
+					c->game_object->spot_light->absolute_movement = !c->game_object->spot_light->absolute_movement;
 				}
 			}
 			

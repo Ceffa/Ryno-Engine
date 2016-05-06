@@ -39,6 +39,8 @@ namespace Ryno{
 			I32 specular;
 		} locations;
 
+		//If true, rotate along with game object transform. If not, only use its position
+		bool absolute_movement = false;
 
 	};
 

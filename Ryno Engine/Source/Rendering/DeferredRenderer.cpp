@@ -399,7 +399,7 @@ namespace Ryno{
 
 		//Get light position, with correct z axis
 		glm::vec3 correct_position = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
-		glm::vec4 dir = glm::transpose(glm::inverse(go->transform.hinerited_matrix)) * (s->rotation * glm::vec4(0,0,-1,0));
+		glm::vec4 dir = glm::transpose(glm::inverse(s->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (s->rotation * glm::vec4(0,0,-1,0));
 		
 		s->calculate_max_radius();
 	
@@ -456,7 +456,7 @@ namespace Ryno{
 		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
 		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
 		glm::vec3 scale = glm::vec3(width, s->max_radius, width);
-		glm::quat rot = s->rotation;
+		glm::quat rot = s->absolute_movement ?  s-> rotation : go->transform.get_rotation() * s->rotation;
 		Transform* parent = go->transform.get_parent();
 		while (parent != nullptr) {
 			rot = parent->get_rotation() * rot;
