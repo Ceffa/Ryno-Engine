@@ -3,12 +3,9 @@
 
 namespace Ryno{
 
-	void SpotLight::set_direction(F32 _pitch, F32 _yaw)
+	void SpotLight::set_rotation(F32 _pitch, F32 _yaw, F32 _roll)
 	{		
-		pitch = _pitch * DEG_TO_RAD;
-		yaw = _yaw * DEG_TO_RAD ;
-		
-		direction = glm::normalize(glm::vec3(cos(yaw)*cos(pitch), sin(pitch), sin(yaw)*cos(pitch)));
+		rotation = glm::quat(glm::vec3(_pitch *  DEG_TO_RAD, _yaw* DEG_TO_RAD, _roll* DEG_TO_RAD));
 	}
 
 	void SpotLight::calculate_max_radius()

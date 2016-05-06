@@ -34,8 +34,8 @@ namespace Ryno{
 		//Rotation
 		void set_rotation(glm::quat q) { rotation = q; }
 		void add_rotation(glm::quat q) { set_rotation(q * rotation); }
-		void set_rotation(glm::vec3 v) { set_rotation(glm::quat(v)); }
-		void add_rotation(glm::vec3 v) { add_rotation(glm::quat(v)); }
+		void set_rotation(glm::vec3 v) { set_rotation(glm::quat(v * (F32)ryno_math::DegToRad)); }
+		void add_rotation(glm::vec3 v) { add_rotation(glm::quat(v* (F32)ryno_math::DegToRad)); }
 		void set_rotation(F32 x, F32 y, F32 z) { set_rotation(glm::vec3(x, y, z)); }
 		void add_rotation(F32 x, F32 y, F32 z) { add_rotation(glm::vec3(x, y, z)); }
 

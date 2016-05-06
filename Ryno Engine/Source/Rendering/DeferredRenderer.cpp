@@ -325,8 +325,8 @@ namespace Ryno{
 		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
 		//we just need to orient the bounding box
 
-		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0,0,0, 1));
-		
+		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
+
 		glm::vec3 scale = glm::vec3(p->max_radius);
 		glm::quat rot = go->transform.get_rotation();
 		Transform* parent = go->transform.get_parent();
@@ -398,14 +398,13 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 gp = go->transform.get_position();
-		glm::vec3 correct_position = glm::vec3(gp.x, gp.y, -gp.z);
-		
+		glm::vec3 correct_position = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
+		glm::vec4 dir = glm::transpose(glm::inverse(go->transform.hinerited_matrix)) * (s->rotation * glm::vec4(0,0,-1,0));
 		
 		s->calculate_max_radius();
 	
-		glm::vec3 up_vector = glm::vec3(s->direction.y, -s->direction.x, 0);//One of the perpendicular vectors to the direction
-		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + s->direction, up_vector);
+		glm::vec3 up_vector = glm::vec3(dir.y, -dir.x, 0);//One of the perpendicular vectors to the direction
+		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + glm::vec3(dir), up_vector);
 	
 		glm::mat4 projection_matrix = glm::perspective( s->cutoff*2 * DEG_TO_RAD, 1.0, 1.0, (F64)s->max_radius);
 
@@ -448,22 +447,38 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 	
-		glm::vec3 gp = go->transform.get_position();
-		glm::vec4 light_pos = glm::vec4(gp.x, gp.y, -gp.z, 1);
+		//Generate a special model matrix with the following differences:
+		//1) scale is not considered, we use the light one
+		//2) translation is precalculated from the hinerited and model matrices, we don't care HOW we get there
+		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
+		//we just need to orient the bounding box
+
+		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
 		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
-		glm::mat4 scale_box = glm::scale(glm::mat4(1.0f), glm::vec3(width, s->max_radius, width));
-		glm::mat4 trans_box = glm::translate(glm::mat4(1.0f), glm::vec3(light_pos));
-		glm::mat4 rot_box = glm::toMat4(glm::quat(glm::vec3(0, -s->yaw -M_HALF_PI,0)) * glm::quat(glm::vec3(s->pitch,0, 0)));
-	
-		MVP_camera = m_camera->get_VP_matrix() * trans_box * rot_box  * scale_box;
+		glm::vec3 scale = glm::vec3(width, s->max_radius, width);
+		glm::quat rot = s->rotation;
+		Transform* parent = go->transform.get_parent();
+		while (parent != nullptr) {
+			rot = parent->get_rotation() * rot;
+			parent = parent->get_parent();
+		}
+		glm::mat4 model_matrix = glm::scale(
+			//Translate matrix
+			glm::translate(glm::mat4(1.0f), glm::vec3(trans)) *
+			//Rotation matrix built from three quaternions
+			glm::toMat4(rot),
+			//Scaling the rot-trans matrix
+			scale);
+
+		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
 		glm::mat4 biased_light_VP_matrix = bias * spot_VP_matrix;
 
 		F32 cutoff_value = cos(s->cutoff * DEG_TO_RAD);
 
 		//SEND SPOT LIGHT UNIFORMS
-		mat.set_uniform("spot_light.position", go->transform.hinerited_matrix *light_pos);
+		mat.set_uniform("spot_light.position", trans);
 		mat.set_uniform("spot_light.attenuation", s->attenuation);
-		mat.set_uniform("spot_light.direction", s->direction);
+		mat.set_uniform("spot_light.direction", rot * glm::vec3(0,0,-1));
 		mat.set_uniform("spot_light.cutoff", cutoff_value);
 		mat.set_uniform("spot_light.diffuse", s->diffuse_color);
 		mat.set_uniform("spot_light.specular",s->specular_color);

@@ -13,6 +13,11 @@ namespace Ryno{
 	class ryno_math{
 
 	public:
+
+		static double DegToRad;
+		static double HalfPi; 
+		static double Pi;
+		static double Pi2;
 		//Lerps
 		static F32 lerp(F32 a, F32 b, F32 value);
 		static glm::vec3 lerp(glm::vec3 a, glm::vec3 b, F32 value);

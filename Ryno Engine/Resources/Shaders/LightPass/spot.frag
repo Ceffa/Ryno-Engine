@@ -110,8 +110,8 @@ void main(){
 	//SHADOWS
 	float visibility = 1.0f;
 	if (shadows_enabled > 0.5){
-		
-		visibility = texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z));
+		float bias = 0.0005;
+		visibility = texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z - bias));
 	}
 
 	

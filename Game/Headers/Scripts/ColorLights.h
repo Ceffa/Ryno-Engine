@@ -21,7 +21,7 @@ namespace Ryno {
 
 		void color_lights() {
 			for (auto* c : gameObject->transform.children)
-				c->game_object->point_light->diffuse_color = ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white);
+				c->game_object->spot_light->diffuse_color = ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white);
 		}
 
 

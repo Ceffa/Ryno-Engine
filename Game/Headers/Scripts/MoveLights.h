@@ -12,7 +12,7 @@ namespace Ryno {
 		F32 speed;
 		void start() override {
 			game = Game::get_instance();
-			speed = .1f;
+			speed = .01f;
 		}
 		void input() override {
 			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {

@@ -7,7 +7,12 @@ namespace Ryno{
 	std::mt19937 ryno_math::mt(rd());
 	
 	
-	F32 ryno_math::lerp(F32 a, F32 b, F32 value){
+	double ryno_math::DegToRad = 0.0174532925199433;
+	double ryno_math::HalfPi = 1.57079632679489661923;
+	double ryno_math::Pi = 3.14159265358979323846;
+	double ryno_math::Pi2 = 6.28318530717958647692;
+
+	F32 ryno_math::lerp(F32 a, F32 b, F32 value) {
 		return (1.0f - value) * a + value * b;
 	}
 
@@ -31,8 +36,8 @@ namespace Ryno{
 	}
 
 	glm::vec3 ryno_math::get_rand_dir(F32 p_min, F32 p_max, F32 y_min, F32 y_max){
-		F32 pitch = rand_float_range(p_min, p_max) * DEG_TO_RAD;
-		F32 yaw = rand_float_range(y_min, y_max) * DEG_TO_RAD;
+		F32 pitch = rand_float_range(p_min, p_max) * DegToRad;
+		F32 yaw = rand_float_range(y_min, y_max) * DegToRad;
 		F32 x = sin(yaw);
 		F32 y = -cos(yaw)*sin(pitch);
 		F32 z = -cos(pitch)*cos(yaw);

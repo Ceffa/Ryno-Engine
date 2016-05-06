@@ -112,7 +112,7 @@ namespace Ryno{
 		auto* s = spot_light_go.spot_light;
 		s->model = new Model();
 		s->model->material.set_shader(&spot_light_shader);
-		s->set_direction(-90, 0);
+		s->set_rotation(-90, 0,0);
 		s->cutoff = 30;
 		s->set_diffuse_color(0, 255, 0);
 		s->diffuse_intensity = 30;

@@ -65,17 +65,20 @@ namespace Ryno {
 		sphere.model->mesh = sphere_mesh;
 
 
-		point_light_shader.create("LightPass/point", ENGINE);
+		point_light_shader.create("LightPass/spot", ENGINE);
 
-		sphere.point_light = new PointLight();
-		auto* p = sphere.point_light;
+		sphere.spot_light = new SpotLight();
+		auto* p = sphere.spot_light;
 		p->model = new Model();
 		p->model->material.set_shader(&point_light_shader);
 		p->set_diffuse_color(255, 80, 0);
 		p->diffuse_intensity = 1.5f;
-		p->attenuation = .001;
+		p->attenuation = .0001;
 		p->specular_intensity = 0;
 		p->set_specular_color(255, 80, 0);
+		p->set_rotation(-90, 0,0);
+		p->cutoff = 30;
+		
 
 
 		I32 s = 18;//size
@@ -104,7 +107,7 @@ namespace Ryno {
 			}
 		}
 
-		U32 nr = 4;
+		U32 nr = 20;
 		balls.resize(nr);
 		for (I32 i = 0; i < nr; i++) {
 			balls[i].copy(sphere);
@@ -112,6 +115,7 @@ namespace Ryno {
 			balls[i].transform.set_scale(.4f, .4f, .4f);
 			delete balls[i].dir_light;
 			balls[i].dir_light = nullptr;
+			balls[i].spot_light->set_rotation(55, 360 / nr * i,180);
 		}
 		for (I32 i = 0; i < nr; i++) {
 			balls[i].transform.set_parent(&sphere.transform);
@@ -121,6 +125,7 @@ namespace Ryno {
 		
 		sphere.addScript(&color_lights);
 		sphere.addScript(&move_lights);
+		p->cutoff = 45;
 
 	}
 

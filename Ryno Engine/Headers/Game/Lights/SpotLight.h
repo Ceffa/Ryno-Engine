@@ -19,7 +19,7 @@ namespace Ryno{
 			else model = nullptr;
 		}
 	
-		void set_direction(F32 _pitch, F32 _yaw);
+		void set_rotation(F32 _pitch, F32 _yaw, F32 _roll);
 
 
 		void calculate_max_radius();
@@ -27,8 +27,8 @@ namespace Ryno{
 		//Light data
 		F32 max_radius;
 		F32 attenuation; //exp
-		glm::vec3 direction;
-		F32 pitch, yaw;
+		glm::quat rotation;
+
 		F32 cutoff; //Angle of the cone
 
 		//Shaders uniform locations
