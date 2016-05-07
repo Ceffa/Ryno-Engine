@@ -401,7 +401,7 @@ namespace Ryno {
 			log->print(s);
 		}
 
-		else if (command.compare("setscene") == 0){
+		else if (command.compare("s") == 0){
 			std::string s = string_argument();
 			if (s.empty()){
 				print_message("missing argument(s)."); return;

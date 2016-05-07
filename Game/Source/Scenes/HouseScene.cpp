@@ -168,8 +168,8 @@ namespace Ryno{
 		auto* l = directional_light_go.dir_light;
 		l->model = new Model();
 		l->model->material.set_shader(&dir_light_shader);
-		l->set_rotation(50, 0,0);
-		l->diffuse_intensity = 1;
+		l->set_rotation(-70, 10,0);
+		l->diffuse_intensity = .3f;
 		l->set_diffuse_color(255, 255, 200);
 		l->specular_intensity = .05;
 		l->set_specular_color(255, 255, 200);
@@ -188,18 +188,18 @@ namespace Ryno{
 		sp->angle = 0;
 		sp->set_color(255, 255, 255, 255);
 		sp->set_texture(doge);
-		sp->set_position(0.25, 0.75);
-		sp->anchor_point = CENTER;
-		sp->set_scale(150, 150);
+		sp->set_position(0.01f, 0.99f);
+		sp->anchor_point = TOP_LEFT;
+		sp->set_scale(100, 100);
 		sp->set_tiling(1, 1);
 		sp->angle = 0;
 		t->depth = 10;
 		t->font = &font;
 		t->set_position(1, 1);
 		t->anchor_point = TOP_RIGHT;
-		t->set_scale(1, 1);
+		t->set_scale(.99f,.99f);
 		t->set_color(255, 255, 0, 255);
-		t->text = "Ryno Engine";
+		t->text = "Anchored text";
 
 		emitter_obj.transform.set_position(0, 105, 50);
 		emitter_obj.emitter = new Emitter(&emitter_obj);
