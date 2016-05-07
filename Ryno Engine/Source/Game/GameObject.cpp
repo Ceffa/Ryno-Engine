@@ -73,8 +73,8 @@ namespace Ryno{
 		reset_to_null();
 	}
 
-	void GameObject::addScript(Script* s) {
-		s->gameObject = this;
+	void GameObject::add_script(Script* s) {
+		s->game_object = this;
 		scripts.emplace_back(s);
 		s->start();
 	}
@@ -84,7 +84,7 @@ namespace Ryno{
 	void GameObject::removeScript(Script* s)
 	{
 		scripts.remove(s);
-		s->gameObject = nullptr;
+		s->game_object = nullptr;
 	}
 
 }

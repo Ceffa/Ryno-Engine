@@ -7,8 +7,10 @@
 #include "Emitter.h"
 #include "Scene.h"
 #include "Game.h"
-#include "MoveLights.h"
-#include "ColorLights.h"
+#include "GroundElements.h"
+#include "LightsElements.h"
+#include "GroundElements.h"
+#include "LightsElements.h"
 
 namespace Ryno{
 
@@ -21,16 +23,10 @@ namespace Ryno{
 		void start() override;
 		void input() override;
 		void update() override;
-
-		Sound sound;
-		Music music;
-		Shader shader, dir_shader, point_light_shader;
-		Texture bt, bn, white,white_normal;
-		I32 terrain_mesh, cube_mesh,sphere_mesh;
-		GameObject go,sphere;
-		std::vector<GameObject> poles;
-		std::vector<GameObject> balls;
-		MoveLights move_lights;
-		ColorLights color_lights;
+		
+		GameObject floor,sphere;
+		
+		GroundElements ground_script;
+		LightsElements lights_script;
 	};
 }

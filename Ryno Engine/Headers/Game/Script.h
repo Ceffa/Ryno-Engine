@@ -19,7 +19,7 @@ namespace Ryno {
 		virtual void update() = 0;
 		virtual void input() = 0;
 
-		GameObject* gameObject;
+		GameObject* game_object;
 	};
 
 }

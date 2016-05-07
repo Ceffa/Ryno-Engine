@@ -21,7 +21,7 @@ namespace Ryno{
 		GameObject(const GameObject& go);
 		void copy(const GameObject& go);
 		void reset_to_null();
-		void addScript(Script* s);
+		void add_script(Script* s);
 		void removeScript(Script* s);
 		template<class T>
 		T* GetScript() {

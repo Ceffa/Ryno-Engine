@@ -139,6 +139,8 @@
     <ClInclude Include="Headers\Scenes\ValleyScene.h" />
     <ClInclude Include="Headers\Scenes\FireworkScene.h" />
     <ClInclude Include="Headers\Scenes\HouseScene.h" />
+    <ClInclude Include="Headers\Scripts\GroundElements.h" />
+    <ClInclude Include="Headers\Scripts\LightsElements.h" />
     <ClInclude Include="Headers\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
@@ -156,10 +158,6 @@
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav" />
     <Media Include="Resources\Sounds\stomp.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Headers\Scripts\ColorLights.h" />
-    <Text Include="Headers\Scripts\MoveLights.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
