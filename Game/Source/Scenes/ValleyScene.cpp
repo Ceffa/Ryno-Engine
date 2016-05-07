@@ -9,7 +9,7 @@ namespace Ryno {
 	void ValleyScene::start() {
 
 		camera->position = glm::vec4(-100, 50, -100, 1);
-		camera->movement_speed = .05f;
+		camera->movement_speed = .1f;
 
 		bt = game->texture_manager->load_png("pack/161", GAME);
 		bn = game->texture_manager->load_png("pack/161_norm", GAME);

@@ -298,6 +298,9 @@ namespace Ryno {
 		else if (command.compare("r") == 0){
 			Game::get_instance()->reset_scene();
 		}
+		else if (command.compare("n") == 0) {
+			Game::get_instance()->next_scene();
+		}
 		else if (command.compare("sf") == 0){
 
 			//read args

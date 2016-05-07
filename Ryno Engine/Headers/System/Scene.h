@@ -32,35 +32,53 @@ namespace Ryno{
 	class SceneManager{
 		
 	public:
+
+		static I8 get_scene_nr(std::string const& s) {
+			auto it = scene_names.find(s);
+			if (it == scene_names.end())
+				return -1;
+			return it->second;
+		}
+		static bool scene_exists(I8 n) {
+			return n <= last_scene && n>=0;
+		}
 		static Scene * new_scene(std::string const& s)
 		{
-			auto it = scenes_map.find(s);
-			if (it == scenes_map.end()){
-				std::cout << "Scene manager: Scene doesn't exist" << std::endl;
+			I8 n = get_scene_nr(s);
+			if (!scene_exists(n))
 				return nullptr;
-			}
-			current = s;
-			return it->second();
+			return new_scene(n);
 		}
+		static Scene * new_scene(I8 n)
+		{
+			if (!scene_exists(n))
+				return nullptr;
+			current = n;
+			return scenes[n]();
+		}
+
 
 		static Scene * reset_scene()
 		{
-			auto it = scenes_map.find(current);
-			if (it == scenes_map.end()) {
-				std::cout << "Scene manager: Scene doesn't exist" << std::endl;
-				return nullptr;
-			}
-			return it->second();
+			return new_scene(current);
+		}
+
+		static Scene * next_scene()
+		{
+			return new_scene((current+1)%last_scene);
 		}
 
 		template<typename T>
 		static void add_to_scenes(std::string& scene_name)
 		{
-			scenes_map[scene_name] = &create_scene < T > ;
+			scene_names[scene_name] = last_scene++;
+			scenes.push_back(&create_scene < T >);
 		}
 	protected: 
-		static std::string current;
-		static std::map<std::string, Scene*(*)()> scenes_map;
+		static U8 current;
+		static std::vector<Scene*(*)()> scenes;
+		static std::map <std::string, U8> scene_names;
+		static U8 last_scene;
 
 
 	};

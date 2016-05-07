@@ -3,8 +3,11 @@
 #include "Script.h"
 namespace Ryno{
 
-	std::map<std::string, Scene*(*)()> SceneManager::scenes_map;
-	std::string SceneManager::current;
+	std::vector<Scene*(*)()> SceneManager::scenes;
+	std::map <std::string,U8> SceneManager::scene_names;
+	U8 SceneManager::current = 0;
+	U8 SceneManager::last_scene = 0;
+
 
 	Scene::Scene()
 	{

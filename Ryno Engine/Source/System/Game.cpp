@@ -116,12 +116,23 @@ namespace Ryno{
 
 	void Game::set_scene(const std::string& scene_name)
 	{
+		if (!SceneManager::scene_exists(SceneManager::get_scene_nr(scene_name)))
+			return;
 		if (scene)
 			destroy_scene(scene);
 		scene = SceneManager::new_scene(scene_name);
 		deferred_renderer->set_camera(scene->camera);
 		game_state = GameState::ChangeScene;
 	
+	}
+	void Game::next_scene()
+	{
+		if (scene)
+			destroy_scene(scene);
+		scene = SceneManager::next_scene();
+		deferred_renderer->set_camera(scene->camera);
+		game_state = GameState::ChangeScene;
+
 	}
 	void Game::reset_scene()
 	{
