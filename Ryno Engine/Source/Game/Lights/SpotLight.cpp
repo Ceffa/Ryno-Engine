@@ -5,7 +5,11 @@ namespace Ryno{
 
 	void SpotLight::set_rotation(F32 _pitch, F32 _yaw, F32 _roll)
 	{		
-		rotation = glm::quat(glm::vec3(_pitch *  DEG_TO_RAD, _yaw* DEG_TO_RAD, _roll* DEG_TO_RAD));
+		set_rotation(glm::vec3(_pitch , _yaw, _roll));
+	}
+	void SpotLight::set_rotation(glm::vec3 euler)
+	{
+		rotation = glm::quat(euler*(F32)DEG_TO_RAD);
 	}
 
 	void SpotLight::calculate_max_radius()

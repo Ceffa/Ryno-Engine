@@ -22,10 +22,9 @@ namespace Ryno{
 
 		}
 
+		void set_rotation(F32 _pitch, F32 _yaw, F32 _roll);
+		void set_rotation(glm::vec3 euler);
 
-		
-	
-		void set_direction(F32 p, F32 y);
 
 		void set_ambient_color(U8 r, U8 g, U8 b);
 		glm::vec3 get_ambient_color();
@@ -34,7 +33,8 @@ namespace Ryno{
 		ColorRGBA ambient_color;
 		F32 ambient_intensity;
 		glm::vec3 direction;
-		F32 pitch, yaw;
+		
+		glm::quat rotation;
 
 		//uniform info
 		struct location{
@@ -44,6 +44,8 @@ namespace Ryno{
 			I32 ambient;
 		} locations;
 
+		//If true, rotate along with game object transform. If not, only use its position
+		bool absolute_movement = true;
 
 	};
 

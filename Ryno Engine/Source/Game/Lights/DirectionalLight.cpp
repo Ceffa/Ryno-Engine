@@ -3,18 +3,14 @@
 namespace Ryno{
 
 
-	void DirectionalLight::set_direction(F32 p, F32 y){
-		
-			
-		pitch = -p * DEG_TO_RAD;
-		yaw = y * DEG_TO_RAD - M_HALF_PI;
-
-
-		direction = glm::normalize(glm::vec3(cos(yaw)*cos(pitch), sin(pitch), sin(yaw)*cos(pitch)));
-		
-		
+	void DirectionalLight::set_rotation(F32 _pitch, F32 _yaw, F32 _roll)
+	{
+		set_rotation(glm::vec3(_pitch, _yaw, _roll));
 	}
-
+	void DirectionalLight::set_rotation(glm::vec3 euler)
+	{
+		rotation = glm::quat(euler*(F32)DEG_TO_RAD);
+	}
 	void DirectionalLight::set_ambient_color(U8 r, U8 g, U8 b){
 		ambient_color.set_color(r, g, b);
 	}

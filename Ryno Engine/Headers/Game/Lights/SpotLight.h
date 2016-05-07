@@ -20,6 +20,7 @@ namespace Ryno{
 		}
 	
 		void set_rotation(F32 _pitch, F32 _yaw, F32 _roll);
+		void set_rotation(glm::vec3 euler);
 
 
 		void calculate_max_radius();

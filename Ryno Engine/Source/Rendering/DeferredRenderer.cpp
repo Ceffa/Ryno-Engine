@@ -521,8 +521,9 @@ namespace Ryno{
 
 		//generate light_VP matrix
 		glm::mat4 ortho_mat = m_camera->get_O_matrix();
-		glm::vec3 up_vect = glm::vec3(d->direction.y, -d->direction.x, 0);
-		glm::mat4 view_mat = glm::lookAt(d->direction, glm::vec3(0, 0, 0), up_vect);
+		glm::vec3 dir = glm::vec3(glm::transpose(glm::inverse(d->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (d->rotation * glm::vec4(0, 0, -1, 0)));
+		glm::vec3 up_vect = glm::vec3(dir.y, -dir.x, 0);
+		glm::mat4 view_mat = glm::lookAt(dir, glm::vec3(0, 0, 0), up_vect);
 		directional_light_VP = ortho_mat * view_mat;
 
 		glViewport(0, 0, m_fbo_shadow->directional_resolution, m_fbo_shadow->directional_resolution);
@@ -563,6 +564,13 @@ namespace Ryno{
 		
 		glm::mat4 dir_light_VPB = bias * directional_light_VP;
 
+		glm::quat rot = d->absolute_movement ? d->rotation : go->transform.get_rotation() * d->rotation;
+		Transform* parent = go->transform.get_parent();
+		while (parent != nullptr) {
+			rot = parent->get_rotation() * rot;
+			parent = parent->get_parent();
+		}
+
 	
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
 		mat.set_uniform("screen_height", WINDOW_HEIGHT);
@@ -573,7 +581,7 @@ namespace Ryno{
 	
 
 		//SEND DIR LIGHT UNIFORMS
-		mat.set_uniform("dir_light.direction", d->direction);
+		mat.set_uniform("dir_light.direction", rot * glm::vec3(0,0,-1));
 		mat.set_uniform("dir_light.diffuse", d->diffuse_color);
 		mat.set_uniform("dir_light.specular", d->specular_color);
 		mat.set_uniform("dir_light.ambient", d->ambient_color);

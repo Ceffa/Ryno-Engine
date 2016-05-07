@@ -79,7 +79,7 @@ namespace Ryno{
 
 		walls[0].model->mesh = terrain_mesh;
 		walls[0].model->material.set_attribute("in_Tiling", glm::vec2(3,3));
-
+		walls[0].model->cast_shadows = true;
 		walls[0].transform.set_position(5, -15, -5);
 
 		//Left
@@ -168,13 +168,14 @@ namespace Ryno{
 		auto* l = directional_light_go.dir_light;
 		l->model = new Model();
 		l->model->material.set_shader(&dir_light_shader);
-		l->set_direction(-65, 150);
-		l->diffuse_intensity = 0.2;
+		l->set_rotation(50, 0,0);
+		l->diffuse_intensity = 1;
 		l->set_diffuse_color(255, 255, 200);
 		l->specular_intensity = .05;
 		l->set_specular_color(255, 255, 200);
-		l->ambient_intensity = .05;
+		l->ambient_intensity = .0;
 		l->set_ambient_color(255, 255, 200);
+		l->absolute_movement = true;
 
 		//GUI
 		font.create("Aaargh", 24, GAME);
