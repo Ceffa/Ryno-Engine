@@ -44,9 +44,9 @@ namespace Ryno {
 			p->model = new Model();
 			p->model->material.set_shader(&point_light_shader);
 			p->set_diffuse_color(255, 80, 0);
-			p->diffuse_intensity = 1.5f;
+			p->diffuse_intensity = 1.7f;
 			p->attenuation = .0001;
-			p->specular_intensity = 2;
+			p->specular_intensity = 1.5f;
 			p->set_specular_color(255, 80, 0);
 			p->set_rotation(-90, 0, 0);
 			p->cutoff = 30;
@@ -58,9 +58,9 @@ namespace Ryno {
 			auto* d = game_object->dir_light;
 			d->model = new Model();
 			d->model->material.set_shader(&dir_light_shader);
-			d->set_diffuse_color(255, 80, 0);
-			d->diffuse_intensity = 0.01f;
-			d->set_rotation(-90, 0, 0);
+			d->set_diffuse_color(255, 255, 255);
+			d->diffuse_intensity = 0.3f;
+			d->set_rotation(-50, 0, 0);
 			d->absolute_movement = false;
 
 
@@ -105,6 +105,7 @@ namespace Ryno {
 				for (auto* c : game_object->transform.children) {
 					c->game_object->spot_light->absolute_movement = !c->game_object->spot_light->absolute_movement;
 				}
+				game_object->dir_light->absolute_movement = !game_object->dir_light->absolute_movement;
 			}
 			if (Game::get_instance()->input_manager->is_key_pressed(SDLK_v, KEYBOARD))
 				color_lights();

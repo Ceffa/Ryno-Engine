@@ -189,11 +189,7 @@ namespace Ryno{
 
 	void FireworkScene::input(){
 		if (!game->shell->active){
-			if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)){
-				game->set_scene("house");
-				return;
 
-			}
 			if (game->input_manager->is_key_pressed(SDLK_n, KEYBOARD)){
 				idx = ++idx % 4;
 			}

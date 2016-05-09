@@ -40,7 +40,7 @@ namespace Ryno{
 
 
 		//loading skyboxes
-		camera->skybox = game->texture_manager->load_cube_map("full_moon", GAME);
+		camera->skybox = game->texture_manager->load_cube_map("day", GAME);
 		////loading audio
 		//sound = game->audio_manager->load_sound("stomp.wav", GAME);
 		//music = game->audio_manager->load_music("journey.ogg", GAME);

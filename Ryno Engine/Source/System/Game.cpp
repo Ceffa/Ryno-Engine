@@ -84,7 +84,7 @@ namespace Ryno{
 	{
 		init_external_systems();
 		init_internal_systems();
-		set_scene("valley");
+		set_scene("house");
 	}
 
 	void Game::run(){
@@ -123,6 +123,7 @@ namespace Ryno{
 		scene = SceneManager::new_scene(scene_name);
 		deferred_renderer->set_camera(scene->camera);
 		game_state = GameState::ChangeScene;
+		shell->request_pause = false;
 	
 	}
 	void Game::next_scene()
@@ -132,6 +133,7 @@ namespace Ryno{
 		scene = SceneManager::next_scene();
 		deferred_renderer->set_camera(scene->camera);
 		game_state = GameState::ChangeScene;
+		shell->request_pause = false;
 
 	}
 	void Game::reset_scene()
@@ -141,7 +143,7 @@ namespace Ryno{
 		scene = SceneManager::reset_scene();
 		deferred_renderer->set_camera(scene->camera);
 		game_state = GameState::ChangeScene;
-
+		shell->request_pause = false;
 	}
 
 	void Game::destroy_scene(Scene* s){
@@ -190,6 +192,7 @@ namespace Ryno{
 
 	void Game::handle_input(){
 
+
 		//Reads input from user
 		input_manager->update();
 		//Exits if requested
@@ -205,8 +208,10 @@ namespace Ryno{
 			 game_state = GameState::Exit;
 		 else if (shell->request_pause)
 			 game_state = GameState::Paused;
-		 
-		 
+		 else if (game_state != GameState::ChangeScene)
+			game_state = GameState::Running;
+		
+		
 
 		//Process user inputs
 		 if (game_state != GameState::Paused) {
