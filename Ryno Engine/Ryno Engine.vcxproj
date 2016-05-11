@@ -237,6 +237,7 @@
     <ClInclude Include="Headers\Managers\lodepng.h" />
     <ClInclude Include="Headers\Managers\MeshBuilder.h" />
     <ClInclude Include="Headers\Managers\MeshManager.h" />
+    <ClInclude Include="Headers\Managers\ObjLoader.h" />
     <ClInclude Include="Headers\Managers\ParticleManager.h" />
     <ClInclude Include="Headers\Managers\TextureManager.h" />
     <ClInclude Include="Headers\Managers\TimeManager.h" />

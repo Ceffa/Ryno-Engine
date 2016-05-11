@@ -207,7 +207,4 @@ namespace Ryno{
 			}
 		}
 	}
-
-
-
 }

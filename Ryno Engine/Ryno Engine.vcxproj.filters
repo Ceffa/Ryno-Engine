@@ -881,5 +881,8 @@
     <ClInclude Include="Headers\Game\Script.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Managers\ObjLoader.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

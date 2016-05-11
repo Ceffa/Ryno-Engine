@@ -5,8 +5,8 @@
 #include "Allocator.h"
 
 //Size definitions
-#define WINDOW_WIDTH 1366		
-#define WINDOW_HEIGHT 768
+#define WINDOW_WIDTH 1280		
+#define WINDOW_HEIGHT 800
 
 //Engine folder or game folder
 #pragma once
