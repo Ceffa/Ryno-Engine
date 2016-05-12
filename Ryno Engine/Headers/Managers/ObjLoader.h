@@ -8,6 +8,15 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <cstdlib>
+#include <cstring>
+#include <cassert>
+#include <cmath>
+#include <cstddef>
+#include <cctype>
+
+#include <fstream>
+#include <sstream>
 
 namespace tinyobj {
 
@@ -46,9 +55,8 @@ namespace tinyobj {
 	} tag_t;
 
 	typedef struct {
-		std::vector<float> positions;
-		std::vector<float> normals;
-		std::vector<float> texcoords;
+		std::vector<Ryno::Vertex3D> vertices;
+		bool has_uvs, has_normals;
 		std::vector<unsigned int> indices;
 		std::vector<unsigned char>
 			num_vertices;              // The number of vertices per face. Up to 255.
@@ -116,15 +124,7 @@ namespace tinyobj {
 }
 
 
-#include <cstdlib>
-#include <cstring>
-#include <cassert>
-#include <cmath>
-#include <cstddef>
-#include <cctype>
 
-#include <fstream>
-#include <sstream>
 
 
 namespace tinyobj {
@@ -418,8 +418,7 @@ namespace tinyobj {
 
 	static unsigned int
 		updateVertex(std::map<vertex_index, unsigned int> &vertexCache,
-			std::vector<float> &positions, std::vector<float> &normals,
-			std::vector<float> &texcoords,
+			std::vector<Ryno::Vertex3D> &vertices, 
 			const std::vector<float> &in_positions,
 			const std::vector<float> &in_normals,
 			const std::vector<float> &in_texcoords, const vertex_index &i) {
@@ -432,24 +431,26 @@ namespace tinyobj {
 
 		assert(in_positions.size() > static_cast<unsigned int>(3 * i.v_idx + 2));
 
-		positions.push_back(in_positions[3 * static_cast<size_t>(i.v_idx) + 0]);
-		positions.push_back(in_positions[3 * static_cast<size_t>(i.v_idx) + 1]);
-		positions.push_back(in_positions[3 * static_cast<size_t>(i.v_idx) + 2]);
+		Ryno::Vertex3D v;
+		v.position.x = in_positions[3 * static_cast<size_t>(i.v_idx) + 0];
+		v.position.y = in_positions[3 * static_cast<size_t>(i.v_idx) + 1];
+		v.position.z = in_positions[3 * static_cast<size_t>(i.v_idx) + 2];
 
 		if ((i.vn_idx >= 0) &&
 			(static_cast<size_t>(i.vn_idx * 3 + 2) < in_normals.size())) {
-			normals.push_back(in_normals[3 * static_cast<size_t>(i.vn_idx) + 0]);
-			normals.push_back(in_normals[3 * static_cast<size_t>(i.vn_idx) + 1]);
-			normals.push_back(in_normals[3 * static_cast<size_t>(i.vn_idx) + 2]);
+			v.normal.x = in_normals[3 * static_cast<size_t>(i.vn_idx) + 0];
+			v.normal.y = in_normals[3 * static_cast<size_t>(i.vn_idx) + 1];
+			v.normal.z = in_normals[3 * static_cast<size_t>(i.vn_idx) + 2];
 		}
 
 		if ((i.vt_idx >= 0) &&
 			(static_cast<size_t>(i.vt_idx * 2 + 1) < in_texcoords.size())) {
-			texcoords.push_back(in_texcoords[2 * static_cast<size_t>(i.vt_idx) + 0]);
-			texcoords.push_back(in_texcoords[2 * static_cast<size_t>(i.vt_idx) + 1]);
+			v.uv.x = in_texcoords[2 * static_cast<size_t>(i.vt_idx) + 0];
+			v.uv.y = in_texcoords[2 * static_cast<size_t>(i.vt_idx) + 1];
 		}
+		vertices.push_back(v);
 
-		unsigned int idx = static_cast<unsigned int>(positions.size() / 3 - 1);
+		unsigned int idx = static_cast<unsigned int>(vertices.size() - 1);
 		vertexCache[i] = idx;
 
 		return idx;
@@ -508,14 +509,11 @@ namespace tinyobj {
 					i2 = face[k];
 
 					unsigned int v0 = updateVertex(
-						vertexCache, shape.mesh.positions, shape.mesh.normals,
-						shape.mesh.texcoords, in_positions, in_normals, in_texcoords, i0);
+						vertexCache, shape.mesh.vertices, in_positions, in_normals, in_texcoords, i0);
 					unsigned int v1 = updateVertex(
-						vertexCache, shape.mesh.positions, shape.mesh.normals,
-						shape.mesh.texcoords, in_positions, in_normals, in_texcoords, i1);
+						vertexCache, shape.mesh.vertices, in_positions, in_normals, in_texcoords, i1);
 					unsigned int v2 = updateVertex(
-						vertexCache, shape.mesh.positions, shape.mesh.normals,
-						shape.mesh.texcoords, in_positions, in_normals, in_texcoords, i2);
+						vertexCache, shape.mesh.vertices, in_positions, in_normals, in_texcoords, i2);
 
 					shape.mesh.indices.push_back(v0);
 					shape.mesh.indices.push_back(v1);
@@ -529,8 +527,7 @@ namespace tinyobj {
 
 				for (size_t k = 0; k < npolys; k++) {
 					unsigned int v =
-						updateVertex(vertexCache, shape.mesh.positions, shape.mesh.normals,
-							shape.mesh.texcoords, in_positions, in_normals,
+						updateVertex(vertexCache, shape.mesh.vertices, in_positions, in_normals,
 							in_texcoords, face[k]);
 
 					shape.mesh.indices.push_back(v);
@@ -546,6 +543,10 @@ namespace tinyobj {
 
 		if (clearCache)
 			vertexCache.clear();
+		
+		shape.mesh.has_uvs = in_texcoords.size()>0;
+		shape.mesh.has_normals = in_normals.size() > 0;
+
 
 		return true;
 	}
@@ -999,6 +1000,8 @@ namespace tinyobj {
 					shapes.push_back(shape);
 				}
 
+							
+
 				shape = shape_t();
 
 				// material = -1;
@@ -1110,7 +1113,12 @@ namespace tinyobj {
 		faceGroup.clear(); // for safety
 
 		err += errss.str();
+
+
+
 		return true;
 	}
+
+	
 
 } // namespace

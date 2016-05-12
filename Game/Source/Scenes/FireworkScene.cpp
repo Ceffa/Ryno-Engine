@@ -21,10 +21,10 @@ namespace Ryno{
 		brick = game->texture_manager->load_png("pack/154", GAME);
 		brick_normal = game->texture_manager->load_png("pack/154_norm", GAME);
 
-		star_mesh = game->mesh_manager->load_mesh("star", 1, GAME);
-		cube_mesh= game->mesh_manager->load_mesh("cube", 1, GAME);
-		sphere_mesh= game->mesh_manager->load_mesh("sphere", 1, GAME);
-		cone_mesh= game->mesh_manager->load_mesh("cone", 1, GAME);
+		star_mesh = game->mesh_manager->load_mesh("star", GAME);
+		cube_mesh= game->mesh_manager->load_mesh("cube", GAME);
+		sphere_mesh= game->mesh_manager->load_mesh("sphere", GAME);
+		cone_mesh= game->mesh_manager->load_mesh("cone", GAME);
 
 
 		light_shader.create("LightPass/directional", ENGINE);

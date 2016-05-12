@@ -54,12 +54,6 @@
     <Filter Include="Header Files\Managers">
       <UniqueIdentifier>{3ed43c60-ad49-40cc-93f4-401fcb26cbb4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Physics">
-      <UniqueIdentifier>{773b5122-0b40-4457-bc3b-5a46ff26c0a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Physics">
-      <UniqueIdentifier>{5a831fd1-f5a8-4b62-bc0c-dc5344ded434}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Others">
       <UniqueIdentifier>{fddd31c9-4b15-44e7-bfc9-e2ef5358d8ec}</UniqueIdentifier>
     </Filter>
@@ -618,26 +612,8 @@
     <ClCompile Include="Source\Rendering\Batches\Batch3DShadow.cpp">
       <Filter>Source Files\Rendering\Batches</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Physics\Forces.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Others\Transform.cpp">
       <Filter>Source Files\Others</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Physics\SphereCollider.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Physics\GJK.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Physics\AABBCollider.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Physics\PointCollider.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Physics\ConvexCollider.cpp">
-      <Filter>Source Files\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Source\Particles\Emitter.cpp">
       <Filter>Source Files\Particles</Filter>
@@ -803,29 +779,8 @@
     <ClInclude Include="Headers\Others\Structures.h">
       <Filter>Header Files\Others</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Physics\Forces.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Others\Transform.h">
       <Filter>Header Files\Others</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Physics\SphereCollider.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Physics\GJK.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Physics\Collider.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Physics\AABBCollider.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Physics\PointCollider.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Physics\ConvexCollider.h">
-      <Filter>Header Files\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Particles\Emitter.h">
       <Filter>Header Files\Particles</Filter>

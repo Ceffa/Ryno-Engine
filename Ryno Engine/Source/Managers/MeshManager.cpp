@@ -2,6 +2,7 @@
 #include "MeshBuilder.h"
 #include "Log.h"
 #include <iostream>
+#include "ObjLoader.h"
 
 namespace Ryno{
 
@@ -9,8 +10,6 @@ namespace Ryno{
 		last_temporary_mesh = TEMPORARY_OFFSET;
 		last_lifetime_mesh = 0;
 		temporary_meshes.resize(0);
-		last_collider_mesh = 0;
-		collider_meshes.resize(0);
 	}
 
 	MeshManager* MeshManager::get_instance(){
@@ -27,12 +26,6 @@ namespace Ryno{
 		else
 			return lifetime_meshes[mesh_number - 1];
 	}
-	ColliderMesh* MeshManager::get_collider_mesh(I32 collider_mesh_number){
-		return collider_meshes[collider_mesh_number - 1];
-	}
-
-
-
 
 	void MeshManager::reset()
 	{
@@ -41,151 +34,45 @@ namespace Ryno{
 #endif
 		temporary_meshes.clear();
 		last_temporary_mesh = TEMPORARY_OFFSET;
-		collider_meshes.clear();
-		last_collider_mesh = 0;
 	}
 
-	I32 MeshManager::load_mesh(const std::string& name, bool has_uvs, Owner loc)
+	I32 MeshManager::load_mesh(const std::string& name, Owner loc)
 	{
 		static const std::string middle_path = "Resources/Models/";
 
-		const std::string& path = BASE_PATHS[loc] + middle_path + name + ".obj";
+		const std::string& obj_path = BASE_PATHS[loc] + middle_path + name + ".obj";
+		const std::string& mtl_path = BASE_PATHS[loc] + middle_path;
 
-		std::vector< U32 > vertexIndices, uvIndices, normalIndices;
-		std::vector< glm::vec3 > temp_vertices;
-		std::vector< glm::vec2 > temp_uvs;
-		std::vector< glm::vec3 > temp_normals;
+	
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
 
-		FILE * file = fopen(path.c_str(), "r");
-		if (!file){
-			printf("Impossible to open the file !\n");
-			return -1;
+		std::string err;
+		tinyobj::LoadObj(shapes, materials, err, obj_path.c_str(), mtl_path.c_str());
+
+		if (!err.empty()) {
+			std::cerr << err << std::endl;
+			exit(1);
 		}
 
-		while (1){
-			printf("");
-			char lineHeader[128];
-			// read the first word of the line
-			int res = fscanf(file, "%s", lineHeader);
-			if (res == EOF)
-				break; // EOF = End Of File. Quit the loop.
-			// else : parse lineHeader
-			if (strcmp(lineHeader, "v") == 0){
-				glm::vec3 vertex;
-				fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
-				temp_vertices.push_back(vertex);
-
-			}
-			else if (strcmp(lineHeader, "vt") == 0){
-				glm::vec2 uv;
-				fscanf(file, "%f %f\n", &uv.x, &uv.y);
-				temp_uvs.push_back(uv);
-
-			}
-			else if (strcmp(lineHeader, "vn") == 0){
-				glm::vec3 normal;
-				fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
-				temp_normals.push_back(normal);
-
-			}
-			else if (strcmp(lineHeader, "f") == 0){
-				std::string vertex1, vertex2, vertex3;
-				unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-
-				fgetc(file);
-				char buffer[100];
-				fgets(buffer, 100, file);
-
-				int matches;
-				if (has_uvs){
-					matches = sscanf(buffer, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-					if (matches != 9){
-						printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-						return -1;
-					}
-				}
-				else{
-
-					matches = sscanf(buffer, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
-					if (matches != 6){
-						printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-						return -1;
-					}
-				}
-
-
-
-				vertexIndices.push_back(vertexIndex[0]);
-				vertexIndices.push_back(vertexIndex[1]);
-				vertexIndices.push_back(vertexIndex[2]);
-				if (has_uvs){
-					uvIndices.push_back(uvIndex[0]);
-					uvIndices.push_back(uvIndex[1]);
-					uvIndices.push_back(uvIndex[2]);
-				}
-				normalIndices.push_back(normalIndex[0]);
-				normalIndices.push_back(normalIndex[1]);
-				normalIndices.push_back(normalIndex[2]);
-
-
-			}
-		}
-
-		U32 size = (U32)vertexIndices.size();
+		
 		Mesh* mesh = new Mesh();
+		mesh->indices = shapes[0].mesh.indices;
+		mesh->indices_number = shapes[0].mesh.indices.size(); 
+		mesh->vertices = shapes[0].mesh.vertices;
+		mesh->vertices_number = shapes[0].mesh.vertices.size(); 
+
+		if (shapes[0].mesh.has_uvs && !shapes[0].mesh.has_normals) 
+			MeshBuilder::calculate_normals(mesh);
+			
+		MeshBuilder::calculate_tangents(mesh);
+		
+
 		if (loc == Owner::ENGINE)
 			lifetime_meshes.push_back(mesh);
 		else
 			temporary_meshes.push_back(mesh);
-		std::vector <Vertex3D> vertices;
-		vertices.resize(size);
 
-
-
-		for (U32 i = 0; i < size; i++){
-			U32 vertexIndex = vertexIndices[i];
-			vertices[i].position = temp_vertices[vertexIndex - 1];
-
-			if (has_uvs){
-				U32 uvIndex = uvIndices[i];
-				vertices[i].uv = temp_uvs[uvIndex - 1];
-			}
-
-			U32 normalIndex = normalIndices[i];
-			vertices[i].normal = temp_normals[normalIndex - 1];
-
-
-		}
-
-		bool add = true;
-
-		for (int i = 0; i < vertices.size(); i++){
-			Vertex3D a = vertices[i];
-			add = true;
-			for (int j = 0; j < mesh->vertices.size(); j++){
-				if (Vertex3D::Compare(a, mesh->vertices[j])){
-					mesh->indices.push_back(j);
-					add = false;
-					break;
-				}
-			}
-			if (add){
-				mesh->indices.push_back(mesh->vertices.size());
-				mesh->vertices.push_back(a);
-			}
-		}
-		if (loc == Owner::GAME){
-			I32 last = last_temporary_mesh - TEMPORARY_OFFSET;
-			temporary_meshes[last]->vertices_number = temporary_meshes[last]->vertices.size(); //One time only
-			temporary_meshes[last]->indices_number = temporary_meshes[last]->indices.size(); //One time only
-		}
-		else{
-			lifetime_meshes[last_lifetime_mesh]->vertices_number = lifetime_meshes[last_lifetime_mesh]->vertices.size(); //One time only
-			lifetime_meshes[last_lifetime_mesh]->indices_number = lifetime_meshes[last_lifetime_mesh]->indices.size(); //One time only
-
-		}
-		if (has_uvs)
-			MeshBuilder::calculate_tangents(mesh);
 
 		if (loc == Owner::ENGINE)
 			return ++last_lifetime_mesh;
@@ -206,44 +93,5 @@ namespace Ryno{
 		}
 		lifetime_meshes.push_back(mesh);
 		return ++last_lifetime_mesh;
-	}
-
-	I32 MeshManager::load_collider_mesh(const std::string& name, Owner loc)
-	{
-		static const std::string middle_path = "Resources/Models/Colliders/";
-
-		const std::string& path = BASE_PATHS[loc] + middle_path + name + ".obj";
-
-		ColliderMesh* coll_mesh = new ColliderMesh();
-		collider_meshes.push_back(coll_mesh);
-
-
-		FILE * file = fopen(path.c_str(), "r");
-		if (!file){
-			printf("Impossible to open the file !\n");
-			return -1;
-		}
-
-		while (1){
-			printf("");
-			char lineHeader[128];
-			// read the first word of the line
-			int res = fscanf(file, "%s", lineHeader);
-			if (res == EOF)
-				break; // EOF = End Of File. Quit the loop.
-			// else : parse lineHeader
-			if (strcmp(lineHeader, "v") == 0){
-				glm::vec3 vertex;
-				fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
-				coll_mesh->vertices.push_back(vertex);
-				coll_mesh->size++;
-
-			}
-
-		}
-
-
-
-		return ++last_collider_mesh;
 	}
 }

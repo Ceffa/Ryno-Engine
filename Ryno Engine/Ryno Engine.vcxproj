@@ -195,12 +195,6 @@
     <ClCompile Include="Source\Others\Structures.cpp" />
     <ClCompile Include="Source\Others\Transform.cpp" />
     <ClCompile Include="Source\Particles\Emitter.cpp" />
-    <ClCompile Include="Source\Physics\AABBCollider.cpp" />
-    <ClCompile Include="Source\Physics\ConvexCollider.cpp" />
-    <ClCompile Include="Source\Physics\Forces.cpp" />
-    <ClCompile Include="Source\Physics\GJK.cpp" />
-    <ClCompile Include="Source\Physics\PointCollider.cpp" />
-    <ClCompile Include="Source\Physics\SphereCollider.cpp" />
     <ClCompile Include="Source\Rendering\Batches\Batch2DFont.cpp" />
     <ClCompile Include="Source\Rendering\Batches\Batch2DSprite.cpp" />
     <ClCompile Include="Source\Rendering\Batches\Batch3DGeometry.cpp" />
@@ -253,13 +247,6 @@
     <ClInclude Include="Headers\Others\Structures.h" />
     <ClInclude Include="Headers\Others\Types.h" />
     <ClInclude Include="Headers\Particles\Emitter.h" />
-    <ClInclude Include="Headers\Physics\AABBCollider.h" />
-    <ClInclude Include="Headers\Physics\ConvexCollider.h" />
-    <ClInclude Include="Headers\Physics\Forces.h" />
-    <ClInclude Include="Headers\Physics\GJK.h" />
-    <ClInclude Include="Headers\Physics\Collider.h" />
-    <ClInclude Include="Headers\Physics\PointCollider.h" />
-    <ClInclude Include="Headers\Physics\SphereCollider.h" />
     <ClInclude Include="Headers\Rendering\Batches\Batch2DFont.h" />
     <ClInclude Include="Headers\Rendering\Batches\Batch2DSprite.h" />
     <ClInclude Include="Headers\Rendering\Batches\Batch3DGeometry.h" />

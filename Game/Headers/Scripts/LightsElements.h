@@ -23,7 +23,7 @@ namespace Ryno {
 
 			white = game->texture_manager->load_png("white_pixel", GAME);
 			white_normal = game->texture_manager->load_png("normal_pixel", GAME);
-			cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
+			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 
 			game_object->model = new Model();
 			game_object->model->material.set_shader(&shader);

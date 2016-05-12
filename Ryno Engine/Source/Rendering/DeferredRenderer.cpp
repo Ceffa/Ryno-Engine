@@ -62,16 +62,16 @@ namespace Ryno{
 		//MODEL LOADING
 
 		m_bounding_sphere.create(allocator);
-		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", false, ENGINE);
+		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", ENGINE);
 
 		m_bounding_pyramid.create(allocator);
-		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", false, ENGINE);
+		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", ENGINE);
 
 		m_blit_model.create(allocator);
-		m_blit_model->mesh = m_mesh_manager->load_mesh("square", false, ENGINE);
+		m_blit_model->mesh = m_mesh_manager->load_mesh("square", ENGINE);
 
 		m_skybox_model.create(allocator);
-		m_skybox_model->mesh = m_mesh_manager->load_mesh("cubemap_cube", false, ENGINE);
+		m_skybox_model->mesh = m_mesh_manager->load_mesh("cubemap_cube", ENGINE);
 
 
 		//SHADER PROGRAMS LOADING

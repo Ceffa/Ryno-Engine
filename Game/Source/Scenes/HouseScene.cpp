@@ -4,7 +4,6 @@
 #include "GPUProfiler.h"
 #include <string>
 #include <GLM/gtx/transform.hpp>
-#include "GJK.h"
 #include "Terrain.h"
 #include "ValleyScene.h"
 
@@ -30,9 +29,9 @@ namespace Ryno{
 
 
 		//loading models
-		 sphere_mesh = game->mesh_manager->load_mesh("sphere", 1, GAME);
-		 cone_mesh = game->mesh_manager->load_mesh("cone", 1, GAME);
-		 cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
+		 sphere_mesh = game->mesh_manager->load_mesh("sphere", GAME);
+		 cone_mesh = game->mesh_manager->load_mesh("cone", GAME);
+		 cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 		 terrain_mesh = game->mesh_manager->create_empty_mesh(GAME);
 
 		game->mesh_builder->set_mesh(terrain_mesh);
@@ -270,7 +269,7 @@ namespace Ryno{
 
 		//e2->init(200);
 		emitter->init(200);
-		
+
 
 
 	}

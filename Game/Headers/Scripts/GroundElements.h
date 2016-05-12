@@ -19,7 +19,7 @@ namespace Ryno {
 			bt = game->texture_manager->load_png("pack/161", GAME);
 			bn = game->texture_manager->load_png("pack/161_norm", GAME);
 
-			cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
+			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 			shader.create("Geometry/geometry", GAME);
 
 			game_object->model = new Model();
@@ -36,7 +36,7 @@ namespace Ryno {
 
 			I32 s = 18;//size
 			poles.resize(s*s);
-			cube_mesh = game->mesh_manager->load_mesh("cube", 1, GAME);
+			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 
 			poles[0].model = new Model();
 			auto* m = poles[0].model;
@@ -59,6 +59,8 @@ namespace Ryno {
 					poles[i*s + j].transform.set_position((i - s / 2) * 20, 10, (j - s / 2) * 20);
 				}
 			}
+			delete poles[0].model;
+			poles[0].model = nullptr;
 
 		}
 		void input() override {
