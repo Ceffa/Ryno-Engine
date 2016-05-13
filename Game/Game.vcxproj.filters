@@ -123,6 +123,12 @@
     <None Include="Resources\Shaders\Geometry\geometry2.vert">
       <Filter>Resources\Shaders\Geometry</Filter>
     </None>
+    <None Include="Resources\Shaders\Geometry\material.frag">
+      <Filter>Resources\Shaders\Geometry</Filter>
+    </None>
+    <None Include="Resources\Shaders\Geometry\material.vert">
+      <Filter>Resources\Shaders\Geometry</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">

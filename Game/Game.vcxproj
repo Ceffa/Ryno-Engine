@@ -154,6 +154,8 @@
     <None Include="Resources\Shaders\Geometry\geometry.vert" />
     <None Include="Resources\Shaders\Geometry\geometry2.frag" />
     <None Include="Resources\Shaders\Geometry\geometry2.vert" />
+    <None Include="Resources\Shaders\Geometry\material.frag" />
+    <None Include="Resources\Shaders\Geometry\material.vert" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav" />
