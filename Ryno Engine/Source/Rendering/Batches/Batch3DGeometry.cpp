@@ -41,9 +41,8 @@ namespace Ryno {
 	}
 
 	void Batch3DGeometry::draw(Model* mod) {
-
-		m_models.push_back(mod);
-
+		for (SubModel& m : mod->sub_models)
+			m_models.push_back(&m);
 	}
 
 
@@ -77,7 +76,7 @@ namespace Ryno {
 		U32 instance_offset = 0;
 		
 		bool first_iter = true;
-		Model* last_mod = nullptr;
+		SubModel* last_mod = nullptr;
 		//For each mesh...
 		for (auto new_mod : m_models){
 	
@@ -242,7 +241,7 @@ namespace Ryno {
 		}
 	}
 
-	const U8 Batch3DGeometry::compare_models(Model* a, Model* b){
+	const U8 Batch3DGeometry::compare_models(SubModel* a, SubModel* b){
 		const auto& ma = a->material;
 		const auto& mb = b->material;
 

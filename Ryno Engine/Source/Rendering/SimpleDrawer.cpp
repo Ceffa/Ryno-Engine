@@ -20,8 +20,12 @@ namespace Ryno {
 		return &instance;
 	}
 	
-
 	void SimpleDrawer::draw(Model* model) {
+		for (SubModel& s : model->sub_models)
+			draw(&s);
+	}
+
+	void SimpleDrawer::draw(SubModel* model) {
 
 		auto m = m_mesh_manager->get_mesh(model->mesh);
 		auto s = model->material.shader;

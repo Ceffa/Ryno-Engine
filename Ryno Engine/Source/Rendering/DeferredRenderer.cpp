@@ -61,17 +61,13 @@ namespace Ryno{
 	
 		//MODEL LOADING
 
-		m_bounding_sphere.create(allocator);
-		m_bounding_sphere->mesh = m_mesh_manager->load_mesh("bound_sphere", ENGINE);
+		m_bounding_sphere.mesh = m_mesh_manager->load_mesh("bound_sphere", ENGINE);
 
-		m_bounding_pyramid.create(allocator);
-		m_bounding_pyramid->mesh = m_mesh_manager->load_mesh("bound_pyramid", ENGINE);
+		m_bounding_pyramid.mesh = m_mesh_manager->load_mesh("bound_pyramid", ENGINE);
 
-		m_blit_model.create(allocator);
-		m_blit_model->mesh = m_mesh_manager->load_mesh("square", ENGINE);
+		m_blit_model.mesh = m_mesh_manager->load_mesh("square", ENGINE);
 
-		m_skybox_model.create(allocator);
-		m_skybox_model->mesh = m_mesh_manager->load_mesh("cubemap_cube", ENGINE);
+		m_skybox_model.mesh = m_mesh_manager->load_mesh("cubemap_cube", ENGINE);
 
 
 		//SHADER PROGRAMS LOADING
@@ -87,13 +83,13 @@ namespace Ryno{
 	
 		m_skybox_program.create(allocator);
 		m_skybox_program->create("SkyboxPass/skybox",ENGINE);
-		m_skybox_model->material.set_shader(*m_skybox_program);
+		m_skybox_model.material.set_shader(*m_skybox_program);
 
 		m_blit_program.create(allocator);
 		m_blit_program->create("Others/blit", ENGINE);
-		m_blit_model->material.set_shader(*m_blit_program);
-		m_blit_model->material.set_uniform("screen_width", WINDOW_WIDTH);
-		m_blit_model->material.set_uniform("screen_height", WINDOW_HEIGHT);
+		m_blit_model.material.set_shader(*m_blit_program);
+		m_blit_model.material.set_uniform("screen_width", WINDOW_WIDTH);
+		m_blit_model.material.set_uniform("screen_height", WINDOW_HEIGHT);
 
 		//Sprite program
 		m_sprite_program.create(allocator);
@@ -156,7 +152,8 @@ namespace Ryno{
 			if (geometry_enabled){
 				if (go->active && go->model){
 					m_geometry_batch3d->draw(go->model);
-					go->model->material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
+					for(SubModel& s : go->model->sub_models)
+						s.material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
 				}
 			}
 			//Fill shadow batch
@@ -304,7 +301,7 @@ namespace Ryno{
 
 		auto* p = go->point_light;
 		auto* mod = p->model;
-		mod->mesh = m_bounding_sphere->mesh;
+		mod->mesh = m_bounding_sphere.mesh;
 		auto& mat = mod->material;
 
 		m_fbo_deferred->bind_for_light_pass();
@@ -432,7 +429,7 @@ namespace Ryno{
 	{
 		auto* s = go->spot_light;
 		auto* mod = s->model;
-		mod->mesh = m_bounding_pyramid->mesh;
+		mod->mesh = m_bounding_pyramid.mesh;
 		auto& mat = mod->material;
 
 		m_fbo_deferred->bind_for_light_pass();
@@ -546,7 +543,7 @@ namespace Ryno{
 
 		auto* d = go->dir_light;
 		auto* mod = d->model;
-		mod->mesh = m_blit_model->mesh;
+		mod->mesh = m_blit_model.mesh;
 		auto& mat = mod->material;
 		auto* s =mat.shader;
 		m_fbo_deferred->bind_for_light_pass();
@@ -614,10 +611,10 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		m_blit_model->material.set_uniform("source_buffer", m_fbo_deferred->m_textures[2]);
+		m_blit_model.material.set_uniform("source_buffer", m_fbo_deferred->m_textures[2]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
-		m_simple_drawer->draw(*m_blit_model);
+		m_simple_drawer->draw(&m_blit_model);
 
 		glDepthMask(GL_FALSE);
 		
@@ -633,11 +630,11 @@ namespace Ryno{
 		glm::mat4 no_trans_VP = m_camera->get_P_matrix() *  glm::mat4(glm::mat3(m_camera->get_V_matrix()));
 
 	
-		m_skybox_model->material.set_uniform("no_trans_VP",no_trans_VP);
-		m_skybox_model->material.set_uniform("cube_map", m_camera->skybox.id);
+		m_skybox_model.material.set_uniform("no_trans_VP",no_trans_VP);
+		m_skybox_model.material.set_uniform("cube_map", m_camera->skybox.id);
 
 		
-		m_simple_drawer->draw(*m_skybox_model);
+		m_simple_drawer->draw(&m_skybox_model);
 
 		//Restore depth
 		glDepthRange(0.0, 1.0);

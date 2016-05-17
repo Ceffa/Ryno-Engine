@@ -38,9 +38,10 @@ namespace Ryno {
 
 	void Batch3DShadow::draw(GameObject* go) {
 
+		for (SubModel& s : go->model->sub_models)
 		//discard light-emitting models
-		if (go->model->cast_shadows){
-			m_models.push_back(go);
+		if (s.cast_shadows){
+			m_models.emplace_back(&s, &go->transform.model_matrix );
 		}
 
 	}
@@ -64,7 +65,7 @@ namespace Ryno {
 		//One for each instance. 
 		for (I32 i = 0; i < models_size; i++){
 
-			models_matrices[i] = m_models[i]->transform.model_matrix;
+			models_matrices[i] = *m_models[i].matrix;
 
 
 		}
@@ -77,11 +78,11 @@ namespace Ryno {
 		//For each mesh...
 		for (I32 cg = 0; cg < m_models.size(); cg++){
 
-			auto* new_model = m_models[cg]->model;
+			auto* new_model = m_models[cg].model;
 
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0
-				|| new_model->mesh != m_models[cg - 1]->model->mesh)
+				|| new_model->mesh != m_models[cg - 1].model->mesh)
 			{
 				if (cg != 0){
 					indices_offset += m_render_batches.back().num_indices;
@@ -232,9 +233,9 @@ namespace Ryno {
 
 	}
 
-	U8 Batch3DShadow::compare_models(GameObject* a, GameObject* b){
+	U8 Batch3DShadow::compare_models(model_and_matrix a, model_and_matrix b){
 	
-		return a->model->mesh < b->model->mesh;
+		return a.model->mesh < b.model->mesh;
 
 	}
 

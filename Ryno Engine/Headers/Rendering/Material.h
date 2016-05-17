@@ -45,6 +45,7 @@ namespace Ryno{
 			uniform_map.clear();
 		}
 		Material(const Material& copy);
+		void copy(const Material& copy);
 		Material(){ attribute_memory = nullptr; }
 		void* attribute_memory = nullptr;
 		std::map<std::string, void*> uniform_map;

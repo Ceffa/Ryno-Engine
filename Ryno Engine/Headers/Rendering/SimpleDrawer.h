@@ -15,6 +15,7 @@ namespace Ryno{
 		
 		static SimpleDrawer* get_instance();
 		void draw(Model* model);
+		void draw(SubModel* model);
 
 	private:
 		SimpleDrawer();

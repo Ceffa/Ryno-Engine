@@ -9,16 +9,22 @@
 
 namespace Ryno{
 		
+	class SubModel {
+	public:
+		SubModel() {}
+		I32 mesh;
+		Material material;
+		bool cast_shadows;
+		SubModel(const SubModel& copy);
+	};
 	class Model{
 	public:
 	
-
+		SubModel& add_sub_model();
 		Model(){}
 		~Model(){}
 		Model(const Model& copy);
-		I32 mesh;
-		bool cast_shadows = true;
-		Material material;
+		std::vector<SubModel> sub_models;
 		
 	};
 }

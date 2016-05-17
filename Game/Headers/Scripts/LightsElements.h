@@ -26,13 +26,15 @@ namespace Ryno {
 			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 
 			game_object->model = new Model();
-			game_object->model->material.set_shader(&shader);
-			game_object->model->mesh = cube_mesh;
-			game_object->model->cast_shadows = false;
-			game_object->model->material.set_attribute("in_Color", ColorRGBA(255, 255, 255, 255));
-			game_object->model->material.set_attribute("in_Tiling", glm::vec2(1,1));
-			game_object->model->material.set_uniform("texture_sampler", white.id);
-			game_object->model->material.set_uniform("normal_map_sampler", white_normal.id);
+			game_object->model->sub_models.emplace_back();
+			auto& m = game_object->model->sub_models[0];
+			m.material.set_shader(&shader);
+			m.mesh = cube_mesh;
+			m.cast_shadows = false;
+			m.material.set_attribute("in_Color", ColorRGBA(255, 255, 255, 255));
+			m.material.set_attribute("in_Tiling", glm::vec2(1,1));
+			m.material.set_uniform("texture_sampler", white.id);
+			m.material.set_uniform("normal_map_sampler", white_normal.id);
 			game_object->transform.set_scale(5, 5, 5);
 			game_object->transform.set_position(0, 35, 0);
 
@@ -41,7 +43,7 @@ namespace Ryno {
 
 			game_object->spot_light = new SpotLight();
 			auto* p = game_object->spot_light;
-			p->model = new Model();
+			p->model = new SubModel();
 			p->model->material.set_shader(&point_light_shader);
 			p->set_diffuse_color(255, 80, 0);
 			p->diffuse_intensity = 1.7f;
@@ -56,7 +58,7 @@ namespace Ryno {
 
 			game_object->dir_light = new DirectionalLight();
 			auto* d = game_object->dir_light;
-			d->model = new Model();
+			d->model = new SubModel();
 			d->model->material.set_shader(&dir_light_shader);
 			d->set_diffuse_color(255, 255, 255);
 			d->diffuse_intensity = 0.3f;

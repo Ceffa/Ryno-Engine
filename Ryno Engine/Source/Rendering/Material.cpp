@@ -21,19 +21,29 @@ namespace Ryno {
 
 	
 
-	Material::Material(const Material& copy)
+	Material::Material(const Material& cp)
 	{
+		copy(cp);
+	}
 
+
+	void Material::copy(const Material& cp)
+	{
+		if (attribute_memory) {
+			free(attribute_memory);
+			attribute_memory = nullptr;
+		}
+		uniform_map.clear();
 		//Set same shader
-		set_shader(copy.shader);
+		set_shader(cp.shader);
 		//Copy entry of uniform map
-		for (const auto& entry : copy.uniform_map){
+		for (const auto& entry : cp.uniform_map) {
 			if (entry.second == nullptr) continue;
 			uniform_map[entry.first] = malloc(shader->uniforms_data[entry.first].size);
 			std::memcpy(uniform_map[entry.first], entry.second, shader->uniforms_data[entry.first].size);
 		}
 		//Copy attributes memory
-		std::memcpy(attribute_memory, copy.attribute_memory, shader->attributes_struct_size);
+		std::memcpy(attribute_memory, cp.attribute_memory, shader->attributes_struct_size);
 
 	}
 

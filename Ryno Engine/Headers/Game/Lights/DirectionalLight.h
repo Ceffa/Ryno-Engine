@@ -17,7 +17,7 @@ namespace Ryno{
 
 			*this = copy;
 			if(copy.model)
-				model = new Model(*copy.model);
+				model = new SubModel(*copy.model);
 			else model = nullptr;
 
 		}
