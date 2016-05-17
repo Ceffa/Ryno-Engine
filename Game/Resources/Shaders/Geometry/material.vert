@@ -4,8 +4,7 @@ layout(location = 1) in vec2 in_Uv;
 layout(location = 2) in vec3 in_Normal;
 layout(location = 3) in vec3 in_Tangent;
 layout(location = 4) in mat4 in_M;
-layout(location = 8) in vec2 in_Tiling;
-layout(location = 9) in uint in_Color;
+layout(location = 8) in uint in_Color;
 
 
 out  vec4 middle_color;

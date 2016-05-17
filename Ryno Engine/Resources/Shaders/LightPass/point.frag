@@ -16,7 +16,8 @@ float split(uint color, int n);
 
 //Unifroms taken by the buffers
 //uniform sampler2D position_tex;
-uniform sampler2D color_tex;
+uniform sampler2D diffuse_tex;
+uniform sampler2D specular_tex;
 uniform sampler2D normal_tex;
 uniform sampler2D depth_tex;
 uniform samplerCubeShadow shadow_cube;
@@ -67,9 +68,12 @@ void main(){
 	vec4 view_world_pos = V_matrix * vec4(point_light.position, 1);
 
 	//Color directly from g buffer
-	vec4 RGBF = texture(color_tex, uv_coords);
-	vec3 color = RGBF.rgb;
-	float flatness = RGBF.w;
+	vec4 sample_diff = texture(diffuse_tex, uv_coords);
+	vec3 mat_diff = sample_diff.rgb;
+	float flatness = sample_diff.w;
+	vec4 sample_spec = texture(specular_tex, uv_coords);
+	vec3 mat_spec = sample_spec.rgb;
+	float mat_spec_pow = sample_spec.w;
 	
 	//Normal z-axis built back from the other two
 	vec2 n = texture(normal_tex, uv_coords).xy;
@@ -92,7 +96,7 @@ void main(){
 	
 	//final colors for diffuse and specular
 	vec3 diffuse_final = max(0, dot(normal, light_dir)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.000001), point_light.specular_intensity);
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.000001), point_light.specular_intensity * mat_spec_pow);
 	
 	//**SHADOWS**//
 	float visibility = 1.0f;
@@ -109,7 +113,7 @@ void main(){
 		
 
     //fragment color
-	fracolor =  visibility *  (1.0 - flatness) * color * (specular_final + diffuse_final) / attenuation;
+	fracolor =  visibility *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
 }
 
 float split(uint color, int n){

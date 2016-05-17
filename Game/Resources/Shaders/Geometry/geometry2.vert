@@ -5,7 +5,7 @@ layout(location = 2) in vec3 in_Normal;
 layout(location = 3) in vec3 in_Tangent;
 layout(location = 4) in mat4 in_M;
 layout(location = 8) in vec2 in_Tiling;
-layout(location = 9) in uint in_Color;
+layout(location = 9) in uint in_DiffuseColor;
 layout(location = 10) in uint in_Color2;
 
 
@@ -23,7 +23,7 @@ float split(uint color, int n);
 void main(){
 
 
-	vec4 split_Color = vec4(split(in_Color, 0), split(in_Color, 1), split(in_Color, 2), split(in_Color, 3));
+	vec4 split_Color = vec4(split(in_DiffuseColor, 0), split(in_DiffuseColor, 1), split(in_DiffuseColor, 2), split(in_DiffuseColor, 3));
 	vec4 split_Color2 = vec4(split(in_Color2, 0), split(in_Color2, 1), split(in_Color2, 2), split(in_Color2, 3));
 
 		

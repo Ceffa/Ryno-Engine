@@ -353,9 +353,10 @@ namespace Ryno{
 		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM GLOBAL
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
 		mat.set_uniform("screen_height", WINDOW_HEIGHT);
-		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
-		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
-		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
+		mat.set_uniform("diffuse_tex", m_fbo_deferred->m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred->m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[3]);
 		mat.set_uniform("shadow_cube", m_fbo_shadow->m_point_cube);
 	
 		//SEND OTHER UNIFORMS
@@ -483,9 +484,10 @@ namespace Ryno{
 		mat.set_uniform("spot_light.specular_intensity", s->specular_intensity);
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
 		mat.set_uniform("screen_height", WINDOW_HEIGHT);
-		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
-		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
-		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
+		mat.set_uniform("diffuse_tex", m_fbo_deferred->m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred->m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow->m_spot_texture);
 
 		
@@ -571,9 +573,10 @@ namespace Ryno{
 	
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
 		mat.set_uniform("screen_height", WINDOW_HEIGHT);
-		mat.set_uniform("color_tex", m_fbo_deferred->m_textures[0]);
-		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[1]);
-		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[2]);
+		mat.set_uniform("diffuse_tex", m_fbo_deferred->m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred->m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow->m_directional_texture);
 	
 
@@ -611,7 +614,7 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		m_blit_model.material.set_uniform("source_buffer", m_fbo_deferred->m_textures[2]);
+		m_blit_model.material.set_uniform("source_buffer", m_fbo_deferred->m_textures[3]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_simple_drawer->draw(&m_blit_model);

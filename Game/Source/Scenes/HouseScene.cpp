@@ -53,7 +53,8 @@ namespace Ryno{
 		cones[0].model = new Model();
 		auto& sm = cones[0].model->add_sub_model();
 		sm.material.set_shader(&shader);
-		sm.material.set_attribute("in_Color", ColorRGBA(255, 255, 255, 0));
+		sm.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
+		sm.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
 		sm.material.set_attribute("in_Tiling", glm::vec2(1,1));
 		sm.material.set_uniform("texture_sampler", white.id);
 		sm.material.set_uniform("normal_map_sampler", white_normal.id);
@@ -126,7 +127,7 @@ namespace Ryno{
 		//Point lights
 		//Point light 1
 		spheres[0].copy(walls[3]);
-		spheres[0].model->sub_models[0].material.set_attribute("in_Color", ColorRGBA::white);
+		spheres[0].model->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA::white);
 		spheres[0].model->sub_models[0].material.set_uniform("texture_sampler", white.id);
 		spheres[0].model->sub_models[0].material.set_uniform("normal_map_sampler", white_normal.id);
 		spheres[0].model->sub_models[0].cast_shadows = false;
@@ -233,7 +234,7 @@ namespace Ryno{
 			sm.material.set_uniform("normal_map_sampler", normal->id);
 
 			sm.mesh = *mesh;
-			sm.material.set_attribute("in_Color", ColorRGBA::yellow);
+			sm.material.set_attribute("in_DiffuseColor", ColorRGBA::yellow);
 			//p->set_emitter(new Emitter(emitter));
 		};
 		emitter->lambda_spawn = [](Emitter* e){
@@ -255,7 +256,7 @@ namespace Ryno{
 			p->transform.add_position(p->direction * p->speed * _delta_time);
 			p->transform.set_scale(ryno_math::lerp(glm::vec3(.1), glm::vec3(5), p->lifetime));
 
-			p->model->sub_models[0].material.set_attribute("in_Color",ColorRGBA(255, ryno_math::lerp(0, 255, p->lifetime), 0,255));
+			p->model->sub_models[0].material.set_attribute("in_DiffuseColor",ColorRGBA(255, ryno_math::lerp(0, 255, p->lifetime), 0,255));
 			//}
 
 			/*if (p->lifetime > .75f && p->lifetime < .82f){

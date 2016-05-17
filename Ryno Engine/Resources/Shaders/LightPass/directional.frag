@@ -11,7 +11,8 @@ struct DirectionalLight{
 };
 
 //uniform sampler2D position_tex;
-uniform sampler2D color_tex;
+uniform sampler2D diffuse_tex;
+uniform sampler2D specular_tex;
 uniform sampler2D normal_tex;
 uniform sampler2D depth_tex;
 uniform sampler2DShadow shadow_tex;
@@ -47,9 +48,12 @@ void main(){
 	
 
 	//Get color and flatness from g buffer
-	vec4 RGBF = texture(color_tex, uv_coords);
-	vec3 color = RGBF.rgb;
-	float flatness = RGBF.a;
+	vec4 sample_diff = texture(diffuse_tex, uv_coords);
+	vec3 mat_diff = sample_diff.rgb;
+	float flatness = sample_diff.w;
+	vec4 sample_spec = texture(specular_tex, uv_coords);
+	vec3 mat_spec = sample_spec.rgb;
+	float mat_spec_pow = sample_spec.w;
 
 	//Get normal (and rebuilt it's z axis) from g buffer
 	vec2 n = texture(normal_tex, uv_coords).xy;
@@ -67,7 +71,7 @@ void main(){
 	//final colors for diffuse, specular and ambient
 	float dotNL = max(0, dot(normal, dir_light.direction));
 	vec3 diffuse_final =  dotNL * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.specular_intensity) ;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.specular_intensity * mat_spec_pow) ;
 
 
 
@@ -99,7 +103,7 @@ void main(){
 	
 	
 	//fragment color
-	fracolor =  flatness * color + (1.0 - flatness)*color *(amb_final + visibility *(diffuse_final + specular_final));
+	fracolor =  flatness * mat_diff + (1.0 - flatness)*(amb_final + visibility *(mat_diff * diffuse_final + mat_spec * specular_final));
 
 }
 

@@ -31,7 +31,7 @@ namespace Ryno {
 			m.material.set_shader(&shader);
 			m.mesh = cube_mesh;
 			m.cast_shadows = false;
-			m.material.set_attribute("in_Color", ColorRGBA(255, 255, 255, 255));
+			m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
 			m.material.set_attribute("in_Tiling", glm::vec2(1,1));
 			m.material.set_uniform("texture_sampler", white.id);
 			m.material.set_uniform("normal_map_sampler", white_normal.id);
