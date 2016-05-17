@@ -181,7 +181,6 @@
     <ClCompile Include="Source\Managers\ErrorManager.cpp" />
     <ClCompile Include="Source\Managers\GPUProfiler.cpp" />
     <ClCompile Include="Source\Managers\InputManager.cpp" />
-    <ClCompile Include="Source\Managers\lodepng.cpp" />
     <ClCompile Include="Source\Managers\MeshBuilder.cpp" />
     <ClCompile Include="Source\Managers\MeshManager.cpp" />
     <ClCompile Include="Source\Managers\ParticleManager.cpp" />
@@ -227,8 +226,8 @@
     <ClInclude Include="Headers\Managers\CPUProfiler.h" />
     <ClInclude Include="Headers\Managers\ErrorManager.h" />
     <ClInclude Include="Headers\Managers\GPUProfiler.h" />
+    <ClInclude Include="Headers\Managers\ImageLoader.h" />
     <ClInclude Include="Headers\Managers\InputManager.h" />
-    <ClInclude Include="Headers\Managers\lodepng.h" />
     <ClInclude Include="Headers\Managers\MeshBuilder.h" />
     <ClInclude Include="Headers\Managers\MeshManager.h" />
     <ClInclude Include="Headers\Managers\ObjLoader.h" />

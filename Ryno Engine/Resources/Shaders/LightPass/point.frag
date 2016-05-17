@@ -26,6 +26,8 @@ uniform int shadows_enabled;
 //Inverse matrix to rebuild position from depth
 uniform mat4 inverse_P_matrix;
 uniform mat4 inverse_VP_matrix;
+uniform mat4 inverse_V_matrix;
+uniform mat4 light_V_matrix;
 uniform mat4 V_matrix;
 //All the point light uniforms
 uniform PointLight point_light;
@@ -60,13 +62,13 @@ void main(){
 	//Rebuild position from depth
 	float depth = texture(depth_tex, uv_coords).r *2.0-1.0;
 	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
-	vec4 position_view_space = inverse_P_matrix * position_screen_space;
-	vec3 position = position_view_space.xyz / position_view_space.w;
-	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
-	vec3 world_position = position_world_space.xyz / position_world_space.w;
-
-	vec4 view_world_pos = V_matrix * vec4(point_light.position, 1);
-
+	vec4 position_view_space_not_normalized = inverse_P_matrix * position_screen_space;
+	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
+	vec4 position_world_space_not_normalized = inverse_VP_matrix * position_screen_space;
+	vec3 position_world_space = position_world_space_not_normalized.xyz / position_world_space_not_normalized.w;
+	vec4 light_world_space = vec4(point_light.position, 1);
+	vec4 light_view_space = V_matrix * light_world_space;
+	
 	//Color directly from g buffer
 	vec4 sample_diff = texture(diffuse_tex, uv_coords);
 	vec3 mat_diff = sample_diff.rgb;
@@ -77,37 +79,39 @@ void main(){
 	
 	//Normal z-axis built back from the other two
 	vec2 n = texture(normal_tex, uv_coords).xy;
-	vec3 normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
+	vec4 normal_world_space = normalize(vec4(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))),0));
+	vec4 normal_view_space = light_V_matrix *normal_world_space;
 
 	//Important vectors
-	vec3 not_normal_ligth_dir = view_world_pos.xyz - position;
-	vec3 light_dir = normalize(not_normal_ligth_dir);
-	vec3 view_dir = normalize(-position);
-	vec3 half_dir = normalize(light_dir + view_dir);
+	vec3 light_dir_world_space_not_normalized = light_world_space.xyz - position_world_space;
+	vec4 light_dir_world_space = vec4(normalize(light_dir_world_space_not_normalized),0);
+	vec4 light_dir_view_space = light_V_matrix * light_dir_world_space;
+	vec4 view_dir_view_space = vec4(normalize(-position_view_space),0);
+	vec4 half_dir_view_space = vec4(normalize(light_dir_view_space.xyz + view_dir_view_space.xyz),0);
 
 	//Calculate attenuation
-	float distance = length(not_normal_ligth_dir);
+	float distance = length(light_dir_world_space_not_normalized);
 	float attenuation = max(point_light.attenuation * distance * distance,1.0f);
 
 	//Calculate base colors
 	vec3 diff_color = vec3(split(point_light.diffuse, 0), split(point_light.diffuse, 1), split(point_light.diffuse, 2)) * point_light.diffuse_intensity;
-	vec3 spec_color = vec3(split(point_light.specular, 0), split(point_light.specular, 1), split(point_light.specular, 2)) * point_light.specular_intensity;
+	vec3 spec_color = vec3(split(point_light.specular, 0), split(point_light.specular, 1), split(point_light.specular, 2)) * mat_spec_pow;
 
 	
 	//final colors for diffuse and specular
-	vec3 diffuse_final = max(0, dot(normal, light_dir)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.000001), point_light.specular_intensity * mat_spec_pow);
+	vec3 diffuse_final = max(0, dot(normal_view_space.xyz, light_dir_view_space.xyz)) * diff_color;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space.xyz), 0.000001),  point_light.specular_intensity);
 	
 	//**SHADOWS**//
 	float visibility = 1.0f;
 	if (shadows_enabled > 0.5f){
-		vec3 light_direction = world_position - point_light.position;
-
+		
 		//This sampling with a vec4 automatically compares the sampled value with the forth parameter (i think).
 		//So the result is the visibility
-		float current_depth = vector_to_depth(light_direction, 1.0, max_fov);
+
+		float current_depth = vector_to_depth(-light_dir_world_space_not_normalized, 1.0, max_fov);
 		float bias = 0.0005;
-		visibility = texture(shadow_cube, vec4(light_direction, current_depth - bias));
+		visibility = texture(shadow_cube, vec4(-light_dir_world_space_not_normalized, current_depth - bias));
 	}
 
 		

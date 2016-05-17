@@ -53,9 +53,7 @@ namespace Ryno{
 		log->init();
 
 		mallocator = Mallocator::get_instance();
-		stack_allocator = StackAllocator::get_instance();
-		stack_allocator->init(8192);
-
+	
 		particle_manager = ParticleManager::get_instance();
 		particle_manager->init();
 		audio_manager = AudioManager::get_instance();
@@ -156,7 +154,6 @@ namespace Ryno{
 		GPUProfiler::reset();
 		delete scene;
 		scene = nullptr;
-		stack_allocator->wipe_all();
 	}
 
 	

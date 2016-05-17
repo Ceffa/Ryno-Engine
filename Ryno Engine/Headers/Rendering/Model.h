@@ -21,7 +21,7 @@ namespace Ryno{
 	public:
 	
 		SubModel& add_sub_model();
-		Model(){}
+		Model() { }
 		~Model(){}
 		Model(const Model& copy);
 		std::vector<SubModel> sub_models;

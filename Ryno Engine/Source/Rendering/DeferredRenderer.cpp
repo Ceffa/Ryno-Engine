@@ -33,8 +33,8 @@ namespace Ryno{
 	void DeferredRenderer::set_camera(Camera3D* camera)
 	{
 		m_camera = camera;
-		m_geometry_batch3d->init(m_camera);
-		m_shadow_batch3d->init(m_camera);
+		m_geometry_batch3d.init(m_camera);
+		m_shadow_batch3d.init(m_camera);
 	}
 	void DeferredRenderer::init(){
 
@@ -44,19 +44,11 @@ namespace Ryno{
 		m_simple_drawer = SimpleDrawer::get_instance();
 
 		
-		Mallocator* allocator = Mallocator::get_instance();
-		m_fbo_deferred.create(allocator,WINDOW_WIDTH, WINDOW_HEIGHT);
-		m_fbo_shadow.create(allocator, WINDOW_WIDTH, WINDOW_HEIGHT);
-
+		m_fbo_shadow.init(WINDOW_WIDTH, WINDOW_HEIGHT);
+		m_fbo_deferred.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 	
-		//BATCHES SETUP
-		m_geometry_batch3d.create(allocator);
-		m_shadow_batch3d.create(allocator);
-		m_sprite_batch2d.create(allocator);
-		m_font_batch2d.create(allocator);
-
-		m_sprite_batch2d->init();
-		m_font_batch2d->init();
+		m_sprite_batch2d.init();
+		m_font_batch2d.init();
 
 	
 		//MODEL LOADING
@@ -72,38 +64,31 @@ namespace Ryno{
 
 		//SHADER PROGRAMS LOADING
 
-		m_point_shadow_program.create(allocator);
-		m_point_shadow_program->create("ShadowPass/point", ENGINE);
+		m_point_shadow_program.create("ShadowPass/point", ENGINE);
 	
-		m_spot_shadow_program.create(allocator);
-		m_spot_shadow_program->create("ShadowPass/spot", ENGINE);
+		m_spot_shadow_program.create("ShadowPass/spot", ENGINE);
 
-		m_directional_shadow_program.create(allocator);
-		m_directional_shadow_program->create("ShadowPass/directional", ENGINE);
+		m_directional_shadow_program.create("ShadowPass/directional", ENGINE);
 	
-		m_skybox_program.create(allocator);
-		m_skybox_program->create("SkyboxPass/skybox",ENGINE);
-		m_skybox_model.material.set_shader(*m_skybox_program);
+		m_skybox_program.create("SkyboxPass/skybox",ENGINE);
+		m_skybox_model.material.set_shader(&m_skybox_program);
 
-		m_blit_program.create(allocator);
-		m_blit_program->create("Others/blit", ENGINE);
-		m_blit_model.material.set_shader(*m_blit_program);
+		m_blit_program.create("Others/blit", ENGINE);
+		m_blit_model.material.set_shader(&m_blit_program);
 		m_blit_model.material.set_uniform("screen_width", WINDOW_WIDTH);
 		m_blit_model.material.set_uniform("screen_height", WINDOW_HEIGHT);
 
 		//Sprite program
-		m_sprite_program.create(allocator);
-		m_sprite_program->create("GUIPass/sprite", ENGINE);
-		m_sprite_program->use();
-		glUniform1i(m_sprite_program->getUniformLocation("m_texture"), 0);
-		m_sprite_program->unuse();
+		m_sprite_program.create("GUIPass/sprite", ENGINE);
+		m_sprite_program.use();
+		glUniform1i(m_sprite_program.getUniformLocation("m_texture"), 0);
+		m_sprite_program.unuse();
 
 		//Font program
-		m_font_program.create(allocator);
-		m_font_program->create("GUIPass/font", ENGINE);
-		m_font_program->use();
-		glUniform1i(m_font_program->getUniformLocation("m_texture"), 0);
-		m_font_program->unuse();
+		m_font_program.create("GUIPass/font", ENGINE);
+		m_font_program.use();
+		glUniform1i(m_font_program.getUniformLocation("m_texture"), 0);
+		m_font_program.unuse();
 
 		
 
@@ -129,13 +114,13 @@ namespace Ryno{
 		inverse_VP_matrix = glm::inverse(m_camera->get_VP_matrix());
 
 		//Setup the two fbos for this frame
-		m_fbo_deferred->start_frame();
-		m_fbo_shadow->start_frame();
+		m_fbo_deferred.start_frame();
+		m_fbo_shadow.start_frame();
 
 		//Iterate once and for all through the GameObjects
 	
-		m_shadow_batch3d->begin();
-		m_geometry_batch3d->begin();
+		m_shadow_batch3d.begin();
+		m_geometry_batch3d.begin();
 
 		//First generate individual model matrices
 		for (GameObject* go : GameObject::game_objects)
@@ -151,7 +136,7 @@ namespace Ryno{
 			//Fill geometry batch
 			if (geometry_enabled){
 				if (go->active && go->model){
-					m_geometry_batch3d->draw(go->model);
+					m_geometry_batch3d.draw(go->model);
 					for(SubModel& s : go->model->sub_models)
 						s.material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
 				}
@@ -159,7 +144,7 @@ namespace Ryno{
 			//Fill shadow batch
 			if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled){
 				if (go->active && go->model)
-					m_shadow_batch3d->draw(go);
+					m_shadow_batch3d.draw(go);
 			}
 			//Add ligths
 			if (go->point_light && go->point_light->active)
@@ -170,9 +155,9 @@ namespace Ryno{
 				directional_lights.push_back(go);
 
 		}
-		m_shadow_batch3d->end();
+		m_shadow_batch3d.end();
 	
-		m_geometry_batch3d->end();
+		m_geometry_batch3d.end();
 	}
 
 
@@ -180,7 +165,7 @@ namespace Ryno{
 	{
 		//Batch was filled in the init method
 
-		m_fbo_deferred->bind_for_geometry_pass();
+		m_fbo_deferred.bind_for_geometry_pass();
 
 		glDisable(GL_CULL_FACE);
 		glDepthMask(GL_TRUE);
@@ -188,11 +173,11 @@ namespace Ryno{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		
-		for (Shader* s : m_geometry_batch3d->shaders){
+		for (Shader* s : m_geometry_batch3d.shaders){
 			s->set_uniform("g_V", m_camera->get_V_matrix());
 			s->set_uniform("g_VP", m_camera->get_VP_matrix());
 		}
-		m_geometry_batch3d->render_batch();
+		m_geometry_batch3d.render_batch();
 	}
 	
 
@@ -250,10 +235,10 @@ namespace Ryno{
 		glCullFace(GL_FRONT);
 
 		//Set viewport to cubemap size (because the next rendering will not be at fullscreen)
-		glViewport(0, 0, m_fbo_shadow->point_resolution, m_fbo_shadow->point_resolution);
+		glViewport(0, 0, m_fbo_shadow.point_resolution, m_fbo_shadow.point_resolution);
 		
 		//Bind the whole cubemap, the geometry shader will take care of the faces
-		m_fbo_shadow->bind_for_point_shadow_pass();
+		m_fbo_shadow.bind_for_point_shadow_pass();
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -281,12 +266,12 @@ namespace Ryno{
 		}
 
 		//Send Vp matrix and world light position to shader, then render
-		m_point_shadow_program->use();
+		m_point_shadow_program.use();
 
-		glUniformMatrix4fv(m_point_shadow_program->getUniformLocation("projection_matrices"),6,GL_FALSE,&light_VP_matrices[0][0][0]);
+		glUniformMatrix4fv(m_point_shadow_program.getUniformLocation("projection_matrices"),6,GL_FALSE,&light_VP_matrices[0][0][0]);
 
-		m_shadow_batch3d->render_batch();
-		m_point_shadow_program->unuse();
+		m_shadow_batch3d.render_batch();
+		m_point_shadow_program.unuse();
 
 		
 
@@ -304,7 +289,7 @@ namespace Ryno{
 		mod->mesh = m_bounding_sphere.mesh;
 		auto& mat = mod->material;
 
-		m_fbo_deferred->bind_for_light_pass();
+		m_fbo_deferred.bind_for_light_pass();
 
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
@@ -342,6 +327,7 @@ namespace Ryno{
 		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
 
 
+
 		//SEND POINT LIGHT UNIFORMS (each for light)
 		mat.set_uniform("point_light.position", trans);
 		mat.set_uniform("point_light.attenuation", p->attenuation);
@@ -353,17 +339,20 @@ namespace Ryno{
 		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM GLOBAL
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
 		mat.set_uniform("screen_height", WINDOW_HEIGHT);
-		mat.set_uniform("diffuse_tex", m_fbo_deferred->m_textures[0]);
-		mat.set_uniform("specular_tex", m_fbo_deferred->m_textures[1]);
-		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[2]);
-		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[3]);
-		mat.set_uniform("shadow_cube", m_fbo_shadow->m_point_cube);
+		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+		mat.set_uniform("shadow_cube", m_fbo_shadow.m_point_cube);
 	
 		//SEND OTHER UNIFORMS
 		mat.set_uniform("max_fov", p->max_radius);
 		mat.set_uniform("inverse_P_matrix",inverse_P_matrix);
 		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
-		mat.set_uniform("V_matrix",m_camera->get_V_matrix());
+		mat.set_uniform("light_V_matrix",m_camera->get_light_V_matrix());
+		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
+
+
 		mat.set_uniform("MVP", MVP_camera);
 		mat.set_uniform("shadows_enabled", point_shadow_enabled);
 
@@ -389,10 +378,10 @@ namespace Ryno{
 		glCullFace(GL_FRONT);
 
 		//Set viewport to cubemap size (because the next rendering will not be at fullscreen)
-		glViewport(0, 0, m_fbo_shadow->spot_resolution, m_fbo_shadow->spot_resolution);
+		glViewport(0, 0, m_fbo_shadow.spot_resolution, m_fbo_shadow.spot_resolution);
 
 		//Bind the whole cubemap, the geometry shader will take care of the faces
-		m_fbo_shadow->bind_for_spot_shadow_pass();
+		m_fbo_shadow.bind_for_spot_shadow_pass();
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
@@ -412,12 +401,12 @@ namespace Ryno{
 		
 
 		//Send Vp matrix and world light position to shader, then render
-		m_spot_shadow_program->use();
+		m_spot_shadow_program.use();
 
-		glUniformMatrix4fv(m_spot_shadow_program->getUniformLocation("in_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
+		glUniformMatrix4fv(m_spot_shadow_program.getUniformLocation("in_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
 
-		m_shadow_batch3d->render_batch();
-		m_spot_shadow_program->unuse();
+		m_shadow_batch3d.render_batch();
+		m_spot_shadow_program.unuse();
 
 
 
@@ -433,7 +422,7 @@ namespace Ryno{
 		mod->mesh = m_bounding_pyramid.mesh;
 		auto& mat = mod->material;
 
-		m_fbo_deferred->bind_for_light_pass();
+		m_fbo_deferred.bind_for_light_pass();
 
 
 		glDisable(GL_DEPTH_TEST);
@@ -484,17 +473,19 @@ namespace Ryno{
 		mat.set_uniform("spot_light.specular_intensity", s->specular_intensity);
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
 		mat.set_uniform("screen_height", WINDOW_HEIGHT);
-		mat.set_uniform("diffuse_tex", m_fbo_deferred->m_textures[0]);
-		mat.set_uniform("specular_tex", m_fbo_deferred->m_textures[1]);
-		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[2]);
-		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[3]);
-		mat.set_uniform("shadow_tex", m_fbo_shadow->m_spot_texture);
+		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+		mat.set_uniform("shadow_tex", m_fbo_shadow.m_spot_texture);
 
 		
 		mat.set_uniform("light_VP_matrix", biased_light_VP_matrix);
 		mat.set_uniform("inverse_P_matrix", inverse_P_matrix);
 		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
-		mat.set_uniform("V_matrix",m_camera->get_V_matrix());
+		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
+		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
+		
 		mat.set_uniform("MVP",MVP_camera);
 		mat.set_uniform("shadows_enabled", spot_shadow_enabled);
 
@@ -510,7 +501,7 @@ namespace Ryno{
 
 		if (!directional_shadow_enabled)
 			return;
-		m_fbo_shadow->bind_for_directional_shadow_pass();
+		m_fbo_shadow.bind_for_directional_shadow_pass();
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_CULL_FACE);
@@ -525,12 +516,12 @@ namespace Ryno{
 		glm::mat4 view_mat = glm::lookAt(dir, glm::vec3(0, 0, 0), up_vect);
 		directional_light_VP = ortho_mat * view_mat;
 
-		glViewport(0, 0, m_fbo_shadow->directional_resolution, m_fbo_shadow->directional_resolution);
+		glViewport(0, 0, m_fbo_shadow.directional_resolution, m_fbo_shadow.directional_resolution);
 
-		m_directional_shadow_program->use();
-		glUniformMatrix4fv(m_directional_shadow_program->getUniformLocation("light_VP"), 1, GL_FALSE, &directional_light_VP[0][0]);
-		m_shadow_batch3d->render_batch();
-		m_directional_shadow_program->unuse();
+		m_directional_shadow_program.use();
+		glUniformMatrix4fv(m_directional_shadow_program.getUniformLocation("light_VP"), 1, GL_FALSE, &directional_light_VP[0][0]);
+		m_shadow_batch3d.render_batch();
+		m_directional_shadow_program.unuse();
 
 
 		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -548,7 +539,7 @@ namespace Ryno{
 		mod->mesh = m_blit_model.mesh;
 		auto& mat = mod->material;
 		auto* s =mat.shader;
-		m_fbo_deferred->bind_for_light_pass();
+		m_fbo_deferred.bind_for_light_pass();
 
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
@@ -573,11 +564,11 @@ namespace Ryno{
 	
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
 		mat.set_uniform("screen_height", WINDOW_HEIGHT);
-		mat.set_uniform("diffuse_tex", m_fbo_deferred->m_textures[0]);
-		mat.set_uniform("specular_tex", m_fbo_deferred->m_textures[1]);
-		mat.set_uniform("normal_tex", m_fbo_deferred->m_textures[2]);
-		mat.set_uniform("depth_tex", m_fbo_deferred->m_textures[3]);
-		mat.set_uniform("shadow_tex", m_fbo_shadow->m_directional_texture);
+		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+		mat.set_uniform("shadow_tex", m_fbo_shadow.m_directional_texture);
 	
 
 		//SEND DIR LIGHT UNIFORMS
@@ -608,13 +599,13 @@ namespace Ryno{
 	void DeferredRenderer::skybox_pass(){
 		if (!skybox_enabled)
 			return;
-		m_fbo_deferred->bind_for_skybox_pass();
+		m_fbo_deferred.bind_for_skybox_pass();
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		m_blit_model.material.set_uniform("source_buffer", m_fbo_deferred->m_textures[3]);
+		m_blit_model.material.set_uniform("source_buffer", m_fbo_deferred.m_textures[3]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_simple_drawer->draw(&m_blit_model);
@@ -652,28 +643,28 @@ namespace Ryno{
 	void DeferredRenderer::GUI_pass()
 	{
 
-		m_fbo_deferred->bind_for_GUI_pass();
+		m_fbo_deferred.bind_for_GUI_pass();
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 
 		//Add the GUI elements to the 2D batches
-		m_sprite_batch2d->begin();
-		m_font_batch2d->begin();
+		m_sprite_batch2d.begin();
+		m_font_batch2d.begin();
 
 		for (GUIObject* go : GUIObject::gui_objects)
 		{
 			if (go->sprite && (gui_sprites_enabled || go->sprite->use == SHELL)) {
 				go->sprite->generate_model_matrix();
-				m_sprite_batch2d->draw(go->sprite);
+				m_sprite_batch2d.draw(go->sprite);
 			}
 			if (go->text && (gui_text_enabled || go->text->use == SHELL)) {
-				m_font_batch2d->draw_font(go->text);
+				m_font_batch2d.draw_font(go->text);
 			}
 		}
 		
 
-		m_sprite_batch2d->end();
-		m_font_batch2d->end();
+		m_sprite_batch2d.end();
+		m_font_batch2d.end();
 
 
 		glEnable(GL_DEPTH_TEST);
@@ -683,12 +674,12 @@ namespace Ryno{
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		m_font_program->use();
-		m_font_batch2d->render_batch();
-		m_font_program->unuse();
-		m_sprite_program->use();
-		m_sprite_batch2d->render_batch();
-		m_sprite_program->unuse();
+		m_font_program.use();
+		m_font_batch2d.render_batch();
+		m_font_program.unuse();
+		m_sprite_program.use();
+		m_sprite_batch2d.render_batch();
+		m_sprite_program.unuse();
 
 		glDisable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
@@ -697,7 +688,7 @@ namespace Ryno{
 
 
 	void DeferredRenderer::final_pass(){
-		m_fbo_deferred->bind_for_final_rendering_pass();
+		m_fbo_deferred.bind_for_final_rendering_pass();
 
 	
 	}

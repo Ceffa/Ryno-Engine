@@ -61,9 +61,8 @@ class Emitter{
 
 		F32 m_max_particles = 0;
 		F32 m_elapsed_time;
-	private:
-		New<Pool> pool;
-		std::vector <New<Particle3D>> m_particles;
+private:
+		std::vector <Particle3D> m_particles;
 		std::list <Particle3D*> m_pool;
 	};
 

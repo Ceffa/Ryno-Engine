@@ -11,9 +11,9 @@ namespace Ryno{
 
 	Camera3D::Camera3D(U32 w, U32 h) :width(w), height(h), yaw(0), pitch(0)
 	{
-		P_matrix = generate_P_matrix(60, w, h, .1f, 10000.0f);
-
-		O_matrix = glm::ortho<float>(-500, 500, -500, 500, -500, 500);
+		P_matrix = generate_P_matrix(60, w, h, .5f, 10000.0f);
+		F32 sz = 1000;
+		O_matrix = glm::ortho<F32>(-sz, sz, -sz, sz, -sz, sz);
 
 	
 	}
@@ -26,7 +26,7 @@ namespace Ryno{
 	}
 
 
-	void Camera3D::generate_VP_matrix(){
+	void Camera3D::generate_matrices(){
 		
 		//I ignore the scale.
 		//I get the rotation from the pitch and yaw, and i make it faster with quaternions.
@@ -36,10 +36,10 @@ namespace Ryno{
 			glm::vec3(-position.x, -position.y, position.z)
 			); 
 		VP_matrix = P_matrix * V_matrix;
+		light_V_matrix = glm::transpose(glm::inverse(V_matrix));
 	}
 	
-
-	void Camera3D::move_forward(F32 speed){
+	void Camera3D::move_forward(F32 speed) {
 		position += speed* movement_speed *glm::vec4(sin(yaw), -sin(pitch), cos(yaw),0);
 	}
 

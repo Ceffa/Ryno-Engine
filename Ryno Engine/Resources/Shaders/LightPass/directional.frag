@@ -89,8 +89,8 @@ void main(){
 			vec2(0.34495938, 0.29387760)
 			);
 
-		float shadow_strenght = 0.1;
-		float bias = 0.0002;
+		float shadow_strenght = 0.2;
+		float bias = 0.0005;
 
 
 

@@ -9,5 +9,7 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-map_Kd D:\Studio\Fotografia\Textures\Textures Buone\Mattoni\cottoantico7pp.jpg
-map_Bump D:\\Studio\\Fotografia\\Textures\\Textures Buone\\Mattoni\\cottoantico7pp_bump.jpg
+map_Kd d.png
+map_Ks s.png
+map_Ns n.png
+

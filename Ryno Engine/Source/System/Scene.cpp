@@ -51,7 +51,8 @@ namespace Ryno{
 				camera->move_back(game->delta_time);
 			}
 		}
-		camera->generate_VP_matrix();
+		camera->generate_matrices();
+		camera->get_light_V_matrix();
 		glm::vec2 mouse_coords = game->input_manager->get_mouse_movement();
 		camera->rotate(mouse_coords.x * game->delta_time,mouse_coords.y* game->delta_time);
 		glm::vec2 rotation_view = game->input_manager->get_controller_RX_coords();

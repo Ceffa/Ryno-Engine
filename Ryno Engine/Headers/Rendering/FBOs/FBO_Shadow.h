@@ -8,6 +8,7 @@ namespace Ryno{
 	{
 	public:
 		FBO_Shadow::FBO_Shadow(U32 width, U32 height);
+		FBO_Shadow() {}
 		~FBO_Shadow(){}
 
 		void init(U32 width, U32 height);
@@ -24,7 +25,7 @@ namespace Ryno{
 		U32 m_point_cube;
 
 
-		U16 point_resolution = 1024;
+		U16 point_resolution = 2048;
 		U16 spot_resolution = 1024;
 		U16 directional_resolution = 4096;
 

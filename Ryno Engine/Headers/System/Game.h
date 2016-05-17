@@ -66,7 +66,6 @@ namespace Ryno{
 		ParticleManager* particle_manager;
 		MeshBuilder* mesh_builder;
 		Mallocator* mallocator;
-		StackAllocator* stack_allocator;
 		Shell* shell;
 		Log* log;
 		GameState game_state;

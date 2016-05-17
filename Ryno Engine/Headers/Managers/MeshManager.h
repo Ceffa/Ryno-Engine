@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "Structures.h"
+#include "Model.h"
 #include "Global.h"
 
 #define TEMPORARY_OFFSET 1073741823
@@ -24,6 +25,7 @@ namespace Ryno{
 
 		static MeshManager* get_instance();
 		I32 load_mesh(const std::string& name, Owner loc);
+		Model* load_model(const std::string& name, Owner loc, Shader& shader);
 		I32 create_empty_mesh(Owner loc);
 		Mesh* get_mesh(I32 mesh_number);
 

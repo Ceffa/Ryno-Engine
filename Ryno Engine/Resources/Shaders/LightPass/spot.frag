@@ -27,9 +27,11 @@ uniform int shadows_enabled;
 uniform mat4 inverse_P_matrix;
 uniform mat4 inverse_VP_matrix;
 uniform mat4 light_VP_matrix;
-
+uniform mat4 light_V_matrix;
 uniform mat4 V_matrix;
-//All the point light uniforms
+
+
+//All the spot light uniforms
 uniform SpotLight spot_light;
 //Screen size uniforms
 uniform int screen_width;
@@ -65,18 +67,16 @@ void main(){
 	//Rebuild position from depth
 	float depth = texture(depth_tex, uv_coords).r *2.0-1.0;
 	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
-	vec4 position_view_space = inverse_P_matrix * position_screen_space;
-	vec3 position = position_view_space.xyz / position_view_space.w;
+	vec4 position_view_space_not_normalized = inverse_P_matrix * position_screen_space;
+	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
+	vec4 position_world_space_not_normalized = inverse_VP_matrix * position_screen_space;
+	vec3 position_world_space = position_world_space_not_normalized.xyz / position_world_space_not_normalized.w;
+	vec4 light_world_space = vec4(spot_light.position, 1);
+	vec4 light_view_space = V_matrix * light_world_space;
 
-	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
-	vec3 world_position = position_world_space.xyz / position_world_space.w;
-
-	vec4 position_light_MVP_matrix = light_VP_matrix * position_world_space;
+	vec4 position_light_MVP_matrix = light_VP_matrix * vec4(position_world_space,1);
 	vec3 position_light_MVP_matrix_norm = position_light_MVP_matrix.xyz / position_light_MVP_matrix.w;
-
-	vec3 fragment_position_world = position_world_space.xyz / position_world_space.w;
-
-	vec4 view_world_pos = V_matrix * vec4(spot_light.position, 1);
+	
 
 	//Color directly from g buffer
 	vec4 sample_diff = texture(diffuse_tex, uv_coords);
@@ -88,29 +88,29 @@ void main(){
 	
 	//Normal z-axis built back from the other two
 	vec2 n = texture(normal_tex, uv_coords).xy;
-	vec3 normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
+	vec4 normal_world_space = normalize(vec4(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))),0));
+	vec4 normal_view_space = light_V_matrix *normal_world_space;
 
 	//Important vectors
-	vec3 not_normal_ligth_dir = view_world_pos.xyz - position;
-	vec3 light_dir = normalize(not_normal_ligth_dir);
-	vec3 view_dir = normalize(-position);
-	vec3 half_dir = normalize(light_dir + view_dir);
+	vec4 light_dir_world_space_not_normalized = light_world_space - vec4(position_world_space,1);
+	vec4 light_dir_world_space = normalize(light_dir_world_space_not_normalized);
+	vec4 light_dir_view_space = light_V_matrix * light_dir_world_space;
+	vec4 view_dir_view_space = vec4(normalize(-position_view_space),0);
+	vec4 half_dir_view_space = vec4(normalize(light_dir_view_space.xyz + view_dir_view_space.xyz),0);
 
 	//Calculate attenuation
-	float distance = length(not_normal_ligth_dir);
+	float distance = length(light_dir_world_space_not_normalized);
 	float attenuation = max(spot_light.attenuation * distance * distance,1.0f);
 
 	//Calculate base colors
 	vec3 diff_color = vec3(split(spot_light.diffuse, 0), split(spot_light.diffuse, 1), split(spot_light.diffuse, 2)) * spot_light.diffuse_intensity;
-	vec3 spec_color = vec3(split(spot_light.specular, 0), split(spot_light.specular, 1), split(spot_light.specular, 2)) * spot_light.specular_intensity;
+	vec3 spec_color = vec3(split(spot_light.specular, 0), split(spot_light.specular, 1), split(spot_light.specular, 2)) * mat_spec_pow;
 
 	
 	//final colors for diffuse and specular
-	vec3 diffuse_final = max(0, dot(normal, light_dir)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.000001), spot_light.specular_intensity);
+	vec3 diffuse_final = max(0, dot(normal_view_space.xyz, light_dir_view_space.xyz)) * diff_color;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space.xyz), 0.000001),  spot_light.specular_intensity);
 	
-
-
 	//SHADOWS
 	float visibility = 1.0f;
 	if (shadows_enabled > 0.5){
@@ -121,7 +121,7 @@ void main(){
 	
 	//CONE CUTOFF (with smoothing to the edges, because I CAN
 
-	float actual_cutoff = dot(normalize(fragment_position_world - spot_light.position), spot_light.direction);
+	float actual_cutoff = dot(normalize(position_world_space - light_world_space.xyz), spot_light.direction);
 
 
 	

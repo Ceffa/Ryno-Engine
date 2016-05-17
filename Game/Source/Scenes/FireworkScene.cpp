@@ -16,10 +16,10 @@ namespace Ryno{
 		camera->movement_speed = 2;
 		camera->position = glm::vec4(0, 150, -5000, 1);
 
-		white = game->texture_manager->load_png("white_pixel", GAME);
-		white_normal = game->texture_manager->load_png("normal_pixel", GAME);
-		brick = game->texture_manager->load_png("pack/154", GAME);
-		brick_normal = game->texture_manager->load_png("pack/154_norm", GAME);
+		white = game->texture_manager->load_png("white_pixel.png", GAME);
+		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
+		brick = game->texture_manager->load_png("pack/154.png", GAME);
+		brick_normal = game->texture_manager->load_png("pack/154_norm.png", GAME);
 
 		star_mesh = game->mesh_manager->load_mesh("star", GAME);
 		cube_mesh= game->mesh_manager->load_mesh("cube", GAME);

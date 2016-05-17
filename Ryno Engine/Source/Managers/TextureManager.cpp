@@ -1,7 +1,10 @@
 #include "TextureManager.h"
-#include "lodepng.h"
 #include <string>
 #include <iostream>
+#ifndef STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#endif
+#include "ImageLoader.h"
 namespace Ryno{
 
 
@@ -20,17 +23,21 @@ namespace Ryno{
 		
 		static const std::string middle_path = "Resources/Textures/2D/";
 
-		std::string path = BASE_PATHS[loc] + middle_path + name + ".png";
+		std::string path = BASE_PATHS[loc] + middle_path + name;
+
+		if (cached_textures.find(path) != cached_textures.end()) {
+			return cached_textures[path];
+		}
 
 
-		std::vector<unsigned char> out;
-		unsigned width, height;
+	
+		int width, height, comp;
 		
 		
-
-		I32 error_code = lodepng::decode(out, width, height, path.c_str());
-		if (error_code != 0){
-			std::cout << "Decoding png failed." << std::endl;
+		unsigned char* image = stbi_load(path.c_str(), &width, &height, &comp, STBI_rgb_alpha);
+		
+		if (!image){
+			std::cout << "Png not found: " << path.c_str() << std::endl;
 		}
 		
 		Texture t;
@@ -38,11 +45,13 @@ namespace Ryno{
 		t.height = height;
 		glGenTextures(1, &(t.id));
 		glBindTexture(GL_TEXTURE_2D, t.id);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(out[0]));
+	
+		
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -51,43 +60,48 @@ namespace Ryno{
 		else
 			lifetime_textures.push_back(t.id);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
 
-
+		cached_textures[path] = t;
+		stbi_image_free(image);
 		return t;
 
 	}
 
 	Texture TextureManager::load_cube_map(const std::string& name, Owner loc){
 
+		static const std::string middle_path = "Resources/Textures/3D/";
+		static const std::string pieces[6]{"pos_x", "neg_x", "pos_y", "neg_y", "pos_z", "neg_z"};
+		static const std::string base_path = BASE_PATHS[loc] + middle_path + name;
+		if (cached_textures.find(base_path) != cached_textures.end()) {
+			return cached_textures[base_path];
+		}
 		Texture t;
 		
 		glGenTextures(1, &(t.id));
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, t.id);
-		static const std::string middle_path = "Resources/Textures/3D/";
-
-		static const std::string pieces[6]{"pos_x", "neg_x", "pos_y", "neg_y", "pos_z", "neg_z"};
 		
-		unsigned width, height;
+
+		int width, height, comp;
 
 		for (U8 i = 0; i < 6; i++){
-			std::string path = BASE_PATHS[loc] + middle_path + name + "/"+name+"_"+pieces[i]+".png";
-
-
-			std::vector<unsigned char> out;
-			
+			std::string path = base_path + "/"+name+"_"+pieces[i]+".png";
 
 
 
-			I32 error_code = lodepng::decode(out, width, height, path.c_str());
-			if (error_code != 0){
+
+			unsigned char* image = stbi_load(path.c_str(), &width, &height, &comp, STBI_rgb_alpha);
+			if (!image){
 				std::cout << "Decoding png failed." << std::endl;
 			}
 
 			
-
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(out[0]));
+			/*if(comp == 3)
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB8, (GLsizei)width, (GLsizei)height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+			else*/
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+			
+			stbi_image_free(image);
 
 		}
 
@@ -100,6 +114,8 @@ namespace Ryno{
 
 		t.width = width;
 		t.height = height;
+		cached_textures[base_path] = t;
+
 		return t;
 
 	}
@@ -112,6 +128,7 @@ namespace Ryno{
 #endif
 		glDeleteTextures(temporary_textures.size(), temporary_textures.data());
 		temporary_textures.resize(0);
+		cached_textures.clear();
 	}
 
 	U8 TextureManager::read_file_to_buffer(const std::string& f_path, std::vector<U8>& buffer){
@@ -135,4 +152,7 @@ namespace Ryno{
 		
 		return 1;
 	}
+
+	
+
 }

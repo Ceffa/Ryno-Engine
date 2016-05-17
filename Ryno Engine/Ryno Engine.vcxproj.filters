@@ -663,9 +663,6 @@
     <ClCompile Include="Source\Managers\InputManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Managers\lodepng.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Managers\MeshBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -723,9 +720,6 @@
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Managers\InputManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Managers\lodepng.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Managers\MeshManager.h">
@@ -838,6 +832,9 @@
     </ClInclude>
     <ClInclude Include="Headers\Managers\ObjLoader.h">
       <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\ImageLoader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

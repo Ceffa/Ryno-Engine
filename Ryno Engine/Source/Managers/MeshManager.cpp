@@ -3,6 +3,9 @@
 #include "Log.h"
 #include <iostream>
 #include "ObjLoader.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 namespace Ryno{
 
@@ -78,6 +81,129 @@ namespace Ryno{
 			return ++last_lifetime_mesh;
 		else
 			return ++last_temporary_mesh;
+	}
+
+	Model* MeshManager::load_model(const std::string& name, Owner loc, Shader& shader)
+	{
+		static const std::string middle_path = "Resources/Models/";
+
+		const std::string& obj_path = BASE_PATHS[loc] + middle_path + name + ".obj";
+		const std::string& mtl_path = BASE_PATHS[loc] + middle_path;
+
+
+		
+
+		std::string err;
+		Assimp::Importer importer;
+		const aiScene* scene = importer.ReadFile(obj_path, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+
+		if (!err.empty()) {
+			std::cerr << err << std::endl;
+			exit(1);
+		}
+
+		Model* model = new Model();
+		std::cout << scene->mNumMeshes << std::endl;
+		std::cout << scene->mNumMaterials << std::endl;
+		
+		TextureManager* text_man = TextureManager::get_instance();
+		for (int i = 0; i < scene->mNumMeshes; i++) {
+			
+			
+			auto* assimp_mesh = scene->mMeshes[i];
+			auto mat = scene->mMaterials[assimp_mesh->mMaterialIndex];
+			
+
+			//Aboid rendering of invisible objects
+			float transp;
+			mat->Get(AI_MATKEY_OPACITY, transp);
+			if (transp < .9f)
+				continue;
+
+			aiColor3D diffuse;
+			mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+			aiColor3D specular;
+			mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+			F32 shininess;
+			mat->Get(AI_MATKEY_SHININESS, shininess);
+			ColorRGBA diffuse_final(diffuse.r*256, diffuse.g*256, diffuse.b*256,0);
+			ColorRGBA specular_final(specular.r*256, specular.g*256, specular.b*256,shininess);
+
+			SubModel& sm = model->add_sub_model();
+			sm.cast_shadows = true;
+			sm.material.set_shader(&shader);
+			//Set colors
+			sm.material.set_attribute("diffuse_color", diffuse_final);
+			sm.material.set_attribute("specular_color", specular_final);
+
+			//Set textures
+			aiString tex_name;
+			aiReturn r = mat->GetTexture(aiTextureType_DIFFUSE, 0, &tex_name);	
+			
+			sm.material.set_uniform("diffuse_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
+
+			r = mat->GetTexture(aiTextureType_SPECULAR, 0, &tex_name);
+			sm.material.set_uniform("specular_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
+			
+			r = mat->GetTexture(aiTextureType_NORMALS, 0, &tex_name);
+			sm.material.set_uniform("normal_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
+		
+			Mesh* mesh = new Mesh();
+
+			//Set vertices
+			for (U32 i = 0; i < assimp_mesh->mNumVertices; i++)
+			{
+				Vertex3D v;
+				v.position = glm::vec3(assimp_mesh->mVertices[i].x, assimp_mesh->mVertices[i].y, assimp_mesh->mVertices[i].z);
+				if (assimp_mesh->mNormals)
+					v.normal = glm::vec3(assimp_mesh->mNormals[i].x, assimp_mesh->mNormals[i].y, assimp_mesh->mNormals[i].z);
+				
+				if (assimp_mesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
+				{
+					v.uv.x = assimp_mesh->mTextureCoords[0][i].x;
+					v.uv.y = assimp_mesh->mTextureCoords[0][i].y;
+				}
+				else {
+
+					v.uv.x = 0;
+					v.uv.y = 0;
+				}
+
+				mesh->vertices.push_back(v);
+
+			}
+			//Set indices
+			for (GLuint i = 0; i < assimp_mesh->mNumFaces; i++)
+			{
+				aiFace face = assimp_mesh->mFaces[i];
+				for (GLuint j = 0; j < face.mNumIndices; j++)
+					mesh->indices.push_back(face.mIndices[j]);
+			}
+
+			mesh->indices_number = assimp_mesh->mNumFaces*3;
+			mesh->vertices_number = assimp_mesh->mNumVertices;
+
+			if (!assimp_mesh->mNormals) {
+				MeshBuilder::calculate_normals(mesh);
+			}
+			MeshBuilder::calculate_tangents(mesh);
+
+
+			if (loc == Owner::ENGINE)
+				lifetime_meshes.push_back(mesh);
+			else
+				temporary_meshes.push_back(mesh);
+
+
+			if (loc == Owner::ENGINE)
+				sm.mesh = ++last_lifetime_mesh;
+			else
+				sm.mesh = ++last_temporary_mesh;
+
+		}
+
+		return model;
 	}
 
 

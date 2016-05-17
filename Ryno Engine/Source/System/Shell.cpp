@@ -29,7 +29,7 @@ namespace Ryno {
 
 		//Load textures
 		TextureManager* texture_manager = TextureManager::get_instance();
-		Texture background_texture = texture_manager->load_png("background", ENGINE);
+		Texture background_texture = texture_manager->load_png("background.png", ENGINE);
 
 		//Create background
 		Mallocator* r = Mallocator::get_instance();

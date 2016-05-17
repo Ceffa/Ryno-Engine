@@ -52,6 +52,7 @@ namespace Ryno{
 		m_shader_ids[FRAG] = 0;
 
 		m_program_id = glCreateProgram();
+	
 	}
 
 	void Shader::destroy(){

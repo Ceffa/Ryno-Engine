@@ -8,6 +8,7 @@ namespace Ryno{
 	SubModel& Model::add_sub_model()
 	{
 		sub_models.emplace_back();
+
 		return sub_models.back();
 	}
 

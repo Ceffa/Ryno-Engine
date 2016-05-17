@@ -20,10 +20,12 @@ namespace Ryno{
 		void move_left(F32 speed);
 		void rotate(F32 y, F32 p);
 		glm::mat4& get_VP_matrix() { return VP_matrix; }
+		glm::mat4& get_light_V_matrix() { return light_V_matrix; }
 		glm::mat4& get_V_matrix() { return V_matrix; }
 		glm::mat4& get_O_matrix() { return O_matrix; }
 		glm::mat4& get_P_matrix() { return P_matrix; }
-		void generate_VP_matrix();
+		void generate_matrices();
+
 		static glm::mat4 generate_P_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far);
 
 		
@@ -38,6 +40,7 @@ namespace Ryno{
 	private:
 		glm::mat4 V_matrix;
 		glm::mat4 VP_matrix;
+		glm::mat4 light_V_matrix;
 		glm::mat4 P_matrix;
 		glm::mat4 O_matrix;
 

@@ -12,6 +12,7 @@ namespace Ryno {
 		camera->movement_speed = .1f;
 		camera->skybox = game->texture_manager->load_cube_map("full_moon", GAME);
 
+
 		sphere.add_script(&lights_script);
 		floor.add_script(&ground_script);
 	}

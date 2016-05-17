@@ -29,10 +29,10 @@ namespace Ryno{
 
 		GameObject cones[3];
 		GameObject walls[5];
-		GameObject spot_light_go;
+		GameObject spot_light_go, city;
 		GameObject directional_light_go;
-		GameObject spheres[4];
-		GameObject emitter_obj;
+		GameObject spheres[1];
+		//GameObject emitter_obj;
 
 		GUIObject gui;
 
@@ -42,7 +42,7 @@ namespace Ryno{
 		glm::vec3 acceleration = glm::vec3(0, 0, 0);
 		Texture bt, bn, solaire, sun, doge, white, white_normal;
 		I32 sphere_mesh, cone_mesh, cube_mesh, terrain_mesh;
-		Shader shader,dir_light_shader, point_light_shader, spot_light_shader;
+		Shader shader,dir_light_shader, point_light_shader, spot_light_shader, material;
 
 
 	};

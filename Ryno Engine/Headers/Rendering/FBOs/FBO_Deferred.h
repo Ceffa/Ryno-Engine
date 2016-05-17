@@ -8,6 +8,7 @@ namespace Ryno{
 	public:
 		FBO_Deferred(U32 width, U32 height);
 		~FBO_Deferred(){}
+		FBO_Deferred() {}
 		enum FRAME_TEXTURE_TYPE{
 			FRAME_TEXTURE_TYPE_DIFFUSE,
 			FRAME_TEXTURE_TYPE_SPECULAR,

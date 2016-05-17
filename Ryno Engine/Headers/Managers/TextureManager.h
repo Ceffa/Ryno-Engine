@@ -18,6 +18,8 @@ namespace Ryno{
 	public:
 		static TextureManager* get_instance();
 		Texture load_png(const std::string& name, Owner loc);
+		
+
 		Texture load_cube_map(const std::string& name, Owner loc);
 
 		void reset();
@@ -25,8 +27,10 @@ namespace Ryno{
 	private:
 		TextureManager::TextureManager();
 		U8 read_file_to_buffer(const std::string& f_path, std::vector<U8>& buffer);
+		
 		std::vector<U32> temporary_textures;
 		std::vector<U32> lifetime_textures;
+		std::map < std::string, Texture> cached_textures;
 
 	};
 }

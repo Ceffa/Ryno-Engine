@@ -102,18 +102,18 @@ namespace Ryno{
 
 	
 		Camera3D* m_camera;
-		New<FBO_Deferred> m_fbo_deferred;
-		New<FBO_Shadow> m_fbo_shadow;
+		FBO_Deferred m_fbo_deferred;
+		FBO_Shadow m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
 
 		//PROGRAMS
-		New<Shader> m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_blit_program,m_flat_program,m_sprite_program,m_font_program;
+		Shader m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_blit_program,m_flat_program,m_sprite_program,m_font_program;
 
 		//BATCHES
-		New<Batch3DGeometry> m_geometry_batch3d;
-		New<Batch3DShadow>  m_shadow_batch3d;
-		New<Batch2DSprite> m_sprite_batch2d;
-		New<Batch2DFont> m_font_batch2d;
+		Batch3DGeometry m_geometry_batch3d;
+		Batch3DShadow  m_shadow_batch3d;
+		Batch2DSprite m_sprite_batch2d;
+		Batch2DFont m_font_batch2d;
 
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
@@ -129,9 +129,6 @@ namespace Ryno{
 		std::vector<GameObject*> point_lights;
 		std::vector<GameObject*> spot_lights;
 		std::vector<GameObject*> directional_lights;
-
-		
-
 	};
 	
 }

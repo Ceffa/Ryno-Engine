@@ -11,7 +11,7 @@ namespace Ryno {
 		Game* game;
 		F32 speed;
 		std::vector<GameObject> balls;
-		Shader point_light_shader, dir_light_shader;
+		Shader spot_light_shader, dir_light_shader, point_light_shader;
 		Texture white, white_normal;
 		I32  cube_mesh;
 		Shader shader;
@@ -21,8 +21,8 @@ namespace Ryno {
 			shader.create("Geometry/geometry", GAME);
 			speed = .1f;
 
-			white = game->texture_manager->load_png("white_pixel", GAME);
-			white_normal = game->texture_manager->load_png("normal_pixel", GAME);
+			white = game->texture_manager->load_png("white_pixel.png", GAME);
+			white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
 			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 
 			game_object->model = new Model();
@@ -32,6 +32,7 @@ namespace Ryno {
 			m.mesh = cube_mesh;
 			m.cast_shadows = false;
 			m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
+			m.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
 			m.material.set_attribute("in_Tiling", glm::vec2(1,1));
 			m.material.set_uniform("texture_sampler", white.id);
 			m.material.set_uniform("normal_map_sampler", white_normal.id);
@@ -39,19 +40,21 @@ namespace Ryno {
 			game_object->transform.set_position(0, 35, 0);
 
 
-			point_light_shader.create("LightPass/spot", ENGINE);
+			spot_light_shader.create("LightPass/spot", ENGINE);
+			point_light_shader.create("LightPass/point", ENGINE);
+
 
 			game_object->spot_light = new SpotLight();
 			auto* p = game_object->spot_light;
 			p->model = new SubModel();
-			p->model->material.set_shader(&point_light_shader);
+			p->model->material.set_shader(&spot_light_shader);
 			p->set_diffuse_color(255, 80, 0);
-			p->diffuse_intensity = 1.7f;
-			p->attenuation = .0001;
-			p->specular_intensity = 1.5f;
+			p->diffuse_intensity = .01;
+			p->attenuation = .001;
+			p->specular_intensity = 10;
 			p->set_specular_color(255, 80, 0);
 			p->set_rotation(-90, 0, 0);
-			p->cutoff = 30;
+			p->cutoff =35;
 			p->absolute_movement = false;
 
 			dir_light_shader.create("LightPass/directional", ENGINE);
@@ -79,8 +82,18 @@ namespace Ryno {
 			for (I32 i = 0; i < nr; i++) {
 				balls[i].transform.set_parent(&game_object->transform);
 			}
-			p->cutoff = 45;
+			delete game_object->spot_light;
+			game_object->spot_light = nullptr;
 
+			game_object->point_light = new PointLight();
+			auto* pl = game_object->point_light;
+			pl->model = new SubModel();
+			pl->model->material.set_shader(&point_light_shader);
+			pl->set_diffuse_color(255, 80, 0);
+			pl->diffuse_intensity = .1f;
+			pl->attenuation = .0001;
+			pl->specular_intensity = 20;
+			pl->set_specular_color(255, 80, 0);
 			color_lights();
 
 		}
@@ -127,7 +140,7 @@ namespace Ryno {
 			for (auto* a : game_object->transform.children) {
 				ColorRGBA c = ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white);
 				a->game_object->spot_light->diffuse_color = c;
-				a->game_object->spot_light->specular_color = c;
+			
 			}
 		}
 
