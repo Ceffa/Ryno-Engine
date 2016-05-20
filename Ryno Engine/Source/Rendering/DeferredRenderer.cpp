@@ -187,7 +187,8 @@ namespace Ryno{
 			return;
 		int i = 0;
 		for (GameObject* go : point_lights){
-			point_shadow_subpass(go);
+			if (go->point_light->shadows)
+				point_shadow_subpass(go);
 			point_lighting_subpass(go);
 		}
 
@@ -201,7 +202,8 @@ namespace Ryno{
 		if (!spot_light_enabled)
 			return;
 		for (GameObject* go : spot_lights){
-			spot_shadow_subpass(go);
+			if (go->spot_light->shadows)
+				spot_shadow_subpass(go);
 			spot_lighting_subpass(go);
 
 		}
@@ -214,7 +216,8 @@ namespace Ryno{
 		if (!directional_light_enabled)
 			return;
 		for (GameObject* go : directional_lights){
-			directional_shadow_subpass(go);
+			if(go->dir_light->shadows)
+				directional_shadow_subpass(go);
 			directional_lighting_subpass(go);
 		}
 	}	
