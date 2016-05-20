@@ -88,8 +88,7 @@ void main(){
 	
 	//Normal z-axis built back from the other two
 	vec2 n = texture(normal_tex, uv_coords).xy;
-	vec4 normal_world_space = normalize(vec4(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))),0));
-	vec4 normal_view_space = light_V_matrix *normal_world_space;
+	vec3 normal_view_space = vec3(n.x, n.y, sqrt(1 - abs(dot(n.xy, n.xy))));
 
 	//Important vectors
 	vec4 light_dir_world_space_not_normalized = light_world_space - vec4(position_world_space,1);
@@ -108,14 +107,15 @@ void main(){
 
 	
 	//final colors for diffuse and specular
-	vec3 diffuse_final = max(0, dot(normal_view_space.xyz, light_dir_view_space.xyz)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space.xyz), 0.000001),  spot_light.specular_intensity);
+	vec3 diffuse_final = max(0, dot(normal_view_space, light_dir_view_space.xyz)) * diff_color;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001),  spot_light.specular_intensity);
 	
 	//SHADOWS
 	float visibility = 1.0f;
 	if (shadows_enabled > 0.5){
 		float bias = 0.0005;
-		visibility = texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z - bias));
+		float strength = .75f;
+		visibility = (1-strength) + strength *texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z - bias));
 	}
 
 	

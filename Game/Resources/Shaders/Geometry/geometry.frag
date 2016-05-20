@@ -20,10 +20,8 @@ void main() {
 	out_diffuse = vec4(middle_diffuse_color.rgb *  texture(texture_sampler, middle_uv).rgb, middle_diffuse_color.w);
 	out_specular = middle_specular_color;
 
-	//if (textureSize2D(normal_map_sampler,0).x > 0)
+	
 	out_normal = (TBN * normalize(texture(normal_map_sampler, middle_uv).rgb*2.0 - 1.0)).xy;
-	//else
-		//out_normal = vec2(TBN[0][2],TBN[1][2]); //get back the "normal" normal
 	
 	out_depth = gl_FragCoord.z;
 }

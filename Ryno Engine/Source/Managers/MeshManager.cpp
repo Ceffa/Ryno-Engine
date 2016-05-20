@@ -159,6 +159,8 @@ namespace Ryno{
 				v.position = glm::vec3(assimp_mesh->mVertices[i].x, assimp_mesh->mVertices[i].y, assimp_mesh->mVertices[i].z);
 				if (assimp_mesh->mNormals)
 					v.normal = glm::vec3(assimp_mesh->mNormals[i].x, assimp_mesh->mNormals[i].y, assimp_mesh->mNormals[i].z);
+				if (assimp_mesh->mTangents)
+					v.tangent = glm::vec3(assimp_mesh->mTangents[i].x, assimp_mesh->mTangents[i].y, assimp_mesh->mTangents[i].z);
 				
 				if (assimp_mesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
 				{
@@ -188,7 +190,10 @@ namespace Ryno{
 			if (!assimp_mesh->mNormals) {
 				MeshBuilder::calculate_normals(mesh);
 			}
-			MeshBuilder::calculate_tangents(mesh);
+			if (!assimp_mesh->mTangents) {
+	
+				MeshBuilder::calculate_tangents(mesh);
+			}
 
 
 			if (loc == Owner::ENGINE)

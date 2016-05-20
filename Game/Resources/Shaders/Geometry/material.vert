@@ -34,8 +34,9 @@ void main(){
 	diff_color = split_diffuse;
 	spec_color = split_specular;
 
-	vec3 tangent = normalize(mat3(in_M) * in_Tangent);
-	vec3 normal = normalize(mat3(in_M)*in_Normal);
+	mat4 MV = g_V * in_M;
+	vec3 tangent = vec3(normalize(MV * vec4(in_Tangent,0)));
+	vec3 normal = vec3(normalize(MV*vec4(in_Normal,0)));
 	TBN = mat3(tangent, cross(normal, tangent), normal);
 }
 

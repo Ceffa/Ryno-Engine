@@ -22,6 +22,7 @@ uniform int shadows_enabled;
 uniform mat4 inverse_P_matrix;
 uniform mat4 inverse_VP_matrix;
 uniform mat4 light_VP_matrix;
+uniform mat4 light_V_matrix;
 uniform DirectionalLight dir_light;
 
 uniform int screen_width;
@@ -45,7 +46,7 @@ void main(){
 	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
 	vec4 position_light_ortho_matrix = light_VP_matrix * position_world_space;
 	vec3 position_light_ortho_matrix_norm = position_light_ortho_matrix.xyz / position_light_ortho_matrix.w;
-	
+	vec3 view_dir_light = normalize(vec3(light_V_matrix * vec4(dir_light.direction,0)));
 
 	//Get color and flatness from g buffer
 	vec4 sample_diff = texture(diffuse_tex, uv_coords);
@@ -61,17 +62,17 @@ void main(){
 
 	//Important vectors
 	vec3 view_dir = normalize(-position);
-	vec3 half_dir = normalize(normalize(dir_light.direction) + view_dir);
+	vec3 half_dir = normalize(view_dir_light + view_dir);
 
 	//Calculate base colors
 	vec3 diff_color = vec3(split(dir_light.diffuse, 0), split(dir_light.diffuse, 1), split(dir_light.diffuse, 2)) * dir_light.diffuse_intensity;
-	vec3 spec_color = vec3(split(dir_light.specular, 0), split(dir_light.specular, 1), split(dir_light.specular, 2)) * dir_light.specular_intensity;
+	vec3 spec_color = vec3(split(dir_light.specular, 0), split(dir_light.specular, 1), split(dir_light.specular, 2)) * mat_spec_pow;
 	vec3 amb_final = vec3(split(dir_light.ambient, 0), split(dir_light.ambient, 1), split(dir_light.ambient, 2)) * dir_light.ambient_intensity;
 
 	//final colors for diffuse, specular and ambient
-	float dotNL = max(0, dot(normal, dir_light.direction));
+	float dotNL = max(0, dot(normal, view_dir_light));
 	vec3 diffuse_final =  dotNL * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.specular_intensity * mat_spec_pow) ;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.specular_intensity) ;
 
 
 
@@ -79,25 +80,12 @@ void main(){
 	
 	//SHADOWS
 
+	
 	float visibility = 1.0f;
-	vec2 poissonDisk[4];
 	if (shadows_enabled > 0.5){
-		poissonDisk = vec2[](
-			vec2(-0.94201624, -0.39906216),
-			vec2(0.94558609, -0.76890725),
-			vec2(-0.094184101, -0.92938870),
-			vec2(0.34495938, 0.29387760)
-			);
-
-		float shadow_strenght = 0.2;
 		float bias = 0.0005;
-
-
-
-
-		for (int i = 0; i < 4; i++){
-			visibility -= (shadow_strenght * (1.0 - texture(shadow_tex, vec3(position_light_ortho_matrix_norm.xy + poissonDisk[i] / 700.0, position_light_ortho_matrix_norm.z - bias))));
-		}
+		float strength = .75f;
+		visibility = (1-strength) + strength * texture(shadow_tex, vec3(position_light_ortho_matrix_norm.xy, position_light_ortho_matrix_norm.z - bias));
 	}
 	
 	

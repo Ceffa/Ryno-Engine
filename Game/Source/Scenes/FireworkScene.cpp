@@ -46,9 +46,9 @@ namespace Ryno{
 		go[0].dir_light->set_rotation(-65, 150,0);
 		go[0].dir_light->diffuse_intensity = 0.7;
 		go[0].dir_light->set_diffuse_color(255, 255, 200);
-		go[0].dir_light->specular_intensity = .05;
+		go[0].dir_light->specular_intensity = .0;
 		go[0].dir_light->set_specular_color(255, 255, 200);
-		go[0].dir_light->ambient_intensity = .05;
+		go[0].dir_light->ambient_intensity = .0;
 		go[0].dir_light->set_ambient_color(255, 255, 200);
 
 		shader.create("Geometry/geometry",GAME);
@@ -84,6 +84,7 @@ namespace Ryno{
 			sm.material.set_shader(shader);
 			sm.mesh = *mesh;
 			sm.material.set_attribute("in_DiffuseColor",ColorRGBA::yellow);
+
 			sm.material.set_attribute("in_Tiling", glm::vec2(1,1));
 			sm.material.set_uniform("texture_sampler", white->id);
 			sm.material.set_uniform("normal_map_sampler", normal->id);

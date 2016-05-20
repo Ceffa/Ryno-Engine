@@ -79,8 +79,8 @@ void main(){
 	
 	//Normal z-axis built back from the other two
 	vec2 n = texture(normal_tex, uv_coords).xy;
-	vec4 normal_world_space = normalize(vec4(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))),0));
-	vec4 normal_view_space = light_V_matrix *normal_world_space;
+	vec3 normal_view_space = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
+
 
 	//Important vectors
 	vec3 light_dir_world_space_not_normalized = light_world_space.xyz - position_world_space;
@@ -95,12 +95,12 @@ void main(){
 
 	//Calculate base colors
 	vec3 diff_color = vec3(split(point_light.diffuse, 0), split(point_light.diffuse, 1), split(point_light.diffuse, 2)) * point_light.diffuse_intensity;
-	vec3 spec_color = vec3(split(point_light.specular, 0), split(point_light.specular, 1), split(point_light.specular, 2));
+	vec3 spec_color = vec3(split(point_light.specular, 0), split(point_light.specular, 1), split(point_light.specular, 2)) * mat_spec_pow;
 
 	
 	//final colors for diffuse and specular
-	vec3 diffuse_final = max(0, dot(normal_view_space.xyz, light_dir_view_space.xyz)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space.xyz), 0.000001),  point_light.specular_intensity * mat_spec_pow);
+	vec3 diffuse_final = max(0, dot(normal_view_space, light_dir_view_space.xyz)) * diff_color;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001),  point_light.specular_intensity);
 	
 	//**SHADOWS**//
 	float visibility = 1.0f;
@@ -111,7 +111,8 @@ void main(){
 
 		float current_depth = vector_to_depth(-light_dir_world_space_not_normalized, 1.0, max_fov);
 		float bias = 0.0005;
-		visibility = texture(shadow_cube, vec4(-light_dir_world_space_not_normalized, current_depth - bias));
+		float strength = .75f;
+		visibility = (1-strength) + strength * texture(shadow_cube, vec4(-light_dir_world_space_not_normalized, current_depth - bias));
 	}
 
 		
