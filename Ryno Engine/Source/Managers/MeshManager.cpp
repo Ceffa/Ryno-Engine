@@ -127,8 +127,9 @@ namespace Ryno{
 			mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 			F32 shininess;
 			mat->Get(AI_MATKEY_SHININESS, shininess);
-			ColorRGBA diffuse_final(diffuse.r*256, diffuse.g*256, diffuse.b*256,0);
-			ColorRGBA specular_final(specular.r*256, specular.g*256, specular.b*256,shininess);
+			ColorRGBA diffuse_final(diffuse.r*255, diffuse.g*255, diffuse.b*255,0);
+		
+			ColorRGBA specular_final(specular.r*255, specular.g*255, specular.b*255,shininess*255);
 
 			SubModel& sm = model->add_sub_model();
 			sm.cast_shadows = true;

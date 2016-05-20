@@ -136,9 +136,10 @@ namespace Ryno{
 			//Fill geometry batch
 			if (geometry_enabled){
 				if (go->active && go->model){
-					m_geometry_batch3d.draw(go->model);
 					for(SubModel& s : go->model->sub_models)
 						s.material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
+					m_geometry_batch3d.draw(go->model);
+					
 				}
 			}
 			//Fill shadow batch

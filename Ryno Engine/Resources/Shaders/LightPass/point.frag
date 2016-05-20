@@ -95,12 +95,12 @@ void main(){
 
 	//Calculate base colors
 	vec3 diff_color = vec3(split(point_light.diffuse, 0), split(point_light.diffuse, 1), split(point_light.diffuse, 2)) * point_light.diffuse_intensity;
-	vec3 spec_color = vec3(split(point_light.specular, 0), split(point_light.specular, 1), split(point_light.specular, 2)) * mat_spec_pow;
+	vec3 spec_color = vec3(split(point_light.specular, 0), split(point_light.specular, 1), split(point_light.specular, 2));
 
 	
 	//final colors for diffuse and specular
 	vec3 diffuse_final = max(0, dot(normal_view_space.xyz, light_dir_view_space.xyz)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space.xyz), 0.000001),  point_light.specular_intensity);
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space.xyz), 0.000001),  point_light.specular_intensity * mat_spec_pow);
 	
 	//**SHADOWS**//
 	float visibility = 1.0f;
