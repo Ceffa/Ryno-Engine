@@ -25,9 +25,9 @@ namespace Ryno{
 		U32 m_point_cube;
 
 
-		U16 point_resolution = 2048;
+		U16 point_resolution = 1024;
 		U16 spot_resolution = 1024;
-		U16 directional_resolution = 8192;
+		U16 directional_resolution = 4096;
 
 	private:
 		void bind_fbo();

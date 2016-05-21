@@ -39,6 +39,7 @@ namespace Ryno{
 	
 		material.create("Geometry/material", GAME);
 
+		//sponza - sibenik
 		sponza.model = game->mesh_manager->load_model("sponza", Owner::GAME, material);
 		sponza.transform.set_position(0, 0, 0);
 		sponza.transform.set_rotation(0, 90, 0);
@@ -50,11 +51,11 @@ namespace Ryno{
 		l->model->material.set_shader(&dir_light_shader);
 		l->set_rotation(-70, 10, 0);
 		l->diffuse_intensity = 1.5f;
-		l->set_diffuse_color(255, 240, 210);
+		l->set_diffuse_color(255, 235, 200);
 		l->specular_intensity = 30.0;
-		l->set_specular_color(255, 255, 255);
-		l->ambient_intensity = 0;
-		l->set_ambient_color(255, 255, 200);
+		l->set_specular_color(255, 235, 200);
+		l->ambient_intensity = .05f;
+		l->set_ambient_color(255, 235, 200);
 		
 
 
