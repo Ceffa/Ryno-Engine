@@ -56,20 +56,30 @@ namespace Ryno{
 		l->set_specular_color(255, 235, 200);
 		l->ambient_intensity = .05f;
 		l->set_ambient_color(255, 235, 200);
-		
+		material.set_uniform("g_Time", 0);
+		material.set_uniform("g_Power", 0);
 
 
 	}
 
 
 	static bool attach = true;
+	static int power = 0;
+
 	void HouseScene::update(){
 
 		if (attach)
 			light.transform.set_position(camera->position.x, camera->position.y, camera->position.z);
+		material.set_uniform("g_Time", game->time);
+		if (game->input_manager->is_key_pressed(SDLK_x, KEYBOARD)) {
+			power = power == 0 ? 100 : 0;
+			material.set_uniform("g_Power", power);
+			
+			sponza.dir_light->shadows = !sponza.dir_light->shadows;
+			light.point_light->shadows = !light.point_light->shadows;
+		}
 
 	}
-
 	void HouseScene::input(){
 	
 		if (game->input_manager->is_key_pressed(SDLK_SPACE, KEYBOARD)) {
@@ -78,6 +88,8 @@ namespace Ryno{
 		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
 			sponza.transform.add_rotation(0, 1.5f, 0);
 		}
+
+		
 	
 		
 	}

@@ -16,7 +16,8 @@ out  vec2 uvs;
 
 uniform mat4 g_V;
 uniform mat4 g_VP;
-
+uniform float g_Time;
+uniform int g_Power;
 
 float split(uint color, int n);
 
@@ -28,7 +29,7 @@ void main(){
 	
 	mat4 MVP = g_VP * in_M;
 
-	gl_Position = MVP * vec4(in_Position, 1);
+	gl_Position = MVP * vec4(in_Position + vec3(0,g_Power * sin(g_Time / 200)  * sin(in_Position.x /100),0), 1);
 
 	uvs = in_Uv;
 	diff_color = split_diffuse;
