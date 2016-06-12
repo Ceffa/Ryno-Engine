@@ -188,8 +188,7 @@ namespace Ryno{
 			return;
 		int i = 0;
 		for (GameObject* go : point_lights){
-			if (go->point_light->shadows)
-				point_shadow_subpass(go);
+			point_shadow_subpass(go);
 			point_lighting_subpass(go);
 		}
 
@@ -203,8 +202,7 @@ namespace Ryno{
 		if (!spot_light_enabled)
 			return;
 		for (GameObject* go : spot_lights){
-			if (go->spot_light->shadows)
-				spot_shadow_subpass(go);
+			spot_shadow_subpass(go);
 			spot_lighting_subpass(go);
 
 		}
@@ -217,8 +215,7 @@ namespace Ryno{
 		if (!directional_light_enabled)
 			return;
 		for (GameObject* go : directional_lights){
-			if(go->dir_light->shadows)
-				directional_shadow_subpass(go);
+			directional_shadow_subpass(go);
 			directional_lighting_subpass(go);
 		}
 	}	
@@ -227,7 +224,7 @@ namespace Ryno{
 	void DeferredRenderer::point_shadow_subpass(GameObject* go)
 	{
 		
-		if (!point_shadow_enabled)
+		if (!point_shadow_enabled || !go->point_light->shadows)
 			return;
 
 		PointLight* p = go->point_light;
@@ -358,8 +355,7 @@ namespace Ryno{
 
 
 		mat.set_uniform("MVP", MVP_camera);
-		mat.set_uniform("shadows_enabled", point_shadow_enabled);
-
+		mat.set_uniform("shadows_enabled", (point_shadow_enabled && p->shadows) ? 1 : 0);
 		m_simple_drawer->draw(mod);
 
 		glDisable(GL_BLEND);
@@ -370,7 +366,7 @@ namespace Ryno{
 	void DeferredRenderer::spot_shadow_subpass(GameObject* go)
 	{
 
-		if (!spot_shadow_enabled)
+		if (!spot_shadow_enabled || !go->spot_light->shadows)
 			return;
 
 		SpotLight* s = go->spot_light;
@@ -491,7 +487,7 @@ namespace Ryno{
 		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
 		
 		mat.set_uniform("MVP",MVP_camera);
-		mat.set_uniform("shadows_enabled", spot_shadow_enabled);
+		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && s->shadows) ? 1 : 0);
 
 		m_simple_drawer->draw(mod);
 
@@ -501,10 +497,10 @@ namespace Ryno{
 
 	void DeferredRenderer::directional_shadow_subpass(GameObject* go){
 
+		if (!directional_shadow_enabled || !go->dir_light->shadows)
+			return;
 		DirectionalLight* d = go->dir_light;
 
-		if (!directional_shadow_enabled)
-			return;
 		m_fbo_shadow.bind_for_directional_shadow_pass();
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -590,8 +586,7 @@ namespace Ryno{
 		mat.set_uniform("inverse_P_matrix",inverse_P_matrix);
 		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
 		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
-		mat.set_uniform("shadows_enabled", directional_shadow_enabled);
-
+		mat.set_uniform("shadows_enabled", (directional_shadow_enabled && d->shadows) ? 1:0);
 
 		m_simple_drawer->draw(mod);
 

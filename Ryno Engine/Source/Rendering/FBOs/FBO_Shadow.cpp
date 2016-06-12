@@ -91,6 +91,7 @@ namespace Ryno {
 		glClear(GL_DEPTH_BUFFER_BIT);
 	}
 
+
 	
 
 	void FBO_Shadow::bind_for_directional_shadow_pass(){
