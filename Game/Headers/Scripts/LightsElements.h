@@ -49,12 +49,12 @@ namespace Ryno {
 			p->model = new SubModel();
 			p->model->material.set_shader(&spot_light_shader);
 			p->set_diffuse_color(255, 80, 0);
-			p->diffuse_intensity = .01;
-			p->attenuation = .001;
-			p->specular_intensity = 10;
+			p->diffuse_intensity = 3;
+			p->attenuation = .0005;
+			p->specular_intensity = 1;
 			p->set_specular_color(255, 80, 0);
 			p->set_rotation(-90, 0, 0);
-			p->cutoff =35;
+			p->cutoff =40;
 			p->absolute_movement = false;
 
 			dir_light_shader.create("LightPass/directional", ENGINE);
@@ -64,7 +64,7 @@ namespace Ryno {
 			d->model = new SubModel();
 			d->model->material.set_shader(&dir_light_shader);
 			d->set_diffuse_color(255, 255, 255);
-			d->diffuse_intensity = 0.3f;
+			d->diffuse_intensity = .35f;
 			d->set_rotation(-50, 0, 0);
 			d->absolute_movement = false;
 
@@ -90,7 +90,7 @@ namespace Ryno {
 			pl->model = new SubModel();
 			pl->model->material.set_shader(&point_light_shader);
 			pl->set_diffuse_color(255, 80, 0);
-			pl->diffuse_intensity = .1f;
+			pl->diffuse_intensity = 1;
 			pl->attenuation = .0001;
 			pl->specular_intensity = 20;
 			pl->set_specular_color(255, 80, 0);

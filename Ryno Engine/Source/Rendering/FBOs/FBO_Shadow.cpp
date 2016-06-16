@@ -82,7 +82,7 @@ namespace Ryno {
 
 
 	}
-
+	
 	void FBO_Shadow::start_frame()
 	{
 		//Binds the shadow framebuffer, and then clear the buffer
