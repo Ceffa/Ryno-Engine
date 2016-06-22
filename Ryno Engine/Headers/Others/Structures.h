@@ -62,8 +62,6 @@ namespace Ryno{
 				a = col.a;
 			}
 
-		
-
 			U8 r; U8 g; U8 b; U8 a;
 	};
 

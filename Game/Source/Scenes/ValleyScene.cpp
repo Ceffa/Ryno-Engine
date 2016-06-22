@@ -10,7 +10,9 @@ namespace Ryno {
 
 		camera->position = glm::vec4(-100, 50, -100, 1);
 		camera->movement_speed = .1f;
+		camera->have_skybox = true;
 		camera->skybox = game->texture_manager->load_cube_map("full_moon", GAME);
+
 
 
 		sphere.add_script(&lights_script);

@@ -31,14 +31,13 @@ namespace Ryno{
 	Emitter::Emitter(GameObject *go) : game_object(go)
 	{
 		ParticleManager::get_instance()->add_emitter(go);
+		m_max_particles = 0;
 	}
 
 	void Emitter::init(U32 nr_particles){
 		m_max_particles = nr_particles;
 		m_particles.resize(nr_particles);
-		StackAllocator* r = StackAllocator::get_instance();
-
-		
+				
 
 		for (U32 i = 0; i < nr_particles; i++){
 			lambda_creation(this, &m_particles[i]);

@@ -27,7 +27,7 @@ namespace Ryno{
 		Music music;
 		Font font;
 
-		GameObject light[3];
+		GameObject light[1];
 		GameObject sponza;
 
 		Texture white, white_normal;

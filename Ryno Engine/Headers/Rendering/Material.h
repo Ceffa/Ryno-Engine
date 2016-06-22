@@ -24,6 +24,7 @@ namespace Ryno{
 			}
 			*(T*)((U64)attribute_memory + res->second.offset) = val;
 		}
+	
 		template <class T>
 		bool set_uniform(const std::string& attr, const T& val){
 			auto res = uniform_map.find(attr);

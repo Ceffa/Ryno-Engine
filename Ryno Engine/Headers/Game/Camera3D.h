@@ -36,7 +36,9 @@ namespace Ryno{
 		glm::vec4 position;
 		F32 yaw, pitch;
 		Texture skybox;
-	
+		ColorRGB background;
+		bool have_skybox = false;
+
 	private:
 		glm::mat4 V_matrix;
 		glm::mat4 VP_matrix;

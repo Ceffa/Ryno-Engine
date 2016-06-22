@@ -14,6 +14,8 @@ namespace Ryno{
 		camera->position = glm::vec4(0, 50, 0, 1);
 		camera->movement_speed /= 10;
 		camera->rotation_speed /= 2;
+		camera->have_skybox = true;
+
 		
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);
@@ -24,7 +26,7 @@ namespace Ryno{
 		point_light_shader.create("LightPass/point", ENGINE);
 
 		light[0].point_light = new PointLight();
-		light[0].transform.set_position(0, 200, 0);
+		light[0].transform.set_position(0, 100, 200);
 		auto* p = light[0].point_light;
 		p->model = new SubModel();
 		p->model->material.set_shader(&point_light_shader);
@@ -34,13 +36,12 @@ namespace Ryno{
 		p->specular_intensity =25;
 		p->set_specular_color(255, 150,120);
 
-		light[1].copy(light[0]);
+	/*	light[1].copy(light[0]);
 		light[1].point_light->set_diffuse_color(255, 100, 100);
-
-		light[2].copy(light[0]);
-		light[2].point_light->set_diffuse_color(100, 150, 255);
+		light[1].transform.set_position(0, 100, -200);*/
 
 
+		
 
 		//Directional light
 		dir_light_shader.create("LightPass/directional", ENGINE);
@@ -72,7 +73,7 @@ namespace Ryno{
 	}
 
 
-	static bool attach = true;
+	static bool attach = false;
 	static int power = 0;
 
 	void HouseScene::update(){
@@ -89,9 +90,7 @@ namespace Ryno{
 				l.point_light->shadows = !light[0].point_light->shadows;
 		}
 
-		if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)) {
-			light_index = (light_index + 1) % 3;
-		}
+	
 		if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
 			light[light_index].point_light->diffuse_intensity -= .05f;
 		}else if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {

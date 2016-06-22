@@ -104,6 +104,8 @@ namespace Ryno{
 	
 	void DeferredRenderer::init_frame(){
 
+
+		
 		//Clear lights vectors
 		point_lights.clear();
 		spot_lights.clear();
@@ -172,6 +174,15 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if (!m_camera->have_skybox) {
+			ColorRGB& c = m_camera->background;
+			glClearColor(c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, 1);
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			glClear(GL_COLOR_BUFFER_BIT);
+			glClearColor(0, 0, 0, 1);
+			m_fbo_deferred.bind_for_geometry_pass();
+		}
+
 
 		
 		for (Shader* s : m_geometry_batch3d.shaders){
@@ -597,7 +608,7 @@ namespace Ryno{
 
 
 	void DeferredRenderer::skybox_pass(){
-		if (!skybox_enabled)
+		if (!skybox_enabled || !m_camera->have_skybox)
 			return;
 		m_fbo_deferred.bind_for_skybox_pass();
 		glDisable(GL_CULL_FACE);

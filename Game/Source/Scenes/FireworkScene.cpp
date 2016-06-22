@@ -15,6 +15,9 @@ namespace Ryno{
 
 		camera->movement_speed = 2;
 		camera->position = glm::vec4(0, 150, -5000, 1);
+		camera->background = ColorRGB(0,0,60);
+		camera->have_skybox = false;
+
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);
 		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
@@ -44,7 +47,7 @@ namespace Ryno{
 		go[0].dir_light->model = new SubModel();
 		go[0].dir_light->model->material.set_shader(&light_shader);
 		go[0].dir_light->set_rotation(-65, 150,0);
-		go[0].dir_light->diffuse_intensity = 0.7;
+		go[0].dir_light->diffuse_intensity = 1.7;
 		go[0].dir_light->set_diffuse_color(255, 255, 200);
 		go[0].dir_light->specular_intensity = .0;
 		go[0].dir_light->set_specular_color(255, 255, 200);
@@ -83,7 +86,8 @@ namespace Ryno{
 			auto& sm = p->model->add_sub_model();
 			sm.material.set_shader(shader);
 			sm.mesh = *mesh;
-			sm.material.set_attribute("in_DiffuseColor",ColorRGBA::yellow);
+			sm.material.set_attribute("in_DiffuseColor",ColorRGBA(255,0,0,0));
+
 
 			sm.material.set_attribute("in_Tiling", glm::vec2(1,1));
 			sm.material.set_uniform("texture_sampler", white->id);
@@ -162,11 +166,11 @@ namespace Ryno{
 		};
 		
 		go[3].emitter->lambda_spawn = [](Emitter* e){
-			for (U8 i = 0; i < 15; i++){
+			for (U8 i = 0; i < 15; i++) {
 				Particle3D* p = e->new_particle();
 				p->transform.set_position(e->game_object->transform.get_position());
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
-				p->model->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::rand_color_range(ColorRGBA(100, 100, 100, 0), ColorRGBA(255,255,255,0)));
+				p->model->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::rand_color_range(ColorRGBA(0, 0, 0, 0), ColorRGBA(255, 255, 255, 0)));
 			}
 		};
 		go[0].emitter->init(2700);
