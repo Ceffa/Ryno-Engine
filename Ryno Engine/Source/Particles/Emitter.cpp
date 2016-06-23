@@ -24,8 +24,6 @@ namespace Ryno{
 		m_elapsed_time = e.m_elapsed_time;
 		if (e.m_max_particles>0)
 			init(e.m_max_particles);
-
-		
 	}
 	
 	Emitter::Emitter(GameObject *go) : game_object(go)

@@ -1,5 +1,4 @@
 #version 430
-//#extension GL_EXT_gpu_shader4 : enable
 
 in  vec4 middle_color;
 in  mat3 TBN;

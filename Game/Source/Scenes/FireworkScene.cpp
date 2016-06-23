@@ -15,7 +15,7 @@ namespace Ryno{
 
 		camera->movement_speed = 2;
 		camera->position = glm::vec4(0, 150, -5000, 1);
-		camera->background = ColorRGB(0,0,60);
+		camera->background = ColorRGB(0,50,90);
 		camera->have_skybox = false;
 
 
@@ -110,10 +110,12 @@ namespace Ryno{
 			p->transform.add_position(p->direction * p->speed * _delta_time);
 			p->transform.set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
 
-			ColorRGBA from = ColorRGBA::yellow;
-			ColorRGBA to = ColorRGBA::red;
+			ColorRGBA from(255,255,0,255);
+			ColorRGBA to(255,0,0,255);
 
 			p->model->sub_models[0].material.set_attribute("in_DiffuseColor",ryno_math::lerp(from, to, power_lerper(p->lifetime,20)));
+			p->model->sub_models[0].material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
+
 		};
 
 		go[1].copy(go[0]);
@@ -146,13 +148,15 @@ namespace Ryno{
 			ColorRGBA to = ColorRGBA::blue;
 
 			p->model->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::lerp(from, to, power_lerper(p->lifetime, 20)));
+			p->model->sub_models[0].material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
+
 		};
 		go[2].emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
 		{
 			p->transform.add_position(p->direction * p->speed * _delta_time);
 			p->transform.set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
-			p->model->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA::white);
-			p->model->sub_models[0].material.set_attribute("in_Color2", ColorRGBA::red);
+			p->model->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255,255,255,0));
+			p->model->sub_models[0].material.set_attribute("in_Color2", ColorRGBA(255,0,0,0));
 
 
 		};
@@ -161,6 +165,7 @@ namespace Ryno{
 		{
 			p->transform.add_position(p->direction * p->speed * _delta_time);
 			p->transform.set_scale(ryno_math::lerp(glm::vec3(60), glm::vec3(100), p->lifetime));
+			p->model->sub_models[0].material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
 
 			
 		};
