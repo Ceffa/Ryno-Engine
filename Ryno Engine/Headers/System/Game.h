@@ -53,6 +53,8 @@ namespace Ryno{
 		void init();
 		void run();
 		void set_scene(const std::string& scene_name);
+		void set_scene(I32 scene_nr);
+
 		void reset_scene();
 		void next_scene();
 

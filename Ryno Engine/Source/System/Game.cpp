@@ -82,7 +82,7 @@ namespace Ryno{
 	{
 		init_external_systems();
 		init_internal_systems();
-		set_scene("house");
+		set_scene(0);
 	}
 
 	void Game::run(){
@@ -111,14 +111,17 @@ namespace Ryno{
 
 
 	}
-
 	void Game::set_scene(const std::string& scene_name)
 	{
-		if (!SceneManager::scene_exists(SceneManager::get_scene_nr(scene_name)))
+		set_scene(SceneManager::get_scene_nr(scene_name));
+	}
+	void Game::set_scene(I32 scene_nr)
+	{
+		if (!SceneManager::scene_exists(scene_nr))
 			return;
 		if (scene)
 			destroy_scene(scene);
-		scene = SceneManager::new_scene(scene_name);
+		scene = SceneManager::new_scene(scene_nr);
 		deferred_renderer->set_camera(scene->camera);
 		game_state = GameState::ChangeScene;
 		shell->request_pause = false;

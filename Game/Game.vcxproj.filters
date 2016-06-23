@@ -72,6 +72,9 @@
     <ClCompile Include="Source\Scenes\HouseScene.cpp">
       <Filter>Source\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scenes\WaveScene.cpp">
+      <Filter>Source\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Terrain.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="Headers\Scripts\LightsElements.h">
       <Filter>Header\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Scenes\WaveScene.h">
+      <Filter>Header\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -81,7 +81,7 @@ void main(){
 	//SHADOWS
 
 	
-	float visibility = 1.0f;
+	float visibility = 1.0;
 	if (shadows_enabled > 0.5){
 		float bias = 0.0005;
 		float strength = .75f;
@@ -91,12 +91,12 @@ void main(){
 	
 	
 	//fragment color
-	fracolor =  flatness * mat_diff + (1.0 - flatness)*(amb_final + visibility *(mat_diff * diffuse_final + mat_spec * specular_final));
+	fracolor = amb_final + flatness * mat_diff + (1.0 - flatness)*visibility *(mat_diff * diffuse_final + mat_spec * specular_final);
 
 }
 
 
 float split(uint color, int n){
 	int index = n * 8;
-	return bitfieldExtract(color, index, 8) / 256.0f;
+	return bitfieldExtract(color, index, 8) / 255.0f;
 }

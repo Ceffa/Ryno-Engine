@@ -132,6 +132,7 @@
     <ClCompile Include="Source\Scenes\ValleyScene.cpp" />
     <ClCompile Include="Source\Scenes\FireworkScene.cpp" />
     <ClCompile Include="Source\Scenes\HouseScene.cpp" />
+    <ClCompile Include="Source\Scenes\WaveScene.cpp" />
     <ClCompile Include="Source\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +140,7 @@
     <ClInclude Include="Headers\Scenes\ValleyScene.h" />
     <ClInclude Include="Headers\Scenes\FireworkScene.h" />
     <ClInclude Include="Headers\Scenes\HouseScene.h" />
+    <ClInclude Include="Headers\Scenes\WaveScene.h" />
     <ClInclude Include="Headers\Scripts\GroundElements.h" />
     <ClInclude Include="Headers\Scripts\LightsElements.h" />
     <ClInclude Include="Headers\Terrain.h" />

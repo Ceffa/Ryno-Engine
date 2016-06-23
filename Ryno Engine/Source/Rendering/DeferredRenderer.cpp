@@ -235,10 +235,12 @@ namespace Ryno{
 	void DeferredRenderer::point_shadow_subpass(GameObject* go)
 	{
 		
+		PointLight* p = go->point_light;
+		p->calculate_max_radius();
+
 		if (!point_shadow_enabled || !go->point_light->shadows)
 			return;
 
-		PointLight* p = go->point_light;
 
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
@@ -262,7 +264,6 @@ namespace Ryno{
 
 
 
-		p->calculate_max_radius();
 
 		glm::mat4 point_shadow_projection_matrix = glm::perspective(HALF_PI, 1.0, 1.0, (F64)p->max_radius);
 
@@ -376,25 +377,8 @@ namespace Ryno{
 	
 	void DeferredRenderer::spot_shadow_subpass(GameObject* go)
 	{
-
-		if (!spot_shadow_enabled || !go->spot_light->shadows)
-			return;
-
+		//Needs to be done even if shadows disabled
 		SpotLight* s = go->spot_light;
-
-		//Enable depth testing and writing
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(GL_TRUE);
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-
-		//Set viewport to cubemap size (because the next rendering will not be at fullscreen)
-		glViewport(0, 0, m_fbo_shadow.spot_resolution, m_fbo_shadow.spot_resolution);
-
-		//Bind the whole cubemap, the geometry shader will take care of the faces
-		m_fbo_shadow.bind_for_spot_shadow_pass();
-		glClear(GL_DEPTH_BUFFER_BIT);
-
 		//Get light position, with correct z axis
 		glm::vec3 correct_position = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
 		glm::vec4 dir = glm::transpose(glm::inverse(s->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (s->rotation * glm::vec4(0,0,-1,0));
@@ -409,6 +393,25 @@ namespace Ryno{
 
 		//Multiply view by a perspective matrix large as the light radius
 		spot_VP_matrix = projection_matrix * view_matrix;
+
+
+		if (!spot_shadow_enabled || !go->spot_light->shadows)
+			return;
+
+
+		//Enable depth testing and writing
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+		//Set viewport to cubemap size (because the next rendering will not be at fullscreen)
+		glViewport(0, 0, m_fbo_shadow.spot_resolution, m_fbo_shadow.spot_resolution);
+
+		//Bind the whole cubemap, the geometry shader will take care of the faces
+		m_fbo_shadow.bind_for_spot_shadow_pass();
+		glClear(GL_DEPTH_BUFFER_BIT);
+
 		
 
 		//Send Vp matrix and world light position to shader, then render

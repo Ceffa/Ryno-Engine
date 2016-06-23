@@ -134,13 +134,13 @@ void main(){
 		
 
     //fragment color
-	fracolor =  visibility *  (1.0 - flatness) * (mat_spec * specular_final + mat_diff * diffuse_final) / attenuation;
+	fracolor =  flatness * mat_diff + visibility *  (1.0 - flatness) * (mat_spec * specular_final + mat_diff * diffuse_final) / attenuation;
 }
 
 
 float split(uint color, int n){
 	int index = n * 8;
-	return bitfieldExtract(color, index, 8) / 256.0f;
+	return bitfieldExtract(color, index, 8) / 255.0f;
 }
 
 

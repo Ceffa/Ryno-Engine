@@ -103,7 +103,7 @@ void main(){
 	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001),  point_light.specular_intensity);
 	
 	//**SHADOWS**//
-	float visibility = 1.0f;
+	float visibility = 1.0;
 	if (shadows_enabled > 0.5f){
 		
 		//This sampling with a vec4 automatically compares the sampled value with the forth parameter (i think).
@@ -118,12 +118,12 @@ void main(){
 		
 
     //fragment color
-	fracolor =  visibility *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
+	fracolor =  flatness * mat_diff + visibility *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
 }
 
 float split(uint color, int n){
 	int index = n * 8;
-	return bitfieldExtract(color, index, 8) / 256.0f;
+	return bitfieldExtract(color, index, 8) / 255.0f;
 }
 
 
