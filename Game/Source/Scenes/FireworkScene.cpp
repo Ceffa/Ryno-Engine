@@ -51,7 +51,7 @@ namespace Ryno{
 		go[0].dir_light->set_diffuse_color(255, 255, 200);
 		go[0].dir_light->specular_intensity = .0;
 		go[0].dir_light->set_specular_color(255, 255, 200);
-		go[0].dir_light->ambient_intensity = .0;
+		go[0].dir_light->ambient_intensity = 0;
 		go[0].dir_light->set_ambient_color(255, 255, 200);
 
 		shader.create("Geometry/geometry",GAME);

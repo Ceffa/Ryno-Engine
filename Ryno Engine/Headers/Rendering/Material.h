@@ -24,6 +24,15 @@ namespace Ryno{
 			}
 			*(T*)((U64)attribute_memory + res->second.offset) = val;
 		}
+
+		void* get_attribute(const std::string& attr) {
+			auto res = shader->attributes_map.find(attr);
+			if (res == shader->attributes_map.end()) {
+				std::cout << "Attribute " << attr << " not found in shader" << '\n';
+				return nullptr;
+			}
+			return (void*)((U64)attribute_memory + res->second.offset);
+		}
 	
 		template <class T>
 		bool set_uniform(const std::string& attr, const T& val){

@@ -105,6 +105,9 @@ namespace Ryno{
 
 		Model* model = new Model();
 		
+		std::cout << "Meshes: " << scene->mNumMeshes << std::endl;
+		std::cout << "Meshes: " << scene->mNumMaterials << std::endl;
+
 		
 		TextureManager* text_man = TextureManager::get_instance();
 		for (int i = 0; i < scene->mNumMeshes; i++) {

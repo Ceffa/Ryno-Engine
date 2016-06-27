@@ -174,14 +174,7 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if (!m_camera->have_skybox) {
-			ColorRGB& c = m_camera->background;
-			glClearColor(c.r / 255.0f, c.g / 255.0f, c.b / 255.0f, 1);
-			glDrawBuffer(GL_COLOR_ATTACHMENT0);
-			glClear(GL_COLOR_BUFFER_BIT);
-			glClearColor(0, 0, 0, 1);
-			m_fbo_deferred.bind_for_geometry_pass();
-		}
+		
 
 
 		
@@ -611,7 +604,7 @@ namespace Ryno{
 
 
 	void DeferredRenderer::skybox_pass(){
-		if (!skybox_enabled || !m_camera->have_skybox)
+		if (!skybox_enabled)
 			return;
 		m_fbo_deferred.bind_for_skybox_pass();
 		glDisable(GL_CULL_FACE);
@@ -620,6 +613,9 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		m_blit_model.material.set_uniform("source_buffer", m_fbo_deferred.m_textures[3]);
+	
+
+
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_simple_drawer->draw(&m_blit_model);
@@ -640,6 +636,8 @@ namespace Ryno{
 	
 		m_skybox_model.material.set_uniform("no_trans_VP",no_trans_VP);
 		m_skybox_model.material.set_uniform("cube_map", m_camera->skybox.id);
+		m_skybox_model.material.set_uniform("background", m_camera->background);
+		m_skybox_model.material.set_uniform("have_skybox", m_camera->have_skybox ? 1 : 0);
 
 		
 		m_simple_drawer->draw(&m_skybox_model);

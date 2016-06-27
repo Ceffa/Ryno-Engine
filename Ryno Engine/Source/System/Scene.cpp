@@ -60,6 +60,16 @@ namespace Ryno{
 		glm::vec2 direction = game->input_manager->get_controller_LX_coords();
 		camera->move_forward(game->delta_time *1.0f * -direction.y);
 		camera->move_right(game->delta_time * 1.0f * direction.x);
+		/*Log::println("X: ");
+		Log::print(camera->position.x);
+		Log::print(" Y: ");
+		Log::print(camera->position.y);
+		Log::print(" Z: ");
+		Log::print(camera->position.z);
+		Log::println("Yaw: ");
+		Log::print(camera->yaw);
+		Log::print(" Pitch: ");
+		Log::print(camera->pitch);*/
 	}
 
 	

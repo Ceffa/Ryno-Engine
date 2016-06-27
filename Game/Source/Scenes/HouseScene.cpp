@@ -11,17 +11,17 @@ namespace Ryno{
 	
 	void HouseScene::start(){
 		
-		camera->position = glm::vec4(0, 50, 0, 1);
+		camera->position = glm::vec4(-6.5f,30,-261, 1);
 		camera->movement_speed /= 10;
 		camera->rotation_speed /= 2;
 		camera->have_skybox = false;
-		camera->background = ColorRGB(0, 0, 0);
 
 		
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);
 		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
 
+		camera->background = ColorRGB(0,0,0);
 
 		point_light_shader.create("LightPass/point", ENGINE);
 
@@ -60,11 +60,11 @@ namespace Ryno{
 		l->model = new SubModel();
 		l->model->material.set_shader(&dir_light_shader);
 		l->set_rotation(-70, 10, 0);
-		l->diffuse_intensity = 1.5f;
+		l->diffuse_intensity = 2;
 		l->set_diffuse_color(255, 235, 200);
 		l->specular_intensity = 30.0;
 		l->set_specular_color(255, 235, 200);
-		l->ambient_intensity = .05f;
+		l->ambient_intensity = .35f;
 		l->set_ambient_color(255, 235, 200);
 		material.set_uniform("g_Time", 0);
 		material.set_uniform("g_Power", 0);
@@ -73,10 +73,12 @@ namespace Ryno{
 	}
 
 
-	static bool attach = false;
+	static bool attach = true;
 	static int power = 0;
 
 	void HouseScene::update(){
+
+	
 
 		if (attach)
 			light[light_index].transform.set_position(camera->position.x, camera->position.y, camera->position.z);

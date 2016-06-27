@@ -75,6 +75,9 @@
     <ClCompile Include="Source\Scenes\WaveScene.cpp">
       <Filter>Source\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scenes\MinecraftScene.cpp">
+      <Filter>Source\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Terrain.h">
@@ -99,6 +102,9 @@
       <Filter>Header\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Scenes\WaveScene.h">
+      <Filter>Header\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Scenes\MinecraftScene.h">
       <Filter>Header\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
