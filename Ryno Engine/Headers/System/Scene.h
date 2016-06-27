@@ -40,7 +40,7 @@ namespace Ryno{
 			return it->second;
 		}
 		static bool scene_exists(I8 n) {
-			return n <= last_scene && n>=0;
+			return n < last_scene && n>=0;
 		}
 		static Scene * new_scene(std::string const& s)
 		{

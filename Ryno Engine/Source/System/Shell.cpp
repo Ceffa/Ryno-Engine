@@ -405,8 +405,15 @@ namespace Ryno {
 		}
 
 		else if (command.compare("s") == 0){
+			int i = int_argument();
+			if (i == ERROR_INT){
+				print_message("missing argument(s)."); return;
+			}
+			Game::get_instance()->set_scene(i);
+		}
+		else if (command.compare("ss") == 0) {
 			std::string s = string_argument();
-			if (s.empty()){
+			if (s.empty()) {
 				print_message("missing argument(s)."); return;
 			}
 			Game::get_instance()->set_scene(s);
