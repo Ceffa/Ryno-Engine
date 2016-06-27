@@ -14,14 +14,14 @@ namespace Ryno{
 		camera->position = glm::vec4(0, 50, 0, 1);
 		camera->movement_speed /= 10;
 		camera->rotation_speed /= 2;
-		camera->have_skybox = true;
+		camera->have_skybox = false;
+		camera->background = ColorRGB(0, 0, 0);
 
 		
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);
 		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
 
-		camera->skybox = game->texture_manager->load_cube_map("full_moon", GAME);
 
 		point_light_shader.create("LightPass/point", ENGINE);
 

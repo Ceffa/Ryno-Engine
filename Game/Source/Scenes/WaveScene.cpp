@@ -53,24 +53,21 @@ namespace Ryno {
 		auto* l = t.dir_light;
 		l->model = new SubModel();
 		l->model->material.set_shader(&dir_light_shader);
-		l->set_rotation(-70, 10, 0);
+		l->set_rotation(-50, 10, 0);
 		l->diffuse_intensity = 1.5f;
 		l->set_diffuse_color(255, 235, 200);
 		l->specular_intensity = 20;
 		l->set_specular_color(0, 0, 0);
-		l->ambient_intensity = 0;
-		l->set_ambient_color(255, 235, 200);
+		l->ambient_intensity = 1;
+		l->set_ambient_color(255, 255, 255);
 		l->shadows = false;
 
 	
 
 		
-		t.model->sub_models[0].mesh = sphere;
-		t.model->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(200, 255, 255, 255));
-		t.transform.set_position(0, 15, 0);
-		t.transform.set_scale(5, 5, 5);
-
-
+		delete t.model;
+		t.model = nullptr;
+	
 
 		
 	}

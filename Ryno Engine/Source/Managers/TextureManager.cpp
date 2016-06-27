@@ -71,7 +71,7 @@ namespace Ryno{
 
 		static const std::string middle_path = "Resources/Textures/3D/";
 		static const std::string pieces[6]{"pos_x", "neg_x", "pos_y", "neg_y", "pos_z", "neg_z"};
-		static const std::string base_path = BASE_PATHS[loc] + middle_path + name;
+		std::string base_path = BASE_PATHS[loc] + middle_path + name;
 		if (cached_textures.find(base_path) != cached_textures.end()) {
 			return cached_textures[base_path];
 		}
@@ -86,7 +86,6 @@ namespace Ryno{
 
 		for (U8 i = 0; i < 6; i++){
 			std::string path = base_path + "/"+name+"_"+pieces[i]+".png";
-
 
 
 

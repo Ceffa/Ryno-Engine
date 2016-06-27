@@ -91,7 +91,7 @@ void main(){
 	
 	
 	//fragment color
-	fracolor = amb_final + flatness * mat_diff + (1.0 - flatness)*visibility *(mat_diff * diffuse_final + mat_spec * specular_final);
+	fracolor = flatness * (mat_diff + amb_final) + (1.0 - flatness)*visibility *(mat_diff * diffuse_final + mat_spec * specular_final);
 
 }
 
