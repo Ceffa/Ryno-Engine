@@ -66,6 +66,8 @@ namespace Ryno{
 		l->set_specular_color(255, 235, 200);
 		l->ambient_intensity = .35f;
 		l->set_ambient_color(255, 235, 200);
+		l->blur = 2;
+
 		material.set_uniform("g_Time", 0);
 		material.set_uniform("g_Power", 0);
 
@@ -73,8 +75,8 @@ namespace Ryno{
 	}
 
 
-	static bool attach = true;
-	static int power = 0;
+	bool attach = true;
+	int power = 0;
 
 	void HouseScene::update(){
 

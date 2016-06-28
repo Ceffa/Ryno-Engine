@@ -15,7 +15,7 @@ namespace Ryno{
 
 		camera->movement_speed = 2;
 		camera->position = glm::vec4(0, 150, -5000, 1);
-		camera->background = ColorRGB(0,50,90);
+		camera->background = ColorRGB(0,17,40);
 		camera->have_skybox = false;
 
 

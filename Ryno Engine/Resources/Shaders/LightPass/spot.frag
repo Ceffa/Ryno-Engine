@@ -1,11 +1,5 @@
 #version 430
 
-//Shadows blur info
-#define SAMPLES_COUNT 36
-#define SAMPLES_COUNT_DIV_2 18
-#define SIZE 6
-#define HALF_SIZE 3
-#define INV_SAMPLES_COUNT (1.0f / SAMPLES_COUNT)
 
 //Structures
 
@@ -19,6 +13,8 @@ struct SpotLight{
 	uint specular;
 	float diffuse_intensity;
 	float specular_intensity;
+	uint blur;
+	float shadow_strength;
 };
 
 //Unifroms taken by the buffers
@@ -121,63 +117,79 @@ void main(){
 	
 	//SHADOWS
 	float blur_width = .01;
-	float shadow = 0;
+	float shadow = 1;
 
 	if (shadows_enabled > 0.5){
-
-		vec4 shadowMapPos = position_light_MVP_matrix;
-		vec4 smCoord = shadowMapPos;
-		float fsize = smCoord.w * blur_width;
-		vec2 jxyscale = vec2(1,1);
-		vec3 jcoord = vec3(gl_FragCoord.xy * jxyscale, 0);
-
-
-		//Sample the outher eight shadows
-		for (int i = 0; i<HALF_SIZE; i++) {
-
-			vec4 offset = texture(jitter, jcoord);
-
-			jcoord.z += 1.0f / SAMPLES_COUNT_DIV_2;
-
-			smCoord.xy = offset.xy * fsize + shadowMapPos.xy;
-
-			shadow += textureProj(shadow_tex, smCoord) / SIZE;
+		
+		//If no blur, just calculate shadow
+		if (spot_light.blur == 0){
+			float bias = 0.0005;
+		
+			shadow = texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z - bias));
+		}else
+		{
+		
+			//Shadows blur info
+			uint SIZE = spot_light.blur * 2 + 2;
+			uint HALF_SIZE = SIZE/2;
+			uint SAMPLES_COUNT = SIZE * SIZE;
+			uint SAMPLES_COUNT_DIV_2 = SAMPLES_COUNT/2;
+			float INV_SAMPLES_COUNT = (1.0f / SAMPLES_COUNT);
 			
-			smCoord.xy = offset.zw * fsize + shadowMapPos.xy;
-
-			shadow += textureProj(shadow_tex, smCoord) / SIZE;
-
-		  }
-
-		  //If there is a medium value of shadow, continue with the remaining ones
-		  if ((shadow - 1) * shadow * dotNL != 0) {
-
-			  // most likely, we are in the penumbra
-			  shadow *= 1.0f / SIZE; // adjust running total
+			shadow = 0;
+			vec4 shadowMapPos = position_light_MVP_matrix;
+			vec4 smCoord = shadowMapPos;
+			float fsize = smCoord.w * blur_width;
+			vec2 jxyscale = vec2(1,1);
+			vec3 jcoord = vec3(gl_FragCoord.xy * jxyscale, 0);
 
 
-			  // refine our shadow estimate
+			//Sample the outher eight shadows
+			for (int i = 0; i<HALF_SIZE; i++) {
 
-			  for (int i = 0; i<SAMPLES_COUNT_DIV_2 - 4; i++) {
+				vec4 offset = texture(jitter, jcoord);
 
-					vec4 offset = texture(jitter, jcoord);
+				jcoord.z += 1.0f / SAMPLES_COUNT_DIV_2;
 
-					jcoord.z += 1.0f / SAMPLES_COUNT_DIV_2;
+				smCoord.xy = offset.xy * fsize + shadowMapPos.xy;
+
+				shadow += textureProj(shadow_tex, smCoord) / SIZE;
+			
+				smCoord.xy = offset.zw * fsize + shadowMapPos.xy;
+
+				shadow += textureProj(shadow_tex, smCoord) / SIZE;
+
+			  }
+
+			  //If there is a medium value of shadow, continue with the remaining ones
+			  if ((shadow - 1) * shadow * dotNL != 0) {
+
+				  // most likely, we are in the penumbra
+				  shadow *= 1.0f / SIZE; // adjust running total
 
 
-					//The vec 4 holds two informations, doit for both
-					smCoord.xy = offset.xy * fsize + shadowMapPos.xy;
-					shadow += textureProj(shadow_tex, smCoord)* INV_SAMPLES_COUNT;
+				  // refine our shadow estimate
 
-					smCoord.xy = offset.zw * fsize + shadowMapPos.xy;
-					shadow += textureProj(shadow_tex, smCoord)* INV_SAMPLES_COUNT;
+				  for (int i = 0; i<SAMPLES_COUNT_DIV_2 - 4; i++) {
 
-			 }
+						vec4 offset = texture(jitter, jcoord);
 
-		}
+						jcoord.z += 1.0f / SAMPLES_COUNT_DIV_2;
 
 
-		float strength = .75f;		
+						//The vec 4 holds two informations, doit for both
+						smCoord.xy = offset.xy * fsize + shadowMapPos.xy;
+						shadow += textureProj(shadow_tex, smCoord)* INV_SAMPLES_COUNT;
+
+						smCoord.xy = offset.zw * fsize + shadowMapPos.xy;
+						shadow += textureProj(shadow_tex, smCoord)* INV_SAMPLES_COUNT;
+
+				 }
+
+			}
+		}	
+
+		shadow = min(1,(1-spot_light.shadow_strength) + shadow);
 	}
 
 	

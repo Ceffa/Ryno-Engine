@@ -23,26 +23,6 @@ namespace Ryno{
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);
 		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
-
-
-		point_light_shader.create("LightPass/point", ENGINE);
-
-		light[0].point_light = new PointLight();
-		light[0].transform.set_position(0, 100, 200);
-		auto* p = light[0].point_light;
-		p->model = new SubModel();
-		p->model->material.set_shader(&point_light_shader);
-		p->set_diffuse_color(255, 150, 120);
-		p->diffuse_intensity = 3;
-		p->attenuation = .0005;
-		p->specular_intensity =25;
-		p->set_specular_color(255, 150,120);
-
-	/*	light[1].copy(light[0]);
-		light[1].point_light->set_diffuse_color(255, 100, 100);
-		light[1].transform.set_position(0, 100, -200);*/
-
-
 		
 
 		//Directional light
@@ -68,6 +48,7 @@ namespace Ryno{
 		l->set_specular_color(255, 255, 255);
 		l->ambient_intensity = 0;
 		l->set_ambient_color(255, 255, 255);
+		l->shadows = false;
 		material.set_uniform("g_Time", 0);
 		material.set_uniform("g_Power", 0);
 
@@ -86,50 +67,15 @@ namespace Ryno{
 	}
 
 
-	static bool attach = false;
-	static int power = 0;
 
 	void MinecraftScene::update(){
 
-		if (attach)
-			light[light_index].transform.set_position(camera->position.x, camera->position.y, camera->position.z);
-		material.set_uniform("g_Time", game->time);
-		if (game->input_manager->is_key_pressed(SDLK_x, KEYBOARD)) {
-			power = power == 0 ? 100 : 0;
-			material.set_uniform("g_Power", power);
-			
-			sponza.dir_light->shadows = !sponza.dir_light->shadows;
-			for (auto& l : light)
-				l.point_light->shadows = !light[0].point_light->shadows;
-		}
-
 	
-		if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-			light[light_index].point_light->diffuse_intensity -= .05f;
-		}else if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-				light[light_index].point_light->diffuse_intensity += .05f;
-		}
-		if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-			light[light_index].point_light->specular_intensity += 2.5f;
-		}
-		else if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-			light[light_index].point_light->specular_intensity -= 2.5f;
-
-		}
-		if (game->input_manager->is_key_pressed(SDLK_z, KEYBOARD)) {
-			ColorRGBA c = ryno_math::rand_color_range(ColorRGBA(100, 100, 100, 255), ColorRGBA::white);
-			light[light_index].point_light->diffuse_color = c;
-			light[light_index].point_light->specular_color = c;
-
-		}
-
 
 	}
 	void MinecraftScene::input(){
 	
-		if (game->input_manager->is_key_pressed(SDLK_SPACE, KEYBOARD)) {
-			attach = !attach;
-		}
+		
 		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
 			sponza.transform.add_rotation(0, 1.5f, 0);
 		}

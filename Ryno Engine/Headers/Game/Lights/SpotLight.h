@@ -9,7 +9,7 @@ namespace Ryno{
 	class SpotLight : public AbstractLight{
 	public:
 	
-		SpotLight(){ model = nullptr; }
+		SpotLight() { model = nullptr; blur = 0; shadow_strength = .75f; }
 		~SpotLight(){}
 		SpotLight(const SpotLight &copy)
 		{
@@ -42,6 +42,7 @@ namespace Ryno{
 
 		//If true, rotate along with game object transform. If not, only use its position
 		bool absolute_movement = false;
+		U32 blur;
 
 	};
 

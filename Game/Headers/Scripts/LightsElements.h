@@ -67,6 +67,7 @@ namespace Ryno {
 			d->diffuse_intensity = .35f;
 			d->set_rotation(-50, 0, 0);
 			d->absolute_movement = false;
+			d->blur = 1;
 
 
 			U32 nr = 20;

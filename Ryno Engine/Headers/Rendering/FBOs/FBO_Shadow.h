@@ -23,7 +23,7 @@ namespace Ryno{
 		U32 m_directional_texture;
 		U32 m_spot_texture;
 		U32 m_point_cube;
-		U32 m_jitter;
+		U32 m_jitter[3];
 
 
 		U16 point_resolution = 1024;
@@ -32,6 +32,6 @@ namespace Ryno{
 
 	private:
 		void bind_fbo();
-		void create_jitter();
+		void create_jitter(U8 index, U8 SIZE);
 	};
 }

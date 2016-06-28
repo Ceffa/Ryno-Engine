@@ -10,7 +10,7 @@ namespace Ryno{
 	public:
 
 	
-		DirectionalLight() { model = nullptr; }
+		DirectionalLight() { model = nullptr; blur = 0; shadow_strength = .75f; }
 		~DirectionalLight(){}
 		DirectionalLight(const DirectionalLight &copy)
 		{ 
@@ -46,6 +46,7 @@ namespace Ryno{
 
 		//If true, rotate along with game object transform. If not, only use its position
 		bool absolute_movement = true;
+		U32 blur;
 
 	};
 

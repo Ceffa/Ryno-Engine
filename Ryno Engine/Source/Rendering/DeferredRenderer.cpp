@@ -341,6 +341,8 @@ namespace Ryno{
 		mat.set_uniform("point_light.specular", p->specular_color);
 		mat.set_uniform("point_light.specular_intensity", p->specular_intensity);
 		mat.set_uniform("point_light.diffuse_intensity", p->diffuse_intensity);
+		mat.set_uniform("point_light.shadow_strength", p->shadow_strength);
+
 
 		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM GLOBAL
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
@@ -478,6 +480,9 @@ namespace Ryno{
 		mat.set_uniform("spot_light.specular",s->specular_color);
 		mat.set_uniform("spot_light.diffuse_intensity", s->diffuse_intensity);
 		mat.set_uniform("spot_light.specular_intensity", s->specular_intensity);
+		mat.set_uniform("spot_light.blur", s->blur);
+		mat.set_uniform("spot_light.shadow_strength", s->shadow_strength);
+
 		mat.set_uniform("screen_width", WINDOW_WIDTH);
 		mat.set_uniform("screen_height", WINDOW_HEIGHT);
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
@@ -485,7 +490,7 @@ namespace Ryno{
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_spot_texture);
-		mat.set_uniform("jitter", m_fbo_shadow.m_jitter);
+		mat.set_uniform("jitter", s->blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[s->blur - 1]);
 
 
 		
@@ -578,7 +583,7 @@ namespace Ryno{
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_directional_texture);
-		mat.set_uniform("jitter", m_fbo_shadow.m_jitter);
+		mat.set_uniform("jitter", d->blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[d->blur-1]);
 
 	
 
@@ -590,6 +595,9 @@ namespace Ryno{
 		mat.set_uniform("dir_light.diffuse_intensity", d->diffuse_intensity);
 		mat.set_uniform("dir_light.specular_intensity", d->specular_intensity);
 		mat.set_uniform("dir_light.ambient_intensity", d->ambient_intensity);
+		mat.set_uniform("dir_light.blur", d->blur);
+		mat.set_uniform("dir_light.shadow_strength", d->shadow_strength);
+
 
 		//SEND OTHER UNIFORMS
 

@@ -65,7 +65,11 @@ namespace Ryno {
 		}
 
 
-		create_jitter();
+		create_jitter(0,4);
+		create_jitter(1, 6);
+		create_jitter(2, 8);
+
+
 
 
 		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
@@ -83,12 +87,12 @@ namespace Ryno {
 
 #define SAMPLES_U 8
 #define SAMPLES_V 8
-#define SIZE 6
-	void FBO_Shadow::create_jitter()
+
+	void FBO_Shadow::create_jitter(U8 index, U8 SIZE)
 	{
 		// Create the cube map
-		glGenTextures(1, &m_jitter);
-		glBindTexture(GL_TEXTURE_3D, m_jitter);
+		glGenTextures(1, &m_jitter[index]);
+		glBindTexture(GL_TEXTURE_3D, m_jitter[index]);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);

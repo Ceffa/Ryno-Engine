@@ -10,6 +10,7 @@ struct PointLight{
 	uint specular;
 	float diffuse_intensity;
 	float specular_intensity;
+	float shadow_strength;
 };
 
 float split(uint color, int n);
@@ -103,22 +104,26 @@ void main(){
 	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001),  point_light.specular_intensity);
 	
 	//**SHADOWS**//
-	float visibility = 1.0;
+	float shadow = 1.0;
 	if (shadows_enabled > 0.5f){
 		
 		//This sampling with a vec4 automatically compares the sampled value with the forth parameter (i think).
-		//So the result is the visibility
+		//So the result is the shadow
 
 		float current_depth = vector_to_depth(-light_dir_world_space_not_normalized, 1.0, max_fov);
 		float bias = 0.0005;
 		float strength = .75f;
-		visibility = (1-strength) + strength * texture(shadow_cube, vec4(-light_dir_world_space_not_normalized, current_depth - bias));
+		shadow =  texture(shadow_cube, vec4(-light_dir_world_space_not_normalized, current_depth - bias));
+
+		//opacity
+		shadow = min(1,(1-point_light.shadow_strength) + shadow);
+		
 	}
 
 		
 
     //fragment color
-	fracolor =  flatness * mat_diff + visibility *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
+	fracolor =  flatness * mat_diff + shadow *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
 }
 
 float split(uint color, int n){
