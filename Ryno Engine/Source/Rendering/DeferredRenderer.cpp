@@ -576,6 +576,8 @@ namespace Ryno{
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_directional_texture);
+		mat.set_uniform("jitter", m_fbo_shadow.m_jitter);
+
 	
 
 		//SEND DIR LIGHT UNIFORMS

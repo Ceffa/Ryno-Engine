@@ -82,7 +82,7 @@ namespace Ryno{
 	{
 		init_external_systems();
 		init_internal_systems();
-		set_scene(0);
+		set_scene(1);
 	}
 
 	void Game::run(){
