@@ -1,5 +1,12 @@
 #version 430
 
+//Shadows blur info
+#define SAMPLES_COUNT 36
+#define SAMPLES_COUNT_DIV_2 18
+#define SIZE 6
+#define HALF_SIZE 3
+#define INV_SAMPLES_COUNT (1.0f / SAMPLES_COUNT)
+
 //Structures
 
 //4-byte aligned
@@ -20,6 +27,7 @@ uniform sampler2D diffuse_tex;
 uniform sampler2D specular_tex;
 uniform sampler2D normal_tex;
 uniform sampler2D depth_tex;
+uniform sampler3D jitter;
 uniform sampler2DShadow shadow_tex;
 uniform int shadows_enabled;
 
@@ -107,15 +115,69 @@ void main(){
 
 	
 	//final colors for diffuse and specular
-	vec3 diffuse_final = max(0, dot(normal_view_space, light_dir_view_space.xyz)) * diff_color;
+	float dotNL = dot(normal_view_space, light_dir_view_space.xyz);
+	vec3 diffuse_final = max(0, dotNL) * diff_color;
 	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001),  spot_light.specular_intensity);
 	
 	//SHADOWS
-	float visibility = 1.0f;
+	float blur_width = .01;
+	float shadow = 0;
+
 	if (shadows_enabled > 0.5){
-		float bias = 0.0005;
-		float strength = .75f;
-		visibility = (1-strength) + strength *texture(shadow_tex, vec3(position_light_MVP_matrix_norm.xy, position_light_MVP_matrix_norm.z - bias));
+
+		vec4 shadowMapPos = position_light_MVP_matrix;
+		vec4 smCoord = shadowMapPos;
+		float fsize = smCoord.w * blur_width;
+		vec2 jxyscale = vec2(1,1);
+		vec3 jcoord = vec3(gl_FragCoord.xy * jxyscale, 0);
+
+
+		//Sample the outher eight shadows
+		for (int i = 0; i<HALF_SIZE; i++) {
+
+			vec4 offset = texture(jitter, jcoord);
+
+			jcoord.z += 1.0f / SAMPLES_COUNT_DIV_2;
+
+			smCoord.xy = offset.xy * fsize + shadowMapPos.xy;
+
+			shadow += textureProj(shadow_tex, smCoord) / SIZE;
+			
+			smCoord.xy = offset.zw * fsize + shadowMapPos.xy;
+
+			shadow += textureProj(shadow_tex, smCoord) / SIZE;
+
+		  }
+
+		  //If there is a medium value of shadow, continue with the remaining ones
+		  if ((shadow - 1) * shadow * dotNL != 0) {
+
+			  // most likely, we are in the penumbra
+			  shadow *= 1.0f / SIZE; // adjust running total
+
+
+			  // refine our shadow estimate
+
+			  for (int i = 0; i<SAMPLES_COUNT_DIV_2 - 4; i++) {
+
+					vec4 offset = texture(jitter, jcoord);
+
+					jcoord.z += 1.0f / SAMPLES_COUNT_DIV_2;
+
+
+					//The vec 4 holds two informations, doit for both
+					smCoord.xy = offset.xy * fsize + shadowMapPos.xy;
+					shadow += textureProj(shadow_tex, smCoord)* INV_SAMPLES_COUNT;
+
+					smCoord.xy = offset.zw * fsize + shadowMapPos.xy;
+					shadow += textureProj(shadow_tex, smCoord)* INV_SAMPLES_COUNT;
+
+			 }
+
+		}
+
+
+		float strength = .75f;		
 	}
 
 	
@@ -127,14 +189,14 @@ void main(){
 	
 	
 	if (actual_cutoff < spot_light.cutoff)
-		visibility = 0;
+		shadow = 0;
 	else if (actual_cutoff < spot_light.cutoff * 1.1)
-		visibility *= mix(0, 1, (actual_cutoff - spot_light.cutoff) / (spot_light.cutoff * 0.1));
+		shadow *= mix(0, 1, (actual_cutoff - spot_light.cutoff) / (spot_light.cutoff * 0.1));
 
 		
 
     //fragment color
-	fracolor =  flatness * mat_diff + visibility *  (1.0 - flatness) * (mat_spec * specular_final + mat_diff * diffuse_final) / attenuation;
+	fracolor =  flatness * mat_diff + shadow *  (1.0 - flatness) * (mat_spec * specular_final + mat_diff * diffuse_final) / attenuation;
 }
 
 

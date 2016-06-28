@@ -1,10 +1,10 @@
 #version 430
 
 //Shadows blur info
-#define SAMPLES_COUNT 64
-
-#define SAMPLES_COUNT_DIV_2 32
-
+#define SAMPLES_COUNT 36
+#define SAMPLES_COUNT_DIV_2 18
+#define SIZE 6
+#define HALF_SIZE 3
 #define INV_SAMPLES_COUNT (1.0f / SAMPLES_COUNT)
 
 
@@ -102,7 +102,7 @@ void main(){
 
 
 		//Sample the outher eight shadows
-		for (int i = 0; i<4; i++) {
+		for (int i = 0; i<HALF_SIZE; i++) {
 
 			vec4 offset = texture(jitter, jcoord);
 
@@ -110,11 +110,11 @@ void main(){
 
 			smCoord.xy = offset.xy * fsize + shadowMapPos.xy;
 
-			shadow += textureProj(shadow_tex, smCoord) / 8;
+			shadow += textureProj(shadow_tex, smCoord) / SIZE;
 			
 			smCoord.xy = offset.zw * fsize + shadowMapPos.xy;
 
-			shadow += textureProj(shadow_tex, smCoord) / 8;
+			shadow += textureProj(shadow_tex, smCoord) / SIZE;
 
 		  }
 
@@ -122,7 +122,7 @@ void main(){
 		  if ((shadow - 1) * shadow * dotNL != 0) {
 
 			  // most likely, we are in the penumbra
-			  shadow *= 1.0f / 8; // adjust running total
+			  shadow *= 1.0f / SIZE; // adjust running total
 
 
 			  // refine our shadow estimate

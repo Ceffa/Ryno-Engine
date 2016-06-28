@@ -83,7 +83,7 @@ namespace Ryno {
 
 #define SAMPLES_U 8
 #define SAMPLES_V 8
-#define SIZE 8
+#define SIZE 6
 	void FBO_Shadow::create_jitter()
 	{
 		// Create the cube map

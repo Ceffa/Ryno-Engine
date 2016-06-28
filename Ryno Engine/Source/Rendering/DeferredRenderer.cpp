@@ -485,6 +485,8 @@ namespace Ryno{
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_spot_texture);
+		mat.set_uniform("jitter", m_fbo_shadow.m_jitter);
+
 
 		
 		mat.set_uniform("light_VP_matrix", biased_light_VP_matrix);
