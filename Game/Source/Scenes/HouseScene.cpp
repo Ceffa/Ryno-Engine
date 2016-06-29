@@ -115,19 +115,10 @@ namespace Ryno{
 
 
 	}
-	void HouseScene::input(){
-	
+	void HouseScene::input() {
+
 		if (game->input_manager->is_key_pressed(SDLK_SPACE, KEYBOARD)) {
 			attach = !attach;
 		}
-		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
-			sponza.transform.add_rotation(0, 1.5f, 0);
-		}
-
-		
-	
-		
 	}
-
-
 }

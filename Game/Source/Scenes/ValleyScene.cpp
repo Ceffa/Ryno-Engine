@@ -13,7 +13,7 @@ namespace Ryno {
 		camera->pitch = 0.6505f;
 		camera->movement_speed = .1f;
 		camera->have_skybox = true;
-		camera->skybox = game->texture_manager->load_cube_map("full_moon", GAME);
+		camera->skybox = game->texture_manager->load_cube_map("full_moon", ".png", GAME);
 
 
 

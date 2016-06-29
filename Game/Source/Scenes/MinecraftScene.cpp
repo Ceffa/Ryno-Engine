@@ -17,7 +17,7 @@ namespace Ryno{
 		camera->movement_speed /= 20;
 		camera->rotation_speed /= 2;
 		camera->have_skybox = true;
-		camera->skybox = game->texture_manager->load_cube_map("day", GAME);
+		camera->skybox = game->texture_manager->load_cube_map("day", ".png", GAME);
 
 		
 

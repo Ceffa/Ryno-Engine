@@ -11,7 +11,7 @@ namespace Ryno {
 		camera->pitch = 0.106;
 		camera->movement_speed = .1f;
 		camera->have_skybox = true;
-		camera->skybox = game->texture_manager->load_cube_map("day", GAME);
+		camera->skybox = game->texture_manager->load_cube_map("day", ".png", GAME);
 
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);

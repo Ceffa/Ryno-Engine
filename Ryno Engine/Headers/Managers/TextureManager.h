@@ -20,7 +20,7 @@ namespace Ryno{
 		Texture load_png(const std::string& name, Owner loc);
 		
 
-		Texture load_cube_map(const std::string& name, Owner loc);
+		Texture load_cube_map(const std::string& name, const std::string& ext, Owner loc);
 
 		void reset();
 		
