@@ -9,15 +9,9 @@ namespace Ryno{
 	class SpotLight : public AbstractLight{
 	public:
 	
-		SpotLight() { model = nullptr; blur = 0; shadow_strength = .75f; }
+		SpotLight() { blur = 0; shadow_strength = .75f; }
 		~SpotLight(){}
-		SpotLight(const SpotLight &copy)
-		{
-			*this = copy;
-			if (copy.model)
-				model = new SubModel(*copy.model);
-			else model = nullptr;
-		}
+	
 	
 		void set_rotation(F32 _pitch, F32 _yaw, F32 _roll);
 		void set_rotation(glm::vec3 euler);

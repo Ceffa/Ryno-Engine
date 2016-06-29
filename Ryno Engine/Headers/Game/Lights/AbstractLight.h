@@ -27,7 +27,7 @@ namespace Ryno{
 		F32 shadow_strength;
 
 
-		SubModel* model;
+		SubModel model;
 	};
 
 }

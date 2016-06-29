@@ -28,8 +28,7 @@ namespace Ryno{
 		light[0].point_light = new PointLight();
 		light[0].transform.set_position(0, 100, 200);
 		auto* p = light[0].point_light;
-		p->model = new SubModel();
-		p->model->material.set_shader(&point_light_shader);
+		p->model.material.set_shader(&point_light_shader);
 		p->set_diffuse_color(255, 150, 120);
 		p->diffuse_intensity = 3;
 		p->attenuation = .0005;
@@ -57,16 +56,16 @@ namespace Ryno{
 		sponza.transform.set_scale(.2f,.2f,.2f);
 		sponza.dir_light = new DirectionalLight();
 		auto* l = sponza.dir_light;
-		l->model = new SubModel();
-		l->model->material.set_shader(&dir_light_shader);
+		l->model.material.set_shader(&dir_light_shader);
 		l->set_rotation(-70, 10, 0);
 		l->diffuse_intensity = 2;
 		l->set_diffuse_color(255, 235, 200);
 		l->specular_intensity = 30.0;
 		l->set_specular_color(255, 235, 200);
-		l->ambient_intensity = .35f;
+		l->ambient_intensity = .25f;
 		l->set_ambient_color(255, 235, 200);
 		l->blur = 2;
+		l->shadow_strength = .8f;
 
 		material.set_uniform("g_Time", 0);
 		material.set_uniform("g_Power", 0);

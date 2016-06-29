@@ -291,7 +291,7 @@ namespace Ryno{
 	void DeferredRenderer::point_lighting_subpass(GameObject* go){
 
 		auto* p = go->point_light;
-		auto* mod = p->model;
+		auto* mod = &p->model;
 		mod->mesh = m_bounding_sphere.mesh;
 		auto& mat = mod->material;
 
@@ -427,7 +427,7 @@ namespace Ryno{
 	void DeferredRenderer::spot_lighting_subpass(GameObject* go)
 	{
 		auto* s = go->spot_light;
-		auto* mod = s->model;
+		auto* mod = &s->model;
 		mod->mesh = m_bounding_pyramid.mesh;
 		auto& mat = mod->material;
 
@@ -549,7 +549,7 @@ namespace Ryno{
 	{
 
 		auto* d = go->dir_light;
-		auto* mod = d->model;
+		auto* mod = &d->model;
 		mod->mesh = m_blit_model.mesh;
 		auto& mat = mod->material;
 		auto* s =mat.shader;

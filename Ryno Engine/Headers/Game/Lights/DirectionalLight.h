@@ -10,17 +10,9 @@ namespace Ryno{
 	public:
 
 	
-		DirectionalLight() { model = nullptr; blur = 0; shadow_strength = .75f; }
+		DirectionalLight() { blur = 0; shadow_strength = .75f; }
 		~DirectionalLight(){}
-		DirectionalLight(const DirectionalLight &copy)
-		{ 
-
-			*this = copy;
-			if(copy.model)
-				model = new SubModel(*copy.model);
-			else model = nullptr;
-
-		}
+		
 
 		void set_rotation(F32 _pitch, F32 _yaw, F32 _roll);
 		void set_rotation(glm::vec3 euler);

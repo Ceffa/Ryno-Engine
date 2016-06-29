@@ -9,15 +9,9 @@ namespace Ryno{
 	public:
 
 		//Constructors
-		PointLight() { model = nullptr; shadow_strength = .75f; }
+		PointLight() { shadow_strength = .75f; }
 		~PointLight(){}
-		PointLight(const PointLight &copy)
-		{
-			*this = copy;
-			if (copy.model)
-				model = new SubModel(*copy.model);
-			else model = nullptr;
-		}
+		
 
 	
 

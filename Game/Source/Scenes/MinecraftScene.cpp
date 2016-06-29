@@ -39,8 +39,7 @@ namespace Ryno{
 		sponza.transform.set_scale(2,2,2);
 		sponza.dir_light = new DirectionalLight();
 		auto* l = sponza.dir_light;
-		l->model = new SubModel();
-		l->model->material.set_shader(&dir_light_shader);
+		l->model.material.set_shader(&dir_light_shader);
 		l->set_rotation(-70, 10, 0);
 		l->diffuse_intensity = 3;
 		l->set_diffuse_color(255, 255, 255);

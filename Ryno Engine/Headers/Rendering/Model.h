@@ -15,7 +15,8 @@ namespace Ryno{
 		I32 mesh;
 		Material material;
 		bool cast_shadows;
-		SubModel(const SubModel& copy);
+		SubModel(const SubModel& cp);
+		void copy(const SubModel& cp);
 	};
 	class Model{
 	public:
@@ -23,7 +24,8 @@ namespace Ryno{
 		SubModel& add_sub_model();
 		Model() { }
 		~Model(){}
-		Model(const Model& copy);
+		void copy(const Model& cp);
+		Model(const Model& cp);
 		std::vector<SubModel> sub_models;
 		
 	};

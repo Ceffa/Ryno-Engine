@@ -46,8 +46,7 @@ namespace Ryno {
 
 			game_object->spot_light = new SpotLight();
 			auto* p = game_object->spot_light;
-			p->model = new SubModel();
-			p->model->material.set_shader(&spot_light_shader);
+			p->model.material.set_shader(&spot_light_shader);
 			p->set_diffuse_color(255, 80, 0);
 			p->diffuse_intensity = 3;
 			p->attenuation = .0005;
@@ -61,8 +60,7 @@ namespace Ryno {
 
 			game_object->dir_light = new DirectionalLight();
 			auto* d = game_object->dir_light;
-			d->model = new SubModel();
-			d->model->material.set_shader(&dir_light_shader);
+			d->model.material.set_shader(&dir_light_shader);
 			d->set_diffuse_color(255, 255, 255);
 			d->diffuse_intensity = .35f;
 			d->set_rotation(-50, 0, 0);
@@ -88,8 +86,7 @@ namespace Ryno {
 
 			game_object->point_light = new PointLight();
 			auto* pl = game_object->point_light;
-			pl->model = new SubModel();
-			pl->model->material.set_shader(&point_light_shader);
+			pl->model.material.set_shader(&point_light_shader);
 			pl->set_diffuse_color(255, 80, 0);
 			pl->diffuse_intensity = 1;
 			pl->attenuation = .0001;
