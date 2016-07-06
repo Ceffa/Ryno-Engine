@@ -40,6 +40,7 @@ namespace Ryno{
 		DirectionalLight* dir_light;
 		SpotLight* spot_light;
 		Emitter* emitter;
+		Collider* collider;
 		
 
 		static std::list<GameObject*> game_objects;

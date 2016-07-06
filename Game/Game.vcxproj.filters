@@ -81,6 +81,9 @@
     <ClCompile Include="Source\Scenes\LightsScene.cpp">
       <Filter>Source\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scenes\PhysicsScene.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Terrain.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="Headers\Scenes\LightsScene.h">
       <Filter>Header\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Scenes\PhysicsScene.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
