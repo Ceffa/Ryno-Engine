@@ -248,8 +248,6 @@ namespace Ryno {
 	{
 		if (command.compare("hide")==0)
 			hide();
-		else if (command.compare("ps") == 0)
-			phys_step = true;
 		else if (command.compare("pausemusic") == 0)
 			Music::pause();
 		else if (command.compare("resumemusic") == 0)

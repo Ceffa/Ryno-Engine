@@ -31,9 +31,7 @@ namespace Ryno{
 		void rotate_lines();
 
 		bool request_exit = false;
-		bool restart_physics = false;
 		bool request_pause = false;
-		bool phys_step;
 		bool active = true;
 
 

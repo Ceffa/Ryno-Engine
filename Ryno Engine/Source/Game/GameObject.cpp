@@ -71,6 +71,7 @@ namespace Ryno{
 		if (emitter)
 			delete emitter;
 		reset_to_null();
+
 	}
 
 	void GameObject::add_script(Script* s) {

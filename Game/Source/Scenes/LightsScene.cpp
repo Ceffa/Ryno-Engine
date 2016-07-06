@@ -15,7 +15,7 @@ namespace Ryno {
 
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);
-		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
+		white_normal = game->texture_manager->load_png("pack/161_norm.png", GAME);
 		
 		mesh = game->mesh_manager->load_mesh("cube", GAME);
 		sphere = game->mesh_manager->load_mesh("sphere", GAME);
@@ -33,7 +33,7 @@ namespace Ryno {
 		m.material.set_shader(&shader);
 		m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
 		m.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
-		m.material.set_attribute("in_Tiling", glm::vec2(10, 10));
+		m.material.set_attribute("in_Tiling", glm::vec2(100, 100));
 		m.material.set_uniform("texture_sampler", white.id);
 		m.material.set_uniform("normal_map_sampler", white_normal.id);
 		m.mesh = mesh;
@@ -79,16 +79,22 @@ namespace Ryno {
 	void LightsScene::update() {
 		
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-			parent.transform.add_position(game->delta_time * 1.0f * glm::vec3(1, 0, 0));
+			parent.transform.add_position(game->delta_time * .1f * glm::vec3(1, 0, 0));
 		}
 		if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-			parent.transform.add_position(game->delta_time * 1.0f * glm::vec3(-1, 0, 0));
+			parent.transform.add_position(game->delta_time * .1f * glm::vec3(-1, 0, 0));
 		}
 		if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-			parent.transform.add_position(game->delta_time * 1.0f * glm::vec3(0, 0, 1));
+			parent.transform.add_position(game->delta_time * .1f * glm::vec3(0, 0, 1));
 		}
 		if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-			parent.transform.add_position(game->delta_time * 1.0f * glm::vec3(0, 0, -1));
+			parent.transform.add_position(game->delta_time * .1f * glm::vec3(0, 0, -1));
+		}
+		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
+			parent.transform.set_rotation(3*sin(game->time /500) * glm::vec3 (0,0,1));
+		}
+		if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)) {
+			parent.transform.add_rotation(game->delta_time / 100.0f * glm::vec3(0, 1, 0));
 		}
 	
 	}
