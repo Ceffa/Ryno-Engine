@@ -1,3 +1,4 @@
+#pragma once
 #include "Types.h"
 #include "glm/glm.hpp"
 

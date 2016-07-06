@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "Lights/PointLight.h"
 #include "Lights/SpotLight.h"
+#include "Collider.h"
 #include "Lights/DirectionalLight.h"
 #include <list>
 
