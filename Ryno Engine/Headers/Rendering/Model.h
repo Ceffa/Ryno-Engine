@@ -6,6 +6,7 @@
 #include "Structures.h"
 #include "Material.h"
 #include <list>
+#include "Script.h"
 
 namespace Ryno{
 		
@@ -18,15 +19,25 @@ namespace Ryno{
 		SubModel(const SubModel& cp);
 		void copy(const SubModel& cp);
 	};
-	class Model{
+	class Model : public Script{
 	public:
 	
 		SubModel& add_sub_model();
-		Model() { }
+
+		Model() {}
 		~Model(){}
 		void copy(const Model& cp);
 		Model(const Model& cp);
 		std::vector<SubModel> sub_models;
-		
+
+		void update() override {}
+		void input() override {}
+		void start() override {}
+		bool is_unique() override { return true; };
+		bool is_copyable() override { return true; };
+		virtual Model* clone() {
+			return new Model(*this);
+		}
+
 	};
 }

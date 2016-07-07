@@ -135,18 +135,19 @@ namespace Ryno{
 
 		for (GameObject* go : GameObject::game_objects)
 		{
+			Model* model = go->get_script<Model>();
 			//Fill geometry batch
 			if (geometry_enabled){
-				if (go->active && go->model){
-					for(SubModel& s : go->model->sub_models)
+				if (go->active && model){
+					for(SubModel& s : model->sub_models)
 						s.material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
-					m_geometry_batch3d.draw(go->model);
+					m_geometry_batch3d.draw(model);
 					
 				}
 			}
 			//Fill shadow batch
 			if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled){
-				if (go->active && go->model)
+				if (go->active && model)
 					m_shadow_batch3d.draw(go);
 			}
 			//Add ligths

@@ -24,10 +24,10 @@ namespace Ryno {
 		point_light_shader.create("LightPass/point", ENGINE);
 
 
-		t.model = new Model();
 
 		t.transform.set_scale(size/2,size/2,size/2);
-		SubModel& m = t.model->add_sub_model();
+		auto& m = t.add_script<Model>()->add_sub_model();
+
 
 		m.material.set_shader(&shader);
 		m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
@@ -64,10 +64,7 @@ namespace Ryno {
 		l->shadows = false;
 
 	
-
-		
-		delete t.model;
-		t.model = nullptr;
+		t.delete_script<Model>();
 	
 
 		
@@ -82,7 +79,7 @@ namespace Ryno {
 
 			o.transform.set_position(o.transform.get_position().x, 10.0f*sin(sqrt(pow(o.transform.get_position().x / 20.0f, 2) + pow(o.transform.get_position().z / 20.0f, 2)) - (_time / 400.0f)), o.transform.get_position().z);
 			
-			o.model->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(0, (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 255 - (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 150));
+			o.get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(0, (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 255 - (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 150));
 			}
 
 		t.transform.set_position(0, 10 + 10.0f*sin(sqrt(pow(0/ 20.0f, 2) + pow(0 / 20.0f, 2)) - (_time / 400.0f)), 0);

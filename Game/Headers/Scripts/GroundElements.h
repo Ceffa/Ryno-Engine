@@ -13,8 +13,19 @@ namespace Ryno {
 		I32  cube_mesh;
 		Game* game;
 		Shader shader;
+		GameObject base;
+
+		GroundElements* clone() override {
+			return new GroundElements(*this);
+		}
+
+		bool is_unique() override { return true; };
+		bool is_copyable() override { return false; };
 
 		void start() override {
+
+		
+
 			game = Game::get_instance();
 			bt = game->texture_manager->load_png("pack/161.png", GAME);
 			bn = game->texture_manager->load_png("pack/161_norm.png", GAME);
@@ -22,8 +33,8 @@ namespace Ryno {
 			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 			shader.create("Geometry/geometry", GAME);
 
-			game_object->model = new Model();
-			auto& sm = game_object->model->add_sub_model();
+			auto& sm = base.add_script<Model>()->add_sub_model();
+
 			sm.material.set_shader(&shader);
 			sm.mesh = cube_mesh;
 			sm.cast_shadows = false;
@@ -34,15 +45,14 @@ namespace Ryno {
 			sm.material.set_uniform("texture_sampler", bt.id);
 			sm.material.set_uniform("normal_map_sampler", bn.id);
 
-			game_object->transform.set_scale(200, 1, 200);
-			game_object->transform.set_position(0, 0, 0);
+			base.transform.set_scale(200, 1, 200);
+			base.transform.set_position(0, 0, 0);
 
 			I32 s = 18;//size
 			poles.resize(s*s);
 			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 
-			poles[0].model = new Model();
-			auto& m = poles[0].model->add_sub_model();
+			auto& m = poles[0].add_script<Model>()->add_sub_model();
 			m.material.set_shader(&shader);
 			m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
 			sm.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
@@ -64,8 +74,7 @@ namespace Ryno {
 					poles[i*s + j].transform.set_position((i - s / 2) * 20, 10, (j - s / 2) * 20);
 				}
 			}
-			delete poles[0].model;
-			poles[0].model = nullptr;
+		
 
 		}
 		void input() override {

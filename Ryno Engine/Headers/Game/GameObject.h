@@ -1,6 +1,5 @@
 #pragma once
 #include "Global.h"
-#include "Model.h"
 #include "Transform.h"
 #include "Lights/PointLight.h"
 #include "Lights/SpotLight.h"
@@ -22,10 +21,55 @@ namespace Ryno{
 		GameObject(const GameObject& go);
 		void copy(const GameObject& go);
 		void reset_to_null();
-		void add_script(Script* s);
-		void removeScript(Script* s);
+
 		template<class T>
-		T* GetScript() {
+		T* add_script(T* s) {
+			//If the script is unique, check if exists already.
+			//If so return nullptr
+			if (s->is_unique()) {
+				if (get_script<T>())
+					return nullptr;
+			}
+			s->game_object = this;
+			scripts.push_back(s);
+			s->start();
+			return s;
+		}
+		template<class T>
+		T* add_script() {
+			return add_script(new T());
+		}
+
+		template<class T>
+		T* remove_script(T* s)
+		{
+			s->game_object = nullptr;
+			scripts.remove(s);
+			return s;
+		}
+
+		template<class T>
+		T* remove_script()
+		{
+			return remove_script(get_script<T>());
+		}
+
+
+		template<class T>
+		void delete_script()
+		{
+			delete remove_script(get_script<T>());
+		}
+		template<class T>
+		void delete_script(T* s)
+		{
+			delete remove_script(s);
+		}
+
+
+
+		template<class T>
+		T* get_script() {
 			for (auto* s : scripts)
 				if (T* v = dynamic_cast<T*>(s))
 					return v;
@@ -35,7 +79,6 @@ namespace Ryno{
 		bool active = true;
 
 		//Components
-		Model* model;
 		Transform transform;
 		PointLight* point_light;
 		DirectionalLight* dir_light;

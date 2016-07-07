@@ -38,12 +38,11 @@ namespace Ryno {
 
 	void Batch3DShadow::draw(GameObject* go) {
 
-		for (SubModel& s : go->model->sub_models)
+		for (SubModel& s : go->get_script<Model>()->sub_models)
 		//discard light-emitting models
 		if (s.cast_shadows){
 			m_models.emplace_back(&s, &go->transform.model_matrix );
 		}
-
 	}
 
 

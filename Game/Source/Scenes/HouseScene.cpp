@@ -49,7 +49,7 @@ namespace Ryno{
 		material.create("Geometry/material", GAME);
 
 		//sponza - sibenik
-		sponza.model = game->mesh_manager->load_model("sponza", Owner::GAME, material);
+		sponza.add_script(game->mesh_manager->load_model("sponza", Owner::GAME, material));
 		sponza.transform.set_position(0, 0, 0);
 		sponza.transform.set_rotation(0, 90, 0);
 

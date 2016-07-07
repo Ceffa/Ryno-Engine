@@ -21,7 +21,6 @@ namespace Ryno{
 
 	void GameObject::reset_to_null() {
 
-		model = nullptr;
 		point_light = nullptr;
 		dir_light = nullptr;
 		spot_light = nullptr;
@@ -42,8 +41,7 @@ namespace Ryno{
 
 		transform.copy(go.transform);
 		transform.game_object = this;
-		if (go.model)
-			model = new Model(*go.model);
+		
 		if (go.point_light)
 			point_light = new PointLight(*go.point_light);
 		if (go.spot_light)
@@ -54,14 +52,18 @@ namespace Ryno{
 			emitter = new Emitter(*go.emitter, this);
 
 		game_objects.push_back(this);
+
+		scripts.clear();
+		for (auto* s : go.scripts) {
+			if (s->is_copyable())
+				add_script(s->clone());
+		}
 		
 	}
 
 	GameObject::~GameObject() {
 		game_objects.remove(this);
-		
-		if (model)
-			delete model;
+	
 		if (point_light)
 			delete point_light;
 		if (spot_light)
@@ -74,19 +76,7 @@ namespace Ryno{
 
 	}
 
-	void GameObject::add_script(Script* s) {
-		s->game_object = this;
-		scripts.emplace_back(s);
-		s->start();
-	}
-
 	
-
-	void GameObject::removeScript(Script* s)
-	{
-		scripts.remove(s);
-		s->game_object = nullptr;
-	}
 
 }
 

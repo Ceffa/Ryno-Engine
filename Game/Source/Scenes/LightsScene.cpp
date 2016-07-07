@@ -24,11 +24,10 @@ namespace Ryno {
 		point_light_shader.create("LightPass/point", ENGINE);
 
 
-		base.model = new Model();
 
 		base.transform.set_scale(2500, 5, 2500);
 		base.transform.set_position(0, 0, 0);
-		SubModel& m = base.model->add_sub_model();
+		SubModel& m = base.add_script<Model>()->add_sub_model();
 
 		m.material.set_shader(&shader);
 		m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
@@ -51,8 +50,8 @@ namespace Ryno {
 		p->attenuation = .04f;
 		p->shadows = false;
 
-		delete lights[0].model;
-		lights[0].model = nullptr;
+		
+		lights[0].delete_script<Model>();
 
 
 		

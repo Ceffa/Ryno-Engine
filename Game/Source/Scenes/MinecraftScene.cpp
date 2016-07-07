@@ -32,7 +32,7 @@ namespace Ryno{
 		material.create("Geometry/material", GAME);
 
 		//sponza - sibenik
-		sponza.model = game->mesh_manager->load_model("lost_empire", Owner::GAME, material);
+		sponza.add_script(game->mesh_manager->load_model("lost_empire", Owner::GAME, material));
 		sponza.transform.set_position(0, 0, 0);
 		sponza.transform.set_rotation(0, 0, 0);
 
@@ -51,7 +51,7 @@ namespace Ryno{
 		material.set_uniform("g_Time", 0);
 		material.set_uniform("g_Power", 0);
 
-		for (auto& m : sponza.model->sub_models) {
+		for (auto& m : sponza.get_script<Model>()->sub_models) {
 			m.cast_shadows = false;
 			ColorRGBA* attr = (ColorRGBA*)m.material.get_attribute("diffuse_color");
 			if (attr != nullptr) {
