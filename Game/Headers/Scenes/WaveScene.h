@@ -15,7 +15,6 @@ namespace Ryno {
 		WaveScene() : Scene() {}
 	private:
 		void start() override;
-		void input() override;
 		void update() override;
 
 		I32 mesh,sphere;

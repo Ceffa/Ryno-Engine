@@ -1,9 +1,6 @@
 #pragma once
 #include "Global.h"
 #include "Transform.h"
-#include "Lights/PointLight.h"
-#include "Lights/SpotLight.h"
-#include "Lights/DirectionalLight.h"
 #include <list>
 
 namespace Ryno{
@@ -18,7 +15,6 @@ namespace Ryno{
 
 		GameObject(const GameObject& go);
 		void copy(const GameObject& go);
-		void reset_to_null();
 
 		template<class T>
 		T* add_script(T* s) {
@@ -75,15 +71,21 @@ namespace Ryno{
 					return v;
 			return nullptr;
 		}
+
+		template<class T>
+		std::list<T*> get_scripts() {
+			std::list<T*> T_list;
+			for (auto* s : scripts)
+				if (T* v = dynamic_cast<T*>(s))
+					T_list.push_back(v);
+			return std::move(T_list);
+		}
 		//Status
 		bool active = true;
 
 		//Components
 		Transform transform;
-		PointLight* point_light;
-		DirectionalLight* dir_light;
-		SpotLight* spot_light;
-		
+				
 
 		static std::list<GameObject*> game_objects;
 

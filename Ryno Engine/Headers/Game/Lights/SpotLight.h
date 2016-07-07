@@ -11,7 +11,8 @@ namespace Ryno{
 	
 		SpotLight() { blur = 0; shadow_strength = .75f; }
 		~SpotLight(){}
-	
+		SpotLight* clone() override { return new SpotLight(*this); }
+
 	
 		void set_rotation(F32 _pitch, F32 _yaw, F32 _roll);
 		void set_rotation(glm::vec3 euler);

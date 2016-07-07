@@ -25,9 +25,8 @@ namespace Ryno{
 
 		point_light_shader.create("LightPass/point", ENGINE);
 
-		light[0].point_light = new PointLight();
 		light[0].transform.set_position(0, 100, 200);
-		auto* p = light[0].point_light;
+		auto* p = light[0].add_script<PointLight>();
 		p->model.material.set_shader(&point_light_shader);
 		p->set_diffuse_color(255, 150, 120);
 		p->diffuse_intensity = 3;
@@ -35,12 +34,7 @@ namespace Ryno{
 		p->specular_intensity =25;
 		p->set_specular_color(255, 150,120);
 
-	/*	light[1].copy(light[0]);
-		light[1].point_light->set_diffuse_color(255, 100, 100);
-		light[1].transform.set_position(0, 100, -200);*/
-
-
-		
+	
 
 		//Directional light
 		dir_light_shader.create("LightPass/directional", ENGINE);
@@ -54,8 +48,8 @@ namespace Ryno{
 		sponza.transform.set_rotation(0, 90, 0);
 
 		sponza.transform.set_scale(.2f,.2f,.2f);
-		sponza.dir_light = new DirectionalLight();
-		auto* l = sponza.dir_light;
+	
+		auto* l = sponza.add_script<DirectionalLight>();
 		l->model.material.set_shader(&dir_light_shader);
 		l->set_rotation(-70, 10, 0);
 		l->diffuse_intensity = 2;
@@ -88,28 +82,28 @@ namespace Ryno{
 			power = power == 0 ? 100 : 0;
 			material.set_uniform("g_Power", power);
 			
-			sponza.dir_light->shadows = !sponza.dir_light->shadows;
+			sponza.get_script<DirectionalLight>()->shadows = !sponza.get_script<DirectionalLight>()->shadows;
 			for (auto& l : light)
-				l.point_light->shadows = !light[0].point_light->shadows;
+				l.get_script<PointLight>()->shadows = !light[0].get_script<PointLight>()->shadows;
 		}
 
 	
 		if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-			light[light_index].point_light->diffuse_intensity -= .05f;
+			light[light_index].get_script<PointLight>()->diffuse_intensity -= .05f;
 		}else if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-				light[light_index].point_light->diffuse_intensity += .05f;
+				light[light_index].get_script<PointLight>()->diffuse_intensity += .05f;
 		}
 		if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-			light[light_index].point_light->specular_intensity += 2.5f;
+			light[light_index].get_script<PointLight>()->specular_intensity += 2.5f;
 		}
 		else if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-			light[light_index].point_light->specular_intensity -= 2.5f;
+			light[light_index].get_script<PointLight>()->specular_intensity -= 2.5f;
 
 		}
 		if (game->input_manager->is_key_pressed(SDLK_z, KEYBOARD)) {
 			ColorRGBA c = ryno_math::rand_color_range(ColorRGBA(100, 100, 100, 255), ColorRGBA::white);
-			light[light_index].point_light->diffuse_color = c;
-			light[light_index].point_light->specular_color = c;
+			light[light_index].get_script<PointLight>()->diffuse_color = c;
+			light[light_index].get_script<PointLight>()->specular_color = c;
 
 		}
 

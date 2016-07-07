@@ -51,8 +51,7 @@ namespace Ryno {
 		}
 
 		//dir light
-		t.dir_light = new DirectionalLight();
-		auto* l = t.dir_light;
+		auto* l = t.add_script<DirectionalLight>();
 		l->model.material.set_shader(&dir_light_shader);
 		l->set_rotation(-50, 10, 0);
 		l->diffuse_intensity = 1.5f;
@@ -87,6 +86,5 @@ namespace Ryno {
 
 	}
 
-	void WaveScene::input() {
-	}
+	
 }

@@ -13,12 +13,12 @@ namespace Ryno{
 	public:
 		static ParticleManager* get_instance();
 		void init(){}
-		void add_emitter(GameObject* emitter){ emitters.push_back(emitter); }
-		void remove_emitter(GameObject* emitter){ emitters.remove(emitter); }
+		void add_emitter(Emitter* emitter){ emitters.push_back(emitter); }
+		void remove_emitter(Emitter* emitter){ emitters.remove(emitter); }
 		void update(F32 delta);
 		void reset();
 	private:
-		std::list <GameObject*> emitters;
+		std::list <Emitter*> emitters;
 		ParticleManager(){}
 		~ParticleManager(){}
 	};

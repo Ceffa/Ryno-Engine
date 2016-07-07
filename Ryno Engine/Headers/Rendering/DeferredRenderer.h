@@ -83,22 +83,22 @@ namespace Ryno{
 	private:
 
 		//Shadow subpass for point light
-		void point_shadow_subpass(GameObject* go);
+		void point_shadow_subpass(PointLight* go);
 
 		//Lighting subpass for point light
-		void point_lighting_subpass(GameObject* go);
+		void point_lighting_subpass(PointLight* go);
 
 		//Shadow subpass for spot light
-		void spot_shadow_subpass(GameObject* go);
+		void spot_shadow_subpass(SpotLight* go);
 
 		//Lighting subpass for spot light
-		void spot_lighting_subpass(GameObject* go);
+		void spot_lighting_subpass(SpotLight* go);
 
 		//Shadow subpass for directional light 
-		void directional_shadow_subpass(GameObject* go);
+		void directional_shadow_subpass(DirectionalLight* go);
 
 		//Lighting subpass for directional light
-		void directional_lighting_subpass(GameObject* go);
+		void directional_lighting_subpass(DirectionalLight* go);
 
 	
 		Camera3D* m_camera;
@@ -126,9 +126,9 @@ namespace Ryno{
 		glm::mat4 bias;
 		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 
 
-		std::vector<GameObject*> point_lights;
-		std::vector<GameObject*> spot_lights;
-		std::vector<GameObject*> directional_lights;
+		std::vector<PointLight*> point_lights;
+		std::vector<SpotLight*> spot_lights;
+		std::vector<DirectionalLight*> directional_lights;
 	};
 	
 }

@@ -12,6 +12,9 @@ namespace Ryno{
 	
 		DirectionalLight() { blur = 0; shadow_strength = .75f; }
 		~DirectionalLight(){}
+
+		DirectionalLight* clone() override { return new DirectionalLight(*this); }
+
 		
 
 		void set_rotation(F32 _pitch, F32 _yaw, F32 _roll);

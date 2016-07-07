@@ -13,16 +13,13 @@ namespace Ryno{
 
 		Scene();
 		virtual ~Scene() = 0{}
-		virtual void start() = 0;
-		virtual void input() = 0;
+		virtual void start() {}
+		virtual void input() {}
 		virtual void input_scripts() final;
-		virtual void update() = 0;
+		virtual void update() {}
 		virtual void update_scripts() final;
 		void camera_update();
 
-		
-
-	
 		Game* game;
 
 	};

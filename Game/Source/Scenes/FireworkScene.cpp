@@ -35,15 +35,16 @@ namespace Ryno{
 		go[0].transform.set_scale(100, 100, 100);
 		go[0].transform.set_position(0, 55, 50);
 
-		go[0].dir_light = new DirectionalLight();
-		go[0].dir_light->model.material.set_shader(&light_shader);
-		go[0].dir_light->set_rotation(-65, 150,0);
-		go[0].dir_light->diffuse_intensity = 1.7;
-		go[0].dir_light->set_diffuse_color(255, 255, 200);
-		go[0].dir_light->specular_intensity = .0;
-		go[0].dir_light->set_specular_color(255, 255, 200);
-		go[0].dir_light->ambient_intensity = 0;
-		go[0].dir_light->set_ambient_color(255, 255, 200);
+		auto* dl = go[0].add_script<DirectionalLight>();
+
+		dl->model.material.set_shader(&light_shader);
+		dl->set_rotation(-65, 150,0);
+		dl->diffuse_intensity = 1.7;
+		dl->set_diffuse_color(255, 255, 200);
+		dl->specular_intensity = .0;
+		dl->set_specular_color(255, 255, 200);
+		dl->ambient_intensity = 0;
+		dl->set_ambient_color(255, 255, 200);
 
 		shader.create("Geometry/geometry",GAME);
 		shader2.create("Geometry/geometry2",GAME);
@@ -109,8 +110,7 @@ namespace Ryno{
 		};
 
 		go[1].copy(go[0]);
-		delete go[1].dir_light;
-		go[1].dir_light = nullptr;
+		go[1].delete_script<DirectionalLight>();
 
 		go[2].copy(go[1]);
 		go[3].copy(go[1]);

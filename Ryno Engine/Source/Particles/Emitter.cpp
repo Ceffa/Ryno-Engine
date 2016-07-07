@@ -8,7 +8,7 @@ namespace Ryno{
 
 	Emitter::~Emitter()
 	{
-		ParticleManager::get_instance()->remove_emitter(game_object);
+		ParticleManager::get_instance()->remove_emitter(this);
 	}
 
 	Emitter::Emitter(const Emitter& e){
@@ -26,7 +26,7 @@ namespace Ryno{
 	
 	
 	void Emitter::init(U32 nr_particles){
-		ParticleManager::get_instance()->add_emitter(game_object);
+		ParticleManager::get_instance()->add_emitter(this);
 
 		m_particles.resize(nr_particles);
 

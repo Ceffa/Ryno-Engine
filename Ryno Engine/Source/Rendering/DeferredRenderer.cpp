@@ -135,28 +135,34 @@ namespace Ryno{
 
 		for (GameObject* go : GameObject::game_objects)
 		{
-			Model* model = go->get_script<Model>();
-			//Fill geometry batch
-			if (geometry_enabled){
-				if (go->active && model){
-					for(SubModel& s : model->sub_models)
-						s.material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
-					m_geometry_batch3d.draw(model);
-					
+			for (Model* model : go->get_scripts<Model>()) {
+
+				//Fill geometry batch
+				if (geometry_enabled) {
+					if (go->active && model) {
+						for (SubModel& s : model->sub_models)
+							s.material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
+						m_geometry_batch3d.draw(model);
+
+					}
+				}
+
+				//Fill shadow batch
+				if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled) {
+					if (go->active && model)
+						m_shadow_batch3d.draw(go);
 				}
 			}
-			//Fill shadow batch
-			if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled){
-				if (go->active && model)
-					m_shadow_batch3d.draw(go);
-			}
 			//Add ligths
-			if (go->point_light && go->point_light->active)
-				point_lights.push_back(go);
-			if (go->spot_light && go->spot_light->active)
-				spot_lights.push_back(go);
-			if (go->dir_light && go->dir_light->active)
-				directional_lights.push_back(go);
+			for (auto* l : go->get_scripts<PointLight>()) 
+				if (l->active)
+					point_lights.push_back(l);
+			for (auto* l : go->get_scripts<SpotLight>())
+				if (l->active)
+					spot_lights.push_back(l);
+			for (auto* l : go->get_scripts<DirectionalLight>())
+				if (l->active)
+					directional_lights.push_back(l);
 
 		}
 		m_shadow_batch3d.end();
@@ -192,9 +198,9 @@ namespace Ryno{
 		if (!point_light_enabled)
 			return;
 		int i = 0;
-		for (GameObject* go : point_lights){
-			point_shadow_subpass(go);
-			point_lighting_subpass(go);
+		for (auto* l : point_lights){
+			point_shadow_subpass(l);
+			point_lighting_subpass(l);
 		}
 
 
@@ -206,9 +212,9 @@ namespace Ryno{
 	{
 		if (!spot_light_enabled)
 			return;
-		for (GameObject* go : spot_lights){
-			spot_shadow_subpass(go);
-			spot_lighting_subpass(go);
+		for (auto* l : spot_lights){
+			spot_shadow_subpass(l);
+			spot_lighting_subpass(l);
 
 		}
 
@@ -219,20 +225,20 @@ namespace Ryno{
 	{
 		if (!directional_light_enabled)
 			return;
-		for (GameObject* go : directional_lights){
-			directional_shadow_subpass(go);
-			directional_lighting_subpass(go);
+		for (auto* l : directional_lights){
+			directional_shadow_subpass(l);
+			directional_lighting_subpass(l);
 		}
 	}	
 
 
-	void DeferredRenderer::point_shadow_subpass(GameObject* go)
+	void DeferredRenderer::point_shadow_subpass(PointLight* p)
 	{
 		
-		PointLight* p = go->point_light;
+	
 		p->calculate_max_radius();
 
-		if (!point_shadow_enabled || !go->point_light->shadows)
+		if (!point_shadow_enabled || !p->shadows)
 			return;
 
 
@@ -251,7 +257,7 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 correct_position = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0,0,0,1));
+		glm::vec3 correct_position = glm::vec3(p->game_object->transform.hinerited_matrix * p->game_object->transform.model_matrix * glm::vec4(0,0,0,1));
 		
 
 		glm::mat4 light_VP_matrices[NUM_OF_LAYERS];
@@ -289,9 +295,8 @@ namespace Ryno{
 	}
 	
 
-	void DeferredRenderer::point_lighting_subpass(GameObject* go){
+	void DeferredRenderer::point_lighting_subpass(PointLight* p){
 
-		auto* p = go->point_light;
 		auto* mod = &p->model;
 		mod->mesh = m_bounding_sphere.mesh;
 		auto& mat = mod->material;
@@ -314,11 +319,11 @@ namespace Ryno{
 		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
 		//we just need to orient the bounding box
 
-		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
+		glm::vec3 trans = glm::vec3(p->game_object->transform.hinerited_matrix * p->game_object->transform.model_matrix * glm::vec4(0, 0, 0, 1));
 
 		glm::vec3 scale = glm::vec3(p->max_radius);
-		glm::quat rot = go->transform.get_rotation();
-		Transform* parent = go->transform.get_parent();
+		glm::quat rot = p->game_object->transform.get_rotation();
+		Transform* parent = p->game_object->transform.get_parent();
 		while (parent != nullptr) {
 			rot = parent->get_rotation() * rot;
 			parent = parent->get_parent();
@@ -371,10 +376,10 @@ namespace Ryno{
 	}
 
 	
-	void DeferredRenderer::spot_shadow_subpass(GameObject* go)
+	void DeferredRenderer::spot_shadow_subpass(SpotLight* s)
 	{
+		GameObject* go = s->game_object;
 		//Needs to be done even if shadows disabled
-		SpotLight* s = go->spot_light;
 		//Get light position, with correct z axis
 		glm::vec3 correct_position = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
 		glm::vec4 dir = glm::transpose(glm::inverse(s->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (s->rotation * glm::vec4(0,0,-1,0));
@@ -391,7 +396,7 @@ namespace Ryno{
 		spot_VP_matrix = projection_matrix * view_matrix;
 
 
-		if (!spot_shadow_enabled || !go->spot_light->shadows)
+		if (!spot_shadow_enabled || !s->shadows)
 			return;
 
 
@@ -425,9 +430,9 @@ namespace Ryno{
 	}
 
 
-	void DeferredRenderer::spot_lighting_subpass(GameObject* go)
+	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
 	{
-		auto* s = go->spot_light;
+		GameObject* go = s->game_object;
 		auto* mod = &s->model;
 		mod->mesh = m_bounding_pyramid.mesh;
 		auto& mat = mod->material;
@@ -510,12 +515,11 @@ namespace Ryno{
 	}
 	
 
-	void DeferredRenderer::directional_shadow_subpass(GameObject* go){
+	void DeferredRenderer::directional_shadow_subpass(DirectionalLight* d){
 
-		if (!directional_shadow_enabled || !go->dir_light->shadows)
+		if (!directional_shadow_enabled || !d->shadows)
 			return;
-		DirectionalLight* d = go->dir_light;
-
+		GameObject* go = d->game_object;
 		m_fbo_shadow.bind_for_directional_shadow_pass();
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -546,10 +550,10 @@ namespace Ryno{
 	}
 
 
-	void DeferredRenderer::directional_lighting_subpass(GameObject* go)
+	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* d)
 	{
 
-		auto* d = go->dir_light;
+		GameObject* go = d->game_object;
 		auto* mod = &d->model;
 		mod->mesh = m_blit_model.mesh;
 		auto& mat = mod->material;

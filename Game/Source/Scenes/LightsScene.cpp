@@ -41,8 +41,7 @@ namespace Ryno {
 		lights.resize(lato * lato);
 		lights[0].copy(base);
 	
-		lights[0].point_light = new PointLight();
-		auto* p = lights[0].point_light;
+		auto* p = lights[0].add_script<PointLight>();
 		p->model.material.set_shader(&point_light_shader);
 		p->diffuse_intensity = 1.75f;
 		p->specular_intensity = 0;
@@ -64,7 +63,7 @@ namespace Ryno {
 				
 				lights[i*lato + j].transform.set_position(i * 30 - 30 *lato/2 , 6.5f, j * 30 - 30 * lato/2);
 				lights[i*lato + j].transform.set_parent(&parent.transform);
-				lights[i*lato + j].point_light->diffuse_color = ryno_math::rand_color_range(ColorRGBA(70,70,70,255),ColorRGBA(255,255,255,255));
+				lights[i*lato + j].get_script<PointLight>()->diffuse_color = ryno_math::rand_color_range(ColorRGBA(70,70,70,255),ColorRGBA(255,255,255,255));
 			}
 
 

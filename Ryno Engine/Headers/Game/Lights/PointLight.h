@@ -11,9 +11,7 @@ namespace Ryno{
 		//Constructors
 		PointLight() { shadow_strength = .75f; }
 		~PointLight(){}
-		
-
-	
+		PointLight* clone() override { return new PointLight(*this); }
 
 
 		void calculate_max_radius();

@@ -55,8 +55,7 @@ namespace Ryno {
 			point_light_shader.create("LightPass/point", ENGINE);
 
 
-			center.spot_light = new SpotLight();
-			auto* p = center.spot_light;
+			auto* p = center.add_script<SpotLight>();
 			p->model.material.set_shader(&spot_light_shader);
 			p->set_diffuse_color(255, 80, 0);
 			p->diffuse_intensity = 3;
@@ -79,25 +78,24 @@ namespace Ryno {
 				balls[i].transform.set_position(20 * sin(i * 360 / nr * DEG_TO_RAD), 0, 20 * cos(i * 360 / nr * DEG_TO_RAD));
 				balls[i].transform.set_scale(.4f, .4f, .4f);
 				
-				balls[i].spot_light->set_rotation(55, 360 / nr * i, 180);
+				balls[i].get_script<SpotLight>()->set_rotation(55, 360 / nr * i, 180);
 			}
 			for (I32 i = 0; i < nr; i++) {
 				balls[i].transform.set_parent(&center.transform);
 			}
-			delete center.spot_light;
-			center.spot_light = nullptr;
+			
+			center.delete_script<SpotLight>();
+
 			dir_light_shader.create("LightPass/directional", ENGINE);
 
-			center.dir_light = new DirectionalLight();
-			auto* d = center.dir_light;
+			auto* d = center.add_script<DirectionalLight>();
 			d->model.material.set_shader(&dir_light_shader);
 			d->set_diffuse_color(255, 255, 255);
 			d->diffuse_intensity = .35f;
 			d->set_rotation(-50, 0, 0);
 			d->absolute_movement = false;
 			d->blur = 1;
-			center.point_light = new PointLight();
-			auto* pl = center.point_light;
+			auto* pl = center.add_script<PointLight>();
 			pl->model.material.set_shader(&point_light_shader);
 			pl->set_diffuse_color(255, 80, 0);
 			pl->diffuse_intensity = 1;
@@ -128,9 +126,9 @@ namespace Ryno {
 			}
 			if (game->input_manager->is_key_pressed(SDLK_z, KEYBOARD)) {
 				for (auto* c : center.transform.children) {
-					center.spot_light->absolute_movement = !center.spot_light->absolute_movement;
+					center.get_script<SpotLight>()->absolute_movement = !center.get_script<SpotLight>()->absolute_movement;
 				}
-				center.dir_light->absolute_movement = !center.dir_light->absolute_movement;
+				center.get_script<DirectionalLight>()->absolute_movement = !center.get_script<DirectionalLight>()->absolute_movement;
 			}
 			if (Game::get_instance()->input_manager->is_key_pressed(SDLK_v, KEYBOARD))
 				color_lights();
@@ -149,7 +147,7 @@ namespace Ryno {
 		void color_lights() {
 			for (auto* a : center.transform.children) {
 				ColorRGBA c = ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white);
-				a->game_object->spot_light->diffuse_color = c;
+				a->game_object->get_script<SpotLight>()->diffuse_color = c;
 			
 			}
 		}
