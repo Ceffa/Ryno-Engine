@@ -22,6 +22,8 @@ namespace Ryno{
 
 		Game* game;
 
+		
+
 	};
 	
 	template<typename T> Scene * create_scene() { return new T; }

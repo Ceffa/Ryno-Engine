@@ -80,6 +80,8 @@ namespace Ryno{
 					T_list.push_back(v);
 			return std::move(T_list);
 		}
+
+		
 		//Status
 		bool active = true;
 
@@ -89,7 +91,7 @@ namespace Ryno{
 
 		static std::list<GameObject*> game_objects;
 
-	private:
+
 		std::list<Script*> scripts;
 		
 	};

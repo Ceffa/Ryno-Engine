@@ -21,6 +21,13 @@ namespace Ryno {
 		virtual bool is_unique() = 0;
 		virtual bool is_copyable() = 0;
 
+		template<class T>
+		static bool is_type(Script* s) {
+			if (dynamic_cast<T*>(s))
+				return true;
+			return false;
+		}
+
 	};
 
 }

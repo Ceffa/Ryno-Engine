@@ -135,35 +135,41 @@ namespace Ryno{
 
 		for (GameObject* go : GameObject::game_objects)
 		{
-			for (Model* model : go->get_scripts<Model>()) {
+			//Iterate scripts
+			for (auto* s : go->scripts) {
 
-				//Fill geometry batch
-				if (geometry_enabled) {
-					if (go->active && model) {
+				//Add models
+				if (geometry_enabled && Script::is_type<Model>(s)) {
+
+					Model* model = (Model*)s;
+					if (go->active) {
 						for (SubModel& s : model->sub_models)
 							s.material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
 						m_geometry_batch3d.draw(model);
 
+						if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled)
+							m_shadow_batch3d.draw(go);
 					}
 				}
 
-				//Fill shadow batch
-				if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled) {
-					if (go->active && model)
-						m_shadow_batch3d.draw(go);
+				//Add ligths
+				else if (point_light_enabled && Script::is_type<PointLight>(s)) {
+					PointLight* l = (PointLight*)s;
+					if (l->active)
+						point_lights.push_back(l);
+				}
+				else if (spot_light_enabled && Script::is_type<SpotLight>(s)) {
+					SpotLight* l = (SpotLight*)s;
+					if (l->active)
+						spot_lights.push_back(l);
+				}
+				else if (directional_light_enabled && Script::is_type<DirectionalLight>(s)) {
+					DirectionalLight* l = (DirectionalLight*)s;
+					if (l->active)
+						directional_lights.push_back(l);
 				}
 			}
-			//Add ligths
-			for (auto* l : go->get_scripts<PointLight>()) 
-				if (l->active)
-					point_lights.push_back(l);
-			for (auto* l : go->get_scripts<SpotLight>())
-				if (l->active)
-					spot_lights.push_back(l);
-			for (auto* l : go->get_scripts<DirectionalLight>())
-				if (l->active)
-					directional_lights.push_back(l);
-
+		
 		}
 		m_shadow_batch3d.end();
 	
