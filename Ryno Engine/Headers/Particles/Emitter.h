@@ -7,8 +7,7 @@
 #include <vector>
 #include <functional>
 #include "GenericMap.h"
-#include "StackAllocator.h"
-#include "Pool.h"
+#include "Script.h" 
 
 namespace Ryno{
 	
@@ -17,9 +16,9 @@ namespace Ryno{
 
 	public:
 
-		Particle3D(GameObject& go) : GameObject(go){  }
-		Particle3D() : GameObject(){  }
-		~Particle3D(){}
+		Particle3D(const Particle3D& go) {}
+		Particle3D() {}
+		~Particle3D() {}
 
 		glm::vec3 direction;
 		F32 acceleration;
@@ -34,7 +33,8 @@ namespace Ryno{
 	};
 
 
-class Emitter{
+class Emitter : public Script{
+
 
 	friend class Particle3D;
 
@@ -42,8 +42,12 @@ class Emitter{
 	public:
 		~Emitter();
 
-		Emitter(GameObject* go);
-		Emitter(const Emitter& e, GameObject* go);
+		Emitter() {}
+		Emitter(const Emitter& e);
+
+		bool is_unique() override { return false; }
+		bool is_copyable() override { return true; }
+		Emitter* clone() override { return new Emitter(*this); }
 		
 		void init(U32 nr_particles);
 		Particle3D* new_particle();
@@ -52,14 +56,12 @@ class Emitter{
 		void disable();
 
 
-		GameObject* game_object;
 		GenericMap save_map;
 
 		std::function<void(Emitter*, Particle3D*)> lambda_creation;
 		std::function<void(Emitter*)> lambda_spawn;
 		std::function<void(Emitter*,Particle3D*, F32)> lambda_particle_update;
 
-		F32 m_max_particles = 0;
 		F32 m_elapsed_time;
 private:
 		std::vector <Particle3D> m_particles;

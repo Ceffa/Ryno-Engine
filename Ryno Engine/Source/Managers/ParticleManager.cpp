@@ -10,7 +10,7 @@ namespace Ryno{
 	void ParticleManager::update(F32 delta)
 	{
 		for (const auto go : emitters){
-			go->emitter->update(delta);
+			go->get_script<Emitter>()->update(delta);
 		}
 	}
 

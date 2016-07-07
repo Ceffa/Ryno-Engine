@@ -25,8 +25,5 @@ namespace Ryno{
 		void update() override;
 		
 		GameObject floor,sphere;
-		
-		GroundElements ground_script;
-		LightsElements lights_script;
 	};
 }

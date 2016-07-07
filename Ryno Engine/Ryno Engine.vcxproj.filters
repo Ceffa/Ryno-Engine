@@ -627,12 +627,6 @@
     <ClCompile Include="Source\Others\PerlinNoise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Memory\StackAllocator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Memory\Pool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\System\Game.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -640,9 +634,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\GUI\GUIObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Memory\Mallocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Material.cpp">
@@ -797,15 +788,6 @@
     <ClInclude Include="Headers\Others\PerlinNoise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Memory\StackAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Memory\Allocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Memory\Pool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\System\Game.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -817,9 +799,6 @@
     </ClInclude>
     <ClInclude Include="Headers\Others\Transform2D.h">
       <Filter>Header Files\Others</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Memory\Mallocator.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Rendering\Material.h">
       <Filter>Header Files</Filter>

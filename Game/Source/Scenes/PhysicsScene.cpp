@@ -2,15 +2,15 @@
 
 #include "PhysicsScene.h"
 #include "Collider.h"
+#include "GameObject.h"
 
 namespace Ryno {
 
 
-
 	void PhysicsScene::start() {
-		AABBCollider c;
-		c.size = glm::vec3(12, 12, 12);
-		Log::print(c.size.x);
+		AABBCollider* aabb = ball.add_script<AABBCollider>();
+		aabb->size = glm::vec3(12, 12, 12);
+		Log::print(ball.get_script<AABBCollider>()->size.x);
 	}
 
 	void PhysicsScene::update() {

@@ -51,8 +51,6 @@ namespace Ryno{
 		shell->init();
 		log = Log::get_instance();
 		log->init();
-
-		mallocator = Mallocator::get_instance();
 	
 		particle_manager = ParticleManager::get_instance();
 		particle_manager->init();

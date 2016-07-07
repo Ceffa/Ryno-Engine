@@ -6,7 +6,6 @@
 #include "TimeManager.h"
 #include "Log.h"
 #include "GUIObject.h"
-#include "Mallocator.h"
 #include "AudioManager.h"
 #include <list>
 #include <vector>

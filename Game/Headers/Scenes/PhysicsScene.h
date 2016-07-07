@@ -19,6 +19,7 @@ namespace Ryno{
 		void start() override;
 		void input() override;
 		void update() override;
+		GameObject ball;
 
 	};
 }

@@ -15,6 +15,7 @@ namespace Ryno {
 		Shader shader;
 		GameObject base;
 
+
 		GroundElements* clone() override {
 			return new GroundElements(*this);
 		}
@@ -77,13 +78,7 @@ namespace Ryno {
 		
 
 		}
-		void input() override {
 		
-		}
-
-		void update() override {
-		}
-	
 
 	};
 

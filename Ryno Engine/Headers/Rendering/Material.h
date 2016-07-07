@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "GenericMap.h"
 #include <map>
+#include <iostream>
 
 
 namespace Ryno{

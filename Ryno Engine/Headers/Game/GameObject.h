@@ -3,13 +3,11 @@
 #include "Transform.h"
 #include "Lights/PointLight.h"
 #include "Lights/SpotLight.h"
-#include "Collider.h"
 #include "Lights/DirectionalLight.h"
 #include <list>
 
 namespace Ryno{
 
-	class Emitter;
 	class Script;
 	class GameObject{
 		friend class Scene;
@@ -30,6 +28,7 @@ namespace Ryno{
 				if (get_script<T>())
 					return nullptr;
 			}
+			
 			s->game_object = this;
 			scripts.push_back(s);
 			s->start();
@@ -58,12 +57,13 @@ namespace Ryno{
 		template<class T>
 		void delete_script()
 		{
-			delete remove_script(get_script<T>());
+			delete_script(get_script<T>());
 		}
 		template<class T>
 		void delete_script(T* s)
 		{
-			delete remove_script(s);
+			scripts.remove(s);
+			delete s;
 		}
 
 
@@ -83,8 +83,6 @@ namespace Ryno{
 		PointLight* point_light;
 		DirectionalLight* dir_light;
 		SpotLight* spot_light;
-		Emitter* emitter;
-		Collider* collider;
 		
 
 		static std::list<GameObject*> game_objects;

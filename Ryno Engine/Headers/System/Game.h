@@ -13,8 +13,6 @@
 #include "ParticleManager.h"
 #include "Log.h"
 #include "MeshBuilder.h"
-#include "Mallocator.h"
-#include "StackAllocator.h"
 #include "CPUProfiler.h"
 #include "GPUProfiler.h"
 
@@ -67,7 +65,6 @@ namespace Ryno{
 		DeferredRenderer* deferred_renderer;
 		ParticleManager* particle_manager;
 		MeshBuilder* mesh_builder;
-		Mallocator* mallocator;
 		Shell* shell;
 		Log* log;
 		GameState game_state;

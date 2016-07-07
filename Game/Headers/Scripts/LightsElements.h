@@ -16,6 +16,7 @@ namespace Ryno {
 		I32  cube_mesh;
 		Shader shader;
 		GameObject center;
+		
 
 		LightsElements* clone() override {
 			return new LightsElements(*this);

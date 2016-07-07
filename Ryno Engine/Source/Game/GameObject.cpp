@@ -24,7 +24,6 @@ namespace Ryno{
 		point_light = nullptr;
 		dir_light = nullptr;
 		spot_light = nullptr;
-		emitter = nullptr;
 	}
 	GameObject::GameObject(const GameObject& go) 
 	{
@@ -48,9 +47,7 @@ namespace Ryno{
 			spot_light = new SpotLight(*go.spot_light);
 		if (go.dir_light)
 			dir_light = new DirectionalLight(*go.dir_light);
-		if (go.emitter)
-			emitter = new Emitter(*go.emitter, this);
-
+	
 		game_objects.push_back(this);
 
 		scripts.clear();
@@ -62,7 +59,13 @@ namespace Ryno{
 	}
 
 	GameObject::~GameObject() {
-		game_objects.remove(this);
+
+		for (auto* s : scripts) {
+			delete s;
+			s = nullptr;
+		}
+			
+	
 	
 		if (point_light)
 			delete point_light;
@@ -70,10 +73,9 @@ namespace Ryno{
 			delete spot_light;
 		if (dir_light)
 			delete dir_light;
-		if (emitter)
-			delete emitter;
+	
 		reset_to_null();
-
+		game_objects.remove(this);
 	}
 
 	

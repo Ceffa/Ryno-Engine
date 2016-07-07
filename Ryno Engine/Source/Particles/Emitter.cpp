@@ -2,7 +2,7 @@
 #include <iostream>
 #include <GLM/gtx/string_cast.hpp>
 #include "ParticleManager.h"
-#include "Mallocator.h"
+
 
 namespace Ryno{
 
@@ -11,7 +11,7 @@ namespace Ryno{
 		ParticleManager::get_instance()->remove_emitter(game_object);
 	}
 
-	Emitter::Emitter(const Emitter& e, GameObject* go) : Emitter(go){
+	Emitter::Emitter(const Emitter& e){
 		//Instead of copying it, create it anew with the values 
 		//taken by the old emitter.
 		//To know how the particles is build, the first particle
@@ -22,28 +22,19 @@ namespace Ryno{
 		lambda_creation = e.lambda_creation;
 		lambda_particle_update = e.lambda_particle_update;
 		m_elapsed_time = e.m_elapsed_time;
-		if (e.m_max_particles>0)
-			init(e.m_max_particles);
 	}
 	
-	Emitter::Emitter(GameObject *go) : game_object(go)
-	{
-		ParticleManager::get_instance()->add_emitter(go);
-		m_max_particles = 0;
-	}
-
+	
 	void Emitter::init(U32 nr_particles){
-		m_max_particles = nr_particles;
-		m_particles.resize(nr_particles);
-				
+		ParticleManager::get_instance()->add_emitter(game_object);
 
-		for (U32 i = 0; i < nr_particles; i++){
+		m_particles.resize(nr_particles);
+
+		for (U32 i = 0; i < nr_particles; i++) {
 			lambda_creation(this, &m_particles[i]);
 			m_particles[i].active = false;
 			m_pool.push_back(&m_particles[i]);
 		}
-
-
 	}
 
 
@@ -68,7 +59,8 @@ namespace Ryno{
 
 	void Emitter::remove_particle(Particle3D* p){
 		
-		Emitter* e = p->emitter;
+		//Disable emitter component on the particle, in case it has one
+		Emitter* e = p->get_script<Emitter>();
 		if (e) e->disable();
 		m_pool.push_back(p);
 		p->active = false;
