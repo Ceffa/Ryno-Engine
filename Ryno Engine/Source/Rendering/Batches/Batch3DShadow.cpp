@@ -7,6 +7,8 @@
 
 namespace Ryno {
 
+	bool Batch3DShadow::sorting = true;
+
 	void Batch3DShadow::init(Camera3D* camera) {
 		set_camera(camera);
 		create_vertex_array();
@@ -29,7 +31,8 @@ namespace Ryno {
 
 	
 		//Sort with provided compare function
-		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
+		if (sorting)
+			std::stable_sort(m_models.begin(), m_models.end(), compare_models);
 
 
 		//Create batches

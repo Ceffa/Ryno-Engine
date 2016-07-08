@@ -79,6 +79,11 @@ namespace Ryno{
 
 		void set_camera(Camera3D* camera);
 
+		//BATCHES
+		Batch3DGeometry m_geometry_batch3d;
+		Batch3DShadow  m_shadow_batch3d;
+		Batch2DSprite m_sprite_batch2d;
+		Batch2DFont m_font_batch2d;
 
 	private:
 
@@ -109,11 +114,7 @@ namespace Ryno{
 		//PROGRAMS
 		Shader m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_blit_program,m_flat_program,m_sprite_program,m_font_program;
 
-		//BATCHES
-		Batch3DGeometry m_geometry_batch3d;
-		Batch3DShadow  m_shadow_batch3d;
-		Batch2DSprite m_sprite_batch2d;
-		Batch2DFont m_font_batch2d;
+		
 
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;

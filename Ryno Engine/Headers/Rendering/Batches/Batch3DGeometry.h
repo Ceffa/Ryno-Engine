@@ -47,6 +47,8 @@ namespace Ryno{
 		std::list<Shader*> shaders;
 		std::vector<SubModel*> m_models;
 
+		static bool sorting;
+
 	protected:
 		U32 m_vbo = 0;
 		U32 m_i_vbo = 0;//instancing vbo

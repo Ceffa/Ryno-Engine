@@ -7,6 +7,9 @@
 
 namespace Ryno {
 
+	bool Batch3DGeometry::sorting = true;
+
+
 	void Batch3DGeometry::init(Camera3D* cam) {
 		set_camera(cam);
 		create_vertex_array();
@@ -33,7 +36,8 @@ namespace Ryno {
 
 
 		//Sort with provided compare function
-		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
+		if (sorting)
+			std::stable_sort(m_models.begin(), m_models.end(), compare_models);
 
 		//Create batches
 		create_render_batches();

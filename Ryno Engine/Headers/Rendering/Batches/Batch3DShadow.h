@@ -48,6 +48,7 @@ namespace Ryno{
 
 		std::vector<model_and_matrix> m_models;
 
+		static bool sorting;
 	private:
 		
 		
@@ -69,6 +70,7 @@ namespace Ryno{
 
 		Camera3D* m_camera;
 		MeshManager* m_mesh_manager;
+
 
 	};
 
