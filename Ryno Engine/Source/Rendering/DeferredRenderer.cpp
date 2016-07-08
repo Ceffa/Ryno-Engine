@@ -134,6 +134,7 @@ namespace Ryno{
 			if (go->active)
 				go->transform.combine_model_matrices();
 
+		std::cout << SubModel::nr_of_submodels << std::endl;
 
 		for (auto s : SubModel::submodels) {
 			//Add models
@@ -206,7 +207,7 @@ namespace Ryno{
 
 		if (!point_light_enabled)
 			return;
-		int i = 0;
+		
 		for (auto* l : point_lights){
 			point_shadow_subpass(l);
 			point_lighting_subpass(l);

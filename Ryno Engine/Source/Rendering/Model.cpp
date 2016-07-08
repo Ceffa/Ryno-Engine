@@ -4,12 +4,39 @@
 namespace Ryno{
 
 	U32 SubModel::nr_of_submodels = 0;
-	std::forward_list<SubModel*> SubModel::submodels;
+	std::list<SubModel*> SubModel::submodels;
+
+
+	void SubModel::insert_ordered(SubModel* s)
+	{
+		nr_of_submodels++;
+
+		if (nr_of_submodels > 1) {
+
+			auto& it = submodels.begin();
+
+			for (; it != submodels.end(); it++) {
+				//if (compare_models(s, *it)) {
+					submodels.insert(it, s);
+					return;
+				
+			}
+		}
+		submodels.push_back(s);
+	}
+
+	void SubModel::remove_ordered(SubModel* s)
+	{
+		nr_of_submodels--;
+		submodels.remove(s);
+	}
 
 	SubModel* Model::add_sub_model()
 	{
+
 		sub_models.push_back(new SubModel());
 		SubModel* s = sub_models.back();
+		SubModel::insert_ordered(s);
 		s->parent_model = this;
 		return s;
 	}
@@ -17,12 +44,14 @@ namespace Ryno{
 	void Model::remove_sub_model(SubModel* s)
 	{
 		sub_models.remove(s);
+		SubModel::remove_ordered(s);
+
 	}
 
 	void Model::copy(const Model& copy)
 	{
 		for (auto s : copy.sub_models) {
-			sub_models.emplace_back(s);
+			sub_models.push_back(s);
 		}
 	}
 	
@@ -39,31 +68,19 @@ namespace Ryno{
 
 	SubModel::SubModel()
 	{
-		insert_ordered(this);
+		
 	}
 
 	void SubModel::copy(const SubModel& cp) {
 		cast_shadows = cp.cast_shadows;
 		mesh = cp.mesh;
 		material.copy(cp.material);
+		insert_ordered(this);
+		parent_model = this;
+
 	}
 
-	void SubModel::insert_ordered(SubModel* s)
-	{
-		nr_of_submodels++;
-		for (auto& it = submodels.begin(); it != submodels.end(); it++) {
-			if (compare_models(s, *it)) {
-				submodels.insert_after(it, s);
-				break;
-			}
-		}
-	}
-
-	void SubModel::remove_ordered(SubModel* s)
-	{
-		nr_of_submodels--;
-		submodels.remove(s);
-	}
+	
 
 	const U8 SubModel::compare_models(SubModel* a, SubModel* b) {
 		const auto ma = a->material;
@@ -91,7 +108,7 @@ namespace Ryno{
 
 	SubModel::~SubModel()
 	{
-		remove_ordered(this);
+		
 	}
 
 }

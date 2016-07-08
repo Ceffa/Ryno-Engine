@@ -5,7 +5,6 @@
 #include "TextureManager.h"
 #include "Structures.h"
 #include "Material.h"
-#include <forward_list>
 #include <list>
 
 #include "Script.h"
@@ -47,6 +46,7 @@ namespace Ryno{
 
 
 	class SubModel {
+		friend class Model;
 	public:
 		SubModel();
 		~SubModel();
@@ -58,11 +58,11 @@ namespace Ryno{
 
 		Model* parent_model;
 
-		static std::forward_list<SubModel*> submodels;
+		static std::list<SubModel*> submodels;
 		static U32 nr_of_submodels;
 	private:
-		void insert_ordered(SubModel* s);
-		void remove_ordered(SubModel* s);
+		static void insert_ordered(SubModel* s);
+		static void remove_ordered(SubModel* s);
 		const static U8 compare_models(SubModel* a, SubModel* b);
 
 

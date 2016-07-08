@@ -192,7 +192,6 @@ namespace Ryno {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), indices.data(), GL_STATIC_DRAW);
 
 		Shader* old_shader = nullptr;
-		
 		U64 buffer_data_offset = 0;
 		for (const auto& rb : m_render_batches){
 
@@ -228,9 +227,9 @@ namespace Ryno {
 			U32 offset = rb.indices_offset * sizeof(U32);
 
 			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_INT, (void*)offset, rb.num_instances, rb.vertex_offset);
-
 			curr_shader->unuse();
 		}
+
 	}
 
 	
