@@ -7,17 +7,14 @@
 
 namespace Ryno {
 
-	void Batch3DGeometry::init(Camera3D* cam) {
-		set_camera(cam);
+	void Batch3DGeometry::init() {
 		create_vertex_array();
 		m_mesh_manager = MeshManager::get_instance();
 		indices.resize(0);
 		input_instances = nullptr;
 
 	}
-	void Batch3DGeometry::set_camera(Camera3D* camera) {
-		m_camera = camera;
-	}
+	
 
 	void Batch3DGeometry::begin() {
 
@@ -29,20 +26,15 @@ namespace Ryno {
 	
 	}
 	void Batch3DGeometry::end() {
-
-
-
-		//Sort with provided compare function
-		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
-
+		
 		//Create batches
 		create_render_batches();
 
 	}
 
-	void Batch3DGeometry::draw(Model* mod) {
-		for (SubModel& m : mod->sub_models)
-			m_models.push_back(&m);
+	void Batch3DGeometry::draw(SubModel* s) {
+	
+			m_models.push_back(s);
 	}
 
 
@@ -241,31 +233,7 @@ namespace Ryno {
 		}
 	}
 
-	const U8 Batch3DGeometry::compare_models(SubModel* a, SubModel* b){
-		const auto& ma = a->material;
-		const auto& mb = b->material;
-
-		if (ma.shader != mb.shader)
-			return ma.shader < mb.shader;
-
-		if (a->mesh != b->mesh)
-			return a->mesh < b->mesh;
-
-		auto ita = ma.uniform_map.begin();
-		auto itb = mb.uniform_map.begin();
-
-		while (ita != ma.uniform_map.end()){
-			I8 res = memcmp(ita->second, itb->second, ma.shader->uniforms_data[ita->first].size);
-			if (res == 0){
-				ita++; itb++;
-				continue;
-			}
-			return res < 0 ? true: false;
-		}
-		return false;
-	}
-
-
+	
 }
 
 

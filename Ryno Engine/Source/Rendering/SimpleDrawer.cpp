@@ -21,8 +21,8 @@ namespace Ryno {
 	}
 	
 	void SimpleDrawer::draw(Model* model) {
-		for (SubModel& s : model->sub_models)
-			draw(&s);
+		for (SubModel* s : model->sub_models)
+			draw(s);
 	}
 
 	void SimpleDrawer::draw(SubModel* model) {

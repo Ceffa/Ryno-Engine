@@ -27,16 +27,16 @@ namespace Ryno {
 
 		base.transform.set_scale(2500, 5, 2500);
 		base.transform.set_position(0, 0, 0);
-		SubModel& m = base.add_script<Model>()->add_sub_model();
+		auto m = base.add_script<Model>()->add_sub_model();
 
-		m.material.set_shader(&shader);
-		m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
-		m.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
-		m.material.set_attribute("in_Tiling", glm::vec2(100, 100));
-		m.material.set_uniform("texture_sampler", white.id);
-		m.material.set_uniform("normal_map_sampler", white_normal.id);
-		m.mesh = mesh;
-		m.cast_shadows = false;
+		m->material.set_shader(&shader);
+		m->material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
+		m->material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
+		m->material.set_attribute("in_Tiling", glm::vec2(100, 100));
+		m->material.set_uniform("texture_sampler", white.id);
+		m->material.set_uniform("normal_map_sampler", white_normal.id);
+		m->mesh = mesh;
+		m->cast_shadows = false;
 		
 		lights.resize(lato * lato);
 		lights[0].copy(base);

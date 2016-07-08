@@ -133,24 +133,24 @@ namespace Ryno{
 		
 			ColorRGBA specular_final(specular.r*255, specular.g*255, specular.b*255,shininess*255);
 
-			SubModel& sm = model->add_sub_model();
-			sm.cast_shadows = true;
-			sm.material.set_shader(&shader);
+			auto sm = model->add_sub_model();
+			sm->cast_shadows = true;
+			sm->material.set_shader(&shader);
 			//Set colors
-			sm.material.set_attribute("diffuse_color", diffuse_final);
-			sm.material.set_attribute("specular_color", specular_final);
+			sm->material.set_attribute("diffuse_color", diffuse_final);
+			sm->material.set_attribute("specular_color", specular_final);
 
 			//Set textures
 			aiString tex_name;
 			aiReturn r = mat->GetTexture(aiTextureType_DIFFUSE, 0, &tex_name);	
 			
-			sm.material.set_uniform("diffuse_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
+			sm->material.set_uniform("diffuse_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
 
 			r = mat->GetTexture(aiTextureType_SPECULAR, 0, &tex_name);
-			sm.material.set_uniform("specular_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
+			sm->material.set_uniform("specular_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
 			
 			r = mat->GetTexture(aiTextureType_NORMALS, 0, &tex_name);
-			sm.material.set_uniform("normal_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
+			sm->material.set_uniform("normal_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
 		
 			Mesh* mesh = new Mesh();
 
@@ -205,9 +205,9 @@ namespace Ryno{
 
 
 			if (loc == Owner::ENGINE)
-				sm.mesh = ++last_lifetime_mesh;
+				sm->mesh = ++last_lifetime_mesh;
 			else
-				sm.mesh = ++last_temporary_mesh;
+				sm->mesh = ++last_temporary_mesh;
 
 		}
 

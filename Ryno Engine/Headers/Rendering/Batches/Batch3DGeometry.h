@@ -34,12 +34,11 @@ namespace Ryno{
 	class Batch3DGeometry{
 	public:
 		Batch3DGeometry(){}
-		void init(Camera3D* cam);
-		void set_camera(Camera3D* camera);
+		void init();
 		void begin();
 		void end();
 		
-		void draw(Model* go);
+		void draw(SubModel* s);
 
 		//Render batches with material-defined shaders
 		void render_batch();
@@ -53,7 +52,6 @@ namespace Ryno{
 		U32 m_index_vbo = 0;
 		U32 m_vao = 0;
 
-		Camera3D* m_camera;
 		MeshManager* m_mesh_manager;
 
 		std::vector<U32> indices;
@@ -63,7 +61,6 @@ namespace Ryno{
 		void* input_instances = nullptr;
 		std::vector<RenderBatchStruct> m_render_batches;
 		
-		const static U8 compare_models(SubModel* a, SubModel* b) ;
 
 		void create_render_batches();
 		void enable_attributes(Shader* s);

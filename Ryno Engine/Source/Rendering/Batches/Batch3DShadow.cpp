@@ -7,15 +7,11 @@
 
 namespace Ryno {
 
-	void Batch3DShadow::init(Camera3D* camera) {
-		set_camera(camera);
+	void Batch3DShadow::init() {
 		create_vertex_array();
 		m_mesh_manager = MeshManager::get_instance();
 		indices.resize(0);
 
-	}
-	void Batch3DShadow::set_camera(Camera3D* camera) {
-		m_camera = camera;
 	}
 
 	void Batch3DShadow::begin() {
@@ -36,12 +32,10 @@ namespace Ryno {
 		create_render_batches();
 	}
 
-	void Batch3DShadow::draw(GameObject* go) {
+	void Batch3DShadow::draw(SubModel* s) {
 
-		for (SubModel& s : go->get_script<Model>()->sub_models)
-		//discard light-emitting models
-		if (s.cast_shadows){
-			m_models.emplace_back(&s, &go->transform.model_matrix );
+		if (s->cast_shadows){
+			m_models.emplace_back(s, &s->parent_model->game_object->transform.model_matrix );
 		}
 	}
 

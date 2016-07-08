@@ -73,18 +73,18 @@ namespace Ryno{
 
 			p->decay_rate = .0005f;
 			p->speed = .5f;
-			auto& sm = p->add_script<Model>()->add_sub_model();
-			sm.material.set_shader(shader);
-			sm.mesh = *mesh;
-			sm.material.set_attribute("in_DiffuseColor",ColorRGBA(255,0,0,0));
+			auto sm = p->add_script<Model>()->add_sub_model();
+			sm->material.set_shader(shader);
+			sm->mesh = *mesh;
+			sm->material.set_attribute("in_DiffuseColor",ColorRGBA(255,0,0,0));
 
 
-			sm.material.set_attribute("in_Tiling", glm::vec2(1,1));
-			sm.material.set_uniform("texture_sampler", white->id);
-			sm.material.set_uniform("normal_map_sampler", normal->id);
+			sm->material.set_attribute("in_Tiling", glm::vec2(1,1));
+			sm->material.set_uniform("texture_sampler", white->id);
+			sm->material.set_uniform("normal_map_sampler", normal->id);
 
 			p->transform.set_rotation(ryno_math::rand_int_range(0, 360), ryno_math::rand_int_range(0, 360), 0);
-			sm.cast_shadows = false;
+			sm->cast_shadows = false;
 			
 		};
 		emitter->lambda_spawn = [](Emitter* e){
@@ -104,8 +104,8 @@ namespace Ryno{
 			ColorRGBA to(255,0,0,255);
 
 			Model* model = p->get_script<Model>();
-			model->sub_models[0].material.set_attribute("in_DiffuseColor",ryno_math::lerp(from, to, power_lerper(p->lifetime,20)));
-			model->sub_models[0].material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
+			model->sub_models.back()->material.set_attribute("in_DiffuseColor",ryno_math::lerp(from, to, power_lerper(p->lifetime,20)));
+			model->sub_models.back()->material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
 
 		};
 
@@ -143,8 +143,8 @@ namespace Ryno{
 			ColorRGBA to = ColorRGBA::blue;
 
 			Model* model = p->get_script<Model>();
-			model->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::lerp(from, to, power_lerper(p->lifetime, 20)));
-			model->sub_models[0].material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
+			model->sub_models.back()->material.set_attribute("in_DiffuseColor", ryno_math::lerp(from, to, power_lerper(p->lifetime, 20)));
+			model->sub_models.back()->material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
 
 		};
 		emit_2->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
@@ -153,8 +153,8 @@ namespace Ryno{
 			p->transform.set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
 
 			Model* model = p->get_script<Model>();
-			model->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255,255,255,0));
-			model->sub_models[0].material.set_attribute("in_Color2", ColorRGBA(255,0,0,0));
+			model->sub_models.back()->material.set_attribute("in_DiffuseColor", ColorRGBA(255,255,255,0));
+			model->sub_models.back()->material.set_attribute("in_Color2", ColorRGBA(255,0,0,0));
 
 
 		};
@@ -164,7 +164,7 @@ namespace Ryno{
 			p->transform.add_position(p->direction * p->speed * _delta_time);
 			p->transform.set_scale(ryno_math::lerp(glm::vec3(60), glm::vec3(100), p->lifetime));
 			Model* model = p->get_script<Model>();
-			model->sub_models[0].material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
+			model->sub_models.back()->material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
 
 			
 		};
@@ -176,7 +176,7 @@ namespace Ryno{
 				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 
 				Model* model = p->get_script<Model>();
-				model->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::rand_color_range(ColorRGBA(0, 0, 0, 0), ColorRGBA(255, 255, 255, 0)));
+				model->sub_models.back()->material.set_attribute("in_DiffuseColor", ryno_math::rand_color_range(ColorRGBA(0, 0, 0, 0), ColorRGBA(255, 255, 255, 0)));
 			}
 		};
 		go[0].get_script<Emitter>()->init(2700);

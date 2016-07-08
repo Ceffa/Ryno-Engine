@@ -39,10 +39,9 @@ namespace Ryno{
 		void begin();
 		void end();
 		
-		void init(Camera3D* camera);
-		void set_camera(Camera3D* camera);
+		void init();
 
-		void draw(GameObject* go);
+		void draw(SubModel* go);
 
 		void render_batch();
 
@@ -67,7 +66,6 @@ namespace Ryno{
 		U32 m_index_vbo=0;
 		U32 m_vao=0;
 
-		Camera3D* m_camera;
 		MeshManager* m_mesh_manager;
 
 	};

@@ -33,8 +33,7 @@ namespace Ryno{
 	void DeferredRenderer::set_camera(Camera3D* camera)
 	{
 		m_camera = camera;
-		m_geometry_batch3d.init(m_camera);
-		m_shadow_batch3d.init(m_camera);
+		
 	}
 	void DeferredRenderer::init(){
 
@@ -43,6 +42,8 @@ namespace Ryno{
 		m_texture_manager = TextureManager::get_instance();
 		m_simple_drawer = SimpleDrawer::get_instance();
 
+		m_geometry_batch3d.init();
+		m_shadow_batch3d.init();
 		
 		m_fbo_shadow.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_fbo_deferred.init(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -133,27 +134,29 @@ namespace Ryno{
 			if (go->active)
 				go->transform.combine_model_matrices();
 
+
+		for (auto s : SubModel::submodels) {
+			//Add models
+			if (geometry_enabled) {
+
+				GameObject* go = s->parent_model->game_object;
+				if (go->active) {
+					
+					s->material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
+					m_geometry_batch3d.draw(s);
+
+					if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled)
+						m_shadow_batch3d.draw(s);
+				}
+			}
+		}
 		for (GameObject* go : GameObject::game_objects)
 		{
 			//Iterate scripts
 			for (auto* s : go->scripts) {
 
-				//Add models
-				if (geometry_enabled && Script::is_type<Model>(s)) {
-
-					Model* model = (Model*)s;
-					if (go->active) {
-						for (SubModel& s : model->sub_models)
-							s.material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
-						m_geometry_batch3d.draw(model);
-
-						if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled)
-							m_shadow_batch3d.draw(go);
-					}
-				}
-
 				//Add ligths
-				else if (point_light_enabled && Script::is_type<PointLight>(s)) {
+				if (point_light_enabled && Script::is_type<PointLight>(s)) {
 					PointLight* l = (PointLight*)s;
 					if (l->active)
 						point_lights.push_back(l);
@@ -305,7 +308,7 @@ namespace Ryno{
 
 		auto* mod = &p->model;
 		mod->mesh = m_bounding_sphere.mesh;
-		auto& mat = mod->material;
+		auto mat = mod->material;
 
 		m_fbo_deferred.bind_for_light_pass();
 
@@ -441,7 +444,7 @@ namespace Ryno{
 		GameObject* go = s->game_object;
 		auto* mod = &s->model;
 		mod->mesh = m_bounding_pyramid.mesh;
-		auto& mat = mod->material;
+		auto mat = mod->material;
 
 		m_fbo_deferred.bind_for_light_pass();
 
@@ -562,7 +565,7 @@ namespace Ryno{
 		GameObject* go = d->game_object;
 		auto* mod = &d->model;
 		mod->mesh = m_blit_model.mesh;
-		auto& mat = mod->material;
+		auto mat = mod->material;
 		auto* s =mat.shader;
 		m_fbo_deferred.bind_for_light_pass();
 

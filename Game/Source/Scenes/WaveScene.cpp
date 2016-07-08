@@ -26,18 +26,18 @@ namespace Ryno {
 
 
 		t.transform.set_scale(size/2,size/2,size/2);
-		auto& m = t.add_script<Model>()->add_sub_model();
+		auto m = t.add_script<Model>()->add_sub_model();
 
 
-		m.material.set_shader(&shader);
-		m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
-		m.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
+		m->material.set_shader(&shader);
+		m->material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
+		m->material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
 
-		m.material.set_attribute("in_Tiling", glm::vec2(1, 1));
-		m.material.set_uniform("texture_sampler", white.id);
-		m.material.set_uniform("normal_map_sampler", white_normal.id);
-		m.mesh = mesh;
-		m.cast_shadows = false;
+		m->material.set_attribute("in_Tiling", glm::vec2(1, 1));
+		m->material.set_uniform("texture_sampler", white.id);
+		m->material.set_uniform("normal_map_sampler", white_normal.id);
+		m->mesh = mesh;
+		m->cast_shadows = false;
 		
 
 		
@@ -78,7 +78,7 @@ namespace Ryno {
 
 			o.transform.set_position(o.transform.get_position().x, 10.0f*sin(sqrt(pow(o.transform.get_position().x / 20.0f, 2) + pow(o.transform.get_position().z / 20.0f, 2)) - (_time / 400.0f)), o.transform.get_position().z);
 			
-			o.get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(0, (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 255 - (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 150));
+			o.get_script<Model>()->sub_models.back()->material.set_attribute("in_DiffuseColor", ColorRGBA(0, (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 255 - (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 150));
 			}
 
 		t.transform.set_position(0, 10 + 10.0f*sin(sqrt(pow(0/ 20.0f, 2) + pow(0 / 20.0f, 2)) - (_time / 400.0f)), 0);

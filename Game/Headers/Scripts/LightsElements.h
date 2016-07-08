@@ -37,16 +37,16 @@ namespace Ryno {
 			white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
 			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 
-			auto& m = center.add_script<Model>()->add_sub_model();
+			auto m = center.add_script<Model>()->add_sub_model();
 
-			m.material.set_shader(&shader);
-			m.mesh = cube_mesh;
-			m.cast_shadows = false;
-			m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
-			m.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
-			m.material.set_attribute("in_Tiling", glm::vec2(1,1));
-			m.material.set_uniform("texture_sampler", white.id);
-			m.material.set_uniform("normal_map_sampler", white_normal.id);
+			m->material.set_shader(&shader);
+			m->mesh = cube_mesh;
+			m->cast_shadows = false;
+			m->material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
+			m->material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
+			m->material.set_attribute("in_Tiling", glm::vec2(1,1));
+			m->material.set_uniform("texture_sampler", white.id);
+			m->material.set_uniform("normal_map_sampler", white_normal.id);
 			center.transform.set_scale(5, 5, 5);
 			center.transform.set_position(0, 35, 0);
 
