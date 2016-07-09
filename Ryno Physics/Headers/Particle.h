@@ -14,6 +14,8 @@ namespace RynoPhysics {
 		
 		F inverted_mass;
 
+		void integrate(F duration);
+
 	public: 
 		void set_inverted_mass(F _inverted_mass) { inverted_mass = _inverted_mass; }
 		void set_mass_mass(F _mass) { inverted_mass = 1.0/_mass; }
