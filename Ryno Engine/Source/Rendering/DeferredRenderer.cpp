@@ -148,7 +148,7 @@ namespace Ryno{
 						m_geometry_batch3d.draw(model);
 
 						if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled)
-							m_shadow_batch3d.draw(go);
+							m_shadow_batch3d.draw(model);
 					}
 				}
 

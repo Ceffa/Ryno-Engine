@@ -9,14 +9,16 @@ namespace Ryno{
 	SubModel& Model::add_sub_model()
 	{
 		sub_models.emplace_back();
-
-		return sub_models.back();
+		SubModel& s = sub_models.back();
+		s.parent = this;
+		return s;
 	}
 
 	void Model::copy(const Model& copy)
 	{
 		for (const SubModel& s : copy.sub_models) {
 			sub_models.emplace_back(s);
+			sub_models.back().parent = this;
 		}
 	}
 	

@@ -9,7 +9,7 @@
 #include "Script.h"
 
 namespace Ryno{
-		
+	class Model;
 	class SubModel {
 	public:
 		SubModel() {}
@@ -18,6 +18,7 @@ namespace Ryno{
 		bool cast_shadows;
 		SubModel(const SubModel& cp);
 		void copy(const SubModel& cp);
+		Model* parent;
 	};
 	class Model : public Script{
 	public:

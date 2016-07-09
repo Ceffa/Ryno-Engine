@@ -44,7 +44,7 @@ namespace Ryno{
 		//Render batches with material-defined shaders
 		void render_batch();
 
-		std::list<Shader*> shaders;
+		std::vector<Shader*> shaders;
 		std::vector<SubModel*> m_models;
 
 		static bool sorting;
