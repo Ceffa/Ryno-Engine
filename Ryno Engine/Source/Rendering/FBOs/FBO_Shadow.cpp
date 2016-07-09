@@ -7,7 +7,7 @@
 #include <Glm/gtx/transform.hpp>
 #define NINETY_DEGREES 1.57079632679489661923
 
-namespace Ryno {
+namespace RynoEngine {
 
 
 

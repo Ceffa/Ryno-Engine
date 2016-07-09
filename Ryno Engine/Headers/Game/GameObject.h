@@ -3,7 +3,7 @@
 #include "Transform.h"
 #include <list>
 
-namespace Ryno{
+namespace RynoEngine{
 
 	class Script;
 	class GameObject{

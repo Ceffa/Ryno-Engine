@@ -8,7 +8,7 @@
 #include <string>
 
 
-namespace Ryno{
+namespace RynoEngine{
 
 	bool file_exists(const std::string& fileName)
 	{

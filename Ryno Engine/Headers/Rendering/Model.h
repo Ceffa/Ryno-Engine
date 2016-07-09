@@ -8,7 +8,7 @@
 #include <list>
 #include "Script.h"
 
-namespace Ryno{
+namespace RynoEngine{
 	class Model;
 	class SubModel {
 	public:

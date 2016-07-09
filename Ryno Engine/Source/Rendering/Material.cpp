@@ -2,7 +2,7 @@
 
 
 
-namespace Ryno {
+namespace RynoEngine {
 
 	bool Material::set_shader(Shader * _shader)
 	{

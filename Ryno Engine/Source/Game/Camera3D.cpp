@@ -7,7 +7,7 @@
 
 
 
-namespace Ryno{
+namespace RynoEngine{
 
 	Camera3D::Camera3D(U32 w, U32 h) :width(w), height(h), yaw(0), pitch(0)
 	{

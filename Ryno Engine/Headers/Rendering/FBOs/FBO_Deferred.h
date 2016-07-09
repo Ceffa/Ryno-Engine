@@ -2,7 +2,7 @@
 
 #include "Global.h"
 #include "Shader.h"
-namespace Ryno{
+namespace RynoEngine{
 	class FBO_Deferred
 	{
 	public:

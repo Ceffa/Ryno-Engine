@@ -55,7 +55,7 @@ namespace tinyobj {
 	} tag_t;
 
 	typedef struct {
-		std::vector<Ryno::Vertex3D> vertices;
+		std::vector<RynoEngine::Vertex3D> vertices;
 		bool has_uvs, has_normals;
 		std::vector<unsigned int> indices;
 		std::vector<unsigned char>
@@ -418,7 +418,7 @@ namespace tinyobj {
 
 	static unsigned int
 		updateVertex(std::map<vertex_index, unsigned int> &vertexCache,
-			std::vector<Ryno::Vertex3D> &vertices, 
+			std::vector<RynoEngine::Vertex3D> &vertices, 
 			const std::vector<float> &in_positions,
 			const std::vector<float> &in_normals,
 			const std::vector<float> &in_texcoords, const vertex_index &i) {
@@ -431,7 +431,7 @@ namespace tinyobj {
 
 		assert(in_positions.size() > static_cast<unsigned int>(3 * i.v_idx + 2));
 
-		Ryno::Vertex3D v;
+		RynoEngine::Vertex3D v;
 		v.position.x = in_positions[3 * static_cast<size_t>(i.v_idx) + 0];
 		v.position.y = in_positions[3 * static_cast<size_t>(i.v_idx) + 1];
 		v.position.z = in_positions[3 * static_cast<size_t>(i.v_idx) + 2];

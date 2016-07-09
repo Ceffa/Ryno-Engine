@@ -1,7 +1,7 @@
 #include "Model.h"
 
 
-namespace Ryno{
+namespace RynoEngine{
 
 	
 

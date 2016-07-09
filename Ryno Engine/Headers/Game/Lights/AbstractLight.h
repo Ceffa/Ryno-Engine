@@ -8,7 +8,7 @@
 #include <GLM\glm.hpp>
 #include "Script.h"
 
-namespace Ryno{
+namespace RynoEngine{
 	
 	
 	class AbstractLight : public Script{

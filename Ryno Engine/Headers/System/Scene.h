@@ -1,7 +1,7 @@
 #pragma once
 #include "Global.h"
 #include "Transform.h"
-namespace Ryno{
+namespace RynoEngine{
 
 	class Game;
 

@@ -13,7 +13,7 @@
 #define NUM_LINES 10
 #define HISTORY_LENGTH 50
 
-namespace Ryno{
+namespace RynoEngine{
 	class Shell{
 		
 	public:

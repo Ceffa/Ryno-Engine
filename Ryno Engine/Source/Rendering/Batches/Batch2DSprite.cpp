@@ -5,7 +5,7 @@
 #include <GLM/gtx/string_cast.hpp>
 #include <GL/glew.h>
 
-namespace Ryno {
+namespace RynoEngine {
 
 	void Batch2DSprite::init() {
 	

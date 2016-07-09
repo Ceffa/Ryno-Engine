@@ -8,7 +8,7 @@
 #include "Global.h"
 #include "Scene.h"
 #include "Game.h"
-namespace Ryno{
+namespace RynoEngine{
 	class PhysicsScene : public Scene
 	{
 

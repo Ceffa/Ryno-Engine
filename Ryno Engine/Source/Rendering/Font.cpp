@@ -21,7 +21,7 @@ int closestPow2(int i) {
 
 #define MAX_TEXTURE_RES 4096
 
-namespace Ryno {
+namespace RynoEngine {
 
 	
 	std::vector<FontGlyph> FontGlyph::font_glyphs;

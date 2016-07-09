@@ -12,7 +12,7 @@
 #include "GroundElements.h"
 #include "LightsElements.h"
 
-namespace Ryno{
+namespace RynoEngine{
 
 	class ValleyScene : public Scene
 	{

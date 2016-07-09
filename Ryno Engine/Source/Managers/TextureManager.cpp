@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #endif
 #include "ImageLoader.h"
-namespace Ryno{
+namespace RynoEngine{
 
 
 	TextureManager::TextureManager(){}
@@ -67,7 +67,7 @@ namespace Ryno{
 
 	}
 
-	Ryno::Texture TextureManager::load_cube_map(const std::string& name, const std::string& ext, Owner loc){
+	RynoEngine::Texture TextureManager::load_cube_map(const std::string& name, const std::string& ext, Owner loc){
 
 		static const std::string middle_path = "Resources/Textures/3D/";
 		static const std::string pieces[6]{"rt", "lf", "up", "dn", "ft", "bk"};

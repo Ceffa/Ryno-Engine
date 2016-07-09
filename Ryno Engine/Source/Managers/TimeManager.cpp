@@ -3,7 +3,7 @@
 #include <SDL/SDL.h>
 #include <iostream>
 
-namespace Ryno{
+namespace RynoEngine{
 
 	TimeManager::TimeManager() : current_fps(60){
 

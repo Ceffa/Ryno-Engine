@@ -1,7 +1,7 @@
 #include "RynoMath.h"
 
 
-namespace Ryno{
+namespace RynoEngine{
 
 	std::random_device ryno_math::rd;
 	std::mt19937 ryno_math::mt(rd());
@@ -59,7 +59,7 @@ namespace Ryno{
 	
 
 
-	Ryno::ColorRGBA ryno_math::rand_color_range(ColorRGBA& min, ColorRGBA& max)
+	RynoEngine::ColorRGBA ryno_math::rand_color_range(ColorRGBA& min, ColorRGBA& max)
 	{
 		return ColorRGBA(rand_float_range(min.r, max.r), rand_float_range(min.g, max.g), rand_float_range(min.b, max.b), rand_float_range(min.a, max.a));
 

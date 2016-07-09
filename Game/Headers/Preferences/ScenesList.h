@@ -11,7 +11,7 @@
 
 #include <string>
 
-namespace Ryno{
+namespace RynoEngine{
 	class ScenesList{
 	public:
 		static void create_scenes(){

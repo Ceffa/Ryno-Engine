@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-namespace Ryno{
+namespace RynoEngine{
 
 	enum Type { VERTEX, INSTANCE, UNIFORM };
 

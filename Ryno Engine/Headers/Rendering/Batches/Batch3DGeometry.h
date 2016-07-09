@@ -11,7 +11,7 @@
 #include <GL/glew.h>
 #include <vector>
 
-namespace Ryno{
+namespace RynoEngine{
 
 	struct uniform{
 		uniform(std::string n, void* v) : name(n),  value(v){}

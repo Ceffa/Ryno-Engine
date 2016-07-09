@@ -2,7 +2,7 @@
 #include <SDL\SDL.h>
 
 
-namespace Ryno{
+namespace RynoEngine{
 
 	std::vector<CPUProfiler::Times> CPUProfiler::times;
 	U8 CPUProfiler::current_time;

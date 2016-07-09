@@ -7,7 +7,7 @@
 #include "Structures.h"
 
 
-namespace Ryno{
+namespace RynoEngine{
 	
 	class ParticleManager{
 	public:

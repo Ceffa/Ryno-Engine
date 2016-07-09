@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "Scene.h"
 #include "Script.h"
-namespace Ryno{
+namespace RynoEngine{
 
 	std::vector<Scene*(*)()> SceneManager::scenes;
 	std::map <std::string,U8> SceneManager::scene_names;

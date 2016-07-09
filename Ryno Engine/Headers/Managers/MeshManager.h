@@ -8,7 +8,7 @@
 
 #define TEMPORARY_OFFSET 1073741823
 #define MESH_LOG 0
-namespace Ryno{
+namespace RynoEngine{
 
 	struct Mesh{
 

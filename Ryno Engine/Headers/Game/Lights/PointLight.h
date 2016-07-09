@@ -2,7 +2,7 @@
 
 #include "Lights/AbstractLight.h"
 #include <list>
-namespace Ryno{
+namespace RynoEngine{
 	
 
 	class PointLight : public AbstractLight{

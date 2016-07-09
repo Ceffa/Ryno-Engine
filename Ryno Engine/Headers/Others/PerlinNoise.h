@@ -1,7 +1,7 @@
 #pragma once
 #include "Global.h"
 
-namespace Ryno{
+namespace RynoEngine{
 	class PerlinNoise {
 	public:
 		//3D

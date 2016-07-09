@@ -6,7 +6,7 @@
 #include "Structures.h"
 
 
-namespace Ryno{
+namespace RynoEngine{
 	class Camera3D{
 	public:
 

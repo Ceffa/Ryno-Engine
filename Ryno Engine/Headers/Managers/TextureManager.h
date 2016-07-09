@@ -9,7 +9,7 @@
 
 #define TEXTURE_LOG 0
 
-namespace Ryno{
+namespace RynoEngine{
 	struct GLTexture{
 		U64 width;
 		U64 height;

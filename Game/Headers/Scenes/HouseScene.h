@@ -10,7 +10,7 @@
 #include "Material.h"
 #include "GUIObject.h"
 
-namespace Ryno{
+namespace RynoEngine{
 
 	class HouseScene : public Scene
 	{

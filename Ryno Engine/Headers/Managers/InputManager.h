@@ -13,7 +13,7 @@ enum InputDevice{ KEYBOARD = 0x00000000, MOUSE = 0x22222222, CONTROLLER = 0x4444
 
 
 
-namespace Ryno{
+namespace RynoEngine{
 
 	enum Input{OK,EXIT_REQUEST,NONE};
 	class InputManager{

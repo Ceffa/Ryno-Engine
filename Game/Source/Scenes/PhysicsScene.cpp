@@ -4,7 +4,7 @@
 #include "Collider.h"
 #include "GameObject.h"
 
-namespace Ryno {
+namespace RynoEngine {
 
 
 	void PhysicsScene::start() {

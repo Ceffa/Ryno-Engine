@@ -2,11 +2,12 @@
 
 #include "WaveScene.h"
 
-namespace Ryno {
+namespace RynoEngine {
 
 	void WaveScene::start() {
 
 		Batch3DGeometry::sorting = false;
+		Batch3DShadow::sorting = false;
 		camera->position = glm::vec4(-90,72,-294, 1);
 		camera->yaw = 0.308f;
 		camera->pitch = 0.106;

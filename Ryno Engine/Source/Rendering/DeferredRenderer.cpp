@@ -16,7 +16,7 @@
 #define HALF_PI 1.57079632679489661923
 
 
-namespace Ryno{
+namespace RynoEngine{
 
 	const CameraDirection DeferredRenderer::camera_directions[NUM_OF_LAYERS]=
 	{

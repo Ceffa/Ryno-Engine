@@ -7,7 +7,7 @@
 #include "Terrain.h"
 #include "ValleyScene.h"
 
-namespace Ryno{
+namespace RynoEngine{
 	
 	void MinecraftScene::start(){
 		

@@ -2,7 +2,7 @@
 
 #include "Script.h"
 
-namespace Ryno {
+namespace RynoEngine {
 
 	class LightsElements : public Script {
 

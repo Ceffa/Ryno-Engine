@@ -1,6 +1,6 @@
 #include "GUIObject.h"
 
-namespace Ryno{
+namespace RynoEngine{
 
 	
 	std::list<GUIObject*> GUIObject::gui_objects;

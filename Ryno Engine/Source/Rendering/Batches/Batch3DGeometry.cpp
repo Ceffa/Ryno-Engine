@@ -5,7 +5,7 @@
 #include <GLM/gtx/string_cast.hpp>
 #include "Log.h"
 
-namespace Ryno {
+namespace RynoEngine {
 
 	bool Batch3DGeometry::sorting = true;
 

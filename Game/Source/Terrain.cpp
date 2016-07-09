@@ -2,7 +2,7 @@
 #include "PerlinNoise.h"
 #include "Terrain.h"
 
-namespace Ryno{
+namespace RynoEngine{
 
 	void BuildQuadForGrid(MeshBuilder* builder, glm::vec3 position, glm::vec2 uv,
 		bool buildTriangles, int vertsPerRow)

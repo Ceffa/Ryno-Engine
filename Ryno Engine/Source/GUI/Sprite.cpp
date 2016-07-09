@@ -2,7 +2,7 @@
 #include "Global.h"
 #include "TextureManager.h"
 
-namespace Ryno{
+namespace RynoEngine{
 
 
     Sprite::Sprite(){

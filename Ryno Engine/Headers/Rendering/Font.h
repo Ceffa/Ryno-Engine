@@ -19,7 +19,7 @@
 #include "Transform2D.h"
 
 
-namespace Ryno {
+namespace RynoEngine {
 
 	class Text;
 	class Batch2DFont;

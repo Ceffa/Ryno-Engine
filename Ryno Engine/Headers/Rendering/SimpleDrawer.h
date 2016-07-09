@@ -7,7 +7,7 @@
 #include <GL/glew.h>
 #include <vector>
 
-namespace Ryno{
+namespace RynoEngine{
 
 	
 	class SimpleDrawer{

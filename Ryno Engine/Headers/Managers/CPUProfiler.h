@@ -2,7 +2,7 @@
 #include "Global.h"
 #include <vector>
 
-namespace Ryno{
+namespace RynoEngine{
 	class CPUProfiler{
 		struct Times{
 			Times(U32 _start) :start(_start){}

@@ -2,7 +2,7 @@
 
 #include "LightsScene.h"
 
-namespace Ryno {
+namespace RynoEngine {
 
 	void LightsScene::start() {
 

@@ -4,7 +4,7 @@
 #include <GLM/gtx/quaternion.hpp>
 #include "GameObject.h"
 
-namespace Ryno{
+namespace RynoEngine{
 
 	Transform::Transform(const Transform& t)
 	{

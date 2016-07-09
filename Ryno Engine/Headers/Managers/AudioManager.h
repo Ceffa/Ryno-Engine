@@ -5,7 +5,7 @@
 #include "Global.h"
 
 
-namespace Ryno{
+namespace RynoEngine{
 
 	//wrapper of sound effect
 	class Sound{

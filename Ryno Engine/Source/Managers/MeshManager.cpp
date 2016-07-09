@@ -7,7 +7,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-namespace Ryno{
+namespace RynoEngine{
 
 	MeshManager::MeshManager(){
 		last_temporary_mesh = TEMPORARY_OFFSET;

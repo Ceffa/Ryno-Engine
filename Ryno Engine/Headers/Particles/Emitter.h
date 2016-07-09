@@ -9,7 +9,7 @@
 #include "GenericMap.h"
 #include "Script.h" 
 
-namespace Ryno{
+namespace RynoEngine{
 	
 
 	class Particle3D : public GameObject {

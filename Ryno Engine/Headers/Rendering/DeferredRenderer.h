@@ -19,7 +19,7 @@
 #include "GameObject.h"
 
 #define NUM_OF_LAYERS 6
-namespace Ryno{
+namespace RynoEngine{
 
 	struct CameraDirection
 	{

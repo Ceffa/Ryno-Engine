@@ -3,7 +3,7 @@
 #include <iostream>
 #include "MeshManager.h"
 
-namespace Ryno{
+namespace RynoEngine{
 
 	class MeshBuilder{
 

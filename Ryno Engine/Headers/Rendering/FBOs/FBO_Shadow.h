@@ -3,7 +3,7 @@
 #include "Global.h"
 #include "Shader.h"
 #include <GLM/glm.hpp>
-namespace Ryno{
+namespace RynoEngine{
 	class FBO_Shadow
 	{
 	public:

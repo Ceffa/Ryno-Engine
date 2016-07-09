@@ -4,7 +4,7 @@
 #include "Text.h"	
 #include <list>
 
-namespace Ryno{
+namespace RynoEngine{
 
 	class GUIObject{
 
