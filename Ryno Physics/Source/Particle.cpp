@@ -14,6 +14,11 @@ namespace RynoPhysics {
 		velocity *= pow(damping, duration);		//Damp velocity by factor d^t
 	}
 
+	bool Particle::has_finite_mass()
+	{
+		return inverse_mass > 0.0;
+	}
+
 	void Particle::add_force(V3& force)
 	{
 		force_accumulator += force;
