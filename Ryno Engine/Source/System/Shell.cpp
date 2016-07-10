@@ -296,7 +296,7 @@ namespace RynoEngine {
 		else if (command.compare("n") == 0) {
 			Game::get_instance()->next_scene();
 		}
-		else if (command.compare("sf") == 0){
+		else if (command.compare("t") == 0){
 
 			//read args
 			F32 f;

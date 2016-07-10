@@ -60,7 +60,7 @@ namespace RynoEngine {
 		ball2.get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255, 100, 0, 255));
 		
 		gravity_force = new ParticleGravity(glm::vec3(0, -30,0));
-		spring_force = new ParticleSpring(ball2.get_script<Particle>(), 100, 4, true);
+		spring_force = new ParticleSpring(ball2.get_script<Particle>(), 50, 1, true);
 		reg.add(p, gravity_force);
 		reg.add(p, spring_force);
 		

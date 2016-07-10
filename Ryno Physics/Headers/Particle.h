@@ -11,7 +11,7 @@ namespace RynoEngine {
 	protected:
 		V3 velocity;
 		V3 acceleration;
-		F damping = .999f;
+		F damping = .7f;
 		
 		F inverse_mass;
 		V3 force_accumulator;
