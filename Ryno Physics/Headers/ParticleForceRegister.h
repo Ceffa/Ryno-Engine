@@ -3,9 +3,7 @@
 #include "ParticleForceGenerator.h"
 #include <vector>;
 
-namespace RynoPhysics {
-
-	class Particle;
+namespace RynoEngine {
 
 	class ParticleForceRegister {
 
@@ -24,10 +22,6 @@ namespace RynoPhysics {
 		void remove(Particle* p, ParticleForceGenerator* fg);
 		void clear();
 		void update_forces(F duration);
-
-		
-
-
 
 	};
 

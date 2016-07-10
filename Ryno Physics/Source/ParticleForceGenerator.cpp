@@ -1,7 +1,7 @@
 #include "ParticleForceGenerator.h"
 #include "Particle.h"
 
-namespace RynoPhysics {
+namespace RynoEngine {
 
 	
 
@@ -10,17 +10,19 @@ namespace RynoPhysics {
 		if (!particle->has_finite_mass())
 			return;
 
-		V3 f = acceleration * particle->get_mass();
+		V3 f = acceleration / particle->get_inverted_mass();
 		particle->add_force(f);
 	}
 
 	void ParticleDrag::update_force(Particle* particle, F duration)
 	{
 		//Get velocity
-		V3 force(particle->get_velocity());
+		V3 force;
+		
+		particle->get_velocity(&force);
 
 		//Get magnitude
-		F drag_coeff = force.length();
+		F drag_coeff = glm::length(force);
 
 		//Normalize velocity
 		force /= drag_coeff;
@@ -33,6 +35,56 @@ namespace RynoPhysics {
 
 		particle->add_force(force);		
 
+	}
+
+	void ParticleSpring::update_force(Particle* particle, F duration)
+	{
+		V3 force;
+		particle->get_position(&force);
+		force -= other->get_position();
+
+		//First, cache the magnitude
+		F power = glm::length(force);
+
+		//If bungee and compressed, then do nothing
+		if (bungee && power < rest_length)
+			return;
+
+		//use magnitude to normalize the force
+		force /= power;
+
+		//Calculate final power
+		power = k * (power - rest_length);
+
+		//Multiply it by normalized force vector
+		force *= -power;
+
+		particle->add_force(force);
+	}
+
+	void ParticleAnchoredSpring::update_force(Particle* particle, F duration)
+	{
+		V3 force;
+		particle->get_position(&force);
+		force -= origin;
+
+		//First, cache the magnitude
+		F power = glm::length(force);
+
+		//If bungee and compressed, then do nothing
+		if (bungee && power < rest_length)
+			return;
+
+		//use magnitude to normalize the force
+		force /= power;
+
+		//Calculate final power
+		power = k * (rest_length - power);
+
+		//Multiply it by normalized force vector
+		force *= power;
+
+		particle->add_force(force);
 	}
 
 }

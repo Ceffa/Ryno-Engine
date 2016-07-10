@@ -8,6 +8,10 @@
 #include "Global.h"
 #include "Scene.h"
 #include "Game.h"
+#include "ParticleForceRegister.h"
+
+
+
 namespace RynoEngine{
 	class PhysicsScene : public Scene
 	{
@@ -19,7 +23,15 @@ namespace RynoEngine{
 		void start() override;
 		void input() override;
 		void update() override;
-		GameObject ball;
+	
+		I32 mesh;
+		Shader shader, dir_light_shader;
+		Texture white, white_normal;
+	
+		GameObject ball,ball2;
 
+		ParticleForceRegister reg;
+		ParticleGravity* gravity_force;
+		ParticleSpring* spring_force;
 	};
 }

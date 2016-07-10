@@ -27,9 +27,6 @@
     <ClInclude Include="Headers\ParticleForceRegister.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Gravity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Particle.cpp">
@@ -38,7 +35,7 @@
     <ClCompile Include="Source\ParticleForceRegister.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Gravity.cpp">
+    <ClCompile Include="Source\ParticleForceGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

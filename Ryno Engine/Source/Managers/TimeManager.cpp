@@ -35,7 +35,7 @@ namespace RynoEngine{
 		if ((U32)(1000.0f / target_fps) > time_passed) {
 			SDL_Delay((U32)(1000.0f / target_fps) - time_passed);
 		}
-		*delta_time = slow_factor* ((F32) SDL_GetTicks() - initial_ticks);
+		*delta_time = slow_factor* ((F32) SDL_GetTicks() - initial_ticks)/1000.0f;
 		*time += *delta_time;
 
 	}

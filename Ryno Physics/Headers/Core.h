@@ -1,6 +1,8 @@
 #pragma once
 #include "Types.h"
 #include "glm/glm.hpp"
+#include "glm/gtx/string_cast.hpp"
+#include <iostream>
 
 #define PRECISION_32 
 

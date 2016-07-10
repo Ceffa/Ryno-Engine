@@ -645,9 +645,6 @@
     <ClCompile Include="Source\Managers\CPUProfiler.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Managers\ErrorManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Managers\GPUProfiler.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
@@ -702,9 +699,6 @@
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Managers\CPUProfiler.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Managers\ErrorManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Managers\GPUProfiler.h">

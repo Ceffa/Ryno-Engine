@@ -1,6 +1,6 @@
 #include "ParticleForceRegister.h"
 
-namespace RynoPhysics {
+namespace RynoEngine {
 
 	
 	void ParticleForceRegister::add(Particle* p, ParticleForceGenerator* fg)

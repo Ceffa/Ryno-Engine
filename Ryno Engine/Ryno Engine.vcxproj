@@ -178,7 +178,6 @@
     <ClCompile Include="Source\GUI\Text.cpp" />
     <ClCompile Include="Source\Managers\AudioManager.cpp" />
     <ClCompile Include="Source\Managers\CPUProfiler.cpp" />
-    <ClCompile Include="Source\Managers\ErrorManager.cpp" />
     <ClCompile Include="Source\Managers\GPUProfiler.cpp" />
     <ClCompile Include="Source\Managers\InputManager.cpp" />
     <ClCompile Include="Source\Managers\MeshBuilder.cpp" />
@@ -221,7 +220,6 @@
     <ClInclude Include="Headers\GUI\Text.h" />
     <ClInclude Include="Headers\Managers\AudioManager.h" />
     <ClInclude Include="Headers\Managers\CPUProfiler.h" />
-    <ClInclude Include="Headers\Managers\ErrorManager.h" />
     <ClInclude Include="Headers\Managers\GPUProfiler.h" />
     <ClInclude Include="Headers\Managers\ImageLoader.h" />
     <ClInclude Include="Headers\Managers\InputManager.h" />

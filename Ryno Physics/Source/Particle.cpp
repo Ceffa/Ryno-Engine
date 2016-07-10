@@ -1,19 +1,22 @@
 #include "Particle.h"
+#include <iostream>
+
 #define NDEBUG
-namespace RynoPhysics {
+namespace RynoEngine {
 
 	void Particle::integrate(F duration)
 	{
-		assert(duration > 0.0);					//Assert valid duration
 
-		if (inverse_mass <= 0.0) return;		//Check invalid mass
+		if (inverse_mass <= 0.0) return;								//Check invalid mass
 		
 		//Get acceleration from every force
 		V3 new_acc = acceleration + force_accumulator * inverse_mass;
 
-		position += velocity * duration;		//Increment position
-		velocity += new_acc * duration;			//Increment velocity
-		velocity *= pow(damping, duration);		//Damp velocity by factor d^t
+		game_object->transform.add_position(velocity * duration);		//Increment position
+		velocity += new_acc * duration;									//Increment velocity
+		velocity *= pow(damping, duration);								//Damp velocity by factor d^t
+
+		clear_accumulator();
 	}
 
 	bool Particle::has_finite_mass()

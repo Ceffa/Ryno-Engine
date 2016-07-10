@@ -30,7 +30,7 @@ namespace RynoEngine{
 
 		
 		F32 movement_speed = 1.0f;
-		F32 rotation_speed = 0.0005f;
+		F32 rotation_speed = 0.5f;
 		I32 width;
 		I32 height;
 		glm::vec4 position;

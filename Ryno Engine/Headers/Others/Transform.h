@@ -21,7 +21,7 @@ namespace RynoEngine{
 		void set_position(F32 x, F32 y, F32 z) { set_position(glm::vec3(x, y, z)); }
 		void add_position(F32 x, F32 y, F32 z){ add_position(glm::vec3(x, y, z)); }
 
-		glm::vec3 get_position() { return position; }
+		const glm::vec3& get_position() { return position; }
 	
 		//Scale
 		void set_scale(glm::vec3 sc) { scale = sc; }
@@ -29,7 +29,7 @@ namespace RynoEngine{
 		void set_scale(F32 x, F32 y, F32 z) { set_scale(glm::vec3(x, y, z)); }
 		void add_scale(F32 x, F32 y, F32 z){ add_scale(glm::vec3(x, y, z)); }
 
-		glm::vec3 get_scale() { return scale; }
+		const glm::vec3& get_scale() { return scale; }
 
 		//Rotation
 		void set_rotation(glm::quat q) { rotation = q; }
@@ -39,7 +39,7 @@ namespace RynoEngine{
 		void set_rotation(F32 x, F32 y, F32 z) { set_rotation(glm::vec3(x, y, z)); }
 		void add_rotation(F32 x, F32 y, F32 z) { add_rotation(glm::vec3(x, y, z)); }
 
-		glm::quat get_rotation() { return rotation; }
+		const glm::quat& get_rotation() { return rotation; }
 
 		//Model matrix
 		glm::mat4 model_matrix;

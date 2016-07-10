@@ -18,8 +18,8 @@ namespace RynoEngine {
 		virtual void update() {}
 		virtual void input() {}
 		GameObject* game_object;
-		virtual bool is_unique() = 0;
-		virtual bool is_copyable() = 0;
+		virtual bool is_unique() { return false; }
+		virtual bool is_copyable() { return true; }
 
 		template<class T>
 		static bool is_type(Script* s) {

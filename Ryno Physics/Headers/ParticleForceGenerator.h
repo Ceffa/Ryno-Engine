@@ -3,7 +3,7 @@
 
 
 
-namespace RynoPhysics {
+namespace RynoEngine {
 
 	class Particle;
 	//Abstract class. Each derived class is a
@@ -41,4 +41,35 @@ namespace RynoPhysics {
 		void update_force(Particle* particle, F duration) override;
 	};
 
+
+	//Spring (two sides)
+	//F: -k * delta(l)
+	class ParticleSpring : public ParticleForceGenerator {
+
+	protected:
+		Particle* other;	//Particle at the other extremity
+		F k;				//Spring constant
+		F rest_length;		//Rest length
+		bool bungee;
+	public:
+		ParticleSpring(Particle* _other, F _k, F _rest_length, bool _bungee) : other(_other), k(_k), rest_length(_rest_length), bungee(_bungee) {}
+
+		void update_force(Particle* particle, F duration) override;
+	};
+
+
+	//Spring (two sides)
+	//F: -k * delta(l)
+	class ParticleAnchoredSpring : public ParticleForceGenerator {
+
+	protected:
+		V3 origin;			//Anchored position
+		F k;				//Spring constant
+		F rest_length;		//Rest length
+		bool bungee;
+	public:
+		ParticleAnchoredSpring(const V3& _origin, F _k, F _rest_length, bool _bungee) : origin(_origin), k(_k), rest_length(_rest_length), bungee(_bungee) {}
+
+		void update_force(Particle* particle, F duration) override;
+	};
 }
