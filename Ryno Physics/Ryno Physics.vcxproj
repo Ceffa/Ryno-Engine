@@ -124,10 +124,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Collider.h" />
+    <ClInclude Include="Headers\Core.h" />
+    <ClInclude Include="Headers\Particle.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Collider.cpp" />
+    <ClCompile Include="Source\Particle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
