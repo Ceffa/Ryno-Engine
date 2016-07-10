@@ -25,6 +25,9 @@ namespace RynoPhysics {
 		F get_mass() { return 1.0/inverse_mass; }
 		bool has_finite_mass();
 
+		V3 get_velocity() { return velocity; }
+
+
 		void add_force(V3& force);
 		void add_scaled_force(V3& direction, F intensity);
 		void clear_accumulator();
