@@ -4,13 +4,15 @@ namespace RynoPhysics {
 
 	void Particle::integrate(F duration)
 	{
-		if (inverse_mass <= 0.0) return;		//Check invalid mass
-
 		assert(duration > 0.0);					//Assert valid duration
 
-		V3 resulting_acceleration = acceleration += force_accumulator * inverse_mass;
+		if (inverse_mass <= 0.0) return;		//Check invalid mass
+		
+		//Get acceleration from every force
+		V3 new_acc = acceleration + force_accumulator * inverse_mass;
+
 		position += velocity * duration;		//Increment position
-		velocity += acceleration * duration;	//Increment velocity
+		velocity += new_acc * duration;			//Increment velocity
 		velocity *= pow(damping, duration);		//Damp velocity by factor d^t
 	}
 

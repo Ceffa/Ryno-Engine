@@ -23,9 +23,7 @@ namespace RynoPhysics {
 		void set_mass_mass(F _mass) { inverse_mass = 1.0/_mass; }
 		F get_inverted_mass() { return inverse_mass; }
 		F get_mass() { return 1.0/inverse_mass; }
-		bool has_finite_mass() {
-			return inverse_mass > 0.0;
-		}
+		bool has_finite_mass();
 
 		void add_force(V3& force);
 		void add_scaled_force(V3& direction, F intensity);
