@@ -87,4 +87,23 @@ namespace RynoEngine {
 		particle->add_force(force);
 	}
 
+	void ParticleBuoyancy::update_force(Particle* particle, F duration)
+	{
+		F32 pos = particle->get_position().y;
+
+		//If outside -> no force
+		if (pos >= level + max_depth)
+			return;
+
+		V3 force = glm::vec3(0, 0, 0);
+		//Max force if fully submerged
+		force.y = liquid_density * volume;
+
+		//Reduce force by a factor if not fully submerged
+		if (pos > level - max_depth) 
+			force.y *= (pos - level - max_depth) / (-2 * max_depth);
+
+		particle->add_force(force);
+	}
+
 }

@@ -33,5 +33,7 @@ namespace RynoEngine{
 		ParticleForceRegister reg;
 		ParticleGravity* gravity_force;
 		ParticleSpring* spring_force;
+		ParticleBuoyancy* buoyancy_force;
+
 	};
 }

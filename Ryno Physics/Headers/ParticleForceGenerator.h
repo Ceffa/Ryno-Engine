@@ -72,4 +72,19 @@ namespace RynoEngine {
 
 		void update_force(Particle* particle, F duration) override;
 	};
+
+	//Buoyancy (simplified, it's almost a spring)
+	//F: 0 if outside, k*d id submerged,
+	class ParticleBuoyancy : public ParticleForceGenerator {
+
+	protected:
+		F level;			//Liquid (water) level
+		F max_depth;		//Size of the object
+		F liquid_density;	//Density of the liquid
+		F volume;			//Volume of the object
+	public:
+		ParticleBuoyancy(F _level, F _depth, F _volume, F _liquid_density = 1000.0) : level(_level), max_depth(_depth), volume(_volume), liquid_density(_liquid_density) {}
+
+		void update_force(Particle* particle, F duration) override;
+	};
 }
