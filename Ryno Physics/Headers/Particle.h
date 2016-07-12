@@ -31,11 +31,13 @@ namespace RynoEngine {
 
 		void get_velocity(V3* v) { *v = velocity; }
 		void get_position(V3* p) { *p = game_object->transform.get_position(); }
+		void get_acceleration(V3* a) { *a = acceleration; }
 		void set_velocity(const V3& v) { velocity = v; }
 		void add_velocity(const V3& v) { velocity += v; }
 		void set_position(const V3& p) { game_object->transform.set_position(p); }
 		void add_position(const V3& p) { game_object->transform.add_position(p); }
-
+		
+		const V3& get_acceleration() { return acceleration; }
 		const V3& get_velocity() { return velocity; }
 		const V3& get_position() { return game_object->transform.get_position(); }
 

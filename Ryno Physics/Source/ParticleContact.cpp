@@ -26,10 +26,33 @@ namespace RynoEngine {
 		if (separating_velocity > 0)
 			return;
 
-		//Calculate total velocity for the inpulse.
-		//It needs to also include the initial velocity (because it should be removed).
-		//In case of a perfectly elastic collision, it is double tan the separating velocity
-		F delta_velocity = -separating_velocity * (restitution + 1);
+		//New separating speed after contact
+		F new_sep_velocity = -separating_velocity * restitution;
+
+		//***START OF RESTING CONTACT***
+		//Calculate acceleraton during contact
+		V3 frame_acc;
+		particles[0]->get_acceleration(&frame_acc);
+		if (particles[1]) frame_acc -= particles[1]->get_acceleration();
+
+		//Velocity generated in the current frame
+		F frame_velocity = dot(frame_acc,contact_normal) * duration;
+
+		//if the frame velocity is < 0, it means they are colliding (as for sep velocity)
+		if (frame_velocity < 0) {
+
+			//Remove the velocity generated in the last frame.
+			//This makes contact possible.
+			new_sep_velocity += frame_velocity * restitution;
+			
+			//Avoid floating errors that makes it negative
+			if (new_sep_velocity < 0)
+				new_sep_velocity = 0;
+		}
+		//***END OF RESTING CONTACT***
+
+
+		F delta_velocity = new_sep_velocity - separating_velocity;
 
 		//Calculate global (inverse) mass
 		F total_inverse_mass = particles[0]->get_inverted_mass();
