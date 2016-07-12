@@ -6,13 +6,14 @@
 namespace RynoEngine {
 
 	class ParticleContact  {
-
+		friend class ParticleResolver;
 	public:
 		Particle* particles[2];
 
-		F restitution;		//Percentage of impulse
-		F penetration;		//If positive, they are interpenetrating
-		V3 contact_normal;	//Normalized direction of the contact
+		F restitution;				//Percentage of impulse
+		F penetration;				//If positive, they are interpenetrating
+		V3 contact_normal;			//Normalized direction of the contact
+		V3 particle_movements[2];	//Holds the movement after resolving interpenetration
 
 	protected:
 		//Resolve collision (by resolving velocity and interpenetration)

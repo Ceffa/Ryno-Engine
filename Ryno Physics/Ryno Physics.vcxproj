@@ -129,12 +129,14 @@
     <ClInclude Include="Headers\ParticleContact.h" />
     <ClInclude Include="Headers\ParticleForceGenerator.h" />
     <ClInclude Include="Headers\ParticleForceRegister.h" />
+    <ClInclude Include="Headers\ParticleResolver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ParticleContact.cpp" />
     <ClCompile Include="Source\ParticleForceGenerator.cpp" />
     <ClCompile Include="Source\Particle.cpp" />
     <ClCompile Include="Source\ParticleForceRegister.cpp" />
+    <ClCompile Include="Source\ParticleResolver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
