@@ -11,6 +11,7 @@ namespace RynoEngine {
 		Particle* particles[2];
 
 		F restitution;		//Percentage of impulse
+		F penetration;		//If positive, they are interpenetrating
 		V3 contact_normal;	//Normalized direction of the contact
 
 	protected:
@@ -21,8 +22,6 @@ namespace RynoEngine {
 	private:
 		void resolve_velocity(F duration);
 		void resolve_interpenetration(F duration);
-
-
 
 	};
 

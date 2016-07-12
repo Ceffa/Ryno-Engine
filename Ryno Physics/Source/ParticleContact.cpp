@@ -53,6 +53,27 @@ namespace RynoEngine {
 
 	void ParticleContact::resolve_interpenetration(F duration)
 	{
+		//Not interpenetrating
+		if (penetration <= 0)
+			return;
+
+		//Total mass
+		F total_inverse_mass = particles[0]->get_inverted_mass();
+		if (particles[1]) total_inverse_mass += particles[1]->get_inverted_mass();
+
+		//If both infinite return
+		if (total_inverse_mass <= 0)
+			return;
+
+		
+		V3 offset = penetration * contact_normal / total_inverse_mass;
+
+		//Each particle is moved by an offset that depends on its mass, and on the total offset
+		particles[0]->add_position(offset * particles[0]->get_inverted_mass());
+		if (particles[1])
+			particles[1]->add_position(offset * particles[1]->get_inverted_mass());
+
+
 
 	}
 
