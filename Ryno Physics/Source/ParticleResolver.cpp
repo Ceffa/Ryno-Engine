@@ -54,15 +54,13 @@ namespace RynoEngine {
 				{
 					if (contacts[i]->particles[1] == contacts[max_idx]->particles[0])
 					{
-						contacts[i]->penetration -= dot(movements[0], contacts[i]->contact_normal);
+						contacts[i]->penetration += dot(movements[0], contacts[i]->contact_normal);
 					}
 					else if (contacts[i]->particles[1] == contacts[max_idx]->particles[1])
 					{
-						contacts[i]->penetration -= dot(movements[1], contacts[i]->contact_normal);
+						contacts[i]->penetration += dot(movements[1], contacts[i]->contact_normal);
 					}
 				}
-
-
 			}
 
 		}

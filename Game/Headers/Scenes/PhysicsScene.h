@@ -13,8 +13,7 @@
 #include "ParticleResolver.h"
 #include <vector>
 
-
-
+#define LATO 10
 
 namespace RynoEngine{
 	class PhysicsScene : public Scene
@@ -32,14 +31,15 @@ namespace RynoEngine{
 		Shader shader, dir_light_shader;
 		Texture white, white_normal;
 	
-		GameObject ball[3];
-		Particle* p[3];
+		
+		GameObject ball[LATO*LATO];
+		Particle* p[LATO*LATO];
 
 		ParticleForceRegister reg;
 		ParticleGravity* gravity_force;
 		ParticleSpring* spring_force;
 		ParticleBuoyancy* buoyancy_force;
-		ParticleCable* cables[2];
+		std::vector<ParticleCable> cables;
 		ParticleResolver* resolver;
 		std::vector<ParticleContact*> contacts;
 

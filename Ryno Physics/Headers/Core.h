@@ -2,6 +2,7 @@
 #include "Types.h"
 #include "glm/glm.hpp"
 #include "glm/gtx/string_cast.hpp"
+#include "Log.h"
 #include <iostream>
 
 #define PRECISION_32 

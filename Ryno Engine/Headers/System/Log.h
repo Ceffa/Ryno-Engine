@@ -24,10 +24,15 @@ namespace RynoEngine{
 		void set_text_color(U8 r, U8 g, U8 b);
 
 		bool active = true;
+		bool fps_log = false;
+
 		static void print(const std::string& message);
 		static void print(F32 f);
+		static void print(const glm::vec3& vec);
 		static void println(const std::string& message);
 		static void println(F32 f);
+		static void println(const glm::vec3& vec);
+
 		
 
 

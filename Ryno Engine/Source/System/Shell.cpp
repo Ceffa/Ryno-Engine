@@ -296,6 +296,9 @@ namespace RynoEngine {
 		else if (command.compare("n") == 0) {
 			Game::get_instance()->next_scene();
 		}
+		else if (command.compare("fps") == 0) {
+			Log::get_instance()->fps_log = !Log::get_instance()->fps_log;
+		}
 		else if (command.compare("t") == 0){
 
 			//read args

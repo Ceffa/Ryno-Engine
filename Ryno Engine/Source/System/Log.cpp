@@ -183,6 +183,22 @@ namespace RynoEngine {
 		}
 	}
 
+	void Log::print(const glm::vec3& vec)
+	{
+		print("(x: ");
+		print(vec.x);
+		print(" , y: ");
+		print(vec.y);
+		print(" , z: ");
+		print(vec.z);
+		print(")");
+	}
+	void Log::println(const glm::vec3& vec)
+	{
+		println("");
+		print(vec);
+	}
+
 	void Log::read_up()
 	{
 		if (iterator != history.end()){

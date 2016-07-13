@@ -40,11 +40,12 @@ namespace RynoEngine{
 
 	}
 	void TimeManager::print_fps(){
-		static U32 frame_count = 0;
-		if (frame_count++ == 60) {
-			frame_count = 0;
-			Log::println(current_fps);
-			//Log::message(current_fps);
+		if (Log::get_instance()->fps_log) {
+			static U32 frame_count = 0;
+			if (frame_count++ == 30) {
+				frame_count = 0;
+				Log::println(current_fps);
+			}
 		}
 	}
 

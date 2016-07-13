@@ -6,7 +6,7 @@ namespace RynoEngine {
 	void ParticleContact::resolve(F duration)
 	{
 		resolve_velocity(duration);
-		//resolve_interpenetration(duration);
+		resolve_interpenetration(duration);
 	}
 
 	F ParticleContact::calculate_separating_velocity() const

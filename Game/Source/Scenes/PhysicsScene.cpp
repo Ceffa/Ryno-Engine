@@ -25,6 +25,7 @@ namespace RynoEngine {
 		dir_light_shader.create("LightPass/directional", ENGINE);
 
 		ball[0].transform.set_scale(2,2,2);
+
 		auto& m = ball[0].add_script<Model>()->add_sub_model();
 
 
@@ -38,6 +39,37 @@ namespace RynoEngine {
 		m.mesh = mesh;
 		m.cast_shadows = false;
 
+		
+
+		p[0] = ball[0].add_script<Particle>();
+		
+		p[0]->set_mass(10);
+		p[0]->set_velocity(glm::vec3(0, 0, 0));
+
+
+		F32 restit = .5f;
+		F32 length = 15;
+		for (int i = 0; i < LATO; i++) {
+			for (int j = 0; j < LATO; j++) {
+				int n = i * LATO + j;
+				if (i != 0 || j != 0)
+					ball[i * LATO + j].copy(ball[0]);
+				ball[n].transform.set_position(i * 10, -j * 10, 0);
+				p[n] = ball[n].get_script<Particle>();
+				p[n]->set_acceleration(glm::vec3(0,-15,0));
+
+			}
+		}
+		for (int i = 0; i < LATO; i++) {
+			for (int j = 0; j < LATO-1; j++) {
+				int n = i * LATO + j;
+					cables.emplace_back(p[n], p[i * LATO + j + 1], length, restit);
+				/*if (i < LATO - 1)
+					cables.emplace_back(p[n], p[(i + 1) * LATO + j], length, restit);*/
+
+			}
+		}
+
 		//dir light
 		auto* l = ball[0].add_script<DirectionalLight>();
 		l->model.material.set_shader(&dir_light_shader);
@@ -50,37 +82,16 @@ namespace RynoEngine {
 		l->set_ambient_color(255, 255, 255);
 		l->shadows = false;
 
-		p[0] = ball[0].add_script<Particle>();
+
 		
-		p[0]->set_mass(10);
-		p[0]->set_velocity(glm::vec3(0, 0, 0));
-
-		ball[1].copy(ball[0]);
-		ball[1].delete_script<DirectionalLight>();
-		ball[1].get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255, 100, 0, 255));
-		ball[2].copy(ball[1]);
-		ball[2].get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(0, 255, 255, 255));
-		
-		p[1] = ball[1].get_script<Particle>();
-		p[2] = ball[2].get_script<Particle>();
-
-		ball[1].transform.set_position(1, 1, 0);
-		ball[2].transform.set_position(2, 2, 0);
-
-
-		gravity_force = new ParticleGravity(glm::vec3(0, -15,0));
 		//spring_force = new ParticleSpring(ball2.get_script<Particle>(), 50, 1, true);
 		//buoyancy_force = new ParticleBuoyancy(15, 6, 1);
-		
-		p[0]->set_inverted_mass(0);
-		reg.add(p[1], gravity_force);
-		reg.add(p[2], gravity_force);
+		for (int i = 0; i < LATO; i++)
+			p[i*LATO]->set_inverted_mass(0);
+	
 
-		
-		cables[0] = new ParticleCable(p[0],p[1],10,.5f);
-		cables[1] = new ParticleCable(p[1], p[2],10, .5f);	
 
-		resolver = new ParticleResolver(10);
+		resolver = new ParticleResolver(100);
 
 	}
 
@@ -89,10 +100,9 @@ namespace RynoEngine {
 		for (Particle* _p : p) _p->integrate(game->delta_time);
 
 		U total = 0;
-		for (ParticleCable* _c : cables) {
-			if (!_c)continue;
+		for (ParticleCable& _c : cables) {
 			U detected;
-			ParticleContact* boing = _c->add_contact(1, &detected);
+			ParticleContact* boing = _c.add_contact(1, &detected);
 			total += detected;
 			if (detected == 1)
 				contacts.push_back(boing);
@@ -105,19 +115,22 @@ namespace RynoEngine {
 	}
 	void PhysicsScene::input() {
 	
-		float speed = 50;
+		float speed = .2f;
+		glm::vec3 dir = glm::vec3(0,0,0);
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-			ball[1].transform.add_position(game->delta_time * speed * glm::vec3(1, 0, 0));
+			dir += glm::vec3(speed, 0, 0);
 		}
 		if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-			ball[1].transform.add_position(game->delta_time * speed * glm::vec3(-1, 0, 0));
+			dir += glm::vec3(-speed, 0, 0);
 		}
 		if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-			ball[1].transform.add_position(game->delta_time * speed * glm::vec3(0, 1, 0));
+			dir +=  glm::vec3(0, speed, 0);
 		}
 		if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-			ball[1].transform.add_position(game->delta_time * speed * glm::vec3(0, -1, 0));
+			dir += glm::vec3(0, -speed, 0);
 		}
+		for (int i = 0; i < LATO; i++)
+			p[i*LATO]->add_position(dir);
 
 	}
 }
