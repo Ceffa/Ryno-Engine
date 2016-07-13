@@ -43,7 +43,7 @@ namespace RynoEngine {
 
 			//Remove the velocity generated in the last frame.
 			//This makes contact possible.
-			new_sep_velocity += frame_velocity * restitution;
+			new_sep_velocity += frame_velocity * 5;
 			
 			//Avoid floating errors that makes it negative
 			if (new_sep_velocity < 0)

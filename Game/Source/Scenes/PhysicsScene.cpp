@@ -49,21 +49,21 @@ namespace RynoEngine {
 
 		F32 restit = .5f;
 		F32 length = 15;
-		for (int i = 0; i < LATO; i++) {
-			for (int j = 0; j < LATO; j++) {
-				int n = i * LATO + j;
+		for (int i = 0; i < LATO_I; i++) {
+			for (int j = 0; j < LATO_J; j++) {
+				int n = i * LATO_I + j;
 				if (i != 0 || j != 0)
-					ball[i * LATO + j].copy(ball[0]);
+					ball[n].copy(ball[0]);
 				ball[n].transform.set_position(i * 10, -j * 10, 0);
 				p[n] = ball[n].get_script<Particle>();
-				p[n]->set_acceleration(glm::vec3(0,-15,0));
+				p[n]->set_acceleration(glm::vec3(0,-500,0));
 
 			}
 		}
-		for (int i = 0; i < LATO; i++) {
-			for (int j = 0; j < LATO-1; j++) {
-				int n = i * LATO + j;
-					cables.emplace_back(p[n], p[i * LATO + j + 1], length, restit);
+		for (int i = 0; i < LATO_I; i++) {
+			for (int j = 0; j < LATO_J-1; j++) {
+				int n = i * LATO_I + j;
+					cables.emplace_back(p[n], p[i * LATO_I + j + 1], length, restit);
 				/*if (i < LATO - 1)
 					cables.emplace_back(p[n], p[(i + 1) * LATO + j], length, restit);*/
 
@@ -86,8 +86,8 @@ namespace RynoEngine {
 		
 		//spring_force = new ParticleSpring(ball2.get_script<Particle>(), 50, 1, true);
 		//buoyancy_force = new ParticleBuoyancy(15, 6, 1);
-		for (int i = 0; i < LATO; i++)
-			p[i*LATO]->set_inverted_mass(0);
+		for (int i = 0; i < LATO_I; i++)
+			p[i*LATO_I]->set_inverted_mass(0);
 	
 
 
@@ -115,7 +115,7 @@ namespace RynoEngine {
 	}
 	void PhysicsScene::input() {
 	
-		float speed = .2f;
+		float speed = 2;
 		glm::vec3 dir = glm::vec3(0,0,0);
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
 			dir += glm::vec3(speed, 0, 0);
@@ -129,8 +129,8 @@ namespace RynoEngine {
 		if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
 			dir += glm::vec3(0, -speed, 0);
 		}
-		for (int i = 0; i < LATO; i++)
-			p[i*LATO]->add_position(dir);
+		for (int i = 0; i < LATO_I; i++)
+			p[i*LATO_I]->add_position(dir);
 
 	}
 }

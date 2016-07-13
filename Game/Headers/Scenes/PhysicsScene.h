@@ -13,7 +13,8 @@
 #include "ParticleResolver.h"
 #include <vector>
 
-#define LATO 10
+#define LATO_I 1
+#define LATO_J 2
 
 namespace RynoEngine{
 	class PhysicsScene : public Scene
@@ -32,8 +33,8 @@ namespace RynoEngine{
 		Texture white, white_normal;
 	
 		
-		GameObject ball[LATO*LATO];
-		Particle* p[LATO*LATO];
+		GameObject ball[LATO_I*LATO_J];
+		Particle* p[LATO_I*LATO_J];
 
 		ParticleForceRegister reg;
 		ParticleGravity* gravity_force;
