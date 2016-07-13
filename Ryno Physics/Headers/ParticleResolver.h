@@ -1,6 +1,6 @@
 #pragma once
 #include "Core.h"
-
+#include <vector>
 
 namespace RynoEngine {
 
@@ -14,11 +14,11 @@ namespace RynoEngine {
 		U max_iterations;
 		U current_iteration;
 
-		void resolve_contacts(ParticleContact* contacts, U contacts_number, F duration);
 
 	public:
 		ParticleResolver(U iterations) : max_iterations(iterations) {}
 		void set_iterations(U iterations) { max_iterations = iterations; }
+		void resolve_contacts(const std::vector<ParticleContact*>& contacts, F duration);
 
 	};
 

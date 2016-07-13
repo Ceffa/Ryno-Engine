@@ -10,7 +10,7 @@ namespace RynoEngine {
 		if (!particle->has_finite_mass())
 			return;
 
-		V3 f = acceleration / particle->get_inverted_mass();
+		V3 f = acceleration / particle->get_inverse_mass();
 		particle->add_force(f);
 	}
 

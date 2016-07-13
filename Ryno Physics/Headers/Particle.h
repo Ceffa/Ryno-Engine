@@ -24,7 +24,7 @@ namespace RynoEngine {
 		//Inverted mass (and mass) getters and setters
 		void set_inverted_mass(F _inverted_mass) { inverse_mass = _inverted_mass; }
 		void set_mass(F _mass) { inverse_mass = 1.0/_mass; }
-		F get_inverted_mass() { return inverse_mass; }
+		F get_inverse_mass() { return inverse_mass; }
 		F get_mass() { return 1.0/inverse_mass; }
 
 		bool has_finite_mass();

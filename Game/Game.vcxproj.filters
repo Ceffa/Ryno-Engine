@@ -82,7 +82,7 @@
       <Filter>Source\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scenes\PhysicsScene.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
