@@ -39,12 +39,13 @@ namespace RynoEngine {
 		m.mesh = mesh;
 		m.cast_shadows = false;
 
-		
+		//s.copy(ball[0]);
+		//s.transform.add_position(glm::vec3(3, -15, 0));
 
 		p[0] = ball[0].add_script<Particle>();
 		
 		p[0]->set_mass(10);
-		p[0]->set_velocity(glm::vec3(0, 0, 0));
+		p[0]->velocity = glm::vec3(0, 0, 0);
 
 
 		F32 restit = .5f;
@@ -56,16 +57,15 @@ namespace RynoEngine {
 					ball[n].copy(ball[0]);
 				ball[n].transform.set_position(i * 10, -j * 10, 0);
 				p[n] = ball[n].get_script<Particle>();
-				p[n]->set_acceleration(glm::vec3(0,-500,0));
+				p[n]->acceleration = glm::vec3(0,-50,0);
 
 			}
 		}
 		for (int i = 0; i < LATO_I; i++) {
 			for (int j = 0; j < LATO_J-1; j++) {
 				int n = i * LATO_I + j;
-					cables.emplace_back(p[n], p[i * LATO_I + j + 1], length, restit);
-				/*if (i < LATO - 1)
-					cables.emplace_back(p[n], p[(i + 1) * LATO + j], length, restit);*/
+					cables.emplace_back(p[n], p[i * LATO_I + j + 1], length);
+				
 
 			}
 		}
@@ -100,7 +100,7 @@ namespace RynoEngine {
 		for (Particle* _p : p) _p->integrate(game->delta_time);
 
 		U total = 0;
-		for (ParticleCable& _c : cables) {
+		for (ParticleRod& _c : cables) {
 			U detected;
 			ParticleContact* boing = _c.add_contact(1, &detected);
 			total += detected;
@@ -115,7 +115,7 @@ namespace RynoEngine {
 	}
 	void PhysicsScene::input() {
 	
-		float speed = 2;
+		float speed = .5f;
 		glm::vec3 dir = glm::vec3(0,0,0);
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
 			dir += glm::vec3(speed, 0, 0);

@@ -7,13 +7,16 @@ namespace RynoEngine {
 	void Particle::integrate(F duration)
 	{
 
-		if (inverse_mass <= 0.0) return;								//Check invalid mass
+		if (inverse_mass <= 0.0) return;	
 		
-		//Get acceleration from every force
-		V3 new_acc = acceleration + force_accumulator * inverse_mass;
+		delta_position = velocity * duration;
+		delta_acceleration = acceleration + force_accumulator * inverse_mass;
+		delta_velocity = delta_acceleration * duration;
+																		
+		game_object->transform.add_position(delta_position);
+		
 
-		game_object->transform.add_position(velocity * duration);		//Increment position
-		velocity += new_acc * duration;									//Increment velocity
+		velocity += delta_velocity;										//Increment velocity
 		velocity *= pow(damping, duration);								//Damp velocity by factor d^t
 
 		clear_accumulator();

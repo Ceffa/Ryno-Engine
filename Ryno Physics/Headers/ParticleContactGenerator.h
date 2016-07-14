@@ -37,6 +37,17 @@ namespace RynoEngine {
 
 	};
 
+	//It creates a stiff rod that keeps particle separated.
+	//It does that by zeroing restitution, and resolves interpenetrations only
+	class ParticleRod : ParticleLink {
+	public:
+		ParticleRod(Particle* a, Particle* b, F length);
+		F max_length;
+		virtual ParticleContact* add_contact(U max_contacts, U* num_contacts) override;
+
+
+	};
+
 
 
 }

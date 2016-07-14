@@ -17,9 +17,7 @@ namespace RynoEngine {
 	void ParticleDrag::update_force(Particle* particle, F duration)
 	{
 		//Get velocity
-		V3 force;
-		
-		particle->get_velocity(&force);
+		V3 force = particle->velocity;
 
 		//Get magnitude
 		F drag_coeff = glm::length(force);
