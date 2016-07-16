@@ -45,7 +45,14 @@ namespace RynoEngine {
 
 	void RigidBody::calculate_derived_data()
 	{
+		//I should call here the generation of the transform matrix,
+		//but maybe I can reuse the transform one.
+		get_world_inverse_inertia_tensor();
+	}
 
+	void RigidBody::get_world_inverse_inertia_tensor()
+	{
+		inverse_inertia_tensor_world = M3(get_transform_matrix()) * inverse_inertia_tensor;
 	}
 
 }

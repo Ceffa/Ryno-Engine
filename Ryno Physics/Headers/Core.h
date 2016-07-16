@@ -8,6 +8,8 @@
 #define PRECISION_32 
 
 #define Q glm::quat
+#define M3 glm::mat3
+#define M4 glm::mat4
 
 #ifdef PRECISION_32
 #define V3 glm::vec3

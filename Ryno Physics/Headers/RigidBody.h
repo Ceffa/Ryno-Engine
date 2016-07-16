@@ -11,6 +11,9 @@ namespace RynoEngine {
 		F inverse_mass;
 		V3 force_accumulator;
 		V3 torque_accumulator;
+		M3 inverse_inertia_tensor;
+		M3 inverse_inertia_tensor_world;
+
 
 	public: 
 
@@ -26,12 +29,11 @@ namespace RynoEngine {
 
 		void integrate(F duration);
 		
-		//Inverted mass (and mass) getters and setters
+		//Mass
 		void set_inverted_mass(F _inverted_mass) { inverse_mass = _inverted_mass; }
 		void set_mass(F _mass) { inverse_mass = 1.0/_mass; }
 		F get_inverse_mass() { return inverse_mass; }
 		F get_mass() { return 1.0/inverse_mass; }
-
 		bool has_finite_mass();
 
 		//Position
@@ -54,8 +56,19 @@ namespace RynoEngine {
 		void add_torque(V3& torque);
 		void add_scaled_torque(V3& direction, F intensity);
 
+		//Inertia tensor
+		void set_inverted_inertia_tensor(const M3& i) { inverse_inertia_tensor = i; }
+		void set_inertia_tensor(const M3& i) { set_inverted_inertia_tensor(glm::inverse(i)); }
+
+		//Transform matrix
+		const M4& get_transform_matrix() { return game_object->transform.pos_rot_matrix; }
+
+		//Accumulators
 		void clear_accumulators();			//Clear forces and torques on the body
+		
+		//Derived data
 		void calculate_derived_data();		//Calculate and cache useful data
+		void get_world_inverse_inertia_tensor();
 
 		RigidBody* clone() override {
 			return new RigidBody(*this);
