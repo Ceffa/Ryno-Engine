@@ -12,9 +12,19 @@ namespace RynoEngine{
 		
 		GameObject();
 		~GameObject();
-
 		GameObject(const GameObject& go);
 		void copy(const GameObject& go);
+		
+		Transform transform;
+
+		std::list<Script*> scripts;
+
+		bool active = true;
+
+		static std::list<GameObject*> game_objects;
+
+
+		//Templates
 
 		template<class T>
 		T* add_script(T* s) {
@@ -82,17 +92,7 @@ namespace RynoEngine{
 		}
 
 		
-		//Status
-		bool active = true;
 
-		//Components
-		Transform transform;
-				
-
-		static std::list<GameObject*> game_objects;
-
-
-		std::list<Script*> scripts;
 		
 	};
 

@@ -131,6 +131,7 @@
     <ClInclude Include="Headers\ParticleForceGenerator.h" />
     <ClInclude Include="Headers\ParticleForceRegister.h" />
     <ClInclude Include="Headers\ParticleResolver.h" />
+    <ClInclude Include="Headers\RigidBody.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ParticleContact.cpp" />

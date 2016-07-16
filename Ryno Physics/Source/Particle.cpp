@@ -1,7 +1,6 @@
 #include "Particle.h"
 #include <iostream>
 
-#define NDEBUG
 namespace RynoEngine {
 
 	void Particle::integrate(F duration)

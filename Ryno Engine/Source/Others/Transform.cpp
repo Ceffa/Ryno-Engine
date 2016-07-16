@@ -18,15 +18,11 @@ namespace RynoEngine{
 
 	void Transform::generate_model_matrix() {
 
-		rotation_matrix = glm::toMat4(rotation);
+		orientation_matrix = glm::toMat4(orientation);
 
-		model_matrix = glm::scale(
-			//Translate matrix
-			glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, -position.z)) *
-			//Rotation matrix built from three quaternions
-			rotation_matrix,
-			//Scaling the rot-trans matrix
-			scale);
+		pos_rot_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, -position.z)) * orientation_matrix;
+		
+		model_matrix = pos_rot_matrix * glm::scale(glm::mat4(1), scale);
 	}
 
 

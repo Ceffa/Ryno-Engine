@@ -31,7 +31,7 @@ namespace RynoEngine {
 
 			game = Game::get_instance();
 			shader.create("Geometry/geometry", GAME);
-			speed = .1f;
+			speed = 100;
 
 			white = game->texture_manager->load_png("white_pixel.png", GAME);
 			white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);

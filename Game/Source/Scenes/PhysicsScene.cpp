@@ -52,10 +52,10 @@ namespace RynoEngine {
 		F32 length = 15;
 		for (int i = 0; i < LATO_I; i++) {
 			for (int j = 0; j < LATO_J; j++) {
-				int n = i * LATO_I + j;
+				int n = i * LATO_J + j;
 				if (i != 0 || j != 0)
 					ball[n].copy(ball[0]);
-				ball[n].transform.set_position(i * 10, -j * 10, 0);
+				ball[n].transform.set_position(i * 100, -j * 10, 0);
 				p[n] = ball[n].get_script<Particle>();
 				p[n]->acceleration = glm::vec3(0,-50,0);
 
@@ -63,10 +63,12 @@ namespace RynoEngine {
 		}
 		for (int i = 0; i < LATO_I; i++) {
 			for (int j = 0; j < LATO_J-1; j++) {
-				int n = i * LATO_I + j;
-					cables.emplace_back(p[n], p[i * LATO_I + j + 1], length);
+				int n = i * LATO_J + j;
 				
-
+				if (i % 2 == 0)
+					cables.emplace_back(p[n], p[i * LATO_J + j + 1], length, restit);
+				else
+					rods.emplace_back(p[n], p[i * LATO_J + j + 1], length);
 			}
 		}
 
@@ -86,8 +88,10 @@ namespace RynoEngine {
 		
 		//spring_force = new ParticleSpring(ball2.get_script<Particle>(), 50, 1, true);
 		//buoyancy_force = new ParticleBuoyancy(15, 6, 1);
-		for (int i = 0; i < LATO_I; i++)
-			p[i*LATO_I]->set_inverted_mass(0);
+		
+		p[0]->set_inverted_mass(0);
+		p[LATO_J]->set_inverted_mass(0);
+
 	
 
 
@@ -100,9 +104,16 @@ namespace RynoEngine {
 		for (Particle* _p : p) _p->integrate(game->delta_time);
 
 		U total = 0;
-		for (ParticleRod& _c : cables) {
+		for (ParticleCable& _c : cables) {
 			U detected;
 			ParticleContact* boing = _c.add_contact(1, &detected);
+			total += detected;
+			if (detected == 1)
+				contacts.push_back(boing);
+		}
+		for (ParticleRod& _r : rods) {
+			U detected;
+			ParticleContact* boing = _r.add_contact(1, &detected);
 			total += detected;
 			if (detected == 1)
 				contacts.push_back(boing);
@@ -115,7 +126,7 @@ namespace RynoEngine {
 	}
 	void PhysicsScene::input() {
 	
-		float speed = .5f;
+		float speed = 1.5f;
 		glm::vec3 dir = glm::vec3(0,0,0);
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
 			dir += glm::vec3(speed, 0, 0);
@@ -130,7 +141,7 @@ namespace RynoEngine {
 			dir += glm::vec3(0, -speed, 0);
 		}
 		for (int i = 0; i < LATO_I; i++)
-			p[i*LATO_I]->add_position(dir);
+			p[i*LATO_J]->add_position(dir);
 
 	}
 }

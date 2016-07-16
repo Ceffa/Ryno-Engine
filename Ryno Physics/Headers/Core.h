@@ -7,6 +7,8 @@
 
 #define PRECISION_32 
 
+#define Q glm::quat
+
 #ifdef PRECISION_32
 #define V3 glm::vec3
 #define F RynoEngine::F32

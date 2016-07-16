@@ -1,7 +1,6 @@
 #pragma once
 #include "Core.h"
 #include "Script.h"
-#include "GameObject.h"
 
 
 namespace RynoEngine {

@@ -13,7 +13,7 @@
 #include "ParticleResolver.h"
 #include <vector>
 
-#define LATO_I 1
+#define LATO_I 2
 #define LATO_J 8
 
 namespace RynoEngine{
@@ -41,7 +41,9 @@ namespace RynoEngine{
 		ParticleGravity* gravity_force;
 		ParticleSpring* spring_force;
 		ParticleBuoyancy* buoyancy_force;
-		std::vector<ParticleRod> cables;
+		std::vector<ParticleCable> cables;
+		std::vector<ParticleRod> rods;
+
 		ParticleResolver* resolver;
 		std::vector<ParticleContact*> contacts;
 
