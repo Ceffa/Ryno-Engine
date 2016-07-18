@@ -18,6 +18,7 @@ namespace RynoEngine{
 
 	void Transform::generate_model_matrix() {
 
+		orientation = glm::normalize(orientation);
 		orientation_matrix = glm::toMat4(orientation);
 
 		pos_rot_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, -position.z)) * orientation_matrix;

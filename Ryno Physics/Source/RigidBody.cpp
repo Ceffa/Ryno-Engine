@@ -5,8 +5,30 @@ namespace RynoEngine {
 
 	void RigidBody::integrate(F duration)
 	{
+		if (!has_finite_mass()) return;
 
-	
+		//Calculate accelerations (using mass and tensor respectively)
+		delta_acceleration = acceleration + force_accumulator * inverse_mass;
+
+		V3 angular_acceleration = torque_accumulator * inverse_mass;
+
+		//Calculate velocities
+		velocity += delta_acceleration * duration;								//Increment velocity
+		velocity *= pow(linear_damping, duration);								//Damp velocity by factor d^t
+		
+		rotation += angular_acceleration * duration;
+		rotation *= pow(angular_damping, duration);
+
+		//Calculate positions
+		game_object->transform.add_position(velocity * duration);
+		
+		game_object->transform.add_rotation(rotation * duration);
+		
+		//Update tensor (and model matrix, but I do that in the transform)
+		calculate_derived_data();
+		
+		//Reset force and torque accumuators
+		clear_accumulators();
 	}
 
 	bool RigidBody::has_finite_mass()
@@ -38,6 +60,7 @@ namespace RynoEngine {
 
 	void RigidBody::calculate_derived_data()
 	{
+		
 		//I should call here the generation of the transform matrix,
 		//but maybe I can reuse the transform one.
 		get_world_inverse_inertia_tensor();
