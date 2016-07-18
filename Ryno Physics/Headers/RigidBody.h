@@ -13,7 +13,7 @@ namespace RynoEngine {
 		V3 torque_accumulator;
 		M3 inverse_inertia_tensor;
 		M3 inverse_inertia_tensor_world;
-
+		bool is_awake;
 
 	public: 
 
@@ -49,12 +49,12 @@ namespace RynoEngine {
 		const Q get_orientation() { return game_object->transform.get_rotation(); }
 
 		//Force
-		void add_force(V3& force);
-		void add_scaled_force(V3& direction, F intensity);
+		void add_force(const V3 &force);						//force only
+		void add_force_world(const V3& force, const V3& point);	//may add torque
+		void add_force_body(const V3& force, const V3& point);	//may add torque
 
 		//Torque
 		void add_torque(V3& torque);
-		void add_scaled_torque(V3& direction, F intensity);
 
 		//Inertia tensor
 		void set_inverted_inertia_tensor(const M3& i) { inverse_inertia_tensor = i; }
@@ -73,6 +73,8 @@ namespace RynoEngine {
 		RigidBody* clone() override {
 			return new RigidBody(*this);
 		}
+
+		V3 get_world_point(const V3& point);
 
 	};
 
