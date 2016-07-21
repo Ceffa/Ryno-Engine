@@ -5,7 +5,7 @@
 #include "Script.h"
 #include "Transform.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 
 

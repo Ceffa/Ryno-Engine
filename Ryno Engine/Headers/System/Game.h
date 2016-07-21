@@ -30,7 +30,7 @@
 #include "Shell.h"
 #include "Log.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	enum GameState
 	{

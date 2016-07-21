@@ -3,9 +3,9 @@
 #include "Script.h"
 
 
-namespace RynoEngine {
+namespace Ryno {
 
-	class Particle : public RynoEngine::Script {
+	class Particle : public Ryno::Script {
 
 	protected:
 		F inverse_mass;

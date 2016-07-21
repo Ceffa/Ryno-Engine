@@ -7,7 +7,7 @@
 #define MISSING_INT INT_MIN-1
 #define ERROR_INT INT_MIN
 
-namespace RynoEngine {
+namespace Ryno {
 
 	Log* Log::instance = nullptr;
 

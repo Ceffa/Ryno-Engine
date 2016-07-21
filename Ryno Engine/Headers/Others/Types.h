@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-namespace RynoEngine {
+namespace Ryno {
 	typedef int8_t I8;
 	typedef int16_t I16;
 	typedef int32_t I32;

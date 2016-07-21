@@ -124,7 +124,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\BoundingVolumes.h" />
+    <ClInclude Include="Headers\BVH.h" />
     <ClInclude Include="Headers\Core.h" />
+    <ClInclude Include="Headers\ForceGenerator.h" />
     <ClInclude Include="Headers\Particle.h" />
     <ClInclude Include="Headers\ParticleContact.h" />
     <ClInclude Include="Headers\ParticleContactGenerator.h" />
@@ -134,6 +137,9 @@
     <ClInclude Include="Headers\RigidBody.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\BoundingVolumes.cpp" />
+    <ClCompile Include="Source\BVH.cpp" />
+    <ClCompile Include="Source\ForceGenerator.cpp" />
     <ClCompile Include="Source\ParticleContact.cpp" />
     <ClCompile Include="Source\ParticleContactGenerator.cpp" />
     <ClCompile Include="Source\ParticleForceGenerator.cpp" />

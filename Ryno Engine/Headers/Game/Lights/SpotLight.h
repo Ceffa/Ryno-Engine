@@ -3,7 +3,7 @@
 #include "Lights/AbstractLight.h"
 #include <list>
 
-namespace RynoEngine{
+namespace Ryno{
 	
 
 	class SpotLight : public AbstractLight{

@@ -4,7 +4,7 @@
 #include "Terrain.h"
 #define DEG_TO_RAD 0.0174532925199433
 
-namespace RynoEngine {
+namespace Ryno {
 
 	void ValleyScene::start() {
 

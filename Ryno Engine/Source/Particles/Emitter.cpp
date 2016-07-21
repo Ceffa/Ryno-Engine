@@ -4,7 +4,7 @@
 #include "ParticleManager.h"
 
 
-namespace RynoEngine{
+namespace Ryno{
 
 	Emitter::~Emitter()
 	{

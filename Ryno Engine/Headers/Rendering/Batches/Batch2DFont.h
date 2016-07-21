@@ -5,7 +5,7 @@
 #include "Text.h"
 #include <vector>
 
-namespace RynoEngine{
+namespace Ryno{
 
 
 	struct InstanceValuesFont {

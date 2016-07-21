@@ -2,7 +2,7 @@
 
 #include "WaveScene.h"
 
-namespace RynoEngine {
+namespace Ryno {
 
 	void WaveScene::start() {
 

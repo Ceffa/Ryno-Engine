@@ -11,7 +11,7 @@
 #include <GL/glew.h>
 #include <vector>
 
-namespace RynoEngine{
+namespace Ryno{
 
 
 	class RenderBatchShadow{

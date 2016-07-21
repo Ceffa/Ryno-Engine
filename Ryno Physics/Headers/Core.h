@@ -14,14 +14,14 @@
 #ifdef PRECISION_32
 #define V3 glm::vec3
 #define V4 glm::vec4
-#define F RynoEngine::F32
-#define U RynoEngine::U32
-#define I RynoEngine::I32
+#define F Ryno::F32
+#define U Ryno::U32
+#define I Ryno::I32
 #elif PRECISION_64
-#define U RynoEngine::U64
-#define I RynoEngine::I64
+#define U Ryno::U64
+#define I Ryno::I64
 #define V3 glm::dvec3
 #define V4 glm::dvec4
-#define F RynoEngine::F64
+#define F Ryno::F64
 #endif
 

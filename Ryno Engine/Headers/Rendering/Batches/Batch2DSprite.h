@@ -5,7 +5,7 @@
 #include "Sprite.h"
 #include <vector>
 
-namespace RynoEngine{
+namespace Ryno{
 
 
 	struct InstanceValues {

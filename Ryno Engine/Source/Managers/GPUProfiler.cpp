@@ -2,7 +2,7 @@
 #include <gl\glew.h>
 
 
-namespace RynoEngine{
+namespace Ryno{
 
 	std::vector<GPUProfiler::Times> GPUProfiler::times;
 	U8 GPUProfiler::current_time;

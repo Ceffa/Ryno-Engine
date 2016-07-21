@@ -3,7 +3,7 @@
 
 
 
-namespace RynoEngine {
+namespace Ryno {
 
 	class RigidBody;
 	//Abstract class. Each derived class is a

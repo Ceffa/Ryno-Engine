@@ -6,7 +6,7 @@
 #include "Game.h"
 
 
-namespace RynoEngine {
+namespace Ryno {
 
 	class LightsScene : public Scene
 	{

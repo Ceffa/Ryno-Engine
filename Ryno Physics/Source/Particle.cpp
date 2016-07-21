@@ -1,7 +1,7 @@
 #include "Particle.h"
 #include <iostream>
 
-namespace RynoEngine {
+namespace Ryno {
 
 	void Particle::integrate(F duration)
 	{

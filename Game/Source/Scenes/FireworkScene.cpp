@@ -5,7 +5,7 @@
 #include "Batches/Batch3DGeometry.h"
 #include "Shader.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	F32 power_lerper(F32 i, F32 factor){
 		return (std::pow(factor,i) - 1) / (factor -1);

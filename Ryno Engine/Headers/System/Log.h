@@ -10,7 +10,7 @@
 #define NUM_LINES 20
 #define HISTORY_LENGTH 50
 
-namespace RynoEngine{
+namespace Ryno{
 	class Log{
 		friend class Shell;
 	public:

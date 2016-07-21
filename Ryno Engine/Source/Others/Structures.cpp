@@ -1,6 +1,6 @@
 #include "Structures.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	ColorRGBA ColorRGBA::red = ColorRGBA(255, 0, 0, 255);
 	ColorRGBA ColorRGBA::yellow = ColorRGBA(255, 255, 0, 255);

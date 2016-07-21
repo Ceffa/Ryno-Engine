@@ -1,6 +1,6 @@
 #include "ParticleResolver.h"
 #include "ParticleContact.h"
-namespace RynoEngine {
+namespace Ryno {
 
 	void ParticleResolver::resolve_contacts(const std::vector<ParticleContact*>& contacts, F duration)
 	{

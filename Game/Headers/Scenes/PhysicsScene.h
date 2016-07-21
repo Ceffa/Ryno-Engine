@@ -16,7 +16,7 @@
 #define LATO_I 2
 #define LATO_J 8
 
-namespace RynoEngine{
+namespace Ryno{
 	class PhysicsScene : public Scene
 	{
 

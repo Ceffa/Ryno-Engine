@@ -21,7 +21,7 @@
 #include "Structures.h"
 
 
-namespace RynoEngine {
+namespace Ryno {
 
 
 

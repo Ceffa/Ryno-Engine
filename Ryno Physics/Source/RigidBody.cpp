@@ -1,7 +1,7 @@
 #include "RigidBody.h"
 #include <iostream>
 
-namespace RynoEngine {
+namespace Ryno {
 
 	void RigidBody::integrate(F duration)
 	{

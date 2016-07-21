@@ -3,7 +3,7 @@
 #include "ParticleForceGenerator.h"
 #include <vector>;
 
-namespace RynoEngine {
+namespace Ryno {
 
 	class ParticleForceRegister {
 

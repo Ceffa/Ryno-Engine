@@ -2,7 +2,7 @@
 #include <GLM/glm.hpp>
 #include "Types.h"
 
-namespace RynoEngine{
+namespace Ryno{
 	struct ColorRGB{
 
 		ColorRGB() : r(0), g(0), b(0){}

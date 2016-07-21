@@ -3,7 +3,7 @@
 #include "Particle.h"
 
 
-namespace RynoEngine {
+namespace Ryno {
 
 	class ParticleContact  {
 		friend class ParticleResolver;

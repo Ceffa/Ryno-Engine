@@ -1,7 +1,7 @@
 #include "ForceGenerator.h"
 #include "RigidBody.h"
 
-namespace RynoEngine {
+namespace Ryno {
 
 	
 

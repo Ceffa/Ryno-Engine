@@ -1,6 +1,6 @@
 #include "PerlinNoise.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	F64 PerlinNoise::octave_perlin(F64 x, F64 y, F64 z, F64 freq, U8 octaves, F64 persistence)
 	{

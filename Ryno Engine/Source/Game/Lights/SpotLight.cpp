@@ -1,7 +1,7 @@
 #include "Lights/SpotLight.h"
 #include "Log.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	void SpotLight::set_rotation(F32 _pitch, F32 _yaw, F32 _roll)
 	{		

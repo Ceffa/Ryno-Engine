@@ -3,7 +3,7 @@
 #include <string>
 
 
-namespace RynoEngine {
+namespace Ryno {
 
 	InputManager::InputManager() : m_mouse_coords(0.0f)
 	{

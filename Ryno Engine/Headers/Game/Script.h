@@ -3,7 +3,7 @@
 #include "Types.h"
 
 
-namespace RynoEngine {
+namespace Ryno {
 	
 	class GameObject;
 	class Script {

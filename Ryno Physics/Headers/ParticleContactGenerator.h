@@ -2,7 +2,7 @@
 #include "Core.h"
 
 
-namespace RynoEngine {
+namespace Ryno {
 
 	class ParticleContact;
 	class Particle;

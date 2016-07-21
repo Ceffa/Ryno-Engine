@@ -5,7 +5,7 @@
 #include <GLM/gtx/string_cast.hpp>
 #include "Log.h"
 
-namespace RynoEngine {
+namespace Ryno {
 
 	bool Batch3DShadow::sorting = true;
 

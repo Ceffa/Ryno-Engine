@@ -1,7 +1,7 @@
 #pragma once
 #include "MeshBuilder.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	void BuildQuadForGrid(MeshBuilder* builder, glm::vec3 position, glm::vec2 uv,
 		bool buildTriangles, int vertsPerRow);

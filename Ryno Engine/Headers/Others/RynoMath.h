@@ -9,7 +9,7 @@
 #define M_PI_2 6.28318530717958647692
 #define DEG_TO_RAD 0.0174532925199433
 
-namespace RynoEngine{	
+namespace Ryno{	
 	class ryno_math{
 
 	public:

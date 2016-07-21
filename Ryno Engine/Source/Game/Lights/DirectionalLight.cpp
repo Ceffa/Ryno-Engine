@@ -1,6 +1,6 @@
 #include "Lights/DirectionalLight.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 
 	void DirectionalLight::set_rotation(F32 _pitch, F32 _yaw, F32 _roll)

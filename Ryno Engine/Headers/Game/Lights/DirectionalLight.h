@@ -2,7 +2,7 @@
 
 #include "Lights/AbstractLight.h"
 
-namespace RynoEngine{
+namespace Ryno{
 	
 	
 

@@ -8,7 +8,7 @@
 
 
 
-namespace RynoEngine {
+namespace Ryno {
 
 	U8 almost_equals(F32 a, F32 b){
 		if (abs(a - b) < 0.0001f)

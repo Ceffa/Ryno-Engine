@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include "Particle.h"
 
-namespace RynoEngine {
+namespace Ryno {
 
 
 	void PhysicsScene::start() {

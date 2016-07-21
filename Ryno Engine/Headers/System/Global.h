@@ -19,6 +19,6 @@ enum Use{
 	SHELL
 };
 
-namespace RynoEngine {
+namespace Ryno {
 	static const C* BASE_PATHS[2]{ "../Ryno Engine/", "" };
 }

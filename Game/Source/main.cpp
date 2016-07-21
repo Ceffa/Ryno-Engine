@@ -5,8 +5,8 @@
 
 int main(int argc, char* argv[]) {
 
-	RynoEngine::Game* game = RynoEngine::Game::get_instance();
-	RynoEngine::ScenesList::create_scenes();
+	Ryno::Game* game = Ryno::Game::get_instance();
+	Ryno::ScenesList::create_scenes();
 
 	game->init();
 	game->run();

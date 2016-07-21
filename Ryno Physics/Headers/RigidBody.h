@@ -3,9 +3,9 @@
 #include "Script.h"
 
 
-namespace RynoEngine {
+namespace Ryno {
 
-	class RigidBody : public RynoEngine::Script {
+	class RigidBody : public Ryno::Script {
 
 	protected:
 		F inverse_mass;

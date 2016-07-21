@@ -1,7 +1,7 @@
 #include "ParticleForceGenerator.h"
 #include "Particle.h"
 
-namespace RynoEngine {
+namespace Ryno {
 
 	
 

@@ -1,5 +1,5 @@
 #include "ParticleManager.h"
-namespace RynoEngine{
+namespace Ryno{
 
 	ParticleManager* ParticleManager::get_instance(){
 

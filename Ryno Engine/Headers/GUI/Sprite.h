@@ -6,7 +6,7 @@
 #include <list>
 
 
-namespace RynoEngine{
+namespace Ryno{
 
 	
 

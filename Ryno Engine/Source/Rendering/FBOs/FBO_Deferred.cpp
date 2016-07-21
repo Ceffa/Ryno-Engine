@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-namespace RynoEngine {
+namespace Ryno {
 
 	FBO_Deferred::FBO_Deferred(U32 width, U32 height){
 		init(width, height);

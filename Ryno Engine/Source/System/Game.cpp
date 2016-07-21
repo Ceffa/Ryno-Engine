@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "Scene.h"
 
-namespace RynoEngine{
+namespace Ryno{
 	void Game::init_external_systems(){
 
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {

@@ -1,6 +1,6 @@
 #include "MeshBuilder.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	MeshBuilder* MeshBuilder::get_instance(){
 

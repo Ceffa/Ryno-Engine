@@ -1,7 +1,7 @@
 #include "AudioManager.h"
 #include <iostream>
 
-namespace RynoEngine{
+namespace Ryno{
 
 	AudioManager* AudioManager::get_instance(){
 		static AudioManager instance;

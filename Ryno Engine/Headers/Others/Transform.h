@@ -5,7 +5,7 @@
 #include <list>
 
 
-namespace RynoEngine{
+namespace Ryno{
 
 	class GameObject;
 	class Transform{

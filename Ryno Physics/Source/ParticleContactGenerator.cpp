@@ -2,7 +2,7 @@
 #include "Particle.h"
 #include "ParticleContact.h"
 
-namespace RynoEngine {
+namespace Ryno {
 
 	
 	F ParticleLink::get_current_length() const

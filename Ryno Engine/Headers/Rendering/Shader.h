@@ -7,7 +7,7 @@
 #include <array>
 #include <map>
 
-namespace RynoEngine{
+namespace Ryno{
 
 	//Info about a vertex 3D (static)
 	struct static_vertex_attr{

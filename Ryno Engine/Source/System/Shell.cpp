@@ -9,7 +9,7 @@
 #define MISSING_FLOAT FLT_MAX/2-1
 #define ERROR_FLOAT INT_MAX/2
 
-namespace RynoEngine {
+namespace Ryno {
 
 
 

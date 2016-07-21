@@ -2,7 +2,7 @@
 #include "Global.h"
 #include <vector>
 
-namespace RynoEngine{
+namespace Ryno{
 	class GPUProfiler{
 		struct Times{
 			Times(){}

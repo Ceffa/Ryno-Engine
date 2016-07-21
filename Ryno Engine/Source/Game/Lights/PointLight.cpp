@@ -1,6 +1,6 @@
 #include "Lights/PointLight.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	
 

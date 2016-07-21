@@ -1,7 +1,7 @@
 #include "ParticleContact.h"
 
 
-namespace RynoEngine {
+namespace Ryno {
 
 	void ParticleContact::resolve(F duration)
 	{

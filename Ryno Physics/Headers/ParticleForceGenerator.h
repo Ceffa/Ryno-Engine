@@ -3,7 +3,7 @@
 
 
 
-namespace RynoEngine {
+namespace Ryno {
 
 	class Particle;
 	//Abstract class. Each derived class is a

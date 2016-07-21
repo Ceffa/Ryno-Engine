@@ -1,6 +1,6 @@
 #include "Lights/AbstractLight.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	
 	void AbstractLight::set_diffuse_color(U8 r, U8 g, U8 b){

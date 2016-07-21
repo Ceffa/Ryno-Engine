@@ -1,7 +1,7 @@
 #pragma once
 #include "Global.h"
 
-namespace RynoEngine{
+namespace Ryno{
 
 	class TimeManager{
 	public:

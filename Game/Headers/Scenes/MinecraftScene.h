@@ -10,7 +10,7 @@
 #include "Material.h"
 #include "GUIObject.h"
 
-namespace RynoEngine {
+namespace Ryno {
 
 	class MinecraftScene : public Scene
 	{
