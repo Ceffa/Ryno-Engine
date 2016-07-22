@@ -19,6 +19,12 @@ namespace Ryno {
 
 		BVH_node(BVH_node* _parent, RigidBody* _body, const BoundingVolume& _volume);
 
+		//delete node AND remove it from hierarchy
+		~BVH_node();
+
+		//Insert node in the hierarchy
+		void insert(RigidBody* new_body, const BoundingVolume& new_volume);
+
 		//Two children because it's a binary tree
 		BVH_node* children[2];
 
@@ -44,10 +50,49 @@ namespace Ryno {
 
 		void update_bounding_volume();
 
-		void insert(RigidBody* new_body, const BoundingVolume& new_volume);
-
-
+		
 	};
+
+	template<typename BoundingVolume>
+	Ryno::BVH_node<BoundingVolume>::~BVH_node()
+	{
+		//If it has a parent, replace it with sibling
+		if (parent) {
+			//Get sibling
+			BVH_node<BoundingVolume>* sibling = parent->children[0] == this ? parent->children[1] : parent->children[0];
+			
+			//Fill parent with sibling info
+			parent->volume = sibling->volume;
+			parent->body = sibling->body;
+			parent->children[0] = sibling->children[0];
+			parent->children[1] = sibling->children[1];
+
+			//Before deleting sibling null everything.
+			//Thats because it would call this very destructor
+			//And we don't want to reprocess useless data
+			sibling->parent = nullptr;
+			sibling->body = nullptr;
+			sibling->children[0] = nullptr;
+			sibling->children[1] = nullptr;
+			delete sibling;
+
+			//Recursively update bounding volume
+			parent->update_bounding_volume();
+		}
+		
+		//in any case, delete children
+		//Recursively they recall the destructor,
+		//but we null the parent to avoid processing
+		//useless sibling that will be deleted all the same
+		if (children[0]) {
+			children[0]->parent = nullptr;
+			delete children[0];
+		}
+		if (children[1]) {
+			children[1]->parent = nullptr;
+			delete children[1];
+		}
+	}
 
 	template<typename BoundingVolume>
 	std::vector<PotentialContact*> BVH_node<BoundingVolume>::get_potential_contacts(U limit) const
@@ -148,4 +193,6 @@ namespace Ryno {
 				children[1]->insert(new_body, new_volume);
 		}
 	}
+
+	
 }
