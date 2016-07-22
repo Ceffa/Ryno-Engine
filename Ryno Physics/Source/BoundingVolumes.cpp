@@ -36,4 +36,15 @@ namespace Ryno {
 		return (center_dis < radius_diff * radius_diff);
 	}
 
+	F BoundingSphere::get_growth(const BoundingSphere& other) const
+	{
+		BoundingSphere temp_new(*this, other);
+
+		// We return a value proportional to the change in surface
+		// area of the sphere.
+		//The sphere goes out of scope because it's just a temp value
+		return temp_new.radius*temp_new.radius - radius*radius;
+
+	}
+
 }

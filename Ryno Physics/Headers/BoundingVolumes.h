@@ -15,6 +15,9 @@ namespace Ryno {
 
 		bool overlaps(const BoundingSphere* other) const;
 
+		//Return the growth in terms of surface
+		F get_growth(const BoundingSphere& other) const;
+
 
 	};
 

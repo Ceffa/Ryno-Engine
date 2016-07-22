@@ -138,7 +138,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\BoundingVolumes.cpp" />
-    <ClCompile Include="Source\BVH.cpp" />
     <ClCompile Include="Source\ForceGenerator.cpp" />
     <ClCompile Include="Source\ParticleContact.cpp" />
     <ClCompile Include="Source\ParticleContactGenerator.cpp" />

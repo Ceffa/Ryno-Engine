@@ -74,9 +74,6 @@
     <ClCompile Include="Source\ForceGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\BVH.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\BoundingVolumes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
