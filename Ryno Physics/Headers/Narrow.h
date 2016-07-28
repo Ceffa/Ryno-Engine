@@ -62,12 +62,17 @@ namespace Ryno {
 			const CollisionSphere &two,
 			CollisionData &data
 			);
+
+		//Half spaces are infinitely thick on one side
 		static U sphere_and_half_space(
 			const CollisionSphere &sphere,
 			const CollisionPlane &plane,
 			CollisionData &data
 			);
 
+		//True planes are thin, and if the object goes 
+		//over them, the normal of the contact must be 
+		//multiplied by -1
 		static U sphere_and_true_plane(
 			const CollisionSphere &sphere,
 			const CollisionPlane &plane,

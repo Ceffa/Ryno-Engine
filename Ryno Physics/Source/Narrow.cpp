@@ -51,8 +51,38 @@ namespace Ryno {
 
 		Contact* c = new Contact();
 		c->contact_normal = plane.normal;
-		c->contact_point = sphere_pos;
+		c->contact_point = sphere_pos - plane.normal * (sphere_dist + sphere.radius);
 		c->penetration = -sphere_dist;
+		c->set_body_data(sphere.body, nullptr, 1, 0);
+		data.contacts.push_back(c);
+		return 1;
+	}
+
+	U CollisionDetector::sphere_and_true_plane(const CollisionSphere &sphere, const CollisionPlane &plane, CollisionData &data)
+	{
+		if (data.max_contacts >= data.contacts.size())
+			return 0;
+
+		V3 sphere_pos = sphere.get_position();
+		//Formula to get distance of center of the sphere from plane
+		F center_dist = dot(plane.normal, sphere_pos) - plane.offset;
+
+		if (center_dist*center_dist >= sphere.radius * sphere.radius)
+			return 0;
+
+		V3 normal = plane.normal;
+		F penetration = -center_dist;
+		if (penetration < 0) {
+			normal *= -1;
+			penetration *= -1;
+		}
+
+		penetration += sphere.radius;
+
+		Contact* c = new Contact();
+		c->contact_normal = normal;
+		c->contact_point = sphere_pos - plane.normal * center_dist;
+		c->penetration = penetration;
 		c->set_body_data(sphere.body, nullptr, 1, 0);
 		data.contacts.push_back(c);
 		return 1;
