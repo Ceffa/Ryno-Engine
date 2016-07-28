@@ -11,6 +11,8 @@ namespace Ryno {
 		contacts = new Contact[max_contacts];
 	}
 
+	
+
 	U CollisionDetector::sphere_and_sphere(const CollisionSphere &one, const CollisionSphere &two, CollisionData& data)
 	{
 		if (data.remaining_contacts <=0)
@@ -31,7 +33,7 @@ namespace Ryno {
 		c->contact_point = pos_one + .5f * midline;
 		c->penetration = size - one.radius - two.radius;
 		c->set_body_data(one.body, two.body, 1, 0);
-		data++;
+		++data;
 		return 1;
 
 	}
@@ -54,7 +56,7 @@ namespace Ryno {
 		c->contact_point = sphere_pos - plane.normal * (sphere_dist + sphere.radius);
 		c->penetration = -sphere_dist;
 		c->set_body_data(sphere.body, nullptr, 1, 0);
-		data++;
+		++data;
 		return 1;
 	}
 
@@ -84,7 +86,7 @@ namespace Ryno {
 		c->contact_point = sphere_pos - plane.normal * center_dist;
 		c->penetration = penetration;
 		c->set_body_data(sphere.body, nullptr, 1, 0);
-		data++;
+		++data;
 		return 1;
 	}
 
@@ -116,7 +118,7 @@ namespace Ryno {
 				c->contact_point = plane.normal * .5f * -c->penetration + vert_pos;
 				c->contact_normal = plane.normal;
 				c->set_body_data(box.body, nullptr, 1, 0);
-				data++;
+				++data;
 				contact_used++;
 				if (data.remaining_contacts <= 0)
 					return contact_used;

@@ -50,7 +50,9 @@ namespace Ryno {
 		void setup();
 		Contact* contacts;
 		I remaining_contacts;
-		void operator++() { contacts++; remaining_contacts--; }
+		CollisionData& operator++() {
+			contacts++; remaining_contacts--; return *this;
+		}
 	private:
 		I max_contacts;
 	};
