@@ -18,6 +18,8 @@ namespace Ryno {
 		//Return the growth in terms of surface
 		F get_growth(const BoundingSphere& other) const;
 
+		V3& get_point_in_direction(const V3& dir) const;
+
 
 	};
 

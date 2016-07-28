@@ -47,4 +47,9 @@ namespace Ryno {
 
 	}
 
+	V3& BoundingSphere::get_point_in_direction(const V3& dir) const
+	{
+		return center + radius * glm::normalize(dir);
+	}
+
 }
