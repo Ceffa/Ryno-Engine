@@ -40,14 +40,18 @@ namespace Ryno {
 
 	//Box primitive
 	class CollisionBox : public Primitive {
-
+	public:
+		V3 half_size;
 	};
 
 	//Struct used by the contact generators to store contacts.
 	struct CollisionData {
 		
-		void clear();
-		std::vector<Contact*> contacts;
+		void setup();
+		Contact* contacts;
+		I remaining_contacts;
+		void operator++() { contacts++; remaining_contacts--; }
+	private:
 		I max_contacts;
 	};
 
@@ -108,6 +112,17 @@ namespace Ryno {
 			const CollisionSphere &sphere,
 			CollisionData &data
 			);
+	};
+
+	class IntersectionTest
+	{
+	public:
+
+		
+		static bool box_and_half_space(
+			const CollisionBox &box,
+			const CollisionPlane &plane);
+
 	};
 
 }
