@@ -53,6 +53,9 @@ namespace Ryno {
 		CollisionData& operator++() {
 			contacts++; remaining_contacts--; return *this;
 		}
+
+		//deleted to avoid calling this
+		CollisionData operator++(int i) = delete;
 	private:
 		I max_contacts;
 	};

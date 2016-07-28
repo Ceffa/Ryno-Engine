@@ -94,10 +94,6 @@ namespace Ryno {
 	{
 		if (data.remaining_contacts <=0)
 			return 0;
-
-		if (!IntersectionTest::box_and_half_space(box, plane))
-			return 0;
-
 		
 		static F mults[8][3] = { { 1,1,1 },{ -1,1,1 },{ 1,-1,1 },{ -1,-1,1 },
 		{ 1,1,-1 },{ -1,1,-1 },{ 1,-1,-1 },{ -1,-1,-1 } };
@@ -129,6 +125,46 @@ namespace Ryno {
 	
 	}
 
+
+	U CollisionDetector::box_and_sphere(const CollisionBox &box, const CollisionSphere &sphere, CollisionData &data)
+	{
+		V3 world_sphere_center = sphere.get_position();
+
+		//Get sphere in box local coords
+		V3 sphere_center = V3(glm::inverse(box.transform) * V4(sphere_center,1));
+
+		// Early out check to see if we can exclude the contact
+		if (abs(sphere_center.x) - sphere.radius > box.half_size.x ||
+			abs(sphere_center.y) - sphere.radius > box.half_size.y ||
+			abs(sphere_center.z) - sphere.radius > box.half_size.z)
+		{
+			return 0;
+		}
+
+		//Get closest point to center of sphere.
+		//It is done by clamping the center inside the box
+		V3 closest_point = V3(
+			glm::clamp(sphere_center.x, -box.half_size.x, box.half_size.x),
+			glm::clamp(sphere_center.y, -box.half_size.y, box.half_size.y),
+			glm::clamp(sphere_center.z, -box.half_size.z, box.half_size.z)
+			);
+
+		F dist = glm::length2(closest_point - sphere_center);
+		if (dist > sphere.radius * sphere.radius)
+			return 0;
+
+		//Get closest point in world coords 
+		//because thisis what the contact requires
+		closest_point = V3(box.transform * V4(closest_point, 1));
+
+		Contact* c = data.contacts;
+		c->set_body_data(box.body, sphere.body, 1, 0);
+		c->contact_normal = glm::normalize(closest_point - world_sphere_center);
+		c->contact_point = closest_point;
+		c->penetration = sphere.radius - sqrt(dist);
+		++data;
+		return 1;
+	}
 
 	bool IntersectionTest::box_and_half_space(const CollisionBox &box, const CollisionPlane &plane)
 	{
