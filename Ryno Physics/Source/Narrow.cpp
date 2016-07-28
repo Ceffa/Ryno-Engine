@@ -1,46 +1,66 @@
-#include "Particle.h"
+#include "Narrow.h"
+#include <GLM//gtc/matrix_access.hpp>
 #include <iostream>
 
 namespace Ryno {
 
-	void Particle::integrate(F duration)
+	void CollisionData::clear()
 	{
+		for (auto c : contacts)
+			delete c;
+		contacts.clear();
+	}
 
-		if (inverse_mass <= 0.0) return;	
+	U CollisionDetector::sphere_and_sphere(const CollisionSphere &one, const CollisionSphere &two, CollisionData& data)
+	{
+		if (data.max_contacts >= data.contacts.size())
+			return 0;
+
+		V3 pos_one = one.get_position();
+		V3 pos_two = two.get_position();
+		V3 midline = pos_one - pos_two;
+		F size = glm::length(midline);
+
+		if (size <= 0 || size >= one.radius + two.radius) 
+			return 0;
 		
-		delta_position = velocity * duration;
-		delta_acceleration = acceleration + force_accumulator * inverse_mass;
-		delta_velocity = delta_acceleration * duration;
-																		
-		game_object->transform.add_position(delta_position);
-		
+		V3 normal = midline / size;
 
-		velocity += delta_velocity;										//Increment velocity
-		velocity *= pow(damping, duration);								//Damp velocity by factor d^t
+		Contact* c = new Contact();
+		c->contact_normal = normal;
+		c->contact_point = pos_one + .5f * midline;
+		c->penetration = size - one.radius - two.radius;
+		c->set_body_data(one.body, two.body, 1, 0);
+		data.contacts.push_back(c);
+		return 1;
 
-		clear_accumulator();
 	}
 
-	bool Particle::has_finite_mass()
+
+	U CollisionDetector::sphere_and_half_space(const CollisionSphere &sphere, const CollisionPlane &plane, CollisionData &data)
 	{
-		return inverse_mass > 0.0;
+		if (data.max_contacts >= data.contacts.size())
+			return 0;
+
+		V3 sphere_pos = sphere.get_position();
+		//Formula to get distance of sphere from plane
+		F sphere_dist = dot(plane.normal, sphere_pos) - sphere.radius - plane.offset;
+
+		if (sphere_dist >= 0) 
+			return 0;
+
+		Contact* c = new Contact();
+		c->contact_normal = plane.normal;
+		c->contact_point = sphere_pos;
+		c->penetration = -sphere_dist;
+		c->set_body_data(sphere.body, nullptr, 1, 0);
+		data.contacts.push_back(c);
+		return 1;
 	}
 
-	void Particle::add_force(V3& force)
+	V3 Primitive::get_position() const
 	{
-		force_accumulator += force;
-	}
-
-	void Particle::add_scaled_force(V3& direction, F intensity)
-	{
-		add_force(direction*intensity);
-	}
-
-	void Particle::clear_accumulator()
-	{
-		force_accumulator.x = 0;
-		force_accumulator.y = 0;
-		force_accumulator.z = 0;
+		return glm::vec3(transform[3]);
 	}
 
 }

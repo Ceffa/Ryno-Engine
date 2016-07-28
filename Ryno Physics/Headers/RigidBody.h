@@ -5,11 +5,7 @@
 
 namespace Ryno {
 
-	struct Primitive {
-	public:
-		Primitive() : 
-			
-	};
+
 	class RigidBody : public Ryno::Script {
 
 	protected:
