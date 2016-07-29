@@ -19,7 +19,8 @@ namespace Ryno {
 		M4 transform;		//Calculated every frame from transform and offset
 
 		//Extract position from the transform of the primitive
-		V3 get_position() const;
+		V3 get_axis(U axis) const;
+		V3 get_position() const { return get_axis(3); };
 	};
 
 

@@ -111,7 +111,7 @@ namespace Ryno {
 
 				//contact point halfway between plane and vertex
 				c->penetration = plane.offset - vert_dist;
-				c->contact_point = plane.normal * .5f * -c->penetration + vert_pos;
+				c->contact_point = plane.normal * -c->penetration + vert_pos;
 				c->contact_normal = plane.normal;
 				c->set_body_data(box.body, nullptr, 1, 0);
 				++data;
@@ -170,9 +170,39 @@ namespace Ryno {
 	{
 		return true;
 	}
-	V3 Primitive::get_position() const
+
+
+	V3 Primitive::get_axis(U axis) const
 	{
-		return glm::vec3(transform[3]);
+		return glm::vec3(transform[axis]);
 	}
+
+
+	//Returns the half length the box when projected on the axis.
+	//It is done by adding the projected components of the 3 direction
+	static inline F transformToAxis(const CollisionBox& box, const V3& axis) {
+		
+		return
+			abs(dot(axis, box.get_axis(0))) * box.half_size.x +
+			abs(dot(axis, box.get_axis(1))) * box.half_size.y +
+			abs(dot(axis, box.get_axis(2))) * box.half_size.z;
+			
+	}
+	//This function returns the amount of interpenetration
+	//between the two boxes on a certain axes.
+	//If negative, they are not penetrating
+	static inline F penetrationOnAxis(
+		const CollisionBox& a,
+		const CollisionBox& b,
+		const V3 axis,
+		const V3 center_to_center
+		) 
+	{
+		F proj_a = transformToAxis(a, axis);
+		F proj_b = transformToAxis(b, axis);
+
+		return proj_a + proj_b - dot(axis,center_to_center);
+	}
+
 
 }
