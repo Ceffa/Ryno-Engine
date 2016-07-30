@@ -5,7 +5,7 @@
 
 namespace Ryno {
 
-
+	class Primitive;
 	class RigidBody : public Ryno::Script {
 
 	protected:
@@ -26,6 +26,7 @@ namespace Ryno {
 		F linear_damping = .8f;
 		F angular_damping = .8f;
 
+		std::vector<Primitive> primitives;
 
 
 		void integrate(F duration);

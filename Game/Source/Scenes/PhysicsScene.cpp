@@ -4,8 +4,8 @@
 #include "GameObject.h"
 #include "Particle.h"
 
+#define CUBE_SIZE;
 namespace Ryno {
-
 
 	void PhysicsScene::start() {
 
@@ -39,38 +39,26 @@ namespace Ryno {
 		m.mesh = mesh;
 		m.cast_shadows = false;
 
-		//s.copy(ball[0]);
-		//s.transform.add_position(glm::vec3(3, -15, 0));
+	
 
-		p[0] = ball[0].add_script<Particle>();
+		b[0] = ball[0].add_script<RigidBody>();
 		
-		p[0]->set_mass(10);
-		p[0]->velocity = glm::vec3(0, 0, 0);
+		b[0]->set_mass(10);
+		b[0]->velocity = glm::vec3(0, 0, 0);
 
 
 		F32 restit = .5f;
 		F32 length = 15;
-		for (int i = 0; i < LATO_I; i++) {
-			for (int j = 0; j < LATO_J; j++) {
-				int n = i * LATO_J + j;
-				if (i != 0 || j != 0)
-					ball[n].copy(ball[0]);
-				ball[n].transform.set_position(i * 100, -j * 10, 0);
-				p[n] = ball[n].get_script<Particle>();
-				p[n]->acceleration = glm::vec3(0,-50,0);
+		for (int i = 0; i < NUM_BODIES; i++) {
+			if (i != 0)
+				ball[i].copy(ball[0]);
+			ball[i].transform.set_position((i-1) * 40, 0, 0);
+			b[i] = ball[i].get_script<RigidBody>();
+			b[i]->acceleration = glm::vec3(0,-20,0);		
+		}
 
-			}
-		}
-		for (int i = 0; i < LATO_I; i++) {
-			for (int j = 0; j < LATO_J-1; j++) {
-				int n = i * LATO_J + j;
-				
-				if (i % 2 == 0)
-					cables.emplace_back(p[n], p[i * LATO_J + j + 1], length, restit);
-				else
-					rods.emplace_back(p[n], p[i * LATO_J + j + 1], length);
-			}
-		}
+		b[0]->acceleration = glm::vec3(0, 0, 0);
+		b[0]->set_inverted_mass(0);
 
 		//dir light
 		auto* l = ball[0].add_script<DirectionalLight>();
@@ -86,43 +74,17 @@ namespace Ryno {
 
 
 		
-		//spring_force = new ParticleSpring(ball2.get_script<Particle>(), 50, 1, true);
-		//buoyancy_force = new ParticleBuoyancy(15, 6, 1);
-		
-		p[0]->set_inverted_mass(0);
-		p[LATO_J]->set_inverted_mass(0);
-
+		spring_force = new Spring(glm::vec3(0,0,0),glm::vec3(0,0,0), b[0], 20, .1f, true);
+		reg.add(b[1], spring_force);
+		reg.add(b[2], new Spring(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), b[1], 20, .1f, true));
 	
-
-
-		resolver = new ParticleResolver(100);
 
 	}
 
 	void PhysicsScene::update() {
 		reg.update_forces(game->delta_time);
-		for (Particle* _p : p) _p->integrate(game->delta_time);
+		for (RigidBody* _b : b) _b->integrate(game->delta_time);
 
-		U total = 0;
-		for (ParticleCable& _c : cables) {
-			U detected;
-			ParticleContact* boing = _c.add_contact(1, &detected);
-			total += detected;
-			if (detected == 1)
-				contacts.push_back(boing);
-		}
-		for (ParticleRod& _r : rods) {
-			U detected;
-			ParticleContact* boing = _r.add_contact(1, &detected);
-			total += detected;
-			if (detected == 1)
-				contacts.push_back(boing);
-		}
-		resolver->resolve_contacts(contacts, game->delta_time);
-		
-		for (ParticleContact* pc : contacts)
-			delete pc;
-		contacts.clear();
 	}
 	void PhysicsScene::input() {
 	
@@ -140,8 +102,9 @@ namespace Ryno {
 		if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
 			dir += glm::vec3(0, -speed, 0);
 		}
-		for (int i = 0; i < LATO_I; i++)
-			p[i*LATO_J]->add_position(dir);
+
+		b[0]->add_position(dir);
+	
 
 	}
 }

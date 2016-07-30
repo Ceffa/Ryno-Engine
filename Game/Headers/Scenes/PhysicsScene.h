@@ -3,18 +3,17 @@
 #include "Lights/DirectionalLight.h"
 #include "Lights/SpotLight.h"
 #include "DeferredRenderer.h"
-#include <Sprite.h>
+#include "RigidBody.h"
+#include "ForceGenerator.h"
+#include "ForceRegister.h"
 #include "Emitter.h"
 #include "Global.h"
 #include "Scene.h"
 #include "Game.h"
-#include "ParticleForceRegister.h"
-#include "ParticleContactGenerator.h"
-#include "ParticleResolver.h"
+
 #include <vector>
 
-#define LATO_I 2
-#define LATO_J 8
+#define NUM_BODIES 3
 
 namespace Ryno{
 	class PhysicsScene : public Scene
@@ -32,20 +31,16 @@ namespace Ryno{
 		Shader shader, dir_light_shader;
 		Texture white, white_normal;
 	
-		
-		GameObject ball[LATO_I*LATO_J];
-		Particle* p[LATO_I*LATO_J];
+		GameObject ball[NUM_BODIES];
+		RigidBody* b[NUM_BODIES];
 		GameObject s;
 
-		ParticleForceRegister reg;
-		ParticleGravity* gravity_force;
-		ParticleSpring* spring_force;
-		ParticleBuoyancy* buoyancy_force;
-		std::vector<ParticleCable> cables;
-		std::vector<ParticleRod> rods;
+		ForceRegister reg;
+		Gravity* gravity_force;
+		Spring* spring_force;
+		
 
-		ParticleResolver* resolver;
-		std::vector<ParticleContact*> contacts;
+		
 
 
 
