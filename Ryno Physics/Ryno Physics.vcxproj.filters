@@ -57,6 +57,9 @@
     <ClInclude Include="Headers\ForceRegister.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\InertiaTensorGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Particle.cpp">

@@ -10,7 +10,7 @@ namespace Ryno {
 		//Calculate accelerations (using mass and tensor respectively)
 		delta_acceleration = acceleration + force_accumulator * inverse_mass;
 
-		V3 angular_acceleration = torque_accumulator * inverse_mass;
+		V3 angular_acceleration = inverse_inertia_tensor * torque_accumulator;
 
 		//Calculate velocities
 		velocity += delta_acceleration * duration;								//Increment velocity
@@ -90,5 +90,6 @@ namespace Ryno {
 	{
 		add_force_world(force, get_world_point(point));
 	}
+	
 
 }

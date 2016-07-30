@@ -26,7 +26,7 @@ namespace Ryno {
 		F linear_damping = .8f;
 		F angular_damping = .8f;
 
-		std::vector<Primitive> primitives;
+		std::vector<Primitive*> primitives;
 
 
 		void integrate(F duration);
@@ -78,6 +78,14 @@ namespace Ryno {
 
 		V3 get_world_point(const V3& point);
 
+		template <class T>
+		T* add_primitive(const glm::mat4& offset = glm::mat4(0))
+		{
+			T* t = new T(this,offset);
+			primitives.push_back(t);
+			return t;
+		}
 	};
+
 
 }

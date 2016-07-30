@@ -3,8 +3,9 @@
 #include "PhysicsScene.h"
 #include "GameObject.h"
 #include "Particle.h"
+#include "InertiaTensorGenerator.h"
 
-#define CUBE_SIZE;
+
 namespace Ryno {
 
 	void PhysicsScene::start() {
@@ -17,9 +18,9 @@ namespace Ryno {
 		camera->skybox = game->texture_manager->load_cube_map("full_moon", ".png", GAME);
 
 
-		white = game->texture_manager->load_png("white_pixel.png", GAME);
+		white = game->texture_manager->load_png("pack/161.png", GAME);
 		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
-		mesh = game->mesh_manager->load_mesh("sphere", GAME);
+		mesh = game->mesh_manager->load_mesh("cube", GAME);
 
 		shader.create("Geometry/geometry", GAME);
 		dir_light_shader.create("LightPass/directional", ENGINE);
@@ -42,8 +43,11 @@ namespace Ryno {
 	
 
 		b[0] = ball[0].add_script<RigidBody>();
-		
+		CollisionBox* c_b = b[0]->add_primitive<CollisionBox>();
+		c_b->half_size = glm::vec3(1, 1, 1);
 		b[0]->set_mass(10);
+		b[0]->set_inertia_tensor(InertiaTensorGenerator::get_tensor(*c_b,b[0]->get_mass()));
+		
 		b[0]->velocity = glm::vec3(0, 0, 0);
 
 
@@ -52,13 +56,12 @@ namespace Ryno {
 		for (int i = 0; i < NUM_BODIES; i++) {
 			if (i != 0)
 				ball[i].copy(ball[0]);
-			ball[i].transform.set_position((i-1) * 40, 0, 0);
+			ball[i].transform.set_position(0,-(i-1) * 40, 0);
 			b[i] = ball[i].get_script<RigidBody>();
 			b[i]->acceleration = glm::vec3(0,-20,0);		
 		}
 
 		b[0]->acceleration = glm::vec3(0, 0, 0);
-		b[0]->set_inverted_mass(0);
 
 		//dir light
 		auto* l = ball[0].add_script<DirectionalLight>();
@@ -74,9 +77,9 @@ namespace Ryno {
 
 
 		
-		spring_force = new Spring(glm::vec3(0,0,0),glm::vec3(0,0,0), b[0], 20, .1f, true);
+		spring_force = new Spring(glm::vec3(0,1,0),glm::vec3(0,0,0), b[0], 20, .1f, true);
 		reg.add(b[1], spring_force);
-		reg.add(b[2], new Spring(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), b[1], 20, .1f, true));
+		reg.add(b[2], new Spring(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), b[1], 20, .1f, true));
 	
 
 	}

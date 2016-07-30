@@ -7,7 +7,7 @@ namespace Ryno {
 	class InertiaTensorGenerator {
 	public:
 		
-		glm::mat3 get_sphere_tensor(const CollisionSphere& s, F mass) const {
+		static glm::mat3 get_tensor(const CollisionSphere& s, F mass) {
 			F v = s.radius * s.radius * mass * 2.0f / 5.0f;
 			return glm::mat3(
 				v, 0, 0,
@@ -16,17 +16,8 @@ namespace Ryno {
 				);
 		}
 		
-		//Sphere with mass on the surface
-		glm::mat3 get_shell_tensor(const CollisionSphere& s, F mass) const {
-			F v = s.radius * s.radius * mass * 2.0f / 3.0f;
-			return glm::mat3(
-				v, 0, 0,
-				0, v, 0,
-				0, 0, v
-				);
-		}
 
-		glm::mat3 get_cube_tensor(const CollisionBox& s, F mass) const {
+		static glm::mat3 get_tensor(const CollisionBox& s, F mass) {
 			F f = mass / 12.0f;
 			F x = s.half_size.x * s.half_size.x * 4;
 			F y = s.half_size.y * s.half_size.y * 4;

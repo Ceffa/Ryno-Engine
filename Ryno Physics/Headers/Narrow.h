@@ -27,6 +27,7 @@ namespace Ryno {
 	//Sphere primitive
 	class CollisionSphere : public Primitive {
 	public: 
+		CollisionSphere(RigidBody* _body, const M4& _offset) : Primitive(_body, _offset) {}
 		F radius;
 	};
 
@@ -35,6 +36,8 @@ namespace Ryno {
 	//are usually static
 	class CollisionPlane : public Primitive {
 	public:
+		CollisionPlane(RigidBody* _body, const M4& _offset) : Primitive(_body, _offset) {}
+
 		V3 normal;
 		F offset;
 	};
@@ -42,6 +45,8 @@ namespace Ryno {
 	//Box primitive
 	class CollisionBox : public Primitive {
 	public:
+		CollisionBox(RigidBody* _body, const M4& _offset) : Primitive(_body, _offset) {}
+
 		V3 half_size;
 	};
 

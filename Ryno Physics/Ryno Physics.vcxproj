@@ -130,6 +130,7 @@
     <ClInclude Include="Headers\Core.h" />
     <ClInclude Include="Headers\ForceGenerator.h" />
     <ClInclude Include="Headers\ForceRegister.h" />
+    <ClInclude Include="Headers\InertiaTensorGenerator.h" />
     <ClInclude Include="Headers\Narrow.h" />
     <ClInclude Include="Headers\Particle.h" />
     <ClInclude Include="Headers\ParticleContact.h" />
