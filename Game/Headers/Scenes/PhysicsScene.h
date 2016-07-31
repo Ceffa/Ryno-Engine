@@ -14,7 +14,7 @@
 
 #include <vector>
 
-#define NUM_BODIES 2
+#define NUM_BODIES 4
 
 namespace Ryno{
 	class PhysicsScene : public Scene

@@ -62,6 +62,15 @@ namespace Ryno {
 		b[1]->set_inertia_tensor(InertiaTensorGenerator::get_tensor(*c_b, b[1]->get_mass()));
 		ball[1].get_script<Model>()->sub_models[0].mesh = cube_mesh;
 
+		ball[2].copy(ball[0]);
+		b[2] = ball[2].get_script<RigidBody>();
+		ball[2].transform.set_position(40, 40, 0);
+		ball[3].copy(ball[1]);
+		b[3] = ball[3].get_script<RigidBody>();
+		ball[3].transform.set_position(40, 0, 0);
+
+
+
 	
 
 
@@ -93,18 +102,45 @@ namespace Ryno {
 			rb->calculate_derived_data();
 
 		reg.update_forces(game->delta_time);
-		CollisionSphere& pr_a = (CollisionSphere&)(*b[0]->primitives.back());
-		CollisionBox& pr_b = (CollisionBox&)(*b[1]->primitives.back());
+		static CollisionSphere& pr_a = (CollisionSphere&)(*b[0]->primitives.back());
+		static CollisionBox& pr_b = (CollisionBox&)(*b[1]->primitives.back());
+		static CollisionSphere& pr_c = (CollisionSphere&)(*b[2]->primitives.back());
+		static CollisionBox& pr_d = (CollisionBox&)(*b[3]->primitives.back());
+		static Material& m_a = ball[0].get_script<Model>()->sub_models[0].material;
+		static Material& m_b = ball[1].get_script<Model>()->sub_models[0].material;
+		static Material& m_c = ball[2].get_script<Model>()->sub_models[0].material;
+		static Material& m_d = ball[3].get_script<Model>()->sub_models[0].material;
 
-		if (CollisionDetector::box_and_sphere(pr_b, pr_a , collision_data) == 0) {
-			ball[0].get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255,255,255,255));
-			ball[1].get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
-		}
-		else {
-			ball[0].get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-			ball[1].get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-		}
+		m_a.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
+		m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
+		m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
+		m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
 
+		if (CollisionDetector::box_and_sphere(pr_b, pr_a , collision_data) > 0) {
+			m_a.set_attribute("in_DiffuseColor", ColorRGBA(255,0,0,255));
+			m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+		}
+		if (CollisionDetector::sphere_and_sphere(pr_c, pr_a, collision_data) > 0) {
+			m_a.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+			m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+		}
+		if (CollisionDetector::box_and_sphere(pr_d, pr_a, collision_data) > 0) {
+			m_a.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+			m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+		}
+		if (CollisionDetector::box_and_sphere(pr_b, pr_c, collision_data) > 0) {
+			m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+			m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+		}
+		if (CollisionDetector::box_and_box(pr_b, pr_d, collision_data) > 0) {
+			m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+			m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+		}
+		if (CollisionDetector::box_and_sphere(pr_d, pr_c, collision_data) > 0) {
+			m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+			m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+		}
+		
 		for (RigidBody* _b : b) _b->integrate(game->delta_time);
 
 
@@ -133,7 +169,7 @@ namespace Ryno {
 		}
 
 		if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)) {
-			curr = (curr + 1) % 2;
+			curr = (curr + 1) % NUM_BODIES;
 		}
 
 		b[curr]->add_position(dir);
