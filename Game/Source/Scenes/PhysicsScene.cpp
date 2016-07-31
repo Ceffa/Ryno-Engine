@@ -61,6 +61,7 @@ namespace Ryno {
 		c_b->half_size = glm::vec3(10,10,10);
 		b[1]->set_inertia_tensor(InertiaTensorGenerator::get_tensor(*c_b, b[1]->get_mass()));
 		ball[1].get_script<Model>()->sub_models[0].mesh = cube_mesh;
+		ball[1].transform.set_rotation(0, 45,0);
 
 		ball[2].copy(ball[0]);
 		b[2] = ball[2].get_script<RigidBody>();
@@ -68,6 +69,7 @@ namespace Ryno {
 		ball[3].copy(ball[1]);
 		b[3] = ball[3].get_script<RigidBody>();
 		ball[3].transform.set_position(40, 0, 0);
+
 
 
 

@@ -33,9 +33,6 @@ namespace Ryno {
 		V3 pos_two = two.get_position();
 		V3 midline = pos_one - pos_two;
 		F size = glm::length(midline);
-		Log::println(size);
-		Log::print("           ");
-		Log::print(one.radius + two.radius);
 
 		if (size <= 0 || size >= one.radius + two.radius) 
 			return 0;
@@ -221,7 +218,7 @@ namespace Ryno {
 		F proj_a = transformToAxis(a, axis);
 		F proj_b = transformToAxis(b, axis);
 
-		return proj_a + proj_b - dot(axis,center_to_center);
+		return proj_a + proj_b - abs(dot(axis,center_to_center));
 	}
 
 	//Add a vertex - face contact for boxes
@@ -400,9 +397,9 @@ namespace Ryno {
 		CHECK_OVERLAP(cross(one.get_axis(2), two.get_axis(0)), 12);
 		CHECK_OVERLAP(cross(one.get_axis(2), two.get_axis(1)), 13);
 		CHECK_OVERLAP(cross(one.get_axis(2), two.get_axis(2)), 14);
-
+		
 		if (best == UINT_MAX)
-		return 0;
+			return 0;
 
 		if (best < 3)
 		{
@@ -413,6 +410,7 @@ namespace Ryno {
 		else if (best < 6) {
 			//Same thing if axis is parallel to a face of box 2
 			fill_point_face_box_box(two, one, -center_to_center, &data, best - 3, pen);
+			return 1;
 		}
 		else {
 			//Edge-edge contact
