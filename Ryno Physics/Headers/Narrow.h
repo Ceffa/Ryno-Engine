@@ -12,8 +12,11 @@ namespace Ryno {
 	//because a single game object could have more than one primitve
 	//with a different offset from the center
 	struct Primitive {
+		friend class RigidBody;
 	public:
-		Primitive(RigidBody* _body, const M4& _offset) : body(_body), offset(_offset) {}
+		Primitive(RigidBody* _body, const M4& _offset = glm::mat4()) : body(_body), offset(_offset) {}
+		Primitive(const Primitive& copy) { offset = copy.offset; }
+		virtual Primitive* clone() { return new Primitive(*this); }
 		RigidBody* body;
 		M4 offset;			//Offset from rigidbody
 		M4 transform;		//Calculated every frame from transform and offset
@@ -21,6 +24,8 @@ namespace Ryno {
 		//Extract position from the transform of the primitive
 		V3 get_axis(U axis) const;
 		V3 get_position() const { return get_axis(3); };
+	protected:
+		void calculate_transform();
 	};
 
 
@@ -28,6 +33,10 @@ namespace Ryno {
 	class CollisionSphere : public Primitive {
 	public: 
 		CollisionSphere(RigidBody* _body, const M4& _offset) : Primitive(_body, _offset) {}
+		CollisionSphere(const CollisionSphere& copy) : Primitive(copy) { radius = copy.radius; }
+		CollisionSphere* clone() override { return new CollisionSphere(*this); }
+
+
 		F radius;
 	};
 
@@ -37,6 +46,8 @@ namespace Ryno {
 	class CollisionPlane : public Primitive {
 	public:
 		CollisionPlane(RigidBody* _body, const M4& _offset) : Primitive(_body, _offset) {}
+		CollisionPlane(const CollisionPlane& copy) : Primitive(copy) { normal = copy.normal; offset = copy.offset; }
+		CollisionPlane* clone() override { return new CollisionPlane(*this); }
 
 		V3 normal;
 		F offset;
@@ -46,6 +57,8 @@ namespace Ryno {
 	class CollisionBox : public Primitive {
 	public:
 		CollisionBox(RigidBody* _body, const M4& _offset) : Primitive(_body, _offset) {}
+		CollisionBox(const CollisionBox& copy) : Primitive(copy) { half_size = copy.half_size; }
+		CollisionBox* clone() override { return new CollisionBox(*this); }
 
 		V3 half_size;
 	};
@@ -53,17 +66,20 @@ namespace Ryno {
 	//Struct used by the contact generators to store contacts.
 	struct CollisionData {
 		
-		void setup();
+		void setup(F _max_contacts);
 		Contact* contacts;
 		I remaining_contacts;
 		CollisionData& operator++() {
 			contacts++; remaining_contacts--; return *this;
 		}
 
+		void clear();
+
 		//deleted to avoid calling this
 		CollisionData operator++(int i) = delete;
 	private:
 		I max_contacts;
+
 	};
 
 	//static class that handles the different

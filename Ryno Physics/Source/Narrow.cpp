@@ -4,14 +4,25 @@
 
 namespace Ryno {
 
-	void CollisionData::setup()
+	void CollisionData::setup(F _max_contacts)
 	{
+		max_contacts = _max_contacts;
 		if (contacts)
 			delete contacts;
 		contacts = new Contact[max_contacts];
+		clear();
+
 	}
 
 	
+
+	void CollisionData::clear()
+	{
+		//reset pointer and contacts
+		contacts -= (max_contacts - remaining_contacts);
+		remaining_contacts = max_contacts;
+
+	}
 
 	U CollisionDetector::sphere_and_sphere(const CollisionSphere &one, const CollisionSphere &two, CollisionData& data)
 	{
@@ -22,6 +33,9 @@ namespace Ryno {
 		V3 pos_two = two.get_position();
 		V3 midline = pos_one - pos_two;
 		F size = glm::length(midline);
+		Log::println(size);
+		Log::print("           ");
+		Log::print(one.radius + two.radius);
 
 		if (size <= 0 || size >= one.radius + two.radius) 
 			return 0;
@@ -133,7 +147,7 @@ namespace Ryno {
 		V3 world_sphere_center = sphere.get_position();
 
 		//Get sphere in box local coords
-		V3 sphere_center = V3(glm::inverse(box.transform) * V4(sphere_center,1));
+		V3 sphere_center = V3(glm::inverse(box.transform) * V4(world_sphere_center,1));
 
 		// Early out check to see if we can exclude the contact
 		if (abs(sphere_center.x) - sphere.radius > box.half_size.x ||
@@ -142,7 +156,6 @@ namespace Ryno {
 		{
 			return 0;
 		}
-
 		//Get closest point to center of sphere.
 		//It is done by clamping the center inside the box
 		V3 closest_point = V3(
@@ -179,6 +192,11 @@ namespace Ryno {
 		return glm::vec3(transform[axis]);
 	}
 
+
+	void Primitive::calculate_transform()
+	{
+		transform = offset * body->get_transform_matrix();
+	}
 
 	//Returns the half length the box when projected on the axis.
 	//It is done by adding the projected components of the 3 direction
@@ -266,7 +284,6 @@ namespace Ryno {
 		glm::normalize(axis);
 
 		F penetration = penetrationOnAxis(one, two, axis, center_to_center);
-
 		if (penetration < 0) return false;
 		if (penetration < smallest_penetration) {
 			smallest_penetration = penetration;

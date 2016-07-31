@@ -10,10 +10,11 @@
 #include "Global.h"
 #include "Scene.h"
 #include "Game.h"
+#include "Narrow.h""
 
 #include <vector>
 
-#define NUM_BODIES 3
+#define NUM_BODIES 2
 
 namespace Ryno{
 	class PhysicsScene : public Scene
@@ -27,7 +28,7 @@ namespace Ryno{
 		void input() override;
 		void update() override;
 	
-		I32 mesh;
+		I32 sphere_mesh, cube_mesh;
 		Shader shader, dir_light_shader;
 		Texture white, white_normal;
 	
@@ -38,6 +39,7 @@ namespace Ryno{
 		ForceRegister reg;
 		Gravity* gravity_force;
 		Spring* spring_force;
+		CollisionData collision_data;
 		
 
 		

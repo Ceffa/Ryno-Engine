@@ -75,16 +75,21 @@ namespace Ryno {
 		RigidBody* clone() override {
 			return new RigidBody(*this);
 		}
+		RigidBody() {};
+		RigidBody(const RigidBody& copy);
+		~RigidBody() { for (auto p : primitives) delete p; }
 
 		V3 get_world_point(const V3& point);
 
 		template <class T>
-		T* add_primitive(const glm::mat4& offset = glm::mat4(0))
+		T* add_primitive(const glm::mat4& offset = glm::mat4())
 		{
 			T* t = new T(this,offset);
 			primitives.push_back(t);
 			return t;
 		}
+
+	
 	};
 
 

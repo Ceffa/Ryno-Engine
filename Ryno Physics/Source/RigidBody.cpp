@@ -1,4 +1,5 @@
 #include "RigidBody.h"
+#include "Narrow.h"
 #include <iostream>
 
 namespace Ryno {
@@ -60,10 +61,14 @@ namespace Ryno {
 
 	void RigidBody::calculate_derived_data()
 	{
-		
+
 		//I should call here the generation of the transform matrix,
 		//but maybe I can reuse the transform one.
 		get_world_inverse_inertia_tensor();
+		for (auto p : primitives)
+		{
+			p->calculate_transform();
+		}
 	}
 
 	void RigidBody::get_world_inverse_inertia_tensor()
@@ -90,6 +95,16 @@ namespace Ryno {
 	{
 		add_force_world(force, get_world_point(point));
 	}
-	
+
+	RigidBody::RigidBody(const RigidBody& copy)
+	{
+		*this = copy;
+		for (U i = 0; i < primitives.size(); i++){
+			
+			primitives[i] = primitives[i]->clone();
+			primitives[i]->body = this;
+		}
+	}
+
 
 }
