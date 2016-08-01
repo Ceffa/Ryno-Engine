@@ -18,6 +18,9 @@ namespace Ryno {
 
 		void set_body_data(RigidBody* a, RigidBody* b, F _rest, F _fric);
 
+	protected:
+		void calculate_normal_basis();
+		M3 contact_to_world;
 
 	};
 
