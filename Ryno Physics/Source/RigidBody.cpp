@@ -64,14 +64,14 @@ namespace Ryno {
 
 		//I should call here the generation of the transform matrix,
 		//but maybe I can reuse the transform one.
-		get_world_inverse_inertia_tensor();
+		calculate_world_inverse_inertia_tensor();
 		for (auto p : primitives)
 		{
 			p->calculate_transform();
 		}
 	}
 
-	void RigidBody::get_world_inverse_inertia_tensor()
+	void RigidBody::calculate_world_inverse_inertia_tensor()
 	{
 		inverse_inertia_tensor_world = M3(get_transform_matrix()) * inverse_inertia_tensor;
 	}

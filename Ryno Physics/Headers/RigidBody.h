@@ -13,10 +13,10 @@ namespace Ryno {
 		V3 force_accumulator;
 		V3 torque_accumulator;
 		M3 inverse_inertia_tensor;
-		M3 inverse_inertia_tensor_world;
 		bool is_awake;
 
 	public: 
+		M3 inverse_inertia_tensor_world;
 
 		V3 delta_acceleration;
 										//p and o are inside transform
@@ -70,7 +70,7 @@ namespace Ryno {
 		
 		//Derived data
 		void calculate_derived_data();		//Calculate and cache useful data
-		void get_world_inverse_inertia_tensor();
+		void calculate_world_inverse_inertia_tensor();
 
 		RigidBody* clone() override {
 			return new RigidBody(*this);
