@@ -96,7 +96,7 @@ namespace Ryno {
 	{
 		V3 impulse_contact;
 
-		//The following 3 lines use formulas to get the linear velocity
+		//The following 3 lines use formulas to get the unit linear velocity
 		//due only to rotaton
 		V3 delta_vel_world = cross(relative_contact_position[0], contact_normal);
 		delta_vel_world = inv_inertia_tensor[0] * delta_vel_world;
@@ -105,10 +105,10 @@ namespace Ryno {
 		//Get the delta velocity relative to the normal.
 		//This is the same (but faster) than this:
 		//F delta_velocity = (glm::transpose(contact_to_world) * delta_vel_world).x;
-		F delta_velocity = dot(delta_vel_world, contact_normal);
+		F unit_delta_velocity = dot(delta_vel_world, contact_normal);
 
-		// Add the linear component of velocity change
-		delta_velocity += bodies[0]->get_inverse_mass();
+		// Add the unit linear component of velocity change
+		unit_delta_velocity += bodies[0]->get_inverse_mass();
 
 		// Check if we need to the second body's data
 		if (bodies[1])
@@ -123,7 +123,10 @@ namespace Ryno {
 		}
 
 		// Calculate the required size of the impulse
-		return V3(desired_delta_velocity / delta_velocity,0,0);
+		// NB: the desired delta velocity is the total amount
+		// of velocity we want to introduce. The unit delta velocity 
+		// is a UNIT factor that represent how much velocity is produced
+		return V3(desired_delta_velocity / unit_delta_velocity,0,0);
 	}
 
 	V3 Contact::calculate_local_velocity(U body_index, F duration)
@@ -142,10 +145,26 @@ namespace Ryno {
 
 	void Contact::calculate_desired_delta_velocity(F duration)
 	{
-	
+		const static F velocity_limit = 0.25f;
+		// Calculate the acceleration induced velocity accumulated this frame
+		F velocity_from_acc = dot(bodies[0]->delta_acceleration,contact_normal) * duration;
+		
+
+		if (bodies[1])
+			velocity_from_acc += dot(bodies[1]->delta_acceleration, contact_normal) * duration;
+
+		// If the velocity is very slow, limit the restitution
+		F this_restitution = restitution;
+		if (abs(contact_velocity.x) < velocity_limit)
+		{
+			this_restitution = 0.0f;
+		}
+
 		// Combine the bounce velocity with the removed
 		// acceleration velocity.
-		desired_delta_velocity = -contact_velocity.x * (1+restitution);
+		desired_delta_velocity =
+			-contact_velocity.x
+			- this_restitution * (contact_velocity.x - velocity_from_acc);
 	}
 
 	void Contact::apply_velocity_change(V3 velocity_change[2], V3 rotation_change[2])
