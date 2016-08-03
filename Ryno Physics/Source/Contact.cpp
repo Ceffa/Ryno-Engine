@@ -215,4 +215,99 @@ namespace Ryno {
 
 	}
 
+
+	void Contact::apply_position_change(V3 linear_change[2],V3 angular_change[2],F penetration)
+	{
+		const F angular_limit = 0.2f;
+		F angular_move[2];
+		F linear_move[2];
+
+		F total_inertia = 0;
+		F linear_inertia[2];
+		F angular_inertia[2];
+
+		// We need to work out the inertia of each object in the direction
+		// of the contact normal, due to angular inertia only.
+		for (U i = 0; i < 2; i++)
+		if (bodies[i])
+		{
+			// Use the same procedure as for calculating frictionless
+			// velocity change to work out the angular inertia.
+			// 
+			V3 angular_inertia_world = cross(relative_contact_position[i],contact_normal);
+			angular_inertia_world =	bodies[i]->inverse_inertia_tensor_world * angular_inertia_world;
+			angular_inertia_world =	cross(angular_inertia_world,relative_contact_position[i]);
+			angular_inertia[i] = dot(angular_inertia_world,contact_normal);
+
+			// The linear component is simply the inverse mass
+			linear_inertia[i] = bodies[i]->get_inverse_mass();
+
+			// Keep track of the total inertia from all components
+			total_inertia += linear_inertia[i] + angular_inertia[i];
+		}
+
+		// Loop through again calculating and applying the changes
+		for (U i = 0; i < 2; i++) if (bodies[i])
+		{
+			// The linear and angular movements required are in proportion to
+			// the two inverse inertias.
+			F sign = (i == 0) ? 1 : -1;
+			angular_move[i] =
+				sign * penetration * (angular_inertia[i] / total_inertia);
+			linear_move[i] =
+				sign * penetration * (linear_inertia[i] / total_inertia);
+
+			// To avoid angular projections that are too great (when mass is large
+			// but inertia tensor is small) limit the angular move.
+			V3 projection = relative_contact_position[i] - contact_normal * dot(-relative_contact_position[1], contact_normal);
+
+
+			//Big rotations could cause problems.
+			//So we limit them and transfer part of the movement
+			//to the linear  movement.
+			//The factor is scaled by the size of the object,
+			// which is approximated by the magnitude of the
+			F max_magnitude = angular_limit * glm::length(projection);
+
+			F total_move = angular_move[i] + linear_move[i];
+
+			if (angular_move[i] < -max_magnitude)
+				angular_move[i] = -max_magnitude;
+			else if (angular_move[i] > max_magnitude)
+				angular_move[i] = max_magnitude;
+
+			linear_move[i] = total_move - angular_move[i];
+
+			// We have the linear amount of movement required by turning
+			// the rigid body (in angularMove[i]). We now need to
+			// calculate the desired rotation to achieve that.
+			if (angular_move[i] == 0)
+			{
+				// Easy case - no angular movement means no rotation.
+				angular_change[i] = V3(0, 0, 0);
+			}
+			else
+			{
+				// Work out the direction we'd like to rotate in.
+				V3 target_angular_direction = cross(relative_contact_position[i], contact_normal);
+
+				// Work out the direction we'd need to rotate to achieve that
+				angular_change[i] =
+					bodies[i]->inverse_inertia_tensor_world * target_angular_direction *
+					(angular_move[i] / angular_inertia[i]);
+			}
+
+			// Velocity change is easier - it is just the linear movement
+			// along the contact normal.
+			linear_change[i] = contact_normal * linear_move[i];
+
+			// Now we can start to apply the values we've calculated.
+			// Apply the linear movement
+			bodies[i]->add_position(linear_change[i]);
+
+			// And the change in orientation.
+			bodies[i]->add_orientation(glm::quat(angular_change[i]));			
+		}
+	}
+
 }
