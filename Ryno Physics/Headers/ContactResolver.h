@@ -19,6 +19,8 @@ namespace Ryno {
 		U velocity_iterations, velocity_iterations_used;
 
 		F position_epsilon; //Under this value, ignore interpenetrarion
+		F velocity_epsilon; //Under this value, ignore velocity adjustment
+
 	
 
 	};

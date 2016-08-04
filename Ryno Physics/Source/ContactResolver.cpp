@@ -86,7 +86,56 @@ namespace Ryno {
 
 	void ContactResolver::adjust_velocities(Contact* contacts, U num_contacts, F duration)
 	{
+		V3 velocity_change[2], rotation_change[2];
+		V3 delta_vel;
 
+		// iteratively handle impacts in order of severity.
+		velocity_iterations_used = 0;
+		while (velocity_iterations_used < velocity_iterations)
+		{
+			// Find contact with maximum magnitude of probable velocity change.
+			F max = velocity_epsilon;
+			U index = num_contacts;
+			for (U i = 0; i < num_contacts; i++)
+			{
+				if (contacts[i].desired_delta_velocity > max)
+				{
+					max = contacts[i].desired_delta_velocity;
+					index = i;
+				}
+			}
+			if (index == num_contacts) break;
+
+		
+			// Do the resolution on the contact that came out top.
+			contacts[index].apply_velocity_change(velocity_change, rotation_change);
+
+			// With the change in velocity of the two bodies, the update of
+			// contact velocities means that some of the relative closing
+			// velocities need recomputing.
+			for (U i = 0; i < num_contacts; i++)
+			{
+				// Check each body in the contact
+				for (U b = 0; b < 2; b++) if (contacts[i].bodies[b])
+				{
+					// Check for a match with each body in the newly
+					// resolved contact
+					for (U d = 0; d < 2; d++)
+					{
+						if (contacts[i].bodies[b] == contacts[index].bodies[d])
+						{
+							delta_vel = velocity_change[d] + cross(rotation_change[d], contacts[i].relative_contact_position[b]);
+
+							// The sign of the change is negative if we're dealing
+							// with the second body in a contact.
+							contacts[i].contact_velocity += (b ? -1.0f : 1.0f) * (glm::transpose(contacts[i].contact_to_world) * delta_vel);
+							contacts[i].calculate_desired_delta_velocity(duration);
+						}
+					}
+				}
+			}
+			velocity_iterations_used++;
+		}
 	}
 
 }
