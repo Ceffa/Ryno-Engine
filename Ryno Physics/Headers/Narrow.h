@@ -69,6 +69,7 @@ namespace Ryno {
 		void setup(F _max_contacts);
 		Contact* contacts;
 		I remaining_contacts;
+		I max_contacts;
 		CollisionData& operator++() {
 			contacts++; remaining_contacts--; return *this;
 		}
@@ -78,7 +79,6 @@ namespace Ryno {
 		//deleted to avoid calling this
 		CollisionData operator++(int i) = delete;
 	private:
-		I max_contacts;
 
 	};
 

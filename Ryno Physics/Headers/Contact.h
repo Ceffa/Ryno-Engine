@@ -6,6 +6,7 @@
 namespace Ryno {
 
 	class Contact {
+		friend class ContactResolver;
 	public:
 		RigidBody* bodies[2];
 
