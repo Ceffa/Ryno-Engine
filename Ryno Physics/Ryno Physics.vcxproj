@@ -127,6 +127,7 @@
     <ClInclude Include="Headers\BoundingVolumes.h" />
     <ClInclude Include="Headers\BVH.h" />
     <ClInclude Include="Headers\Contact.h" />
+    <ClInclude Include="Headers\ContactResolver.h" />
     <ClInclude Include="Headers\Core.h" />
     <ClInclude Include="Headers\ForceGenerator.h" />
     <ClInclude Include="Headers\ForceRegister.h" />
@@ -143,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="Source\BoundingVolumes.cpp" />
     <ClCompile Include="Source\Contact.cpp" />
+    <ClCompile Include="Source\ContactResolver.cpp" />
     <ClCompile Include="Source\ForceGenerator.cpp" />
     <ClCompile Include="Source\ForceRegister.cpp" />
     <ClCompile Include="Source\Narrow.cpp" />

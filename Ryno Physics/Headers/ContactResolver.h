@@ -14,6 +14,11 @@ namespace Ryno {
 		void adjust_positions(Contact* contacts, U num_contacts, F duration);
 		void adjust_velocities(Contact* contacts, U num_contacts, F duration);
 
+	private:
+		U position_iterations, position_iterations_used;
+		U velocity_iterations, velocity_iterations_used;
+
+		F position_epsilon; //Under this value, ignore interpenetrarion
 	
 
 	};
