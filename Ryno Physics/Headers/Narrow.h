@@ -107,77 +107,77 @@ namespace Ryno {
 	public:
 
 		
-		static CollisionData get_all_contacts(const std::vector<PotentialContact>& contacts);
+		static CollisionData detect_all_contacts(const std::vector<PotentialContact>& contacts);
 
-		static U collide(
+		static U detect(
 			const CollisionPrimitive &one,
 			const CollisionPrimitive &two,
 			CollisionData &data);
 
-		static U collide(
+		static U detect(
 			const CollisionSphere &one,
 			const CollisionSphere &two,
 			CollisionData &data
 			);
 
 
-		static U collide(
+		static U detect(
 			const CollisionSphere &sphere,
 			const CollisionHalfPlane &plane,
 			CollisionData &data
 			);
 		//inverse
-		static U collide(
+		static U detect(
 			const CollisionHalfPlane &plane,
 			const CollisionSphere &sphere,
 			CollisionData &data
-			) {	return collide(sphere, plane, data);}
+			) {	return detect(sphere, plane, data);}
 
-		static U collide(
+		static U detect(
 			const CollisionSphere &sphere,
 			const CollisionFullPlane &plane,
 			CollisionData &data
 			);
 		//inverse
-		static U collide(
+		static U detect(
 			const CollisionFullPlane &plane,
 			const CollisionSphere &sphere,
 			CollisionData &data
 			) {
-			return collide(sphere, plane, data);
+			return detect(sphere, plane, data);
 		}
 
 
-		static U collide(
+		static U detect(
 			const CollisionBox &box,
 			const CollisionHalfPlane &plane,
 			CollisionData &data
 			);
 		//inverse
-		static U collide(
+		static U detect(
 			const CollisionHalfPlane &plane,
 			const CollisionBox &box,
 			CollisionData &data
-			) {	return collide(box, plane, data);}
+			) {	return detect(box, plane, data);}
 
-		static U collide(
+		static U detect(
 			const CollisionBox &one,
 			const CollisionBox &two,
 			CollisionData &data
 			);
 
 
-		static U collide(
+		static U detect(
 			const CollisionBox &box,
 			const CollisionSphere &sphere,
 			CollisionData &data
 			);
 		//Inverse 
-		static U collide(
+		static U detect(
 			const CollisionSphere &sphere,
 			const CollisionBox &box,
 			CollisionData &data
-			) {	return collide(box, sphere, data);}
+			) {	return detect(box, sphere, data);}
 
 
 	};

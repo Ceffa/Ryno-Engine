@@ -26,7 +26,7 @@ namespace Ryno {
 
 
 
-	Ryno::CollisionData CollisionDetector::get_all_contacts(const std::vector<PotentialContact>& contacts)
+	Ryno::CollisionData CollisionDetector::detect_all_contacts(const std::vector<PotentialContact>& contacts)
 	{
 		//For each potential contact, add every single possible contact
 		//between the primitives they have. 
@@ -34,12 +34,12 @@ namespace Ryno {
 		for (auto& c : contacts) 
 		for (auto& p0 : c.bodies[0]->primitives)
 		for (auto& p1 : c.bodies[1]->primitives) 
-			collide(*p0, *p1, data);
+			detect(*p0, *p1, data);
 		
 		return data;
 	}
 
-	U CollisionDetector::collide(const CollisionSphere &one, const CollisionSphere &two, CollisionData& data)
+	U CollisionDetector::detect(const CollisionSphere &one, const CollisionSphere &two, CollisionData& data)
 	{
 		if (data.remaining_contacts <=0)
 			return 0;
@@ -65,7 +65,7 @@ namespace Ryno {
 	}
 
 
-	U CollisionDetector::collide(const CollisionSphere &sphere, const CollisionHalfPlane &plane, CollisionData &data)
+	U CollisionDetector::detect(const CollisionSphere &sphere, const CollisionHalfPlane &plane, CollisionData &data)
 	{
 		if (data.remaining_contacts<=0)
 			return 0;
@@ -86,7 +86,7 @@ namespace Ryno {
 		return 1;
 	}
 
-	U CollisionDetector::collide(const CollisionSphere &sphere, const CollisionFullPlane &plane, CollisionData &data)
+	U CollisionDetector::detect(const CollisionSphere &sphere, const CollisionFullPlane &plane, CollisionData &data)
 	{
 		if (data.remaining_contacts<=0)
 			return 0;
@@ -116,7 +116,7 @@ namespace Ryno {
 		return 1;
 	}
 
-	U CollisionDetector::collide(const CollisionBox &box, const CollisionHalfPlane &plane, CollisionData &data)
+	U CollisionDetector::detect(const CollisionBox &box, const CollisionHalfPlane &plane, CollisionData &data)
 	{
 		if (data.remaining_contacts <=0)
 			return 0;
@@ -154,7 +154,7 @@ namespace Ryno {
 
 	
 
-	U CollisionDetector::collide(const CollisionBox &box, const CollisionSphere &sphere, CollisionData &data)
+	U CollisionDetector::detect(const CollisionBox &box, const CollisionSphere &sphere, CollisionData &data)
 	{
 		V3 world_sphere_center = sphere.get_position();
 
@@ -371,7 +371,7 @@ namespace Ryno {
 
 
 
-	U CollisionDetector::collide(const CollisionBox &one, const CollisionBox &two, CollisionData &data)
+	U CollisionDetector::detect(const CollisionBox &one, const CollisionBox &two, CollisionData &data)
 	{
 		// Find the vector between the two centres
 		V3 center_to_center = two.get_axis(3) - one.get_axis(3);
@@ -484,9 +484,9 @@ namespace Ryno {
 
 	}
 	
-	U CollisionDetector::collide(const CollisionPrimitive &one, const CollisionPrimitive &two, CollisionData &data)
+	U CollisionDetector::detect(const CollisionPrimitive &one, const CollisionPrimitive &two, CollisionData &data)
 	{
-		return collide(one.get_derived_primitive(), two.get_derived_primitive(), data);
+		return detect(one.get_derived_primitive(), two.get_derived_primitive(), data);
 	}
 
 }
