@@ -2,7 +2,7 @@
 
 namespace Ryno{
 
-	MeshBuilder* MeshBuilder::get_instance(){
+	MeshBuilder* MeshBuilder::get_instance() {
 
 		static MeshBuilder instance;//only at the beginning
 		return &instance;

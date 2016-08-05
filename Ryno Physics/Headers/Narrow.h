@@ -25,6 +25,8 @@ namespace Ryno {
 
 	};
 
+	enum PrimitiveType {Point, HalfPlane, FullPlane, Box, Sphere, Primitive};
+
 	//The primitive entity.
 	//It is made by a rigidbody, and an offset,
 	//because a single game object could have more than one primitve
@@ -35,7 +37,7 @@ namespace Ryno {
 		CollisionPrimitive(RigidBody* _body, const M4& _offset = glm::mat4()) : body(_body), offset(_offset) {}
 		CollisionPrimitive(const CollisionPrimitive& copy) { offset = copy.offset; }
 		virtual CollisionPrimitive* clone() { return new CollisionPrimitive(*this); }
-		virtual const CollisionPrimitive& get_derived_primitive() const {	return *this;}
+		virtual PrimitiveType get_type() const { return PrimitiveType::Primitive; }
 		RigidBody* body;
 		M4 offset;			//Offset from rigidbody
 		M4 transform;		//Calculated every frame from transform and offset
@@ -54,11 +56,18 @@ namespace Ryno {
 		CollisionSphere(RigidBody* _body, const M4& _offset) : CollisionPrimitive(_body, _offset) {}
 		CollisionSphere(const CollisionSphere& copy) : CollisionPrimitive(copy) { radius = copy.radius; }
 		CollisionSphere* clone() override { return new CollisionSphere(*this); }
-		virtual const CollisionSphere& get_derived_primitive() const override {
-			return *(CollisionSphere*)(this);
-		};
+		PrimitiveType get_type() const override { return PrimitiveType::Sphere; }
 
 		F radius;
+	};
+
+	//Point primitive
+	class CollisionPoint : public CollisionPrimitive {
+	public:
+		CollisionPoint(RigidBody* _body, const M4& _offset) : CollisionPrimitive(_body, _offset) {}
+		CollisionPoint(const CollisionPoint& copy) : CollisionPrimitive(copy) {}
+		CollisionPrimitive* clone() override { return new CollisionPoint(*this); }
+		PrimitiveType get_type() const override { return PrimitiveType::Point; }
 	};
 
 	//Plane primitive.
@@ -67,9 +76,8 @@ namespace Ryno {
 		CollisionHalfPlane(RigidBody* _body, const M4& _offset) : CollisionPrimitive(_body, _offset) {}
 		CollisionHalfPlane(const CollisionHalfPlane& copy) : CollisionPrimitive(copy) { normal = copy.normal; offset = copy.offset; }
 		CollisionHalfPlane* clone() override { return new CollisionHalfPlane(*this); }
-		virtual const CollisionHalfPlane& get_derived_primitive() const override {
-			return *(CollisionHalfPlane*)(this);
-		};
+		virtual PrimitiveType get_type() const { return PrimitiveType::HalfPlane; }
+
 		V3 normal;
 		F offset;
 	};
@@ -80,9 +88,8 @@ namespace Ryno {
 		CollisionFullPlane(RigidBody* _body, const M4& _offset) : CollisionPrimitive(_body, _offset) {}
 		CollisionFullPlane(const CollisionFullPlane& copy) : CollisionPrimitive(copy) { normal = copy.normal; offset = copy.offset; }
 		CollisionFullPlane* clone() override { return new CollisionFullPlane(*this); }
-		virtual const CollisionFullPlane& get_derived_primitive() const override {
-			return *(CollisionFullPlane*)(this);
-		};
+		virtual PrimitiveType get_type() const { return PrimitiveType::FullPlane; }
+
 		V3 normal;
 		F offset;
 	};
@@ -93,9 +100,8 @@ namespace Ryno {
 		CollisionBox(RigidBody* _body, const M4& _offset) : CollisionPrimitive(_body, _offset) {}
 		CollisionBox(const CollisionBox& copy) : CollisionPrimitive(copy) { half_size = copy.half_size; }
 		CollisionBox* clone() override { return new CollisionBox(*this); }
-		virtual const CollisionBox& get_derived_primitive() const override {
-			return *(CollisionBox*)(this);
-		};
+		virtual PrimitiveType get_type() const { return PrimitiveType::Box; }
+
 		V3 half_size;
 	};
 
@@ -106,80 +112,69 @@ namespace Ryno {
 	{
 	public:
 
+		static CollisionData data;
+
+		static void set_up();
+
+		static void detect_all_contacts(const std::vector<PotentialContact>& contacts);
 		
-		static CollisionData detect_all_contacts(const std::vector<PotentialContact>& contacts);
+		
+		//Fallback
+		static U detect(const CollisionPrimitive &one, const CollisionPrimitive &two) { return 0; }
 
-		static U detect(
-			const CollisionPrimitive &one,
-			const CollisionPrimitive &two,
-			CollisionData &data);
-
-		static U detect(
-			const CollisionSphere &one,
-			const CollisionSphere &two,
-			CollisionData &data
-			);
+		static U detect(const CollisionSphere &one,	const CollisionSphere &two);
 
 
-		static U detect(
-			const CollisionSphere &sphere,
-			const CollisionHalfPlane &plane,
-			CollisionData &data
-			);
+		static U detect(const CollisionSphere &sphere,const CollisionHalfPlane &plane);
 		//inverse
-		static U detect(
-			const CollisionHalfPlane &plane,
-			const CollisionSphere &sphere,
-			CollisionData &data
-			) {	return detect(sphere, plane, data);}
+		static U detect(const CollisionHalfPlane &plane,const CollisionSphere &sphere) {return detect(sphere, plane);}
 
-		static U detect(
-			const CollisionSphere &sphere,
-			const CollisionFullPlane &plane,
-			CollisionData &data
-			);
+		static U detect(const CollisionSphere &sphere,const CollisionFullPlane &plane);
 		//inverse
-		static U detect(
-			const CollisionFullPlane &plane,
-			const CollisionSphere &sphere,
-			CollisionData &data
-			) {
-			return detect(sphere, plane, data);
+		static U detect(const CollisionFullPlane &plane,const CollisionSphere &sphere) {return detect(sphere, plane);}
+
+
+		static U detect(const CollisionBox &box,const CollisionHalfPlane &plane);
+		//inverse
+		static U detect(const CollisionHalfPlane &plane, const CollisionBox &box) { return detect(box, plane); }
+
+		static U detect(const CollisionBox &one,const CollisionBox &two);
+
+
+		static U detect(const CollisionBox &box,const CollisionSphere &sphere);
+		//Inverse 
+		static U detect(const CollisionSphere &sphere,const CollisionBox &box) {return detect(box, sphere);}
+
+
+		static U detect_two_unknown(const CollisionPrimitive &one, const CollisionPrimitive &two)
+		{
+			if (const auto a = dynamic_cast<const CollisionSphere*>(&one))
+				return detect_one_unknown(*a, two);
+			else if (const auto a = dynamic_cast<const CollisionBox*>(&one))
+				return detect_one_unknown(*a, two);
+			else if (const auto a = dynamic_cast<const CollisionFullPlane*>(&one))
+				return detect_one_unknown(*a, two);
+			else if (const auto a = dynamic_cast<const CollisionHalfPlane*>(&one))
+				return detect_one_unknown(*a, two);
+			else if (const auto a = dynamic_cast<const CollisionPoint*>(&one))
+				return detect_one_unknown(*a, two);
 		}
 
 
-		static U detect(
-			const CollisionBox &box,
-			const CollisionHalfPlane &plane,
-			CollisionData &data
-			);
-		//inverse
-		static U detect(
-			const CollisionHalfPlane &plane,
-			const CollisionBox &box,
-			CollisionData &data
-			) {	return detect(box, plane, data);}
-
-		static U detect(
-			const CollisionBox &one,
-			const CollisionBox &two,
-			CollisionData &data
-			);
-
-
-		static U detect(
-			const CollisionBox &box,
-			const CollisionSphere &sphere,
-			CollisionData &data
-			);
-		//Inverse 
-		static U detect(
-			const CollisionSphere &sphere,
-			const CollisionBox &box,
-			CollisionData &data
-			) {	return detect(box, sphere, data);}
-
-
+		template<class T>
+		static U detect_one_unknown(const T& known, const CollisionPrimitive& unknown) {
+			
+			if (const auto a = dynamic_cast<const CollisionSphere*>(&unknown))
+				return detect(known,*a);
+			else if (const auto a = dynamic_cast<const CollisionBox*>(&unknown))
+				return detect(known, *a);
+			else if (const auto a = dynamic_cast<const CollisionFullPlane*>(&unknown))
+				return detect(known, *a);
+			else if (const auto a = dynamic_cast<const CollisionHalfPlane*>(&unknown))
+				return detect(known, *a);
+			else if (const auto a = dynamic_cast<const CollisionPoint*>(&unknown))
+				return detect(known, *a);
+		}
 	};
 
 	

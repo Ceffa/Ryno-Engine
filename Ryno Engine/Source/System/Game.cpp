@@ -45,13 +45,15 @@ namespace Ryno{
 
 	void Game::init_internal_systems(){
 
-		deferred_renderer = new DeferredRenderer();
+		deferred_renderer = DeferredRenderer::get_instance();
 		deferred_renderer->init();
 		shell = Shell::get_instance();
 		shell->init();
 		log = Log::get_instance();
 		log->init();
 	
+		physics_world = PhysicsWorld::get_instance();
+		physics_world->set_up();
 		particle_manager = ParticleManager::get_instance();
 		particle_manager->init();
 		audio_manager = AudioManager::get_instance();
@@ -102,6 +104,7 @@ namespace Ryno{
 				continue;
 			scene->camera_update();
 			if (game_state != GameState::Paused) update();
+			physics_world->physics_step(delta_time);
 			draw();
 			time_manager->end_frame(&time, &delta_time);
 			if (game_state != GameState::Paused) time_manager->print_fps();

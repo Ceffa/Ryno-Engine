@@ -39,7 +39,6 @@ namespace Ryno{
 		ForceRegister reg;
 		Gravity* gravity_force;
 		Spring* spring_force;
-		CollisionData collision_data;
 		
 
 		

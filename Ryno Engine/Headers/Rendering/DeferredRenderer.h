@@ -33,7 +33,7 @@ namespace Ryno{
 		friend class Shell;
 	public:
 		~DeferredRenderer(){}
-		DeferredRenderer(){}
+		static DeferredRenderer* get_instance();
 
 		bool geometry_enabled = true;
 		bool directional_light_enabled = true;
@@ -86,6 +86,8 @@ namespace Ryno{
 		Batch2DFont m_font_batch2d;
 
 	private:
+
+		DeferredRenderer() {}
 
 		//Shadow subpass for point light
 		void point_shadow_subpass(PointLight* go);

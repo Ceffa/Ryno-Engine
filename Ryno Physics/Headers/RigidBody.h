@@ -16,6 +16,10 @@ namespace Ryno {
 		bool is_awake;
 
 	public: 
+
+		bool is_unique() override { return true; }
+		bool is_copyable() override { return true; }
+
 		M3 inverse_inertia_tensor_world;
 
 		V3 delta_acceleration;
@@ -77,7 +81,7 @@ namespace Ryno {
 		}
 		RigidBody() {};
 		RigidBody(const RigidBody& copy);
-		~RigidBody() { for (auto p : primitives) delete p; }
+		~RigidBody() { for (auto p : primitives) delete p; primitives.clear(); }
 
 		V3 get_world_point(const V3& point);
 

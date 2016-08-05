@@ -35,7 +35,7 @@ namespace Ryno{
 		game_objects.push_back(this);
 
 		scripts.clear();
-		for (auto* s : go.scripts) {
+		for (auto s : go.scripts) {
 			if (s->is_copyable())
 				add_script(s->clone());
 		}

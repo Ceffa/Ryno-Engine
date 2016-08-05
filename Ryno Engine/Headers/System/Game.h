@@ -15,6 +15,7 @@
 #include "MeshBuilder.h"
 #include "CPUProfiler.h"
 #include "GPUProfiler.h"
+#include "PhysicsWorld.h"
 
 //other
 #include "Global.h"
@@ -65,6 +66,7 @@ namespace Ryno{
 		DeferredRenderer* deferred_renderer;
 		ParticleManager* particle_manager;
 		MeshBuilder* mesh_builder;
+		PhysicsWorld* physics_world;
 		Shell* shell;
 		Log* log;
 		GameState game_state;

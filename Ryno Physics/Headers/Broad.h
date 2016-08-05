@@ -24,7 +24,7 @@ namespace Ryno {
 
 		void insert(RigidBody* b) { bodies.push_back(b); }
 
-		void clear() { contacts.clear(); }
+		void clear() { contacts.clear(); bodies.clear(); }
 
 		std::vector<PotentialContact> get_contacts() {
 			for (U i = 0; i < bodies.size(); i++) {

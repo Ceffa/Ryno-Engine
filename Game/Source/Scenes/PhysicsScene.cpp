@@ -90,63 +90,14 @@ namespace Ryno {
 
 
 		
-		//spring_force = new Spring(glm::vec3(0,1,0),glm::vec3(0,0,0), b[0], 20, .1f, true);
-		//reg.add(b[1], spring_force);
-		//reg.add(b[2], new Spring(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), b[1], 20, .1f, true));
+		spring_force = new Spring(glm::vec3(0,1,0),glm::vec3(0,0,0), b[0], 20, .1f, true);
+		reg.add(b[1], spring_force);
+		reg.add(b[2], new Spring(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), b[1], 20, .1f, true));
 	
-
-		collision_data.setup(5);
-
 	}
 
 	void PhysicsScene::update() {
-		for (auto rb : b)
-			rb->calculate_derived_data();
-
-		reg.update_forces(game->delta_time);
-		static CollisionSphere& pr_a = (CollisionSphere&)(*b[0]->primitives.back());
-		static CollisionBox& pr_b = (CollisionBox&)(*b[1]->primitives.back());
-		static CollisionSphere& pr_c = (CollisionSphere&)(*b[2]->primitives.back());
-		static CollisionBox& pr_d = (CollisionBox&)(*b[3]->primitives.back());
-		static Material& m_a = ball[0].get_script<Model>()->sub_models[0].material;
-		static Material& m_b = ball[1].get_script<Model>()->sub_models[0].material;
-		static Material& m_c = ball[2].get_script<Model>()->sub_models[0].material;
-		static Material& m_d = ball[3].get_script<Model>()->sub_models[0].material;
-
-		m_a.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
-		m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
-		m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
-		m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
-
-		if (CollisionDetector::detect(pr_b, pr_a , collision_data) > 0) {
-			m_a.set_attribute("in_DiffuseColor", ColorRGBA(255,0,0,255));
-			m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-		}
-		if (CollisionDetector::detect(pr_c, pr_a, collision_data) > 0) {
-			m_a.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-			m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-		}
-		if (CollisionDetector::detect(pr_d, pr_a, collision_data) > 0) {
-			m_a.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-			m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-		}
-		if (CollisionDetector::detect(pr_b, pr_c, collision_data) > 0) {
-			m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-			m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-		}
-		if (CollisionDetector::detect(pr_b, pr_d, collision_data) > 0) {
-			m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-			m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-		}
-		if (CollisionDetector::detect(pr_d, pr_c, collision_data) > 0) {
-			m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-			m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
-		}
 		
-		for (RigidBody* _b : b) _b->integrate(game->delta_time);
-
-
-		collision_data.clear();
 
 	}
 	static int curr = 0;

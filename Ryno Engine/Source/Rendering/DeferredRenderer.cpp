@@ -29,6 +29,11 @@ namespace Ryno{
 	};
 
 	
+	DeferredRenderer* DeferredRenderer::get_instance() {
+
+		static DeferredRenderer instance;//only at the beginning
+		return &instance;
+	}
 
 	void DeferredRenderer::set_camera(Camera3D* camera)
 	{

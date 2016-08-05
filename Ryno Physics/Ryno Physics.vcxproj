@@ -140,6 +140,7 @@
     <ClInclude Include="Headers\ParticleForceGenerator.h" />
     <ClInclude Include="Headers\ParticleForceRegister.h" />
     <ClInclude Include="Headers\ParticleResolver.h" />
+    <ClInclude Include="Headers\PhysicsWorld.h" />
     <ClInclude Include="Headers\RigidBody.h" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +156,7 @@
     <ClCompile Include="Source\Particle.cpp" />
     <ClCompile Include="Source\ParticleForceRegister.cpp" />
     <ClCompile Include="Source\ParticleResolver.cpp" />
+    <ClCompile Include="Source\PhysicsWorld.cpp" />
     <ClCompile Include="Source\RigidBody.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
