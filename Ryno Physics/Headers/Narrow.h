@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "RigidBody.h"
 #include "Contact.h"
+#include "Broad.h"
 
 
 
@@ -61,15 +62,26 @@ namespace Ryno {
 	};
 
 	//Plane primitive.
-	//It ignores the rigidbody because the planes
-	//are usually static
-	class CollisionPlane : public CollisionPrimitive {
+	class CollisionHalfPlane : public CollisionPrimitive {
 	public:
-		CollisionPlane(RigidBody* _body, const M4& _offset) : CollisionPrimitive(_body, _offset) {}
-		CollisionPlane(const CollisionPlane& copy) : CollisionPrimitive(copy) { normal = copy.normal; offset = copy.offset; }
-		CollisionPlane* clone() override { return new CollisionPlane(*this); }
-		virtual const CollisionPlane& get_derived_primitive() const override {
-			return *(CollisionPlane*)(this);
+		CollisionHalfPlane(RigidBody* _body, const M4& _offset) : CollisionPrimitive(_body, _offset) {}
+		CollisionHalfPlane(const CollisionHalfPlane& copy) : CollisionPrimitive(copy) { normal = copy.normal; offset = copy.offset; }
+		CollisionHalfPlane* clone() override { return new CollisionHalfPlane(*this); }
+		virtual const CollisionHalfPlane& get_derived_primitive() const override {
+			return *(CollisionHalfPlane*)(this);
+		};
+		V3 normal;
+		F offset;
+	};
+
+	//Plane primitive.
+	class CollisionFullPlane : public CollisionPrimitive {
+	public:
+		CollisionFullPlane(RigidBody* _body, const M4& _offset) : CollisionPrimitive(_body, _offset) {}
+		CollisionFullPlane(const CollisionFullPlane& copy) : CollisionPrimitive(copy) { normal = copy.normal; offset = copy.offset; }
+		CollisionFullPlane* clone() override { return new CollisionFullPlane(*this); }
+		virtual const CollisionFullPlane& get_derived_primitive() const override {
+			return *(CollisionFullPlane*)(this);
 		};
 		V3 normal;
 		F offset;
@@ -94,6 +106,9 @@ namespace Ryno {
 	{
 	public:
 
+		
+		static CollisionData get_all_contacts(const std::vector<PotentialContact>& contacts);
+
 		static U collide(
 			const CollisionPrimitive &one,
 			const CollisionPrimitive &two,
@@ -108,24 +123,39 @@ namespace Ryno {
 
 		static U collide(
 			const CollisionSphere &sphere,
-			const CollisionPlane &plane,
+			const CollisionHalfPlane &plane,
 			CollisionData &data
 			);
 		//inverse
 		static U collide(
-			const CollisionPlane &plane,
+			const CollisionHalfPlane &plane,
 			const CollisionSphere &sphere,
 			CollisionData &data
 			) {	return collide(sphere, plane, data);}
 
 		static U collide(
-			const CollisionBox &box,
-			const CollisionPlane &plane,
+			const CollisionSphere &sphere,
+			const CollisionFullPlane &plane,
 			CollisionData &data
 			);
 		//inverse
 		static U collide(
-			const CollisionPlane &plane,
+			const CollisionFullPlane &plane,
+			const CollisionSphere &sphere,
+			CollisionData &data
+			) {
+			return collide(sphere, plane, data);
+		}
+
+
+		static U collide(
+			const CollisionBox &box,
+			const CollisionHalfPlane &plane,
+			CollisionData &data
+			);
+		//inverse
+		static U collide(
+			const CollisionHalfPlane &plane,
 			const CollisionBox &box,
 			CollisionData &data
 			) {	return collide(box, plane, data);}

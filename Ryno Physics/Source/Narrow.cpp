@@ -25,7 +25,19 @@ namespace Ryno {
 	}
 
 
-	
+
+	Ryno::CollisionData CollisionDetector::get_all_contacts(const std::vector<PotentialContact>& contacts)
+	{
+		//For each potential contact, add every single possible contact
+		//between the primitives they have. 
+		CollisionData data;
+		for (auto& c : contacts) 
+		for (auto& p0 : c.bodies[0]->primitives)
+		for (auto& p1 : c.bodies[1]->primitives) 
+			collide(*p0, *p1, data);
+		
+		return data;
+	}
 
 	U CollisionDetector::collide(const CollisionSphere &one, const CollisionSphere &two, CollisionData& data)
 	{
@@ -53,7 +65,7 @@ namespace Ryno {
 	}
 
 
-	U CollisionDetector::collide(const CollisionSphere &sphere, const CollisionPlane &plane, CollisionData &data)
+	U CollisionDetector::collide(const CollisionSphere &sphere, const CollisionHalfPlane &plane, CollisionData &data)
 	{
 		if (data.remaining_contacts<=0)
 			return 0;
@@ -74,8 +86,37 @@ namespace Ryno {
 		return 1;
 	}
 
+	U CollisionDetector::collide(const CollisionSphere &sphere, const CollisionFullPlane &plane, CollisionData &data)
+	{
+		if (data.remaining_contacts<=0)
+			return 0;
 
-	U CollisionDetector::collide(const CollisionBox &box, const CollisionPlane &plane, CollisionData &data)
+		V3 sphere_pos = sphere.get_position();
+		//Formula to get distance of center of the sphere from plane
+		F center_dist = dot(plane.normal, sphere_pos) - plane.offset;
+
+		if (center_dist*center_dist >= sphere.radius * sphere.radius)
+			return 0;
+
+		V3 normal = plane.normal;
+		F penetration = -center_dist;
+		if (penetration < 0) {
+			normal *= -1;
+			penetration *= -1;
+		}
+
+		penetration += sphere.radius;
+
+		Contact* c = data.contacts;
+		c->contact_normal = normal;
+		c->contact_point = sphere_pos - plane.normal * center_dist;
+		c->penetration = penetration;
+		c->set_body_data(sphere.body, nullptr, 1, 0);
+		++data;
+		return 1;
+	}
+
+	U CollisionDetector::collide(const CollisionBox &box, const CollisionHalfPlane &plane, CollisionData &data)
 	{
 		if (data.remaining_contacts <=0)
 			return 0;
