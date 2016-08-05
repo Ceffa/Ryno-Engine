@@ -125,6 +125,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Headers\BoundingVolumes.h" />
+    <ClInclude Include="Headers\Broad.h" />
     <ClInclude Include="Headers\BVH.h" />
     <ClInclude Include="Headers\Contact.h" />
     <ClInclude Include="Headers\ContactResolver.h" />

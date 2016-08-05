@@ -1,17 +1,11 @@
 #pragma once
-#pragma once
+#include "Broad.h"
 #include "RigidBody.h"
+
 
 namespace Ryno {
 
-	struct PotentialContact {
-	public:
-		PotentialContact(RigidBody* a, RigidBody* b) {
-			bodies[0] = a;
-			bodies[1] = b;
-		}
-		RigidBody* bodies[2];
-	};
+	
 
 	template<typename BoundingVolume>
 	class BVH_node {

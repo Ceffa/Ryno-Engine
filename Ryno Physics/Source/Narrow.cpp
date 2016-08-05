@@ -14,7 +14,7 @@ namespace Ryno {
 
 	}
 
-	
+
 
 	void CollisionData::clear()
 	{
@@ -24,7 +24,10 @@ namespace Ryno {
 
 	}
 
-	U CollisionDetector::sphere_and_sphere(const CollisionSphere &one, const CollisionSphere &two, CollisionData& data)
+
+	
+
+	U CollisionDetector::collide(const CollisionSphere &one, const CollisionSphere &two, CollisionData& data)
 	{
 		if (data.remaining_contacts <=0)
 			return 0;
@@ -50,7 +53,7 @@ namespace Ryno {
 	}
 
 
-	U CollisionDetector::sphere_and_half_space(const CollisionSphere &sphere, const CollisionPlane &plane, CollisionData &data)
+	U CollisionDetector::collide(const CollisionSphere &sphere, const CollisionPlane &plane, CollisionData &data)
 	{
 		if (data.remaining_contacts<=0)
 			return 0;
@@ -71,37 +74,8 @@ namespace Ryno {
 		return 1;
 	}
 
-	U CollisionDetector::sphere_and_true_plane(const CollisionSphere &sphere, const CollisionPlane &plane, CollisionData &data)
-	{
-		if (data.remaining_contacts<=0)
-			return 0;
 
-		V3 sphere_pos = sphere.get_position();
-		//Formula to get distance of center of the sphere from plane
-		F center_dist = dot(plane.normal, sphere_pos) - plane.offset;
-
-		if (center_dist*center_dist >= sphere.radius * sphere.radius)
-			return 0;
-
-		V3 normal = plane.normal;
-		F penetration = -center_dist;
-		if (penetration < 0) {
-			normal *= -1;
-			penetration *= -1;
-		}
-
-		penetration += sphere.radius;
-
-		Contact* c = data.contacts;
-		c->contact_normal = normal;
-		c->contact_point = sphere_pos - plane.normal * center_dist;
-		c->penetration = penetration;
-		c->set_body_data(sphere.body, nullptr, 1, 0);
-		++data;
-		return 1;
-	}
-
-	U CollisionDetector::box_and_half_space(const CollisionBox &box, const CollisionPlane &plane, CollisionData &data)
+	U CollisionDetector::collide(const CollisionBox &box, const CollisionPlane &plane, CollisionData &data)
 	{
 		if (data.remaining_contacts <=0)
 			return 0;
@@ -139,7 +113,7 @@ namespace Ryno {
 
 	
 
-	U CollisionDetector::box_and_sphere(const CollisionBox &box, const CollisionSphere &sphere, CollisionData &data)
+	U CollisionDetector::collide(const CollisionBox &box, const CollisionSphere &sphere, CollisionData &data)
 	{
 		V3 world_sphere_center = sphere.get_position();
 
@@ -178,19 +152,15 @@ namespace Ryno {
 		return 1;
 	}
 
-	bool IntersectionTest::box_and_half_space(const CollisionBox &box, const CollisionPlane &plane)
-	{
-		return true;
-	}
+	
 
-
-	V3 Primitive::get_axis(U axis) const
+	V3 CollisionPrimitive::get_axis(U axis) const
 	{
 		return glm::vec3(transform[axis]);
 	}
 
 
-	void Primitive::calculate_transform()
+	void CollisionPrimitive::calculate_transform()
 	{
 		transform = offset * body->get_transform_matrix();
 	}
@@ -360,7 +330,7 @@ namespace Ryno {
 
 
 
-	U CollisionDetector::box_and_box(const CollisionBox &one, const CollisionBox &two, CollisionData &data)
+	U CollisionDetector::collide(const CollisionBox &one, const CollisionBox &two, CollisionData &data)
 	{
 		// Find the vector between the two centres
 		V3 center_to_center = two.get_axis(3) - one.get_axis(3);
@@ -473,4 +443,9 @@ namespace Ryno {
 
 	}
 	
+	U CollisionDetector::collide(const CollisionPrimitive &one, const CollisionPrimitive &two, CollisionData &data)
+	{
+		return collide(one.get_derived_primitive(), two.get_derived_primitive(), data);
+	}
+
 }

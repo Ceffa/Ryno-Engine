@@ -118,27 +118,27 @@ namespace Ryno {
 		m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
 		m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
 
-		if (CollisionDetector::box_and_sphere(pr_b, pr_a , collision_data) > 0) {
+		if (CollisionDetector::collide(pr_b, pr_a , collision_data) > 0) {
 			m_a.set_attribute("in_DiffuseColor", ColorRGBA(255,0,0,255));
 			m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 		}
-		if (CollisionDetector::sphere_and_sphere(pr_c, pr_a, collision_data) > 0) {
+		if (CollisionDetector::collide(pr_c, pr_a, collision_data) > 0) {
 			m_a.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 			m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 		}
-		if (CollisionDetector::box_and_sphere(pr_d, pr_a, collision_data) > 0) {
+		if (CollisionDetector::collide(pr_d, pr_a, collision_data) > 0) {
 			m_a.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 			m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 		}
-		if (CollisionDetector::box_and_sphere(pr_b, pr_c, collision_data) > 0) {
+		if (CollisionDetector::collide(pr_b, pr_c, collision_data) > 0) {
 			m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 			m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 		}
-		if (CollisionDetector::box_and_box(pr_b, pr_d, collision_data) > 0) {
+		if (CollisionDetector::collide(pr_b, pr_d, collision_data) > 0) {
 			m_b.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 			m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 		}
-		if (CollisionDetector::box_and_sphere(pr_d, pr_c, collision_data) > 0) {
+		if (CollisionDetector::collide(pr_d, pr_c, collision_data) > 0) {
 			m_c.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 			m_d.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
 		}
