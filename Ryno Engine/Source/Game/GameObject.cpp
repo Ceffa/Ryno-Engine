@@ -4,6 +4,7 @@
 #include <GLM/gtx/quaternion.hpp>
 #include "Script.h"
 #include "Transform.h"
+#include <iostream>
 
 namespace Ryno{
 
@@ -20,7 +21,7 @@ namespace Ryno{
 	GameObject::GameObject(const GameObject& go) 
 	{
 		copy(go);
-		
+		game_objects.push_back(this);		
 	}
 
 
@@ -31,9 +32,6 @@ namespace Ryno{
 		transform.copy(go.transform);
 		transform.game_object = this;
 	
-	 
-		game_objects.push_back(this);
-
 		scripts.clear();
 		for (auto s : go.scripts) {
 			if (s->is_copyable())

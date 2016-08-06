@@ -55,7 +55,7 @@ namespace Ryno {
 		b[0]->set_inertia_tensor(InertiaTensorGenerator::get_tensor(*c_s,b[0]->get_mass()));
 	
 		
-		ball[1].transform.set_position(0,0, 0);
+		ball[1].transform.set_position(40,40, 0);
 		b[1] = ball[1].get_script<RigidBody>();
 		CollisionBox* c_b = b[1]->add_primitive<CollisionBox>();
 		c_b->half_size = glm::vec3(10,10,10);
@@ -65,7 +65,8 @@ namespace Ryno {
 
 		ball[2].copy(ball[0]);
 		b[2] = ball[2].get_script<RigidBody>();
-		ball[2].transform.set_position(40, 40, 0);
+		ball[2].transform.set_position(0, 0, 0);
+		b[2]->set_inverted_mass(0.001f);
 		ball[3].copy(ball[1]);
 		b[3] = ball[3].get_script<RigidBody>();
 		ball[3].transform.set_position(40, 0, 0);
@@ -89,10 +90,15 @@ namespace Ryno {
 		l->shadows = false;
 
 
-		
+		/*
 		spring_force = new Spring(glm::vec3(0,1,0),glm::vec3(0,0,0), b[0], 20, .1f, true);
 		reg.add(b[1], spring_force);
-		reg.add(b[2], new Spring(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), b[1], 20, .1f, true));
+		reg.add(b[2], new Spring(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), b[1], 20, .1f, true));*/
+		//gravity_force = new Gravity(glm::vec3(0, -10, 0));
+		//game->physics_world->add_force(b[0], gravity_force);
+		//b[0]->acceleration = glm::vec3(0, -20, 0);
+		b[1]->acceleration = glm::vec3(0, -20, 0);
+
 	
 	}
 
@@ -125,7 +131,7 @@ namespace Ryno {
 			curr = (curr + 1) % NUM_BODIES;
 		}
 
-		b[curr]->add_position(dir);
+		//b[curr]->add_position(dir);
 	
 
 	}

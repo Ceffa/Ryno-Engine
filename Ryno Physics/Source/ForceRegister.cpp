@@ -26,7 +26,6 @@ namespace Ryno {
 		for (auto& r : registrations) {
 			r.generator->update_force(r.body, duration);
 		}
-		clear();
 	}
 
 }

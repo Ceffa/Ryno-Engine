@@ -28,12 +28,7 @@ namespace Ryno{
 
 		template<class T>
 		T* add_script(T* s) {
-			//If the script is unique, check if exists already.
-			//If so return nullptr
-			/*if (s->is_unique() && get_script<T>())
-				return nullptr;*/
-			
-			
+						
 			s->game_object = this;
 			scripts.push_back(s);
 			s->start();

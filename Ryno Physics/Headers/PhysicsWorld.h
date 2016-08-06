@@ -12,8 +12,15 @@ namespace Ryno {
 		
 	public:
 		static PhysicsWorld* get_instance();
-
+		static bool first;
 		void set_up();
+		void reset() { force_register.clear(); first = true; }
+		void add_force(RigidBody* body, ForceGenerator* generator) {
+			force_register.add(body, generator);
+		}
+		void remove_force(RigidBody* body, ForceGenerator* generator) {
+			force_register.remove(body, generator);
+		}
 		void physics_step(F duration);
 	private:
 		PhysicsWorld() {}

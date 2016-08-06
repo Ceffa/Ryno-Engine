@@ -21,7 +21,6 @@ namespace Ryno {
 
 		// Calculate an set of axis at the contact point.
 		calculate_contact_basis();
-
 		// Store the relative position of the contact relative to each body
 		relative_contact_position[0] = contact_point - bodies[0]->get_position();
 		if (bodies[1]) {
@@ -306,7 +305,6 @@ namespace Ryno {
 			// Now we can start to apply the values we've calculated.
 			// Apply the linear movement
 			bodies[i]->add_position(linear_change[i]);
-
 			// And the change in orientation.
 			bodies[i]->add_orientation(glm::quat(angular_change[i]));			
 		}

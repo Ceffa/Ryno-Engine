@@ -43,16 +43,16 @@ namespace Ryno {
 		bool has_finite_mass();
 
 		//Position
-		void get_position(V3* p) { *p = game_object->transform.get_position(); }
-		void set_position(const V3& p) { game_object->transform.set_position(p); }
-		void add_position(const V3& p) { game_object->transform.add_position(p); }
-		const V3 get_position() { return game_object->transform.get_position(); }
+		void get_position(V3* p) const{ *p = game_object->transform.get_position(); }
+		void set_position(const V3& p) const { game_object->transform.set_position(p); }
+		void add_position(const V3& p)const { game_object->transform.add_position(p); }
+		const V3& get_position()const {return game_object->transform.get_position(); }
 
 		//Orientation
-		void get_orientation(Q* o) { *o = game_object->transform.get_rotation(); }
-		void set_orientation(const Q& o) { game_object->transform.set_rotation(o); }
-		void add_orientation(const Q& o) { game_object->transform.add_rotation(o); }
-		const Q get_orientation() { return game_object->transform.get_rotation(); }
+		void get_orientation(Q* o) const { *o = game_object->transform.get_rotation(); }
+		void set_orientation(const Q& o) const { game_object->transform.set_rotation(o); }
+		void add_orientation(const Q& o) const { game_object->transform.add_rotation(o); }
+		const Q& get_orientation() const { return game_object->transform.get_rotation(); }
 
 		//Force
 		void add_force(const V3 &force);						//force only
@@ -81,7 +81,7 @@ namespace Ryno {
 		}
 		RigidBody() {};
 		RigidBody(const RigidBody& copy);
-		~RigidBody() { for (auto p : primitives) delete p; primitives.clear(); }
+		~RigidBody() { for (auto p : primitives) delete p; }
 
 		V3 get_world_point(const V3& point);
 

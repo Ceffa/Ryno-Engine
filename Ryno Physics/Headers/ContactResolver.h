@@ -8,6 +8,8 @@ namespace Ryno {
 
 	class ContactResolver {
 	public:
+		void set_up(U _pos_iterations, U _vel_iterations, F _pos_epsilon, F _vel_epsilon);
+
 		void resolve_contacts(CollisionData& coll_data, F duration);
 	protected:
 		void prepare_contacts(Contact* contacts, U num_contacts, F duration);

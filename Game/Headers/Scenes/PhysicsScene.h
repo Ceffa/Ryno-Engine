@@ -36,7 +36,6 @@ namespace Ryno{
 		RigidBody* b[NUM_BODIES];
 		GameObject s;
 
-		ForceRegister reg;
 		Gravity* gravity_force;
 		Spring* spring_force;
 		

@@ -20,7 +20,6 @@ namespace Ryno {
 		//reset pointer and contacts
 		contacts -= (max_contacts - remaining_contacts);
 		remaining_contacts = max_contacts;
-		std::cout << contacts << " " << remaining_contacts << std::endl;
 
 	}
 
@@ -43,6 +42,8 @@ namespace Ryno {
 		for (auto p1 : c.bodies[1]->primitives) 
 		detect_two_unknown(*p0, *p1);
 				
+		std::cout << data.max_contacts - data.remaining_contacts << std::endl;
+
 	}
 
 	U CollisionDetector::detect(const CollisionSphere &one, const CollisionSphere &two)
@@ -71,7 +72,6 @@ namespace Ryno {
 		return 1;
 
 	}
-
 
 	U CollisionDetector::detect(const CollisionSphere &sphere, const CollisionHalfPlane &plane)
 	{
@@ -159,9 +159,6 @@ namespace Ryno {
 	
 	}
 
-
-	
-
 	U CollisionDetector::detect(const CollisionBox &box, const CollisionSphere &sphere)
 	{
 
@@ -246,7 +243,7 @@ namespace Ryno {
 		const CollisionBox &one,
 		const CollisionBox &two,
 		const V3 &center_to_center,
-		CollisionData *data,
+		CollisionData &data,
 		U best,
 		F pen
 		)
@@ -254,7 +251,7 @@ namespace Ryno {
 		// This method is called when we know that a vertex from
 		// box two is in contact with box one.
 
-		Contact* c = data->contacts;
+		Contact* c = data.contacts;
 
 		// We know which axis the collision is on (i.e. best),
 		// but we need to work out which of the two faces on
@@ -421,16 +418,20 @@ namespace Ryno {
 		
 		if (best == UINT_MAX)
 			return 0;
+	
 
 		if (best < 3)
 		{
 			// We've got a vertex of box two on a face of box one.
-			fill_point_face_box_box(one, two, center_to_center, &data, best, pen);
+			fill_point_face_box_box(one, two, center_to_center, data, best, pen);
+			std::cout << "pt - face " << std::endl;
+
 			return 1;
 		}
 		else if (best < 6) {
 			//Same thing if axis is parallel to a face of box 2
-			fill_point_face_box_box(two, one, -center_to_center, &data, best - 3, pen);
+			fill_point_face_box_box(two, one, -center_to_center, data, best - 3, pen);
+
 			return 1;
 		}
 		else {

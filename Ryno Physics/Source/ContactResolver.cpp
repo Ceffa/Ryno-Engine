@@ -3,10 +3,20 @@
 
 namespace Ryno {
 
+	void ContactResolver::set_up(U _pos_iterations, U _vel_iterations, F _pos_epsilon, F _vel_epsilon)
+	{
+		position_iterations = _pos_iterations;
+		velocity_iterations = _vel_iterations;
+		position_epsilon = _pos_epsilon;
+		velocity_epsilon = _vel_epsilon;
+	}
+
 	void ContactResolver::resolve_contacts(CollisionData& coll_data, F duration)
 	{
-		Contact* contacts = coll_data.contacts;
+		//Get contact pointer from data. It needs to be calculated because data
+		//always points to the last element
 		U num_contacts = coll_data.max_contacts - coll_data.remaining_contacts;
+		Contact* contacts = coll_data.contacts - num_contacts;
 
 		if (num_contacts == 0)
 			return;
@@ -21,7 +31,7 @@ namespace Ryno {
 	void ContactResolver::prepare_contacts(Contact* contacts, U num_contacts, F duration)
 	{
 		for (U i = 0; i < num_contacts; i++) {
-			(contacts + i)->calculate_internals(duration);
+			contacts[i].calculate_internals(duration);
 		}
 	}
 
@@ -36,6 +46,7 @@ namespace Ryno {
 		position_iterations_used = 0;
 		while (position_iterations_used < position_iterations)
 		{
+			
 			// Find biggest penetration
 			max = position_epsilon;
 			index = num_contacts;

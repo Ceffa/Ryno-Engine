@@ -93,6 +93,7 @@ namespace Ryno{
 		//Main Loop
 		while (game_state != GameState::Exit){
 			if (game_state == GameState::ChangeScene) {
+				physics_world->reset();
 				Batch3DGeometry::sorting = true;
 				Batch3DShadow::sorting = true;
 				scene->start();
