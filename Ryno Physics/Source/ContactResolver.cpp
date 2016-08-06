@@ -20,7 +20,6 @@ namespace Ryno {
 
 		if (num_contacts == 0)
 			return;
-
 		prepare_contacts(contacts, num_contacts, duration);
 		adjust_positions(contacts, num_contacts, duration);
 		adjust_velocities(contacts, num_contacts, duration);

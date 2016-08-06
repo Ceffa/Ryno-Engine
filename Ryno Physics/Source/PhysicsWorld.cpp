@@ -32,8 +32,10 @@ namespace Ryno {
 		force_register.update_forces(duration);
 
 		//Integrate bodies
-		for (auto go : bodies)
+		for (auto go : bodies) {
 			go->integrate(duration);
+			go->game_object->transform.generate_model_matrix();
+		}
 
 		std::vector<PotentialContact> potential_contacts = broad.get_contacts();
 		CollisionDetector::detect_all_contacts(potential_contacts);

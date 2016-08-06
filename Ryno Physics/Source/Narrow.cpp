@@ -42,7 +42,7 @@ namespace Ryno {
 		for (auto p1 : c.bodies[1]->primitives) 
 		detect_two_unknown(*p0, *p1);
 				
-		std::cout << data.max_contacts - data.remaining_contacts << std::endl;
+		
 
 	}
 
@@ -424,7 +424,7 @@ namespace Ryno {
 		{
 			// We've got a vertex of box two on a face of box one.
 			fill_point_face_box_box(one, two, center_to_center, data, best, pen);
-			std::cout << "pt - face " << std::endl;
+			
 
 			return 1;
 		}

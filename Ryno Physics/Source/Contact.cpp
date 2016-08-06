@@ -93,7 +93,7 @@ namespace Ryno {
 		
 	}
 
-	inline V3 Contact::calculate_frictionless_inpulse(M3* inv_inertia_tensor)
+	inline V3 Contact::calculate_frictionless_impulse(M3* inv_inertia_tensor)
 	{
 		V3 impulse_contact;
 
@@ -177,7 +177,7 @@ namespace Ryno {
 			inertia_tensor[1] = bodies[1]->inverse_inertia_tensor_world;
 
 		// We will calculate the impulse for each contact axis
-		V3 impulse_contact = calculate_frictionless_inpulse(inertia_tensor);
+		V3 impulse_contact = calculate_frictionless_impulse(inertia_tensor);
 
 		// Convert impulse to world coordinates
 		V3 impulse = contact_to_world * impulse_contact;
@@ -188,6 +188,7 @@ namespace Ryno {
 		velocity_change[0] = impulse *  bodies[0]->get_inverse_mass();
 
 		// Apply the changes
+		std::cout << impulse_contact.x <<" " << velocity_change[0].y << " " << bodies[0]->velocity.y << std::endl;
 		bodies[0]->velocity += velocity_change[0];
 		bodies[0]->rotation += rotation_change[0];
 

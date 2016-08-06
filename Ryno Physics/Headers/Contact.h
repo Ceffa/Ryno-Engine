@@ -26,7 +26,7 @@ namespace Ryno {
 		void apply_velocity_change(V3 velocity_change[2], V3 rotation_change[2]);
 		void apply_position_change(V3 linear_change[2], V3 angular_change[2], F penetration);
 
-		inline V3 calculate_frictionless_inpulse(M3* inv_inertia_tensor);
+		inline V3 calculate_frictionless_impulse(M3* inv_inertia_tensor);
 		V3 calculate_local_velocity(U body_index, F duration);
 		M3 contact_to_world;
 

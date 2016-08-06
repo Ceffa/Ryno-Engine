@@ -93,6 +93,14 @@ namespace Ryno {
 			return t;
 		}
 
+		template<class T>
+		T* get_primitive() {
+			for (auto* p : primitives)
+				if (T* v = dynamic_cast<T*>(p))
+					return v;
+			return nullptr;
+		}
+
 	
 	};
 

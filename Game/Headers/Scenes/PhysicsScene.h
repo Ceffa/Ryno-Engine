@@ -33,7 +33,7 @@ namespace Ryno{
 		Texture white, white_normal;
 	
 		GameObject ball[NUM_BODIES];
-		RigidBody* b[NUM_BODIES];
+		GameObject floor;
 		GameObject s;
 
 		Gravity* gravity_force;

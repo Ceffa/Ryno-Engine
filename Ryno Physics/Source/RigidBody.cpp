@@ -10,10 +10,7 @@ namespace Ryno {
 
 		//Calculate accelerations (using mass and tensor respectively)
 		delta_acceleration = acceleration + force_accumulator * inverse_mass;
-		if(acceleration.x == 0.01f)
-			std::cout << force_accumulator.y << std::endl;
 		
-
 
 		V3 angular_acceleration = inverse_inertia_tensor * torque_accumulator;
 
