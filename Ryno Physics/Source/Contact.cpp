@@ -188,7 +188,6 @@ namespace Ryno {
 		velocity_change[0] = impulse *  bodies[0]->get_inverse_mass();
 
 		// Apply the changes
-		std::cout << impulse_contact.x <<" " << velocity_change[0].y << " " << bodies[0]->velocity.y << std::endl;
 		bodies[0]->velocity += velocity_change[0];
 		bodies[0]->rotation += rotation_change[0];
 
@@ -307,7 +306,7 @@ namespace Ryno {
 			// Apply the linear movement
 			bodies[i]->add_position(linear_change[i]);
 			// And the change in orientation.
-			bodies[i]->add_orientation(glm::quat(angular_change[i]));			
+			bodies[i]->add_orientation(glm::quat(angular_change[i]));		
 		}
 	}
 

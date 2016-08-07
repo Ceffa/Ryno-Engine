@@ -65,7 +65,7 @@ namespace Ryno {
 		Contact* c = data.contacts;
 		c->contact_normal = normal;
 		c->contact_point = pos_one + .5f * midline;
-		c->penetration = size - one.radius - two.radius;
+		c->penetration = one.radius + two.radius - size;
 		c->set_body_data(one.body, two.body, 1, 0);
 		++data;
 

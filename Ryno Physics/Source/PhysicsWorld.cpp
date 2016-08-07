@@ -12,19 +12,23 @@ namespace Ryno {
 		static PhysicsWorld instance;//only at the beginning
 		return &instance;
 	}
-	bool PhysicsWorld::first = true;
+
+
+	
+
+
 	void PhysicsWorld::physics_step(F duration)
 	{
 		//Add and initialize bodies
 		broad.clear();
 		bodies.clear();
 
-		for (auto go : GameObject::game_objects) if (go->active) {
-			RigidBody* r = go->get_script<RigidBody>();
+		for (auto b : GameObject::game_objects) if (b->active) {
+			RigidBody* r = b->get_script<RigidBody>();
 			if (r) {
+				r->calculate_derived_data();
 				bodies.push_back(r);
 				broad.insert(r);
-				r->calculate_derived_data();
 			}
 		}
 
@@ -32,23 +36,16 @@ namespace Ryno {
 		force_register.update_forces(duration);
 
 		//Integrate bodies
-		for (auto go : bodies) {
-			go->integrate(duration);
-			go->game_object->transform.generate_model_matrix();
+		for (auto b : bodies) {
+			b->integrate(duration);
+			b->calculate_derived_data();
 		}
 
 		std::vector<PotentialContact> potential_contacts = broad.get_contacts();
 		CollisionDetector::detect_all_contacts(potential_contacts);
-		//std::cout << CollisionDetector::data.max_contacts - CollisionDetector::data.remaining_contacts << std::endl;
 		
-		if (first) {
-			first = false;
-		}
-		else {
-
-			resolver.resolve_contacts(CollisionDetector::data, duration);
-		}
-
+		resolver.resolve_contacts(CollisionDetector::data, duration);
+	
 	}
 
 

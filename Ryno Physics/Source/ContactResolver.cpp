@@ -57,6 +57,8 @@ namespace Ryno {
 					index = i;
 				}
 			}
+
+
 			if (index == num_contacts) break;	//no contact found
 
 

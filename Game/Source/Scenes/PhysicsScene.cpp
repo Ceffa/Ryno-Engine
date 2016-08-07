@@ -51,7 +51,7 @@ namespace Ryno {
 		ball[0].transform.set_scale(10,10,10);
 		rb = ball[0].add_script<RigidBody>();
 		rb->set_mass(10);
-		rb->acceleration = glm::vec3(0, -10, 0);
+		rb->acceleration = glm::vec3(0, -1000, 0);
 		ball[0].transform.set_position(0, 40, 0);
 		CollisionSphere* c_s = rb->add_primitive<CollisionSphere>();
 		c_s->radius = 10;
@@ -59,13 +59,17 @@ namespace Ryno {
 
 
 		ball[1].copy(ball[0]);
-		ball[1].transform.set_position(38, 36, 0);
+		ball[1].transform.set_position(40, 40, 0);
 
 		ball[2].copy(ball[0]);
-		ball[2].transform.set_position(2, 3, 0);
+		ball[2].transform.set_position(0,0, 0);
+		ball[2].get_script<RigidBody>()->acceleration = glm::vec3(0, 0, 0);
+		ball[2].get_script<RigidBody>()->set_inverted_mass(0);
+
+
 		
-		ball[3].copy(ball[0]);
-		ball[3].transform.set_position(41, 6, 0);
+		ball[3].copy(ball[2]);
+		ball[3].transform.set_position(40, 0, 0);
 		
 
 

@@ -18,12 +18,15 @@ namespace Ryno{
 
 	void Transform::generate_model_matrix() {
 
-		orientation = glm::normalize(orientation);
-		orientation_matrix = glm::toMat4(orientation);
-
-		pos_rot_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, -position.z)) * orientation_matrix;
-		
+		generate_physics_matrix();
 		model_matrix = pos_rot_matrix * glm::scale(glm::mat4(1), scale);
+	}
+
+	void Transform::generate_physics_matrix() {
+		orientation = glm::normalize(orientation);
+
+		pos_rot_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, -position.z))
+			* glm::toMat4(orientation);
 	}
 
 

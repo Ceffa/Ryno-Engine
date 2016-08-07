@@ -62,9 +62,8 @@ namespace Ryno {
 
 	void RigidBody::calculate_derived_data()
 	{
+		game_object->transform.generate_physics_matrix();
 
-		//I should call here the generation of the transform matrix,
-		//but maybe I can reuse the transform one.
 		calculate_world_inverse_inertia_tensor();
 		for (auto p : primitives)
 		{

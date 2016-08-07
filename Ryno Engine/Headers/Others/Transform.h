@@ -48,7 +48,7 @@ namespace Ryno{
 		glm::mat4 orientation_matrix;
 		glm::mat4 pos_rot_matrix;		//useful to physics engine
 
-		
+		void generate_physics_matrix();
 		void generate_model_matrix();
 		void combine_model_matrices();
 
