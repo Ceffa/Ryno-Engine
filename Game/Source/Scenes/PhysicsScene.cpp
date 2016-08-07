@@ -51,7 +51,7 @@ namespace Ryno {
 		ball[0].transform.set_scale(10,10,10);
 		rb = ball[0].add_script<RigidBody>();
 		rb->set_mass(10);
-		rb->acceleration = glm::vec3(0, -1000, 0);
+		rb->acceleration = glm::vec3(0, -200, 0);
 		ball[0].transform.set_position(0, 40, 0);
 		CollisionSphere* c_s = rb->add_primitive<CollisionSphere>();
 		c_s->radius = 10;
@@ -105,7 +105,7 @@ namespace Ryno {
 	static int curr = 0;
 	void PhysicsScene::input() {
 	
-		float speed = .5f;
+		float speed = 5;
 		glm::vec3 dir = glm::vec3(0,0,0);
 
 		RigidBody* rb = ball[curr].get_script<RigidBody>();
@@ -129,7 +129,7 @@ namespace Ryno {
 			curr = (curr + 1) % NUM_BODIES;
 		}
 
-		rb->add_position(dir);
+		rb->velocity += dir;
 	
 
 	}

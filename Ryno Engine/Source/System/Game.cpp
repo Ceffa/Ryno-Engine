@@ -218,7 +218,7 @@ namespace Ryno{
 		
 
 		//Process user inputs
-		 if (game_state != GameState::Paused) {
+		 if (game_state != GameState::Paused && game_state!=GameState::ChangeScene) {
 			 scene->input();
 			 scene->input_scripts();
 		 }

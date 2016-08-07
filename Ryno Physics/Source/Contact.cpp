@@ -147,12 +147,14 @@ namespace Ryno {
 	void Contact::calculate_desired_delta_velocity(F duration)
 	{
 		const static F velocity_limit = 0.25f;
+
+		V3 scaled_normal = contact_normal*duration;
 		// Calculate the acceleration induced velocity accumulated this frame
-		F velocity_from_acc = dot(bodies[0]->delta_acceleration,contact_normal) * duration;
+		F velocity_from_acc = dot(bodies[0]->delta_acceleration, scaled_normal);
 		
 
 		if (bodies[1])
-			velocity_from_acc += dot(bodies[1]->delta_acceleration, contact_normal) * duration;
+			velocity_from_acc -= dot(bodies[1]->delta_acceleration, scaled_normal);
 
 		// If the velocity is very slow, limit the restitution
 		F this_restitution = restitution;
