@@ -13,7 +13,6 @@ namespace Ryno {
 		
 
 		V3 angular_acceleration = inverse_inertia_tensor * torque_accumulator;
-
 		//Calculate velocities
 		velocity += delta_acceleration * duration;								//Increment velocity
 		velocity *= pow(linear_damping, duration);								//Damp velocity by factor d^t

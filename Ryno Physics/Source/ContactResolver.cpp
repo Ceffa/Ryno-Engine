@@ -7,6 +7,8 @@ namespace Ryno {
 	{
 		position_iterations = _pos_iterations;
 		velocity_iterations = _vel_iterations;
+		position_iterations_used = 0;
+		velocity_iterations_used = 0;
 		position_epsilon = _pos_epsilon;
 		velocity_epsilon = _vel_epsilon;
 	}
