@@ -9,8 +9,8 @@ namespace Ryno {
 	{
 		bodies[0] = a;
 		bodies[1] = b;
-		friction = 10;
-		restitution = 0;
+		friction = 100;
+		restitution = .3;
 	}
 
 	
@@ -138,7 +138,7 @@ namespace Ryno {
 		F inverse_mass = bodies[0]->get_inverse_mass();
 		auto& o = relative_contact_position[0];
 
-		//Usually you gt a torque from an impulse by a cross product with the relative distance.
+		//Usually you get a torque from an impulse by a cross product with the relative distance.
 		//If we build a M3 from the relative distance in this way, we have a matrix
 		//that goes from impulse to torque
 		M3 impulse_to_torque = M3(
@@ -199,7 +199,6 @@ namespace Ryno {
 		//Get only the planar impulse
 		F planar_impulse = sqrt(impulse_contact.y*impulse_contact.y + impulse_contact.z * impulse_contact.z);
 
-			std::cout << glm::to_string(impulse_contact) << std::endl;
 
 		//The X of the impulse is the one along the normal.
 		//This impulse, multiplied by friction, is the amount to overcome.
@@ -229,6 +228,7 @@ namespace Ryno {
 
 		// Work out the velocity of the contact point.
 		V3 velocity = cross(this_body->rotation , relative_contact_position[body_index]);	//angular
+
 		velocity += this_body->velocity;	//linear									
 
 		// Turn the velocity into contact-coordinates.
@@ -298,7 +298,7 @@ namespace Ryno {
 
 		// Apply the changes
 		bodies[0]->velocity += velocity_change[0];
-		bodies[0]->rotation += rotation_change[0];
+		//bodies[0]->rotation += rotation_change[0];
 
 		if (bodies[1])
 		{

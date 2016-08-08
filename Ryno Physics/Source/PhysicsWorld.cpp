@@ -38,7 +38,6 @@ namespace Ryno {
 		//Integrate bodies
 		for (auto b : bodies) {
 			b->integrate(duration);
-			b->calculate_derived_data();
 		}
 
 		std::vector<PotentialContact> potential_contacts = broad.get_contacts();

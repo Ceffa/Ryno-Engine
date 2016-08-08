@@ -25,7 +25,6 @@ namespace Ryno {
 		
 		game_object->transform.add_rotation(rotation * duration);
 		
-		//Update tensor (and model matrix, but I do that in the transform)
 		calculate_derived_data();
 		
 		//Reset force and torque accumuators

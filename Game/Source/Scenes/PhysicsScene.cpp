@@ -43,12 +43,12 @@ namespace Ryno {
 		m.material.set_attribute("in_Tiling", glm::vec2(1, 1));
 		m.material.set_uniform("texture_sampler", white.id);
 		m.material.set_uniform("normal_map_sampler", white_normal.id);
-		m.mesh = cube_mesh;
+		m.mesh = sphere_mesh;
 		m.cast_shadows = false;
 
 	
 
-		ball[0].transform.set_scale(10,10,10);
+		ball[0].transform.set_scale(11,9,10);
 		rb = ball[0].add_script<RigidBody>();
 		rb->set_mass(1);
 		rb->acceleration = glm::vec3(0, -200, 0);
@@ -99,7 +99,7 @@ namespace Ryno {
 	}
 
 	void PhysicsScene::update() {
-		std::cout << ball[0].get_script<RigidBody>()->rotation.z << std::endl;
+		//std::cout << ball[0].get_script<RigidBody>()->rotation.z << std::endl;
 
 	}
 	static int curr = 0;
