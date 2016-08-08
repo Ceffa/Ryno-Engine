@@ -28,7 +28,7 @@ namespace Ryno {
 		V3 rotation;					//o*
 		V3 acceleration;				//p**, just for gravity
 		F linear_damping = .8f;
-		F angular_damping = .8f;
+		F angular_damping = 1;
 
 		std::vector<CollisionPrimitive*> primitives;
 

@@ -43,14 +43,14 @@ namespace Ryno {
 		m.material.set_attribute("in_Tiling", glm::vec2(1, 1));
 		m.material.set_uniform("texture_sampler", white.id);
 		m.material.set_uniform("normal_map_sampler", white_normal.id);
-		m.mesh = sphere_mesh;
+		m.mesh = cube_mesh;
 		m.cast_shadows = false;
 
 	
 
 		ball[0].transform.set_scale(10,10,10);
 		rb = ball[0].add_script<RigidBody>();
-		rb->set_mass(10);
+		rb->set_mass(1);
 		rb->acceleration = glm::vec3(0, -200, 0);
 		ball[0].transform.set_position(0, 40, 0);
 		CollisionSphere* c_s = rb->add_primitive<CollisionSphere>();
@@ -58,18 +58,18 @@ namespace Ryno {
 		rb->set_inertia_tensor(InertiaTensorGenerator::get_tensor(*c_s, rb->get_mass()));
 
 
-		ball[1].copy(ball[0]);
+		/*ball[1].copy(ball[0]);
 		ball[1].transform.set_position(40, 40, 0);
 
 		ball[2].copy(ball[0]);
 		ball[2].transform.set_position(0,0, 0);
 		ball[2].get_script<RigidBody>()->acceleration = glm::vec3(0, 0, 0);
-		ball[2].get_script<RigidBody>()->set_inverted_mass(0);
+		ball[2].get_script<RigidBody>()->set_inverted_mass(1);
 
 
 		
 		ball[3].copy(ball[2]);
-		ball[3].transform.set_position(40, 0, 0);
+		ball[3].transform.set_position(40, 0, 0);*/
 		
 
 
@@ -99,7 +99,7 @@ namespace Ryno {
 	}
 
 	void PhysicsScene::update() {
-		
+		std::cout << ball[0].get_script<RigidBody>()->rotation.z << std::endl;
 
 	}
 	static int curr = 0;

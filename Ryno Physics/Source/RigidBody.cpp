@@ -16,7 +16,7 @@ namespace Ryno {
 		//Calculate velocities
 		velocity += delta_acceleration * duration;								//Increment velocity
 		velocity *= pow(linear_damping, duration);								//Damp velocity by factor d^t
-		
+
 		rotation += angular_acceleration * duration;
 		rotation *= pow(angular_damping, duration);
 
