@@ -39,10 +39,10 @@ namespace Ryno {
 		for (auto b : bodies) {
 			b->integrate(duration);
 		}
-
+		
+		//Contact resolutions
 		std::vector<PotentialContact> potential_contacts = broad.get_contacts();
 		CollisionDetector::detect_all_contacts(potential_contacts);
-		
 		resolver.resolve_contacts(CollisionDetector::data, duration);
 	
 	}

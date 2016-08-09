@@ -9,7 +9,7 @@ namespace Ryno {
 	{
 		bodies[0] = a;
 		bodies[1] = b;
-		friction = 100;
+		friction = 1;
 		restitution = .3;
 	}
 
@@ -37,6 +37,61 @@ namespace Ryno {
 
 		// Calculate the desired change in velocity for resolution
 		calculate_desired_delta_velocity(duration);
+	}
+
+	V3 Contact::calculate_local_velocity(U body_index, F duration)
+	{
+		RigidBody *this_body = bodies[body_index];
+
+		// Work out the velocity of the contact point.
+		// Need it in radians.
+		V3 velocity = cross(this_body->rotation * (F)ryno_math::DegToRad, relative_contact_position[body_index]);	//angular
+
+		velocity += this_body->velocity;	//linear		
+
+
+		// Turn the velocity into contact-coordinates.
+		V3 contact_velocity = glm::transpose(contact_to_world) * velocity;
+
+		V3 acc_velocity = this_body->delta_acceleration * duration;
+
+		// Calculate the velocity in contact-coordinates.
+		acc_velocity = glm::transpose(contact_to_world) * acc_velocity;
+
+		// We ignore any component of acceleration in the contact normal
+		// direction, we are only interested in planar acceleration
+		acc_velocity.x = 0;
+
+		// Add the planar velocities - if there's enough friction they will
+		// be removed during velocity resolution
+		contact_velocity += acc_velocity;
+
+		return contact_velocity;
+	}
+
+	void Contact::calculate_desired_delta_velocity(F duration)
+	{
+		const static F velocity_limit = 0.25f;
+
+		V3 scaled_normal = contact_normal*duration;
+		// Calculate the acceleration induced velocity accumulated this frame
+		F velocity_from_acc = dot(bodies[0]->delta_acceleration, scaled_normal);
+
+		if (bodies[1])
+			velocity_from_acc -= dot(bodies[1]->delta_acceleration, scaled_normal);
+
+		// If the velocity is very slow, limit the restitution
+		F this_restitution = restitution;
+		if (abs(contact_velocity.x) < velocity_limit)
+		{
+			this_restitution = 0.0f;
+		}
+
+		// Combine the bounce velocity with the removed
+		// acceleration velocity.
+		desired_delta_velocity =
+			-contact_velocity.x
+			- this_restitution * (contact_velocity.x - velocity_from_acc);
 	}
 
 	//Build a matrix that serves as basis for the contact.
@@ -136,12 +191,12 @@ namespace Ryno {
 	{
 
 		F inverse_mass = bodies[0]->get_inverse_mass();
-		auto& o = relative_contact_position[0];
+		auto o = relative_contact_position[0];
 
 		//Usually you get a torque from an impulse by a cross product with the relative distance.
 		//If we build a M3 from the relative distance in this way, we have a matrix
 		//that goes from impulse to torque
-		M3 impulse_to_torque = M3(
+		M3 impulse_to_torque = -M3(
 			0, -o.z, o.y,
 			o.z, 0, -o.x,
 			-o.y, o.x, 0
@@ -155,8 +210,8 @@ namespace Ryno {
 		// Check if we need to the second body's data
 		if (bodies[1])
 		{
-			auto& o = relative_contact_position[1];
-			impulse_to_torque = M3(
+			auto o = relative_contact_position[1];
+			impulse_to_torque = -M3(
 				0, -o.z, o.y,
 				o.z, 0, -o.x,
 				-o.y, o.x, 0
@@ -174,6 +229,7 @@ namespace Ryno {
 
 		//change base of matrix (B x M x B^-1) to get velocity in contact coords
 		M3 delta_velocity = transpose(contact_to_world) * delta_vel_world * contact_to_world;
+
 		//Add the linear velocity. Need to build a matrix like this:
 		//m,0,0
 		//0,m,0
@@ -222,70 +278,19 @@ namespace Ryno {
 
 	}
 
-	V3 Contact::calculate_local_velocity(U body_index, F duration)
-	{
-		RigidBody *this_body = bodies[body_index];
 
-		// Work out the velocity of the contact point.
-		V3 velocity = cross(this_body->rotation , relative_contact_position[body_index]);	//angular
 
-		velocity += this_body->velocity;	//linear									
-
-		// Turn the velocity into contact-coordinates.
-		V3 contact_velocity = glm::transpose(contact_to_world) * velocity;
-
-		V3 acc_velocity = this_body->delta_acceleration * duration;
-
-		// Calculate the velocity in contact-coordinates.
-		acc_velocity = glm::transpose(contact_to_world) * acc_velocity;
-
-		// We ignore any component of acceleration in the contact normal
-		// direction, we are only interested in planar acceleration
-		acc_velocity.x = 0;
-
-		// Add the planar velocities - if there's enough friction they will
-		// be removed during velocity resolution
-		contact_velocity += acc_velocity;
-
-		return contact_velocity;
-	}
-
-	void Contact::calculate_desired_delta_velocity(F duration)
-	{
-		const static F velocity_limit = 0.25f;
-
-		V3 scaled_normal = contact_normal*duration;
-		// Calculate the acceleration induced velocity accumulated this frame
-		F velocity_from_acc = dot(bodies[0]->delta_acceleration, scaled_normal);
-		
-
-		if (bodies[1])
-			velocity_from_acc -= dot(bodies[1]->delta_acceleration, scaled_normal);
-
-		// If the velocity is very slow, limit the restitution
-		F this_restitution = restitution;
-		if (abs(contact_velocity.x) < velocity_limit)
-		{
-			this_restitution = 0.0f;
-		}
-
-		// Combine the bounce velocity with the removed
-		// acceleration velocity.
-		desired_delta_velocity =
-			-contact_velocity.x
-			- this_restitution * (contact_velocity.x - velocity_from_acc);
-	}
 
 	void Contact::apply_velocity_change(V3 velocity_change[2], V3 rotation_change[2])
 	{
 		
-		M3 inertia_tensor[2];
-		inertia_tensor[0] = bodies[0]->inverse_inertia_tensor_world;
+		M3 inverse_inertia_tensor[2];
+		inverse_inertia_tensor[0] = bodies[0]->inverse_inertia_tensor_world;
 		if (bodies[1])
-			inertia_tensor[1] = bodies[1]->inverse_inertia_tensor_world;
+			inverse_inertia_tensor[1] = bodies[1]->inverse_inertia_tensor_world;
 
 		// We will calculate the impulse for each contact axis
-		V3 impulse_contact = ((friction == 0) ? calculate_frictionless_impulse(inertia_tensor) : calculate_friction_impulse(inertia_tensor));
+		V3 impulse_contact = ((friction == 0) ? calculate_frictionless_impulse(inverse_inertia_tensor) : calculate_friction_impulse(inverse_inertia_tensor));
 
 		// Convert impulse to world coordinates
 		V3 impulse = contact_to_world * impulse_contact;
@@ -293,17 +298,17 @@ namespace Ryno {
 		// Split in the impulse into linear and rotational components
 		V3 impulsive_torque = cross(relative_contact_position[0],impulse);
 
-		rotation_change[0] = inertia_tensor[0] * impulsive_torque;
+		rotation_change[0] = inverse_inertia_tensor[0] * impulsive_torque;
 		velocity_change[0] = impulse *  bodies[0]->get_inverse_mass();
 
 		// Apply the changes
 		bodies[0]->velocity += velocity_change[0];
-		//bodies[0]->rotation += rotation_change[0];
+		bodies[0]->rotation += rotation_change[0];
 
 		if (bodies[1])
 		{
 			impulsive_torque = cross(impulse, relative_contact_position[1]);
-			rotation_change[1] = inertia_tensor[1] * impulsive_torque;
+			rotation_change[1] = inverse_inertia_tensor[1] * impulsive_torque;
 			velocity_change[1] = impulse *  -bodies[1]->get_inverse_mass();
 
 			// And apply them.

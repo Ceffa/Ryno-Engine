@@ -16,7 +16,7 @@ namespace Ryno {
 		bool is_awake;
 
 	public: 
-
+		RigidBody() : angular_damping(1), linear_damping(1) {}
 		bool is_unique() override { return true; }
 		bool is_copyable() override { return true; }
 
@@ -27,8 +27,8 @@ namespace Ryno {
 		V3 velocity;					//p*
 		V3 rotation;					//o*
 		V3 acceleration;				//p**, just for gravity
-		F linear_damping = 1;
-		F angular_damping = 1;
+		F linear_damping = 0;
+		F angular_damping = 0;
 
 		std::vector<CollisionPrimitive*> primitives;
 
@@ -79,7 +79,6 @@ namespace Ryno {
 		RigidBody* clone() override {
 			return new RigidBody(*this);
 		}
-		RigidBody() {};
 		RigidBody(const RigidBody& copy);
 		~RigidBody() { for (auto p : primitives) delete p; }
 

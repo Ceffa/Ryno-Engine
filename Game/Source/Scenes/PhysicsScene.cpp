@@ -48,7 +48,7 @@ namespace Ryno {
 
 	
 
-		ball[0].transform.set_scale(11,9,10);
+		ball[0].transform.set_scale(10,10,10);
 		rb = ball[0].add_script<RigidBody>();
 		rb->set_mass(1);
 		rb->acceleration = glm::vec3(0, -200, 0);
@@ -121,8 +121,8 @@ namespace Ryno {
 		if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
 			dir += glm::vec3(0, -speed, 0);
 		}
-		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
-			rb->add_orientation(glm::quat(.05f * glm::vec3(sin(game->time/3.0f), sin(game->time), sin (game->time/2.0f))));
+		if (game->input_manager->is_key_pressed(SDLK_n, KEYBOARD)) {
+			rb->rotation += glm::vec3(0, 0, 10);
 		}
 
 		if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)) {
