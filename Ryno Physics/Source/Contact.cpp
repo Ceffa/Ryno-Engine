@@ -9,7 +9,7 @@ namespace Ryno {
 	{
 		bodies[0] = a;
 		bodies[1] = b;
-		friction = 1;
+		friction = .6f;
 		restitution = .3;
 	}
 
@@ -281,7 +281,7 @@ namespace Ryno {
 
 
 
-	void Contact::apply_velocity_change(V3 velocity_change[2], V3 rotation_change[2])
+	void Contact::apply_velocity_change(V3 velocity_change[2], V3 rotation_change[2], F duration)
 	{
 		
 		M3 inverse_inertia_tensor[2];
@@ -304,6 +304,11 @@ namespace Ryno {
 		// Apply the changes
 		bodies[0]->velocity += velocity_change[0];
 		bodies[0]->rotation += rotation_change[0];
+		
+		//Also apply a damping to rotation to avoid infinite rolling
+		static F friction_smooth = 10;
+		F rolling_friction = pow(1.0f / (1 + friction / friction_smooth), duration);
+		bodies[0]->rotation *= rolling_friction;
 
 		if (bodies[1])
 		{
@@ -314,6 +319,7 @@ namespace Ryno {
 			// And apply them.
 			bodies[1]->velocity += velocity_change[1];
 			bodies[1]->rotation += rotation_change[1];
+			bodies[1]->rotation *= rolling_friction;
 		}
 	}
 

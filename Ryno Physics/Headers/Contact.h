@@ -23,7 +23,7 @@ namespace Ryno {
 		void calculate_internals(F duration);
 		void calculate_contact_basis();
 		void calculate_desired_delta_velocity(F duration);
-		void apply_velocity_change(V3 velocity_change[2], V3 rotation_change[2]);
+		void apply_velocity_change(V3 velocity_change[2], V3 rotation_change[2], F duration);
 		void apply_position_change(V3 linear_change[2], V3 angular_change[2], F penetration);
 
 		inline V3 calculate_frictionless_impulse(M3* inv_inertia_tensor);

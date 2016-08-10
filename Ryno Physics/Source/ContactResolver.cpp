@@ -122,7 +122,7 @@ namespace Ryno {
 
 		
 			// Do the resolution on the contact that came out top.
-			contacts[index].apply_velocity_change(velocity_change, rotation_change);
+			contacts[index].apply_velocity_change(velocity_change, rotation_change, duration);
 
 			// With the change in velocity of the two bodies, the update of
 			// contact velocities means that some of the relative closing
