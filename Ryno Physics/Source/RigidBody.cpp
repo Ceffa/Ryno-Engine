@@ -21,9 +21,9 @@ namespace Ryno {
 		rotation *= pow(angular_damping, duration);
 
 		//Calculate positions
-		game_object->transform.add_position(velocity * duration);
+		game_object->transform.add_position(velocity * duration + .5f * acceleration * duration * duration);
 		
-		game_object->transform.add_rotation(rotation * duration);
+		game_object->transform.add_rotation(rotation * duration + .5f * angular_acceleration * duration * duration);
 		
 		calculate_derived_data();
 		

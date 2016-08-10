@@ -30,7 +30,7 @@ namespace Ryno {
 
 		RigidBody* rb = floor.add_script<RigidBody>();
 		CollisionHalfPlane* hp = rb->add_primitive<CollisionHalfPlane>();
-		hp->normal = glm::vec3(0, 1, 0);
+		hp->normal = glm::normalize(glm::vec3(-.2f, 1, 0));
 		hp->offset = -50;
 
 		auto& m = ball[0].add_script<Model>()->add_sub_model();

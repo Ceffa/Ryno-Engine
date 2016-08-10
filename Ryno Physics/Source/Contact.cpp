@@ -9,7 +9,7 @@ namespace Ryno {
 	{
 		bodies[0] = a;
 		bodies[1] = b;
-		friction = .6f;
+		friction = 1000;
 		restitution = .3;
 	}
 
@@ -53,6 +53,9 @@ namespace Ryno {
 		// Turn the velocity into contact-coordinates.
 		V3 contact_velocity = glm::transpose(contact_to_world) * velocity;
 
+
+		//The following code adds the planar velocity of the frame.
+		//This is done so that it is removed by friction and stop sliding
 		V3 acc_velocity = this_body->delta_acceleration * duration;
 
 		// Calculate the velocity in contact-coordinates.

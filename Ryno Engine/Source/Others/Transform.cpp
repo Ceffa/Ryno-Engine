@@ -23,6 +23,8 @@ namespace Ryno{
 	}
 
 	void Transform::generate_physics_matrix() {
+
+		//Avoid quaternion drift
 		orientation = glm::normalize(orientation);
 
 		pos_rot_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, -position.z))
