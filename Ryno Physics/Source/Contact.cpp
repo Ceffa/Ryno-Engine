@@ -9,7 +9,7 @@ namespace Ryno {
 	{
 		bodies[0] = a;
 		bodies[1] = b;
-		friction = 1000;
+		friction = 10;
 		restitution = .3;
 	}
 
@@ -339,7 +339,22 @@ namespace Ryno {
 	}
 
 
-	void Contact::apply_position_change(V3 linear_change[2],V3 angular_change[2],F penetration)
+	void Contact::match_awake_state()
+	{
+		// Collisions with the world never cause a body to wake up.
+		if (!bodies[1]) return;
+
+		bool body0awake = bodies[0]->get_awake();
+		bool body1awake = bodies[1]->get_awake();
+
+		// Wake up only the sleeping one
+		if (body0awake ^ body1awake) {
+			if (body0awake) bodies[1]->set_awake();
+			else bodies[0]->set_awake();
+		}
+	}
+
+	void Contact::apply_position_change(V3 linear_change[2], V3 angular_change[2], F penetration)
 	{
 		const F angular_limit = 0.2f;
 		F angular_move[2];
@@ -429,6 +444,8 @@ namespace Ryno {
 			bodies[i]->add_position(linear_change[i]);
 			// And the change in orientation.
 			bodies[i]->add_orientation(glm::quat(angular_change[i]));		
+
+			if (!bodies[i]->get_awake()) bodies[i]->calculate_derived_data();
 		}
 	}
 

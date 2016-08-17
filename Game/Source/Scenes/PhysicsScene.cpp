@@ -30,7 +30,7 @@ namespace Ryno {
 
 		RigidBody* rb = floor.add_script<RigidBody>();
 		CollisionHalfPlane* hp = rb->add_primitive<CollisionHalfPlane>();
-		hp->normal = glm::normalize(glm::vec3(-.2f, 1, 0));
+		hp->normal = glm::normalize(glm::vec3(0, 1, 0));
 		hp->offset = -50;
 
 		auto& m = ball[0].add_script<Model>()->add_sub_model();
@@ -51,7 +51,7 @@ namespace Ryno {
 		ball[0].transform.set_scale(10,10,10);
 		rb = ball[0].add_script<RigidBody>();
 		rb->set_mass(1);
-		rb->acceleration = glm::vec3(0, -200, 0);
+		rb->acceleration = glm::vec3(0, -50, 0);
 		ball[0].transform.set_position(0, 40, 0);
 		CollisionSphere* c_s = rb->add_primitive<CollisionSphere>();
 		c_s->radius = 10;
@@ -122,14 +122,14 @@ namespace Ryno {
 			dir += glm::vec3(0, -speed, 0);
 		}
 		if (game->input_manager->is_key_pressed(SDLK_n, KEYBOARD)) {
-			rb->rotation += glm::vec3(0, 0, 10);
+			rb->add_rotation(glm::vec3(0, 0, 10));
 		}
 
 		if (game->input_manager->is_key_pressed(SDLK_c, KEYBOARD)) {
 			curr = (curr + 1) % NUM_BODIES;
 		}
-
-		rb->velocity += dir;
+		if (dir!=glm::vec3(0))
+			rb->add_velocity(dir);
 	
 
 	}

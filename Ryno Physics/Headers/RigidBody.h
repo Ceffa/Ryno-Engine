@@ -7,16 +7,25 @@ namespace Ryno {
 
 	class CollisionPrimitive;
 	class RigidBody : public Ryno::Script {
-
+		friend class Contact;
 	protected:
 		F inverse_mass;
 		V3 force_accumulator;
 		V3 torque_accumulator;
 		M3 inverse_inertia_tensor;
+
+		V3 velocity;					//p*
+		V3 rotation;					//o*
+
+		//Handle sleep
 		bool is_awake;
+		bool can_sleep;
+		F motion;
+
+		static F sleep_epsilon;
 
 	public: 
-		RigidBody() : angular_damping(1), linear_damping(1) {}
+		RigidBody() : angular_damping(1), linear_damping(1), can_sleep(true), is_awake(true), motion(2*sleep_epsilon) {}
 		bool is_unique() override { return true; }
 		bool is_copyable() override { return true; }
 
@@ -24,8 +33,7 @@ namespace Ryno {
 
 		V3 delta_acceleration;
 										//p and o are inside transform
-		V3 velocity;					//p*
-		V3 rotation;					//o*
+	
 		V3 acceleration;				//p**, just for gravity
 		F linear_damping = 0;
 		F angular_damping = 0;
@@ -100,6 +108,18 @@ namespace Ryno {
 			return nullptr;
 		}
 
+		void set_awake(const bool awake = true);
+		void set_can_sleep(const bool _can_sleep = true);
+		bool get_awake() { return is_awake; }
+		bool get_can_sleep() { return can_sleep; }
+
+		void set_velocity(const V3& vel) { velocity = vel; set_awake(); }
+		void add_velocity(const V3& vel) { set_velocity(vel + velocity); }
+		V3& get_velocity() { return velocity; }
+
+		void set_rotation(const V3& rot) { rotation = rot; set_awake(); }
+		void add_rotation(const V3& rot) { set_rotation(rot + rotation); }
+		V3& get_rotation() { return rotation; }
 	
 	};
 

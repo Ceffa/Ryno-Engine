@@ -6,13 +6,17 @@ namespace Ryno {
 
 	void RigidBody::integrate(F duration)
 	{
-		if (!has_finite_mass()) return;
+		if (!has_finite_mass() || !is_awake) return;
 
 		//Calculate accelerations (using mass and tensor respectively)
 		delta_acceleration = acceleration + force_accumulator * inverse_mass;
 		
-
 		V3 angular_acceleration = inverse_inertia_tensor * torque_accumulator;
+
+		F current_motion;
+		if (can_sleep) {
+			current_motion = glm::length2(velocity) + glm::length2(rotation);
+		}
 		//Calculate velocities
 		velocity += delta_acceleration * duration;								//Increment velocity
 		velocity *= pow(linear_damping, duration);								//Damp velocity by factor d^t
@@ -29,6 +33,17 @@ namespace Ryno {
 		
 		//Reset force and torque accumuators
 		clear_accumulators();
+
+		static F base_bias = 0.3;
+		if (can_sleep) {
+			
+			F bias = pow(base_bias, duration);
+			motion = bias*motion + (1 - bias)*current_motion;
+			Log::println(motion);
+
+			if (motion < sleep_epsilon) set_awake(false);
+			else if (motion > 10 * sleep_epsilon) motion = 10 * sleep_epsilon;
+		}
 	}
 
 	bool RigidBody::has_finite_mass()
@@ -39,6 +54,7 @@ namespace Ryno {
 	void RigidBody::add_torque(V3& torque)
 	{
 		torque_accumulator += torque;
+		set_awake();
 	}
 
 	
@@ -55,7 +71,7 @@ namespace Ryno {
 	void RigidBody::add_force(const V3 &force)
 	{
 		force_accumulator += force;
-		is_awake = true;
+		set_awake();
 	}	
 
 	void RigidBody::calculate_derived_data()
@@ -81,7 +97,7 @@ namespace Ryno {
 		force_accumulator += force;
 		torque_accumulator += cross(dis, force);
 
-		is_awake = true;
+		set_awake();
 	}
 
 	V3 RigidBody::get_world_point(const V3& point)
@@ -105,5 +121,28 @@ namespace Ryno {
 		}
 	}
 
+	void RigidBody::set_awake(const bool awake)
+	{
+		if (awake) {
+			motion = sleep_epsilon*2.0;//avoid sleep again soon
+			is_awake = true;
+		}
+		else {
+			is_awake = false;
+			velocity = V3(0);
+			rotation = V3(0);
+		}
+		Log::println(awake ? "yes" : "no");
+
+	}
+
+	void RigidBody::set_can_sleep(const bool _can_sleep)
+	{
+		can_sleep = _can_sleep;
+
+		if (!can_sleep && !is_awake) set_awake();
+	}
+
+	F RigidBody::sleep_epsilon = 1;
 
 }

@@ -17,7 +17,7 @@ namespace Ryno {
 	void Drag::update_force(RigidBody* body, F duration)
 	{
 		//Get velocity
-		V3 force = body->velocity;
+		V3 force = body->get_velocity();
 
 		//Get magnitude
 		F drag_coeff = glm::length(force);

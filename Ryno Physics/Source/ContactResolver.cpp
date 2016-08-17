@@ -63,6 +63,8 @@ namespace Ryno {
 
 			if (index == num_contacts) break;	//no contact found
 
+			//Awake is one sleeping object
+			contacts[index].match_awake_state();
 
 			// Resolve the penetration.
 			contacts[index].apply_position_change(
@@ -120,7 +122,9 @@ namespace Ryno {
 			}
 			if (index == num_contacts) break;
 
-		
+			//Awake is one sleeping object
+			contacts[index].match_awake_state();
+
 			// Do the resolution on the contact that came out top.
 			contacts[index].apply_velocity_change(velocity_change, rotation_change, duration);
 

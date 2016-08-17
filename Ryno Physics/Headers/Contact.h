@@ -42,6 +42,8 @@ namespace Ryno {
 
 		void swap_bodies();
 
+		void match_awake_state();
+
 	};
 
 	
