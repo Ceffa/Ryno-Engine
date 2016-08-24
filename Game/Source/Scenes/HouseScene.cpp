@@ -12,7 +12,7 @@ namespace Ryno{
 	void HouseScene::start(){
 		
 		camera->position = glm::vec4(-6.5f,30,-261, 1);
-		camera->movement_speed /= 10;
+		camera->movement_speed = 100;
 		camera->rotation_speed /= 2;
 		camera->have_skybox = false;
 

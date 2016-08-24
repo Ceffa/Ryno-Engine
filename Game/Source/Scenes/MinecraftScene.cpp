@@ -14,7 +14,7 @@ namespace Ryno{
 		camera->position = glm::vec4(-20.79f, 53.84f, -185, 1);
 		camera->yaw = 0.1155f;
 		camera->pitch = 0.1625f;
-		camera->movement_speed /= 20;
+		camera->movement_speed = 50;
 		camera->rotation_speed /= 2;
 		camera->have_skybox = true;
 		camera->skybox = game->texture_manager->load_cube_map("day", ".png", GAME);

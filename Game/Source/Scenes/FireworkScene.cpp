@@ -13,7 +13,7 @@ namespace Ryno{
 
 	void FireworkScene::start(){
 
-		camera->movement_speed = 2;
+		camera->movement_speed = 2000;
 		camera->position = glm::vec4(0, 150, -5000, 1);
 		camera->background = ColorRGB(0,17,40);
 		camera->have_skybox = false;
@@ -71,8 +71,8 @@ namespace Ryno{
 			shader = e->save_map.get<Shader>("shad");
 
 
-			p->decay_rate = .0005f;
-			p->speed = .5f;
+			p->decay_rate = .5f;
+			p->speed =500;
 			auto& sm = p->add_script<Model>()->add_sub_model();
 			sm.material.set_shader(shader);
 			sm.mesh = *mesh;

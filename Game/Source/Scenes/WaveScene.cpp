@@ -11,7 +11,7 @@ namespace Ryno {
 		camera->position = glm::vec4(-90,72,-294, 1);
 		camera->yaw = 0.308f;
 		camera->pitch = 0.106;
-		camera->movement_speed = .1f;
+		camera->movement_speed = 100;
 		camera->have_skybox = true;
 		camera->skybox = game->texture_manager->load_cube_map("day", ".png", GAME);
 
@@ -75,15 +75,14 @@ namespace Ryno {
 		
 	
 		
-		F32 _time = Game::get_instance()->time;
+		F32 _time = Game::get_instance()->time * 1000;
 		for (GameObject& o : cubes) {
 
-			o.transform.set_position(o.transform.get_position().x, 10.0f*sin(sqrt(pow(o.transform.get_position().x / 20.0f, 2) + pow(o.transform.get_position().z / 20.0f, 2)) - (_time / 400.0f)), o.transform.get_position().z);
+			o.transform.set_position(o.transform.get_position().x, 15.0f*sin(sqrt(pow(o.transform.get_position().x / 25.0f, 2) + pow(o.transform.get_position().z / 25.0f, 2)) - (_time / 400.0f)), o.transform.get_position().z);
 			
-			o.get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(0, (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 255 - (o.transform.get_position().y + 10.0f)*255.0f / 20.0f, 150));
+			o.get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(0, (o.transform.get_position().y + 15.0f)*255.0f / 30.0f, 255 - (o.transform.get_position().y + 15.0f)*255.0f / 30.0f, 150));
 			}
 
-		t.transform.set_position(0, 10 + 10.0f*sin(sqrt(pow(0/ 20.0f, 2) + pow(0 / 20.0f, 2)) - (_time / 400.0f)), 0);
 
 
 	}

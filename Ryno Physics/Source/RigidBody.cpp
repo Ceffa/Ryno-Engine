@@ -39,7 +39,6 @@ namespace Ryno {
 			
 			F bias = pow(base_bias, duration);
 			motion = bias*motion + (1 - bias)*current_motion;
-			Log::println(motion);
 
 			if (motion < sleep_epsilon) set_awake(false);
 			else if (motion > 10 * sleep_epsilon) motion = 10 * sleep_epsilon;
@@ -132,7 +131,6 @@ namespace Ryno {
 			velocity = V3(0);
 			rotation = V3(0);
 		}
-		Log::println(awake ? "yes" : "no");
 
 	}
 

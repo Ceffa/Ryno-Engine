@@ -9,7 +9,7 @@ namespace Ryno {
 		camera->position = glm::vec4(0, 308.567f, -727.473, 1);
 		camera->yaw = 0;
 		camera->pitch = 0.407f;
-		camera->movement_speed = .1f;
+		camera->movement_speed = 100;
 		camera->have_skybox = false;
 		camera->background = ColorRGB(0, 0, 0);
 
@@ -76,6 +76,8 @@ namespace Ryno {
 
 	void LightsScene::update() {
 		
+		static F32 speed = 100;
+
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
 			parent.transform.add_position(game->delta_time * .1f * glm::vec3(1, 0, 0));
 		}
@@ -89,7 +91,7 @@ namespace Ryno {
 			parent.transform.add_position(game->delta_time * .1f * glm::vec3(0, 0, -1));
 		}
 		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
-			parent.transform.set_rotation(3*sin(game->time /500) * glm::vec3 (0,0,1));
+			parent.transform.set_rotation(3*sin(game->time ) * glm::vec3 (0,0,1));
 		}
 		if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)) {
 			parent.transform.add_rotation(game->delta_time / 100.0f * glm::vec3(0, 1, 0));
