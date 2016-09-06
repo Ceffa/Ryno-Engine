@@ -77,7 +77,7 @@ namespace Ryno{
 
 		if (attach)
 			light[light_index].transform.set_position(camera->position.x, camera->position.y, camera->position.z);
-		material.set_uniform("g_Time", game->time);
+		material.set_uniform("g_Time", game->time * 1000);
 		if (game->input_manager->is_key_pressed(SDLK_x, KEYBOARD)) {
 			power = power == 0 ? 100 : 0;
 			material.set_uniform("g_Power", power);

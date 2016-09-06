@@ -79,16 +79,16 @@ namespace Ryno {
 		static F32 speed = 100;
 
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-			parent.transform.add_position(game->delta_time * .1f * glm::vec3(1, 0, 0));
+			parent.transform.add_position(game->delta_time * speed * glm::vec3(1, 0, 0));
 		}
 		if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-			parent.transform.add_position(game->delta_time * .1f * glm::vec3(-1, 0, 0));
+			parent.transform.add_position(game->delta_time * speed * glm::vec3(-1, 0, 0));
 		}
 		if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-			parent.transform.add_position(game->delta_time * .1f * glm::vec3(0, 0, 1));
+			parent.transform.add_position(game->delta_time * speed * glm::vec3(0, 0, 1));
 		}
 		if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-			parent.transform.add_position(game->delta_time * .1f * glm::vec3(0, 0, -1));
+			parent.transform.add_position(game->delta_time * speed * glm::vec3(0, 0, -1));
 		}
 		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
 			parent.transform.set_rotation(3*sin(game->time ) * glm::vec3 (0,0,1));
