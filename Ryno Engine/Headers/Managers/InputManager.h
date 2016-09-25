@@ -30,9 +30,11 @@ namespace Ryno{
 		U8 is_key_down(U32 key, InputDevice device);
 		U8 is_key_pressed(U32 key, InputDevice device);
 		void set_mouse_coords(F32 x, F32 y);
+		void set_mouse_movement(F32 x, F32 y);
+
 		glm::vec2 get_mouse_coords() const { return m_mouse_coords; }
 		glm::vec2 get_mouse_movement()  { 
-			return m_mouse_coords - glm::vec2(WINDOW_WIDTH/2.0f,WINDOW_HEIGHT/2.0f);
+			return m_mouse_movement;
 		}
 
 
@@ -46,6 +48,8 @@ namespace Ryno{
 		void update();
 		void reset();
 		glm::vec2 m_mouse_coords;
+		glm::vec2 m_mouse_movement;
+
 		glm::vec2 m_controller_LX_coords;
 		glm::vec2 m_controller_RX_coords;
 		std::string frame_text;

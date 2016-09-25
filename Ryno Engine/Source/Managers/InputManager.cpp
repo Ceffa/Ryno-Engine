@@ -31,6 +31,10 @@ namespace Ryno {
 		static bool exit = false;
 
 		frame_text.resize(0);
+		set_mouse_movement(0, 0);
+		I32 x, y;
+		SDL_GetMouseState(&x, &y);
+		set_mouse_coords(x, y);
 
 		SDL_Event evnt;
 		SDL_StartTextInput();
@@ -42,8 +46,9 @@ namespace Ryno {
 				return Input::EXIT_REQUEST;
 				break;
 			case SDL_MOUSEMOTION:
-
-				set_mouse_coords((F32)evnt.motion.x, (F32)evnt.motion.y);
+				if(is_key_down(SDL_BUTTON_RIGHT, MOUSE))
+					set_mouse_movement(evnt.motion.xrel, evnt.motion.yrel);
+				
 
 				break;
 			case SDL_TEXTINPUT:
@@ -83,7 +88,7 @@ namespace Ryno {
 		SDL_StopTextInput();
 
 		if (is_key_pressed(SDLK_ESCAPE,KEYBOARD))exit = !exit;
-		if(!exit)SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
+		//if(!exit)SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
 
 		return Input::OK;
 	}
@@ -120,6 +125,12 @@ namespace Ryno {
 	}
 
 	
+
+	void InputManager::set_mouse_movement(F32 x, F32 y)
+	{
+		m_mouse_movement.x = x;
+		m_mouse_movement.y = y;
+	}
 
 	void InputManager::set_controller_axis_coord(F32* axis, I32 value)
 	{
