@@ -91,7 +91,7 @@ namespace Ryno{
 
 			unsigned char* image = stbi_load(path.c_str(), &width, &height, &comp, STBI_rgb_alpha);
 			if (!image){
-				std::cout << "Decoding png failed." << std::endl;
+				std::cout << "Decoding png failed: " << path.c_str() << std::endl;
 			}
 
 			

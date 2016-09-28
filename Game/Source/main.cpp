@@ -1,6 +1,5 @@
 #include "ScenesList.h"
 #include <iostream>
-#include <GLM/gtx/string_cast.hpp>
 
 
 int main(int argc, char* argv[]) {
@@ -8,7 +7,8 @@ int main(int argc, char* argv[]) {
 	Ryno::Game* game = Ryno::Game::get_instance();
 	Ryno::ScenesList::create_scenes();
 
-	game->init();
+	int window_pos = argv[1][0] == 'l' ? -1 : (argv[1][0] == 'r' ? 1 : 0);
+	game->init(window_pos);
 	game->run();
 	
 	return 0;

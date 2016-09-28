@@ -2,16 +2,23 @@
 #include "Scene.h"
 
 namespace Ryno{
-	void Game::init_external_systems(){
+
+	void Game::init_external_systems(int window_pos){
 
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 			std::cout<<"Failed to initialize SDL: " + std::string(SDL_GetError())<<std::endl;
 		}
+		SDL_Rect rect;
+		SDL_GetDisplayBounds(0, &rect);
+		std::cout << rect.w << std::endl;
+
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		if ((window = SDL_CreateWindow("Ryno Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL)) == NULL){
+		int pos_x = window_pos < 0 ? 0 : (window_pos > 0 ? rect.w / 2 : SDL_WINDOWPOS_CENTERED);
+		if ((window = SDL_CreateWindow("Ryno Engine", pos_x, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL)) == NULL){
 			std::cout<<"Failed to create SDL window: "+ std::string(SDL_GetError())<<std::endl;
 		}
+		
 
 		//MOUSE INITIALIZATIONS
 		SDL_ShowCursor(GL_FALSE);
@@ -78,9 +85,9 @@ namespace Ryno{
 		return &game;
 	}
 
-	void Game::init()
+	void Game::init(int window_pos)
 	{
-		init_external_systems();
+		init_external_systems(window_pos);
 		init_internal_systems();
 		set_scene(0);
 	}

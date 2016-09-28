@@ -49,7 +49,7 @@ namespace Ryno{
 	public:
 
 		static Game* get_instance();
-		void init();
+		void init(int window_pos);
 		void run();
 		void set_scene(const std::string& scene_name);
 		void set_scene(I32 scene_nr);
@@ -78,7 +78,7 @@ namespace Ryno{
 	protected:
 
 		void destroy_scene(Scene* s);
-		void init_external_systems();
+		void init_external_systems(int window_pos);
 		void init_internal_systems();
 
 
