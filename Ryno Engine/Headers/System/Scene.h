@@ -1,13 +1,15 @@
 #pragma once
 #include "Global.h"
 #include "Transform.h"
+#include <map>
+
 namespace Ryno{
 
 	class Game;
-
-
+	class Camera3D;
 	class Scene{
 	public:
+		
 		Camera3D* camera;
 
 

@@ -81,7 +81,7 @@
     <ClCompile Include="Source\Scenes\LightsScene.cpp">
       <Filter>Source\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scenes\PhysicsScene.cpp">
+    <ClCompile Include="Source\Scenes\NetworkScene.cpp">
       <Filter>Source\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,8 +116,8 @@
     <ClInclude Include="Headers\Scenes\LightsScene.h">
       <Filter>Header\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Scenes\PhysicsScene.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="Headers\Scenes\NetworkScene.h">
+      <Filter>Header\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
