@@ -26,10 +26,10 @@ namespace Ryno {
 		ServerSocket sock;
 		sock.set_server_ip("127.0.0.1");
 		sock.set_server_port(5555);
-		sock.init();
+		//sock.init();
 		sock.bind();
-		sock.listen();
-		sock.accept();
+		if (sock.is_bound)sock.listen();
+		if (sock.is_listening) sock.accept();
 	}
 
 	void Network::threaded_create_client() {

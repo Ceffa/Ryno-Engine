@@ -1,17 +1,16 @@
 #include "Socket.h"
 #include "Log.h"
 #include <sstream>
+#include <codecvt>
 
 
 namespace Ryno {
 
-	void Socket::die(std::string s) {
-		Log::println(s);
-		close();
-	}
-
 	void Socket::print(std::string s) {
 		Log::println(s);
+	}
+	void Socket::print_error(std::string s) {
+		Log::println(s + get_error());
 	}
 
 	U32 Socket::compress_ip(std::string s) {
@@ -62,5 +61,15 @@ namespace Ryno {
 	}
 	void Socket::set_server_port(U32 _port) {
 		server_port = _port;
+	}
+
+	std::string Socket::get_error() {
+		wchar_t *s = NULL;
+		FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, WSAGetLastError(),
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPTSTR)&s, 0, NULL);
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+		return std::string(myconv.to_bytes(s));
 	}
 }

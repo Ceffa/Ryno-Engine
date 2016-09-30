@@ -15,6 +15,7 @@ namespace Ryno{
 	public:
 		SOCKET sock = INVALID_SOCKET;
 
+		bool is_created = false;
 
 		virtual void init() = 0;
 		virtual void close() = 0;
@@ -24,9 +25,9 @@ namespace Ryno{
 		std::string get_server_ip();
 		void set_server_ip(std::string s);
 
-		//Logging
-		void die(std::string s);
 		void print(std::string s);
+		void print_error(std::string s);
+
 
 	protected:
 		U32 server_ip;
@@ -35,6 +36,8 @@ namespace Ryno{
 
 		std::string decompress_ip(U32 _ip);
 		U32 compress_ip(std::string s);
+
+		std::string get_error();
 
 	};
 

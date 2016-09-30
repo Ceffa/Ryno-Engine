@@ -8,6 +8,10 @@ namespace Ryno{
 		SOCKET sock = INVALID_SOCKET;
 		sockaddr_in client_addr;
 
+		bool is_listening = false;
+		bool is_bound = false;
+		bool is_accepted = false;
+
 		void init() override;
 		void close() override;
 
