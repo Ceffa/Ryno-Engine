@@ -70,6 +70,7 @@ namespace Ryno {
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 			(LPTSTR)&s, 0, NULL);
 		std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
-		return std::string(myconv.to_bytes(s));
+		std::string str = std::string(myconv.to_bytes(s));
+		return str.substr(0, str.size() - 1);
 	}
 }

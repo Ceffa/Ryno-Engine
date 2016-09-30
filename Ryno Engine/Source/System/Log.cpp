@@ -148,7 +148,6 @@ namespace Ryno {
 		instance->iterator = instance->history.begin();
 		
 		instance->refresh();
-
 	}
 
 	

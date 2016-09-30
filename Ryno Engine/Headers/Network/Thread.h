@@ -16,9 +16,15 @@ namespace Ryno{
 		}
 
 		void join() {
-			thread->join();
+			if(thread)
+				thread->join();
+		}
+		void detach() {
+			if(thread)
+				thread->detach();
 		}
 		~Thread() {
+			detach();
 			delete thread;
 		}
 
