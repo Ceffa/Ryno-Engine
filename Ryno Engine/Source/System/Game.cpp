@@ -12,11 +12,11 @@ namespace Ryno{
 		SDL_GetDisplayBounds(0, &rect);
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		int border = 8;
-		int margin = (rect.w - WINDOW_WIDTH*2)/2;
+		int border = 25;
+		int margin = (rect.h - WINDOW_HEIGHT*2)/2;
 		
-		int pos_x = window_pos < 0 ? margin - border: (window_pos > 0 ? border + rect.w / 2 : SDL_WINDOWPOS_CENTERED);
-		if ((window = SDL_CreateWindow("Ryno Engine", pos_x, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)) == NULL){
+		int pos_y = window_pos < 0 ? margin - border: (window_pos > 0 ? border + rect.h / 2 : SDL_WINDOWPOS_CENTERED);
+		if ((window = SDL_CreateWindow("Ryno Engine", SDL_WINDOWPOS_CENTERED, pos_y, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)) == NULL){
 			std::cout<<"Failed to create SDL window: "+ std::string(SDL_GetError())<<std::endl;
 		}
 		

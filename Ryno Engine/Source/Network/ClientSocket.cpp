@@ -33,7 +33,7 @@ namespace Ryno {
 			is_connected = false;
 			return;
 		}
-		printf("Connect success.");
+		print("Connect success.");
 		is_connected = true;
 	}
 	
