@@ -56,6 +56,8 @@ namespace Ryno{
 
 		void reset_scene();
 		void next_scene();
+		Scene* get_scene() { return scene; }
+
 
 		AudioManager* audio_manager;
 		InputManager* input_manager;

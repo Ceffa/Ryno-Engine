@@ -1,0 +1,44 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define WIN32_LEAN_AND_MEAN
+
+#pragma once
+#include "Global.h"
+#include <winsock2.h>
+#include <iostream>
+
+#pragma comment(lib, "ws2_32.lib")
+
+
+namespace Ryno{
+
+	class Socket {
+	public:
+		SOCKET sock = INVALID_SOCKET;
+
+
+		virtual void init() = 0;
+		virtual void close() = 0;
+	
+		void set_server_port(U32 _server_port);
+		U32 get_server_port();
+		std::string get_server_ip();
+		void set_server_ip(std::string s);
+
+		//Logging
+		void die(std::string s);
+		void print(std::string s);
+
+	protected:
+		U32 server_ip;
+		U32 server_port;
+		sockaddr_in addr;
+
+		std::string decompress_ip(U32 _ip);
+		U32 compress_ip(std::string s);
+
+	};
+
+
+
+
+}

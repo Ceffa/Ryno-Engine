@@ -1,6 +1,7 @@
 #include "Shell.h"
 #include "TextureManager.h"
 #include "Game.h"
+#include "Network.h"
 #include <iostream>
 #include <unordered_map>
 
@@ -245,6 +246,12 @@ namespace Ryno {
 	{
 		if (command.compare("hide")==0)
 			hide();
+		else if (command.compare("server") == 0) {
+			Network::get_instance()->create_server();
+		}
+		else if (command.compare("client") == 0) {
+			Network::get_instance()->create_client();
+		}
 		else if (command.compare("pausemusic") == 0)
 			Music::pause();
 		else if (command.compare("resumemusic") == 0)

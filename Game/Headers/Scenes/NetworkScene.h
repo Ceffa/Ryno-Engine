@@ -2,8 +2,6 @@
 
 #include "Scene.h"
 #include "Game.h"
-#include "Network.h"
-#include "Thread.h"
 
 #include <vector>
 
@@ -18,9 +16,7 @@ namespace Ryno{
 	
 		void start() override;
 		void update() override;
-		void try_network();
-		Server server;
-		Thread t;
+	
 		
 	};
 }

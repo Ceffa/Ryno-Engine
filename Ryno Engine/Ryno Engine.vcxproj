@@ -185,9 +185,10 @@
     <ClCompile Include="Source\Managers\ParticleManager.cpp" />
     <ClCompile Include="Source\Managers\TextureManager.cpp" />
     <ClCompile Include="Source\Managers\TimeManager.cpp" />
-    <ClCompile Include="Source\Network\Client.cpp" />
+    <ClCompile Include="Source\Network\ClientSocket.cpp" />
     <ClCompile Include="Source\Network\Network.cpp" />
-    <ClCompile Include="Source\Network\Server.cpp" />
+    <ClCompile Include="Source\Network\ServerSocket.cpp" />
+    <ClCompile Include="Source\Network\Socket.cpp" />
     <ClCompile Include="Source\Others\PerlinNoise.cpp" />
     <ClCompile Include="Source\Others\RynoMath.cpp" />
     <ClCompile Include="Source\Others\Structures.cpp" />
@@ -232,9 +233,10 @@
     <ClInclude Include="Headers\Managers\ParticleManager.h" />
     <ClInclude Include="Headers\Managers\TextureManager.h" />
     <ClInclude Include="Headers\Managers\TimeManager.h" />
-    <ClInclude Include="Headers\Network\Client.h" />
+    <ClInclude Include="Headers\Network\ClientSocket.h" />
     <ClInclude Include="Headers\Network\Network.h" />
-    <ClInclude Include="Headers\Network\Server.h" />
+    <ClInclude Include="Headers\Network\ServerSocket.h" />
+    <ClInclude Include="Headers\Network\Socket.h" />
     <ClInclude Include="Headers\Network\Thread.h" />
     <ClInclude Include="Headers\Others\GenericMap.h" />
     <ClInclude Include="Headers\Others\Transform2D.h" />

@@ -1,23 +1,29 @@
 #pragma once
+#include "ClientSocket.h"
+#include "ServerSocket.h"
 #include "Global.h"
-#include "Server.h"
-#include "Client.h"
 #include <winsock2.h>
 #include <iostream>
+#include "Thread.h"
+
 
 #pragma comment(lib, "ws2_32.lib")
 
-#define SERVERIP "127.0.0.1"
-
-#define SERVERPORT 5555
-
-#define MESSAGESIZE 40
 
 namespace Ryno{
 
 	static class Network {
 	public:
-		static void init();
+		void init(); 
+		void create_client();
+		void create_server();
+		static Network* get_instance();
+
+	private:
+		Network::Network() {}
+		Thread t;
+		void threaded_create_client();
+		void threaded_create_server();
 	};
 
 }
