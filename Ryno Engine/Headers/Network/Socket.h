@@ -8,12 +8,11 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
-
 namespace Ryno{
 
 	class Socket {
 	public:
-		SOCKET sock = INVALID_SOCKET;
+		SOCKET server_socket = INVALID_SOCKET;
 
 		bool is_created = false;
 
@@ -27,6 +26,12 @@ namespace Ryno{
 
 		void print(std::string s);
 		void print_error(std::string s);
+
+		virtual bool send(const std::string& s) = 0;
+		virtual bool recv(std::string& message) =0;
+
+		
+
 
 
 	protected:

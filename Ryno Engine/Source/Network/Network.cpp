@@ -30,6 +30,11 @@ namespace Ryno {
 		sock.bind();
 		sock.listen();
 		sock.accept();
+		while (true) {
+			std::string s;
+			if (sock.recv(s))
+				sock.print(s);
+		}
 	}
 
 	void Network::threaded_create_client() {
@@ -39,6 +44,9 @@ namespace Ryno {
 		sock.set_server_port(5555);
 		sock.init();
 		sock.connect();
+		while (true) {
+			sock.send("hello");
+		}
 	}
 	
 	void Network::create_server() {

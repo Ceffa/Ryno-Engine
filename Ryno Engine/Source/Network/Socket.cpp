@@ -13,6 +13,7 @@ namespace Ryno {
 		Log::println(s + get_error());
 	}
 
+
 	U32 Socket::compress_ip(std::string s) {
 		
 			std::vector<U32> split;

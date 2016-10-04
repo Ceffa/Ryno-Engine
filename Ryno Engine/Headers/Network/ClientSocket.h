@@ -5,12 +5,14 @@ namespace Ryno{
 
 	class ClientSocket : public Socket {
 	public:
-		SOCKET sock = INVALID_SOCKET;
-		
+
 		bool is_connected = false;
 
 		void init() override;
 		void close() override;
+		bool send(const std::string& message) override;
+		bool recv(std::string& message) override;
+
 		
 		void connect();
 	};

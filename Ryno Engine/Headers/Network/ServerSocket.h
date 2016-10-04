@@ -5,8 +5,8 @@ namespace Ryno{
 
 	class ServerSocket : public Socket {
 	public:
-		SOCKET sock = INVALID_SOCKET;
 		sockaddr_in client_addr;
+		SOCKET client_socket = INVALID_SOCKET;
 
 		bool is_listening = false;
 		bool is_bound = false;
@@ -18,9 +18,13 @@ namespace Ryno{
 		void listen();
 		void bind();
 		void accept();
+		bool send(const std::string& message) override;
+		bool recv(std::string& message) override;
 
 		U32 get_client_port();
 		std::string get_client_ip();
+
+
 
 	};
 }
