@@ -1,4 +1,3 @@
-#include "Log.h"
 #include "Network.h"
 
 namespace Ryno {
@@ -10,7 +9,6 @@ namespace Ryno {
 
 
 	void Network::init() {
-
 		// Initialise the WinSock library -- we want version 2.2.
 		WSADATA w;
 		int error = WSAStartup(0x0202, &w);
@@ -23,30 +21,14 @@ namespace Ryno {
 
 	void Network::threaded_create_server() {
 
-		ServerSocket sock;
-		sock.set_server_ip("127.0.0.1");
-		sock.set_server_port(5555);
-		sock.init();
-		sock.bind();
-		sock.listen();
-		sock.accept();
-		while (true) {
-			std::string s;
-			if (sock.recv(s))
-				sock.print(s);
-		}
+		Server server("127.0.0.1",5555);
+		server.init();
 	}
 
 	void Network::threaded_create_client() {
 
-		ClientSocket sock;
-		sock.set_server_ip("127.0.0.1");
-		sock.set_server_port(5555);
-		sock.init();
-		sock.connect();
-		while (true) {
-			sock.send("hello");
-		}
+		Client client("127.0.0.1", 5555);
+		client.init();
 	}
 	
 	void Network::create_server() {

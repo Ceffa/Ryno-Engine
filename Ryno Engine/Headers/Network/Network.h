@@ -1,14 +1,10 @@
 #pragma once
-#include "ClientSocket.h"
-#include "ServerSocket.h"
+
+#include "Client.h"
+#include "Server.h"
 #include "Global.h"
-#include <winsock2.h>
-#include <iostream>
+#include "NetUtil.h"
 #include "Thread.h"
-
-
-#pragma comment(lib, "ws2_32.lib")
-
 
 namespace Ryno{
 

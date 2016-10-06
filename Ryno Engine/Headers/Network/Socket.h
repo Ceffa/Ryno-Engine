@@ -1,49 +1,41 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN
 
+#pragma comment(lib, "ws2_32.lib")
+
 #pragma once
 #include "Global.h"
 #include <winsock2.h>
-#include <iostream>
-
-#pragma comment(lib, "ws2_32.lib")
 
 namespace Ryno{
 
 	class Socket {
+	private:
+		SOCKET sock = SOCKET_ERROR;
 	public:
-		SOCKET server_socket = INVALID_SOCKET;
+		Socket::Socket();
+		Socket::Socket(SOCKET _sock);
 
-		bool is_created = false;
+		const SOCKET get_handle();
+		bool init();
+		void close();
+		bool bind(const C* ip, U32 port);
+		bool connect(const C* server_ip, U32 server_port);
+		bool listen();
+		Socket* accept();
 
-		virtual void init() = 0;
-		virtual void close() = 0;
-	
-		void set_server_port(U32 _server_port);
-		U32 get_server_port();
-		std::string get_server_ip();
-		void set_server_ip(std::string s);
+		bool send(Socket& receiver, const std::string& message);
+		bool recv(Socket*  sender, std::string* message);
 
-		void print(std::string s);
-		void print_error(std::string s);
-
-		virtual bool send(const std::string& s) = 0;
-		virtual bool recv(std::string& message) =0;
-
-		
-
+		bool create_ok = false;
+		bool bind_ok = false;
+		bool listen_ok = false;
+		bool connect_ok = false;
+		bool accept_ok = false;
 
 
-	protected:
-		U32 server_ip;
-		U32 server_port;
-		sockaddr_in addr;
-
-		std::string decompress_ip(U32 _ip);
-		U32 compress_ip(std::string s);
-
-		std::string get_error();
-
+	private:
+		void verify_socket();
 	};
 
 

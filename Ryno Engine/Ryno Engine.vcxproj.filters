@@ -681,10 +681,16 @@
     <ClCompile Include="Source\Network\Socket.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Network\ServerSocket.cpp">
+    <ClCompile Include="Source\Network\Connection.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Network\ClientSocket.cpp">
+    <ClCompile Include="Source\Network\Server.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Network\NetUtil.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Network\Client.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
@@ -836,10 +842,16 @@
     <ClInclude Include="Headers\Network\Socket.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Network\ServerSocket.h">
+    <ClInclude Include="Headers\Network\Connection.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Network\ClientSocket.h">
+    <ClInclude Include="Headers\Network\Server.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Network\NetUtil.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Network\Client.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
