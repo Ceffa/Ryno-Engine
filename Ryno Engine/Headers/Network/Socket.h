@@ -24,7 +24,7 @@ namespace Ryno{
 		bool listen();
 		Socket* accept();
 
-		bool send(Socket& receiver, const std::string& message);
+		bool send(Socket* receiver, const std::string* message);
 		bool recv(Socket*  sender, std::string* message);
 
 		bool create_ok = false;

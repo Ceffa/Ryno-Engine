@@ -32,10 +32,10 @@ namespace Ryno {
 		}
 	}
 
-	bool Socket::send(Socket& receiver, const std::string& message) {
+	bool Socket::send(Socket* receiver, const std::string* message) {
 		char c = '\0';
-		if (::send(receiver.get_handle(), message.c_str(), message.size(), 0) == SOCKET_ERROR
-			|| ::send(receiver.get_handle(), &c, 1, 0) == SOCKET_ERROR)
+		if (::send(receiver->get_handle(), message->c_str(), message->size(), 0) == SOCKET_ERROR
+			|| ::send(receiver->get_handle(), &c, 1, 0) == SOCKET_ERROR)
 		{
 			NetUtil::print_error("Send error: ");
 			return false;

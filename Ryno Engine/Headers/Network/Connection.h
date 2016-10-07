@@ -6,6 +6,7 @@ namespace Ryno{
 	class Connection {
 	public:
 		Socket* socket;
+		std::string message;
 
 		Connection::Connection();
 		Connection::Connection(Socket* _sock);
