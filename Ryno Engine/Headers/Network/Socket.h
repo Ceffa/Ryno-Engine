@@ -16,7 +16,7 @@ namespace Ryno{
 		Socket::Socket();
 		Socket::Socket(SOCKET _sock);
 
-		const SOCKET get_handle();
+		const SOCKET get();
 		bool init();
 		void close();
 		bool bind(const C* ip, U32 port);
@@ -24,8 +24,8 @@ namespace Ryno{
 		bool listen();
 		Socket* accept();
 
-		bool send(Socket* receiver, const std::string* message);
-		bool recv(Socket*  sender, std::string* message);
+		bool send(const std::string* message);
+		bool recv(std::string* message);
 
 		bool create_ok = false;
 		bool bind_ok = false;

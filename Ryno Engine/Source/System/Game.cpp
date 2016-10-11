@@ -75,6 +75,9 @@ namespace Ryno{
 		
 		simple_drawer = SimpleDrawer::get_instance();
 		mesh_builder = MeshBuilder::get_instance();
+
+		Network::get_instance()->init();
+
 		
 		
 				

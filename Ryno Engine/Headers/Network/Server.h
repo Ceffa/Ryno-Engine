@@ -1,6 +1,7 @@
 #pragma once
 #include "Socket.h"
-
+#include "Connection.h"
+#include <list>
 namespace Ryno{
 
 	class Server{
@@ -13,5 +14,10 @@ namespace Ryno{
 		Socket sock;
 		C* ip;
 		U32 port;
+
+	private:
+		std::list<Connection*> conns;
+		U32 max_conns = 100;
+
 	};
 }

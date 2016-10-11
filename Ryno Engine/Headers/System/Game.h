@@ -16,6 +16,7 @@
 #include "CPUProfiler.h"
 #include "GPUProfiler.h"
 #include "PhysicsWorld.h"
+#include "Network.h"
 
 //other
 #include "Global.h"

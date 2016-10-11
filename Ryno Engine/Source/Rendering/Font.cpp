@@ -25,7 +25,7 @@ namespace Ryno {
 
 	
 	std::vector<FontGlyph> FontGlyph::font_glyphs;
-	U32 FontGlyph::current_glyph;
+	U32 FontGlyph::current_glyph = 0;
 
 
 	void FontGlyph::generate_model_matrix()
@@ -53,7 +53,6 @@ namespace Ryno {
 
 	void Font::create(std::string font, U32 size,Owner loc, C cs, C ce) {
 
-	
         // Initialize SDL_ttf
         if (!TTF_WasInit()) {
             TTF_Init();
@@ -301,7 +300,7 @@ namespace Ryno {
 				if (gi < 0 || gi >= _regLength)
 					gi = _regLength;
 
-				font_glyph = &FontGlyph::font_glyphs[FontGlyph::current_glyph++];
+				font_glyph = &FontGlyph::font_glyphs[FontGlyph::current_glyph];
 				font_glyph->set_position(tp);
 				font_glyph->depth = message->depth;
 				font_glyph->set_scale(_glyphs[gi].size * message_scale);

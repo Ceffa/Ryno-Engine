@@ -68,6 +68,7 @@ namespace Ryno {
 
 	void Batch2DFont::draw_glyph(FontGlyph* font_glyph) {
 		m_font_glyphs.push_back(font_glyph);
+		FontGlyph::current_glyph++;
 
 	}
 

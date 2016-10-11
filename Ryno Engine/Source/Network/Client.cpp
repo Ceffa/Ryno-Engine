@@ -15,11 +15,22 @@ namespace Ryno {
 			return;
 		}
 		
+		bool sent = false;
 		while (true) {
-			if (!sock.send(sock, "Hello")) {
+
+			std::string s("hei");
+			if (!sent && !sock.send(&s)) {
 				close();
 				return;
 			}
+
+			else {
+				sent = true;
+			}
+			
+			std::string ss;
+			if (sock.recv(&ss))
+				NetUtil::print(ss);
 		}
 		close();
 	}

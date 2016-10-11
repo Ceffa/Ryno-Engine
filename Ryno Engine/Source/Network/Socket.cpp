@@ -11,7 +11,7 @@ namespace Ryno {
 	}
 
 
-	const SOCKET Socket::get_handle() {
+	const SOCKET Socket::get() {
 		return sock;
 	}
 
@@ -32,10 +32,10 @@ namespace Ryno {
 		}
 	}
 
-	bool Socket::send(Socket* receiver, const std::string* message) {
+	bool Socket::send(const std::string* message) {
 		char c = '\0';
-		if (::send(receiver->get_handle(), message->c_str(), message->size(), 0) == SOCKET_ERROR
-			|| ::send(receiver->get_handle(), &c, 1, 0) == SOCKET_ERROR)
+		if (::send(sock, message->c_str(), message->size(), 0) == SOCKET_ERROR
+			|| ::send(sock, &c, 1, 0) == SOCKET_ERROR)
 		{
 			NetUtil::print_error("Send error: ");
 			return false;
@@ -43,11 +43,11 @@ namespace Ryno {
 		return true;
 	}
 
-	bool Socket::recv(Socket* sender, std::string* message) {
+	bool Socket::recv(std::string* message) {
 		
 		char c;
 		while (true) {
-			if (::recv(sender->get_handle(), &c, 1, 0) == SOCKET_ERROR) {
+			if (::recv(sock, &c, 1, 0) == SOCKET_ERROR) {
 				NetUtil::print_error("Recv error: ");
 				return false;
 			}
@@ -119,7 +119,7 @@ namespace Ryno {
 		sockaddr_in client_addr;
 		int addr_size = sizeof(client_addr);
 		Socket* client_sock = new Socket(::accept(sock, (sockaddr *)&client_addr, &addr_size));
-		if (client_sock->get_handle() == INVALID_SOCKET) {
+		if (client_sock->get() == INVALID_SOCKET) {
 			accept_ok = false;
 			NetUtil::print_error("Accept failed: ");
 			delete client_sock;

@@ -5,7 +5,7 @@ namespace Ryno{
 
 	class Connection {
 	public:
-		Socket* socket;
+		Socket* sock;
 		std::string message;
 
 		Connection::Connection();
@@ -16,7 +16,8 @@ namespace Ryno{
 		bool do_read();
 		bool do_write();
 
-	private:
+		bool is_reading = false;
+		bool is_writing = false;
 	};
 
 }

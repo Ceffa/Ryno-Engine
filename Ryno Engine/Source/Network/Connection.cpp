@@ -4,37 +4,37 @@
 namespace Ryno {
 
 	Connection::Connection(Socket* sock)
-		: socket(sock)
+		: sock(sock)
 	{
 		NetUtil::print("New connection");
 	}
 
 	Connection::Connection()
-		: socket(nullptr)
+		: sock(nullptr)
 	{
 		NetUtil::print("New connection");
 	}
 
 	Connection::~Connection() {
-		socket->close();
-		socket = nullptr;
+		sock->close();
+		sock = nullptr;
 		NetUtil::print("Close connection");
 	}
 
 	bool Connection::want_read() {
-		return true;
+		return !is_writing;
 	}
 
 	bool Connection::want_write() {
-		return true;
+		return !is_reading;
 	}
 
 	bool Connection::do_read() {
-		socket->recv(socket, &message);
+		return sock->recv(&message);
 	}
 
 	bool Connection::do_write() {
-		socket->send(socket, &message);
+		return sock->send(&message);
 	}
 
 }
