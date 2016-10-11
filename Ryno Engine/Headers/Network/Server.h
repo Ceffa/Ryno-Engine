@@ -1,23 +1,22 @@
 #pragma once
-#include "Socket.h"
+#include "NetEntity.h"
 #include "Connection.h"
 #include <list>
 namespace Ryno{
 
-	class Server{
+	class Server : public NetEntity{
 	public:
-		Server::Server(C* _ip, U32 _port) : ip(_ip), port(_port) {}
+		Server::Server(C* _server_ip, U32 _server_port) : NetEntity(_server_ip, _server_port) {}
 		Server::~Server() { close(); }
-		void init();
-		void close();
-
-		Socket sock;
-		C* ip;
-		U32 port;
+		void start() override;
+		void update() override;
+		void close() override;
+		void set_timeout(U32 microseconds);
 
 	private:
 		std::list<Connection*> conns;
 		U32 max_conns = 100;
+		timeval timeout;
 
 	};
 }

@@ -9,6 +9,18 @@
 
 namespace Ryno{
 
+	struct State {
+	private:
+		I8 value = -1;
+	public:
+		const bool up() { return value == 1; }
+		const bool down() { return value == -1; }
+		const bool load() { return value == 0; }
+		void set_up() { value = 1; }
+		void set_down() { value = -1; }
+		void set_loading() { value = 0; }
+	};
+
 	class Socket {
 	private:
 		SOCKET sock = SOCKET_ERROR;
@@ -20,22 +32,24 @@ namespace Ryno{
 		bool init();
 		void close();
 		bool bind(const C* ip, U32 port);
-		bool connect(const C* server_ip, U32 server_port);
+		I8 connect(const C* server_ip, U32 server_port);
 		bool listen();
 		Socket* accept();
 
 		bool send(const std::string* message);
-		bool recv(std::string* message);
+		I8 recv(std::string* message);
 
-		bool create_ok = false;
-		bool bind_ok = false;
-		bool listen_ok = false;
-		bool connect_ok = false;
-		bool accept_ok = false;
+		void set_blocking(bool b);
 
+		State create_state;
+		State bind_state;
+		State listen_state;
+		State connect_state;
+		State accept_state;
 
 	private:
 		void verify_socket();
+		void reset_states();
 	};
 
 

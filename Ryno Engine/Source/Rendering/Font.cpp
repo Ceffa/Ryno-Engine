@@ -31,11 +31,11 @@ namespace Ryno {
 	void FontGlyph::generate_model_matrix()
 	{
 
-		F32 new_sc_x = scale.x / WINDOW_WIDTH;
-		F32 new_sc_y = scale.y / WINDOW_HEIGHT;
+		F32 new_sc_x = scale.x / WindowSize::w;
+		F32 new_sc_y = scale.y / WindowSize::h;
 
-		F32 new_x = (position.x / WINDOW_WIDTH - 0.5) * 2;
-		F32 new_y = (position.y / WINDOW_HEIGHT - 0.5) * 2;
+		F32 new_x = (position.x / WindowSize::w - 0.5) * 2;
+		F32 new_y = (position.y / WindowSize::h - 0.5) * 2;
 
 
 
@@ -274,7 +274,7 @@ namespace Ryno {
 
 		FontGlyph* font_glyph;
 
-		glm::vec2 position_zero = message->get_position() * glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
+		glm::vec2 position_zero = message->get_position() * glm::vec2(WindowSize::w, WindowSize::h);
 		glm::vec2 tp = position_zero;
 		std::vector<F32> line_widths;//Size of each line of text
 		glm::vec2 size = measure(message->text, &line_widths);//Global size of the text

@@ -3,36 +3,34 @@
 
 namespace Ryno {
 
-	void Client::init() {
+	void Client::start() {
 
 		if (!sock.init()) {
 			close();
 			return;
 		}
-		
-		if (!sock.connect(server_ip, server_port)) {
-			close();
-			return;
-		}
-		
-		bool sent = false;
-		while (true) {
+		sock.set_blocking(true);
 
-			std::string s("hei");
-			if (!sent && !sock.send(&s)) {
-				close();
+	}
+
+	void Client::update() {
+		if (!sock.create_state.up())
+			return;
+
+
+		sock.set_blocking(true);
+
+		if (!sock.connect_state.up()){
+			if (sock.connect(server_ip, server_port) < 0) {
 				return;
 			}
-
-			else {
-				sent = true;
-			}
-			
+		}
+		if (sock.connect_state.up()) {
+			sock.set_blocking(false);
 			std::string ss;
-			if (sock.recv(&ss))
+			if (sock.recv(&ss) == 1)
 				NetUtil::print(ss);
 		}
-		close();
 	}
 	
 	void Client::close() {

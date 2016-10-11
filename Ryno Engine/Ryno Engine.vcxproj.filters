@@ -693,6 +693,9 @@
     <ClCompile Include="Source\Network\Client.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="Source\System\Global.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Game\Camera3D.h">
@@ -852,6 +855,9 @@
       <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Network\Client.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Network\NetEntity.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
   </ItemGroup>

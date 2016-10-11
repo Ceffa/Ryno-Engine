@@ -23,7 +23,7 @@ namespace Ryno {
 
 	void InputManager::init(SDL_Window* window){
 		m_window = window;
-		SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
+		SDL_WarpMouseInWindow(m_window, WindowSize::w / 2.0f, WindowSize::h / 2.0f);
 
 	}
 
@@ -88,7 +88,7 @@ namespace Ryno {
 		SDL_StopTextInput();
 
 		if (is_key_pressed(SDLK_ESCAPE,KEYBOARD))exit = !exit;
-		//if(!exit)SDL_WarpMouseInWindow(m_window, WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
+		//if(!exit)SDL_WarpMouseInWindow(m_window, WindowSize::w / 2.0f, WindowSize::h / 2.0f);
 
 		return Input::OK;
 	}

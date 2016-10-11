@@ -33,8 +33,8 @@ namespace Ryno {
 		return sock->recv(&message);
 	}
 
-	bool Connection::do_write() {
-		return sock->send(&message);
+	bool Connection::do_write(const std::string& send_message) {
+		return sock->send(&send_message);
 	}
 
 }

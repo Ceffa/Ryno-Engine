@@ -19,6 +19,8 @@ namespace Ryno{
 		static std::string get_error();
 
 		static void print(std::string s);
+		static void print(I32 n);
+
 
 		static void print_error(std::string s);
 

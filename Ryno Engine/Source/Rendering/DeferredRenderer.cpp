@@ -49,8 +49,8 @@ namespace Ryno{
 		m_simple_drawer = SimpleDrawer::get_instance();
 
 		
-		m_fbo_shadow.init(WINDOW_WIDTH, WINDOW_HEIGHT);
-		m_fbo_deferred.init(WINDOW_WIDTH, WINDOW_HEIGHT);
+		m_fbo_shadow.init(WindowSize::w, WindowSize::h);
+		m_fbo_deferred.init(WindowSize::w, WindowSize::h);
 	
 		m_sprite_batch2d.init();
 		m_font_batch2d.init();
@@ -80,8 +80,8 @@ namespace Ryno{
 
 		m_blit_program.create("Others/blit", ENGINE);
 		m_blit_model.material.set_shader(&m_blit_program);
-		m_blit_model.material.set_uniform("screen_width", WINDOW_WIDTH);
-		m_blit_model.material.set_uniform("screen_height", WINDOW_HEIGHT);
+		m_blit_model.material.set_uniform("screen_width", WindowSize::w);
+		m_blit_model.material.set_uniform("screen_height", WindowSize::h);
 
 		//Sprite program
 		m_sprite_program.create("GUIPass/sprite", ENGINE);
@@ -300,7 +300,7 @@ namespace Ryno{
 		
 
 	//Restore clear color and viewport
-	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+	glViewport(0, 0, WindowSize::w, WindowSize::h);
 
 
 	}
@@ -362,8 +362,8 @@ namespace Ryno{
 
 
 		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM GLOBAL
-		mat.set_uniform("screen_width", WINDOW_WIDTH);
-		mat.set_uniform("screen_height", WINDOW_HEIGHT);
+		mat.set_uniform("screen_width", WindowSize::w);
+		mat.set_uniform("screen_height", WindowSize::h);
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
@@ -437,7 +437,7 @@ namespace Ryno{
 
 
 		//Restore clear color and viewport
-		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		glViewport(0, 0, WindowSize::w, WindowSize::h);
 	}
 
 
@@ -500,8 +500,8 @@ namespace Ryno{
 		mat.set_uniform("spot_light.blur", s->blur);
 		mat.set_uniform("spot_light.shadow_strength", s->shadow_strength);
 
-		mat.set_uniform("screen_width", WINDOW_WIDTH);
-		mat.set_uniform("screen_height", WINDOW_HEIGHT);
+		mat.set_uniform("screen_width", WindowSize::w);
+		mat.set_uniform("screen_height", WindowSize::h);
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
@@ -554,7 +554,7 @@ namespace Ryno{
 		m_directional_shadow_program.unuse();
 
 
-		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		glViewport(0, 0, WindowSize::w, WindowSize::h);
 
 
 
@@ -592,8 +592,8 @@ namespace Ryno{
 		}
 
 	
-		mat.set_uniform("screen_width", WINDOW_WIDTH);
-		mat.set_uniform("screen_height", WINDOW_HEIGHT);
+		mat.set_uniform("screen_width", WindowSize::w);
+		mat.set_uniform("screen_height", WindowSize::h);
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);

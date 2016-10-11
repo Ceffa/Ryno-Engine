@@ -13,7 +13,10 @@ namespace Ryno{
 		Camera3D* camera;
 
 
-		Scene();
+		Scene() {
+		
+		}
+		void init();
 		virtual ~Scene() = 0{}
 		virtual void start() {}
 		virtual void input() {}
@@ -55,7 +58,9 @@ namespace Ryno{
 			if (!scene_exists(n))
 				return nullptr;
 			current = n;
-			return scenes[n]();
+			Scene* s = scenes[n]();
+			s->init();
+			return s;
 		}
 
 

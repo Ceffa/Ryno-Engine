@@ -23,8 +23,8 @@ namespace Ryno{
         F32 cs = cos(deg_angle);
 
 
-        F32 new_sc_x = ratio * scale.x / WINDOW_WIDTH;
-        F32 new_sc_y =  scale.y / WINDOW_HEIGHT;
+        F32 new_sc_x = ratio * scale.x / WindowSize::w;
+        F32 new_sc_y =  scale.y / WindowSize::h;
 
 
         F32 new_x = (position.x - 0.5) * 2;

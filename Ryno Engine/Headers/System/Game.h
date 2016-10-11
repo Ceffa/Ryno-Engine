@@ -50,7 +50,10 @@ namespace Ryno{
 	public:
 
 		static Game* get_instance();
-		void init(int window_pos);
+		void init();
+		void init_SDL();
+		void set_window_pos(U32 x, U32 y);
+		void set_window_size(U32 w, U32 h);
 		void run();
 		void set_scene(const std::string& scene_name);
 		void set_scene(I32 scene_nr);
@@ -70,6 +73,7 @@ namespace Ryno{
 		ParticleManager* particle_manager;
 		MeshBuilder* mesh_builder;
 		PhysicsWorld* physics_world;
+		Network* network;
 		Shell* shell;
 		Log* log;
 		GameState game_state;
@@ -81,7 +85,8 @@ namespace Ryno{
 	protected:
 
 		void destroy_scene(Scene* s);
-		void init_external_systems(int window_pos);
+
+		void init_external_systems();
 		void init_internal_systems();
 
 

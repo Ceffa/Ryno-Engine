@@ -51,6 +51,9 @@ namespace Ryno {
 	void NetUtil::print(std::string s) {
 		Log::println(s);
 	}
+	void NetUtil::print(I32 i) {
+		Log::println(i);
+	}
 	void NetUtil::print_error(std::string s) {
 		Log::println(s + get_error());
 	}

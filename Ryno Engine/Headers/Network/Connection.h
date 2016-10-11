@@ -14,7 +14,7 @@ namespace Ryno{
 		bool want_read();
 		bool want_write();
 		bool do_read();
-		bool do_write();
+		bool do_write(const std::string& send_message);
 
 		bool is_reading = false;
 		bool is_writing = false;

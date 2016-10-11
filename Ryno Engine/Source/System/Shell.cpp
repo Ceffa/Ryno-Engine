@@ -56,7 +56,7 @@ namespace Ryno {
 		
 		background.sprite->anchor_point = BOTTOM_LEFT;
 		background.sprite->set_position(0, 0);
-		background.sprite->set_scale(350, WINDOW_HEIGHT / 3.06f);
+		background.sprite->set_scale(350, WindowSize::h / 3.06f);
 
 		//Create Texts 
 		lines[0].text = new Text();
@@ -244,13 +244,29 @@ namespace Ryno {
 
 	void Shell::parse_command(const std::string& command)
 	{
-		if (command.compare("hide")==0)
-			hide();
+		if (command.compare("winpos") == 0) {
+			U32 x = int_argument();
+			U32 y = int_argument();
+			Game::get_instance()->set_window_pos(x, y);
+		}
+		else if (command.compare("winsize") == 0) {
+			U32 w = int_argument();
+			U32 h = int_argument();
+			Game::get_instance()->set_window_pos(w,h);
+		}
+
 		else if (command.compare("server") == 0) {
-			Network::get_instance()->create_server();
+			Network::get_instance()->start_server();
+		}
+		else if (command.compare("send") == 0) {
+			std::string s = string_argument();
+			if (s.empty()) {
+				print_message("missing argument(s)."); return;
+			}
+			Network::get_instance()->net_entity->sock.send(&s);
 		}
 		else if (command.compare("client") == 0) {
-			Network::get_instance()->create_client();
+			Network::get_instance()->start_client();
 		}
 		else if (command.compare("pausemusic") == 0)
 			Music::pause();
@@ -324,7 +340,6 @@ namespace Ryno {
 			time_manager->slow_factor = f;
 
 		}
-
 		else if (command.compare("shelltextcolor") == 0){
 			
 			//read args
@@ -343,7 +358,6 @@ namespace Ryno {
 			set_text_color(args[0], args[1], args[2]);
 
 		}
-
 		else if (command.compare("shellbackcolor") == 0){
 
 			//read args
@@ -362,7 +376,6 @@ namespace Ryno {
 			background.sprite->set_color(args[0], args[1], args[2], args[3]);
 
 		}
-
 		else if (command.compare("logtextcolor") == 0){
 
 			//read args
@@ -381,7 +394,6 @@ namespace Ryno {
 			log->set_text_color(args[0], args[1], args[2]);
 
 		}
-
 		else if (command.compare("logbackcolor") == 0){
 
 			//read args
@@ -400,7 +412,6 @@ namespace Ryno {
 			log->background.sprite->set_color(args[0], args[1], args[2], args[3]);
 
 		}
-
 		else if (command.compare("echo") == 0){
 			std::string s = string_argument();
 			if (s.empty()){
@@ -408,7 +419,6 @@ namespace Ryno {
 			}
 			log->print(s);
 		}
-
 		else if (command.compare("s") == 0){
 			int i = int_argument();
 			if (i == ERROR_INT){
@@ -423,7 +433,6 @@ namespace Ryno {
 			}
 			Game::get_instance()->set_scene(s);
 		}
-
 		else if (command.compare("fuckyou") == 0){
 			
 			print_message("well, fuck you too.");
@@ -452,7 +461,6 @@ namespace Ryno {
 			
 			request_exit = true;
 		}
-
 		else if (command.compare("nopl") == 0){
 			deferred_renderer->point_light_enabled = false;
 		}

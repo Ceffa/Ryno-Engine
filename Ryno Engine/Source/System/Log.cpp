@@ -54,7 +54,7 @@ namespace Ryno {
 		
 		background.sprite->anchor_point = TOP_LEFT;
 		background.sprite->set_position(0, 1);
-		background.sprite->set_scale(350, WINDOW_HEIGHT / 1.506f);
+		background.sprite->set_scale(350, WindowSize::h / 1.506f);
 
 			
 		lines[0].text = new Text();

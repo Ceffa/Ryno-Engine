@@ -134,8 +134,8 @@ namespace Ryno {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 	
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
-		glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-			0,0, WINDOW_WIDTH , WINDOW_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+		glBlitFramebuffer(0, 0, WindowSize::w, WindowSize::h,
+			0,0, WindowSize::w , WindowSize::h, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	}
 
 	 

@@ -1,18 +1,16 @@
 #pragma once
-#include "Socket.h"
+#include "NetEntity.h"
 
 namespace Ryno{
 
-	class Client{
+	class Client : public NetEntity{
 	public:
-		Client::Client(C* _server_ip, U32 _server_port) : server_ip(_server_ip), server_port(_server_port) {}
+		Client::Client(C* _server_ip, U32 _server_port) : NetEntity(_server_ip, _server_port){ }
 		Client::~Client() { close(); }
 
-		void init();
-		void close();
-
-		Socket sock;
-		C* server_ip;
-		U32 server_port;
+		void start() override;
+		void update() override;
+		void close() override;
+	
 	};
 }

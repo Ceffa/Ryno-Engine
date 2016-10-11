@@ -1,4 +1,7 @@
 #include "Network.h"
+#include "Server.h"
+#include "Client.h"
+
 
 namespace Ryno {
 
@@ -7,6 +10,9 @@ namespace Ryno {
 		return &instance;
 	}
 
+	Network::~Network() {
+		reset_entity();
+	}
 
 	void Network::init() {
 		// Initialise the WinSock library -- we want version 2.2.
@@ -18,24 +24,28 @@ namespace Ryno {
 		if (w.wVersion != 0x0202)
 			Log::println("Wrong WinSock version");
 	}
-
-	void Network::threaded_create_server() {
-
-		Server server("127.0.0.1",5555);
-		server.init();
-	}
-
-	void Network::threaded_create_client() {
-
-		Client client("127.0.0.1", 5555);
-		client.init();
-	}
 	
-	void Network::create_server() {
-		t.create(&Network::threaded_create_server, this);
+	void Network::start_server() {
+		reset_entity();
+		net_entity = new Server("127.0.0.1", 5555);
+		net_entity->start();
 	}
 
-	void Network::create_client() {
-		t.create(&Network::threaded_create_client, this);
+	void Network::start_client() {
+		reset_entity();
+		net_entity = new Client("127.0.0.1", 5555);
+		net_entity->start();
+	}
+
+	void Network::update() {
+		net_entity->update();
+	}
+
+
+	void Network::reset_entity() {
+		if (net_entity) {
+			delete net_entity;
+			net_entity = nullptr;
+		}
 	}
 }

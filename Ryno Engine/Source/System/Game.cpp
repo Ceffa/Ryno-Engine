@@ -3,23 +3,19 @@
 
 namespace Ryno{
 
-	void Game::init_external_systems(int window_pos){
-
+	void Game::init_SDL() {
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 			std::cout<<"Failed to initialize SDL: " + std::string(SDL_GetError())<<std::endl;
 		}
-		SDL_Rect rect;
-		SDL_GetDisplayBounds(0, &rect);
+	}
+	void Game::init_external_systems(){
+
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		int border = 25;
-		int margin = (rect.h - WINDOW_HEIGHT*2)/2;
-		
-		int pos_y = window_pos < 0 ? margin - border: (window_pos > 0 ? border + rect.h / 2 : SDL_WINDOWPOS_CENTERED);
-		if ((window = SDL_CreateWindow("Ryno Engine", SDL_WINDOWPOS_CENTERED, pos_y, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)) == NULL){
+
+		if ((window = SDL_CreateWindow("Ryno Engine", WindowPos::x, WindowPos::y, WindowSize::w, WindowSize::h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)) == NULL){
 			std::cout<<"Failed to create SDL window: "+ std::string(SDL_GetError())<<std::endl;
 		}
-		
 
 		//MOUSE INITIALIZATIONS
 		SDL_ShowCursor(GL_TRUE);
@@ -76,11 +72,8 @@ namespace Ryno{
 		simple_drawer = SimpleDrawer::get_instance();
 		mesh_builder = MeshBuilder::get_instance();
 
-		Network::get_instance()->init();
-
-		
-		
-				
+		network = Network::get_instance();
+		network->init();	
 	}
 
 	Game* Game::get_instance()
@@ -89,9 +82,9 @@ namespace Ryno{
 		return &game;
 	}
 
-	void Game::init(int window_pos)
+	void Game::init()
 	{
-		init_external_systems(window_pos);
+		init_external_systems();
 		init_internal_systems();
 		set_scene(0);
 	}
@@ -114,6 +107,7 @@ namespace Ryno{
 			handle_input();
 			if (game_state == GameState::ChangeScene)
 				continue;
+			network->update();
 			scene->camera_update();
 			if (game_state != GameState::Paused) update();
 			physics_world->physics_step(delta_time);
@@ -241,6 +235,15 @@ namespace Ryno{
 		particle_manager->update(delta_time);
 		scene->update();
 		scene->update_scripts();
+	}
+
+	void Game::set_window_pos(U32 x, U32 y) {
+		WindowPos::x = x;
+		WindowPos::y = y;
+	}
+	void Game::set_window_size(U32 w, U32 h) {
+		WindowSize::w = w;
+		WindowSize::h = h;
 	}
 
 }

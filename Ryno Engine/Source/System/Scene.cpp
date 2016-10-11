@@ -9,10 +9,10 @@ namespace Ryno{
 	U8 SceneManager::last_scene = 0;
 
 
-	Scene::Scene()
+	void Scene::init()
 	{
 		game = Game::get_instance();
-		camera = new Camera3D(WINDOW_WIDTH, WINDOW_HEIGHT);
+		camera = new Camera3D(WindowSize::w, WindowSize::h);
 
 	}
 

@@ -1,25 +1,25 @@
 #pragma once
 
-#include "Client.h"
-#include "Server.h"
+#include "NetEntity.h"
 #include "Global.h"
 #include "NetUtil.h"
-#include "Thread.h"
 
 namespace Ryno{
 
 	static class Network {
 	public:
 		void init(); 
-		void create_client();
-		void create_server();
+		void start_client();
+		void start_server();
+		void update();
 		static Network* get_instance();
+		NetEntity* net_entity = nullptr;
 
 	private:
 		Network::Network() {}
-		Thread t;
-		void threaded_create_client();
-		void threaded_create_server();
+		Network::~Network();
+
+		void reset_entity();
 	};
 
 }
