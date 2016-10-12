@@ -36,8 +36,8 @@ namespace Ryno{
 		bool listen();
 		Socket* accept();
 
-		bool send(const std::string* message);
-		I8 recv(std::string* message);
+		I32 send(const std::string* message);
+		I8 recv_char(C* c);
 
 		void set_blocking(bool b);
 

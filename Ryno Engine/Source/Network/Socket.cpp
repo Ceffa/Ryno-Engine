@@ -35,34 +35,31 @@ namespace Ryno {
 		}
 	}
 
-	bool Socket::send(const std::string* message) {
-		char c = '\0';
-		if (::send(sock, message->c_str(), message->size(), 0) == SOCKET_ERROR
-			|| ::send(sock, &c, 1, 0) == SOCKET_ERROR)
+	I32 Socket::send(const std::string* message) {
+		I32 size = ::send(sock, message->c_str(),message->size()+1, 0);
+		if (size == SOCKET_ERROR)
 		{
+			I32 error = WSAGetLastError();
+			if (error == WSAEWOULDBLOCK) {
+				return 0;
+			}
 			NetUtil::print_error("Send error: ");
-			return false;
+			return -1;
 		}
-		return true;
+		return size;
 	}
 
-	I8 Socket::recv(std::string* message) {
+	I8 Socket::recv_char(C* c) {
 		
-		char c;
-		while (true) {
-			if (::recv(sock, &c, 1, 0) == SOCKET_ERROR) {
-				I32 error = WSAGetLastError();
-				if (error == WSAEWOULDBLOCK) {
-					return 0;
-				}
-				else {
-					NetUtil::print_error("Recv error: ");
-					return -1;
-				}
+		if (::recv(sock, c, 1, 0) == SOCKET_ERROR) {
+			I32 error = WSAGetLastError();
+			if (error == WSAEWOULDBLOCK) {
+				return 0;
 			}
-			if (c == '\0')
-				break;
-			*message += c;
+			else {
+				NetUtil::print_error("Recv error: ");
+				return -1;
+			}
 		}
 		return 1;
 	}

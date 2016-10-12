@@ -17,9 +17,6 @@ namespace Ryno {
 		if (!sock.create_state.up())
 			return;
 
-
-		sock.set_blocking(true);
-
 		if (!sock.connect_state.up()){
 			if (sock.connect(server_ip, server_port) < 0) {
 				return;
@@ -28,8 +25,22 @@ namespace Ryno {
 		if (sock.connect_state.up()) {
 			sock.set_blocking(false);
 			std::string ss;
-			if (sock.recv(&ss) == 1)
-				NetUtil::print(ss);
+			C c;
+
+			while (true) {
+				I8 res = sock.recv_char(&c);
+				if (res == 1) {
+					if (c == '\0') {
+						NetUtil::print(ss);
+						break;
+					}
+					else
+						ss += c;
+				}
+				else 
+					break;
+			}
+
 		}
 	}
 	

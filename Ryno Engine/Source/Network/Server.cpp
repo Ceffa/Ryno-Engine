@@ -9,8 +9,7 @@ namespace Ryno {
 			close();
 			return;
 		}
-
-		sock.set_blocking(true);
+		sock.set_blocking(false);
 		sock.bind(server_ip,server_port);
 		sock.listen();
 	}
@@ -44,7 +43,7 @@ namespace Ryno {
 		if (FD_ISSET(sock.get(), &readable))
 		{
 			Socket* client_sock = sock.accept();
-			client_sock->set_blocking(true);
+			client_sock->set_blocking(false);
 
 			if (conns.size() >= max_conns - 1)
 				client_sock->close();
@@ -59,15 +58,18 @@ namespace Ryno {
 			bool alive = true;
 
 			if (FD_ISSET(conn->sock->get(), &readable)) {
-				conn->message.clear();
-				alive &= conn->do_read();
-				if (alive) {
-					std::string new_mex = conn->message;
+				std::string recv_message;
+				alive &= conn->do_read(recv_message);
+
+				if (!recv_message.empty() && alive) {
+
 					for (auto new_it = conns.begin(); new_it != conns.end(); new_it++) {
 						Connection* temp_c = *new_it;
 						if (FD_ISSET(temp_c->sock->get(), &writeable)) {
-							temp_c->message = new_mex;
-							alive &= temp_c->do_write(new_mex);
+							NetUtil::print(recv_message);
+
+							alive &= temp_c->do_write(recv_message);
+
 						}
 					}
 				}
