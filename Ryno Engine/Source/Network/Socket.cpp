@@ -46,6 +46,7 @@ namespace Ryno {
 			NetUtil::print_error("Send error: ");
 			return -1;
 		}
+
 		return size;
 	}
 

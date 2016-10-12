@@ -34,22 +34,21 @@ namespace Ryno {
 
 		do {
 			res = sock->recv_char(&c);
+		
 			if (res == -1) {
 				read_buffer.clear();
 				return false;
 			}
-			if (res == 1)
+			if (res == 1) {
+				if (c == '\0') {
+					recv_message = read_buffer;
+					is_reading = false;
+					read_buffer.clear();
+					return true;
+				}
 				read_buffer += c;
+			}
 		} while (res == 1);
-
-
-		if (c == '\0') {
-			recv_message = read_buffer;
-
-			is_reading = false;
-			read_buffer.clear();
-		}
-		return true;
 	}
 
 	bool Connection::do_write(const std::string& send_message) {
@@ -60,6 +59,7 @@ namespace Ryno {
 			temp_data = sock->send(&send_message.substr(written_data));
 		else
 			temp_data = sock->send(&send_message);
+
 
 		//Error -> stop writing
 		if (temp_data < 0) {
