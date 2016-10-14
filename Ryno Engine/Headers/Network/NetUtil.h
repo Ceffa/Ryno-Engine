@@ -1,9 +1,11 @@
 #pragma once
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "Global.h"
 #include <sstream>
 #include <WinSock2.h>
 #include <codecvt>
 #include "Log.h"
+
 
 
 namespace Ryno{
@@ -21,6 +23,7 @@ namespace Ryno{
 		static void print(std::string s);
 		static void print(I32 n);
 
+		static sockaddr_in get_sockaddr(const std::string& ip , U32 port);
 
 		static void print_error(std::string s);
 

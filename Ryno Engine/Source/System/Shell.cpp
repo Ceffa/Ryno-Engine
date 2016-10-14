@@ -263,7 +263,11 @@ namespace Ryno {
 			if (s.empty()) {
 				print_message("missing argument(s)."); return;
 			}
-			Network::get_instance()->net_entity->sock.send(&s);
+			struct pos {
+				C c;
+			} p;
+			sockaddr_in addr = NetUtil::get_sockaddr("127.0.0.1", 5555);
+			Network::get_instance()->net_entity->sock.send_struct(&p,0,addr);
 		}
 		else if (command.compare("client") == 0) {
 			Network::get_instance()->start_client();

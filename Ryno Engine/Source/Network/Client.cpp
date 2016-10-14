@@ -3,45 +3,33 @@
 
 namespace Ryno {
 
+	struct pos {
+		C c;
+	};
+
 	void Client::start() {
 
-		if (!sock.init()) {
+		if (!sock.init(true)) {
 			close();
 			return;
 		}
-		sock.set_blocking(true);
-
+		sock.set_blocking(false);
 	}
 
 	void Client::update() {
 		if (!sock.create_state.up())
 			return;
 
-		if (!sock.connect_state.up()){
-			if (sock.connect(server_ip, server_port) < 0) {
-				return;
-			}
-		}
-		if (sock.connect_state.up()) {
-			sock.set_blocking(false);
-			std::string ss;
-			C c;
+		std::string ss;
+		pos p;
 
-			while (true) {
-				I8 res = sock.recv_char(&c);
-				if (res == 1) {
-					if (c == '\0') {
-						NetUtil::print(ss);
-						break;
-					}
-					else
-						ss += c;
-				}
-				else 
-					break;
-			}
+		int res = 0;
+		sockaddr_in addr;
 
-		}
+		res = sock.recv_struct(&p,res,&addr);
+		if (res == 1) {
+			NetUtil::print(p.c);
+		}		
 	}
 	
 	void Client::close() {

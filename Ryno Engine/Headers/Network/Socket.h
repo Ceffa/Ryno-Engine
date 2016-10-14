@@ -29,7 +29,7 @@ namespace Ryno{
 		Socket::Socket(SOCKET _sock);
 
 		const SOCKET get();
-		bool init();
+		bool init(bool datagram);
 		void close();
 		bool bind(const C* ip, U32 port);
 		I8 connect(const C* server_ip, U32 server_port);
@@ -47,10 +47,51 @@ namespace Ryno{
 		State connect_state;
 		State accept_state;
 
+		template<class T>
+		I32 Socket::send_struct(const T* message, const I32 offset, const sockaddr_in& to) {
+
+			I32 size = ::sendto(sock, (C*)(message + offset), sizeof(T) - offset, 0, (sockaddr*)&to, sizeof(sockaddr_in));
+			if (size == SOCKET_ERROR)
+			{
+				I32 error = WSAGetLastError();
+				if (error == WSAEWOULDBLOCK) {
+					return offset;
+				}
+				NetUtil::print_error("Send error: ");
+				return -1;
+			}
+
+			return offset + size;
+		}
+
+		template<class T>
+		I32 recv_struct(T* message, const I32 offset, sockaddr_in* from) {
+			I32 length;
+			NetUtil::print((int)(message+offset));
+
+			I32 size = ::recvfrom(sock, (C*)((U64)message + offset), sizeof(T), 0, (sockaddr*)from,&length);
+			if (size == SOCKET_ERROR) {
+				I32 error = WSAGetLastError();
+				if (error == WSAEWOULDBLOCK) {
+					return offset;
+				}
+				else {
+					NetUtil::print_error("Recv error: ");
+					return -1;
+				}
+			}
+			return offset + size;
+		}
+
+
 	private:
+
 		void verify_socket();
 		void reset_states();
 	};
+
+		
+
 
 
 

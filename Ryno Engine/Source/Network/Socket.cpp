@@ -18,8 +18,8 @@ namespace Ryno {
 		return sock;
 	}
 
-	bool Socket::init() {
-		sock = socket(AF_INET, SOCK_STREAM, 0);
+	bool Socket::init(bool datagram) {
+		sock = socket(AF_INET, datagram ? SOCK_DGRAM : SOCK_STREAM, 0);
 		verify_socket();
 		return create_state.up();
 	}
@@ -51,7 +51,6 @@ namespace Ryno {
 	}
 
 	I8 Socket::recv_char(C* c) {
-		
 		if (::recv(sock, c, 1, 0) == SOCKET_ERROR) {
 			I32 error = WSAGetLastError();
 			if (error == WSAEWOULDBLOCK) {
@@ -98,13 +97,16 @@ namespace Ryno {
 		addr.sin_port = htons(server_port);
 		
 		if (::connect(sock, (const sockaddr *)&addr, sizeof addr) == SOCKET_ERROR) {
-			
-			if (WSAGetLastError() == WSAEWOULDBLOCK) {
+			int err = WSAGetLastError();
+			if (err == WSAEWOULDBLOCK || err == WSAEALREADY) {
 				connect_state.set_loading();
-				NetUtil::print_error("Connect loading: ");
 				return 0;
 			}
-			else {
+			else if (err == WSAEISCONN) {
+					connect_state.set_up();
+				NetUtil::print("Connect success.");
+				return 1;
+			}else{
 				connect_state.set_down();
 				NetUtil::print_error("Connect failed: ");
 				return -1;
@@ -139,10 +141,17 @@ namespace Ryno {
 		int addr_size = sizeof(client_addr);
 		Socket* client_sock = new Socket(::accept(sock, (sockaddr *)&client_addr, &addr_size));
 		if (client_sock->get() == INVALID_SOCKET) {
-			accept_state.down();
-			NetUtil::print_error("Accept failed: ");
-			delete client_sock;
-			return nullptr;
+			int err = WSAGetLastError();
+			if (err == WSAEWOULDBLOCK || err == WSAEALREADY) {
+				accept_state.set_loading();
+				return 0;
+			}
+			else {
+				accept_state.down();
+				NetUtil::print_error("Accept failed: ");
+				delete client_sock;
+				return nullptr;
+			}
 		}
 		accept_state.up();
 		NetUtil::print("Accept successful.");
