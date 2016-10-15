@@ -4,7 +4,16 @@
 namespace Ryno{
 
 	struct pos {
-		C c;
+		F32 x,y,z,_pad;
+		std::string to_string() {
+			std::string s;
+			s += x;
+			s += " ";
+			s += y;
+			s += " ";
+			s += z;
+			return s;
+		}
 	};
 
 	class NetEntity{

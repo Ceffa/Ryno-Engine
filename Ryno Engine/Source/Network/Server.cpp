@@ -31,20 +31,16 @@ namespace Ryno {
 		
 		if (FD_ISSET(sock.get(), &readable))
 		{
-			res = sock.recv_struct(&p.c, 0, &addr);
+			res = sock.recv_struct(&p, &addr);
+
 			if (res > 0) {
-				NetUtil::print(conns.size());
 				add_to_connections(addr);
 
 				for (auto it = conns.begin(); it != conns.end(); )  //No increment
 				{
-
 					Connection *conn = *it;
-					bool alive = true;
-
-					int ok = sock.send_struct(&p.c, 0,conn->addr);
-
-					if (ok < 0) {
+					
+					if (!conn->do_write(p)) {
 						delete conn;
 						it = conns.erase(it);
 					}
@@ -70,8 +66,9 @@ namespace Ryno {
 			if (addr.sin_addr.s_addr == c->addr.sin_addr.s_addr && addr.sin_port == c->addr.sin_port)
 				exist = true;
 		if (!exist) {
-			Connection* new_conn = new Connection(addr);
+			Connection* new_conn = new Connection(sock,addr);
 			conns.push_back(new_conn);
+			NetUtil::print(std::string("New connection: ") + std::to_string(conns.size()));
 			return new_conn;
 		}
 		return nullptr;

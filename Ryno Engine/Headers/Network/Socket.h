@@ -49,36 +49,38 @@ namespace Ryno{
 		State connect_state;
 		State accept_state;
 
-		I32 Socket::send_struct(const C* message, const I32 offset, const sockaddr_in& to) {
+		template <class T>
+		I32 send_struct(const T& message, const sockaddr_in& to) {
 
-			I32 size = ::sendto(sock, message + offset, sizeof(C), 0, (sockaddr*)&to, sizeof(sockaddr_in));
+			I32 size = ::sendto(sock, (C*)&message, sizeof(T), 0, (sockaddr*)&to, sizeof(sockaddr_in));
 			if (size == SOCKET_ERROR)
 			{
 				I32 error = WSAGetLastError();
 				if (error == WSAEWOULDBLOCK) {
-					return offset;
+					return 0;
 				}
 				NetUtil::print_error("Send error: ");
 				return -1;
 			}
 
-			return offset + size;
+			return size;
 		}
 
-		I32 recv_struct(C* message, const I32 offset, sockaddr_in* from) {
+		template <class T>
+		I32 recv_struct(T* message, sockaddr_in* from) {
 			I32 length = sizeof(sockaddr_in);
-			I32 size = ::recvfrom(sock, message+offset, sizeof(C), 0, (sockaddr*)from,&length);
+			I32 size = ::recvfrom(sock, (C*)message, sizeof(T), 0, (sockaddr*)from,&length);
 			if (size == SOCKET_ERROR) {
 				I32 error = WSAGetLastError();
 				if (error == WSAEWOULDBLOCK) {
-					return offset;
+					return 0;
 				}
 				else {
 					NetUtil::print_error("Recv error: ");
 					return -1;
 				}
 			}
-			return offset + size;
+			return size;
 		}
 
 

@@ -22,10 +22,12 @@ namespace Ryno {
 		pos p;
 		I32 res = 0;
 
+		res = sock.recv_struct(&p,&addr);
 
-		res = sock.recv_struct(&p.c,res,&addr);
-		if (res == 1) {
-			NetUtil::print(p.c);
+		if (res > 0) {
+
+			NetUtil::print(p.to_string());
+
 		}		
 	}
 	

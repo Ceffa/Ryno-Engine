@@ -264,11 +264,14 @@ namespace Ryno {
 				print_message("missing argument(s)."); return;
 			}
 			struct pos {
-				C c;
+				F32 x, y, z, _pad;
 			} p;
-			p.c = s[0];
+			p.x = s[0];
+			p.y = s[0]+1;
+			p.z = s[0]+2;
+			p._pad = 0;
 			sockaddr_in addr = NetUtil::get_sockaddr("127.0.0.1", 5555);
-			Network::get_instance()->net_entity->sock.send_struct(&p.c,0,addr);
+			Network::get_instance()->net_entity->sock.send_struct(p,addr);
 		}
 		else if (command.compare("client") == 0) {
 			Network::get_instance()->start_client();

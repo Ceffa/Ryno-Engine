@@ -5,21 +5,24 @@ namespace Ryno{
 
 	class Connection {
 	public:
-		U32 written_data = 0;
-		U32 read_data = 0;
-
+		Socket* sock;
 		sockaddr_in addr;
 
 		Connection::Connection();
-		Connection::Connection(const sockaddr_in& _addr);
+		Connection::Connection(Socket& _sock,const sockaddr_in& _addr);
 		Connection::~Connection();
 		bool want_read();
 		bool want_write();
-		bool do_read(std::string& recv_message);
-		bool do_write(const std::string& send_message);
 
-		bool is_reading;
-		bool is_writing;
+		template <class T>
+		bool do_read(T* message) {
+			return sock->recv_struct(message, &addr) > 0;
+		}
+		template <class T>
+		bool do_write(const T& message) {
+			return sock->send_struct(message, addr) > 0;
+		}
+
 	};
 
 }
