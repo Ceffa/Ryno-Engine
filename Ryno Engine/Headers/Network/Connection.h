@@ -6,6 +6,8 @@ namespace Ryno{
 	class Connection {
 	public:
 		U32 written_data = 0;
+		U32 read_data = 0;
+
 		sockaddr_in addr;
 
 		Connection::Connection();
