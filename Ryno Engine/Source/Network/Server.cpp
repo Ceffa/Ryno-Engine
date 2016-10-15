@@ -11,90 +11,48 @@ namespace Ryno {
 		}
 		sock.set_blocking(false);
 		sock.bind(server_ip,server_port);
-		sock.listen();
 	}
-	
-	struct pos {
-		C c;
-	};
+
 
 
 	void Server::update()
 	{
 		sockaddr_in addr;
 		pos p;
-		I32 res = 0;
-		res = sock.recv_struct(&p, res, &addr);
+		I32 res;		
 
-		//fd_set readable;
-		//fd_set writeable;
+		fd_set readable;
 
-		//FD_ZERO(&readable);
-		//FD_ZERO(&writeable);
+		FD_ZERO(&readable);
+		FD_SET(sock.get(), &readable);
 
-		//FD_SET(sock.get(), &readable);
+		if (select(0, &readable, nullptr, NULL, &timeout) == SOCKET_ERROR)
+			NetUtil::print_error("Select error: ");
+		
+		if (FD_ISSET(sock.get(), &readable))
+		{
+			res = sock.recv_struct(&p.c, 0, &addr);
+			if (res > 0) {
+				NetUtil::print(conns.size());
+				add_to_connections(addr);
 
+				for (auto it = conns.begin(); it != conns.end(); )  //No increment
+				{
 
-		//for (auto conn : conns)
-		//{
-		//	if (conn->want_read())
-		//		FD_SET(conn->sock->get(), &readable);
-		//	if (conn->want_write())
-		//		FD_SET(conn->sock->get(), &writeable);
-		//}
+					Connection *conn = *it;
+					bool alive = true;
 
-		//int count = select(0, &readable, &writeable, NULL, &timeout);
-		//if (count == SOCKET_ERROR)
-		//{
-		//	NetUtil::print_error("Select error: ");
-		//}
+					int ok = sock.send_struct(&p.c, 0,conn->addr);
 
-		////Handle server socket
-		//if (FD_ISSET(sock.get(), &readable))
-		//{
-		//	Socket* client_sock = sock.accept();
-		//	client_sock->set_blocking(false);
-
-		//	if (conns.size() >= max_conns - 1)
-		//		client_sock->close();
-		//	else
-		//		conns.push_back(new Connection(client_sock));
-		//}
-
-		////Handle clients
-		//for (auto it = conns.begin(); it != conns.end(); )  //No increment
-		//{
-		//	Connection *conn = *it;
-		//	bool alive = true;
-
-		//	if (FD_ISSET(conn->sock->get(), &readable)) {
-		//		std::string recv_message;
-		//		alive &= conn->do_read(recv_message);
-
-		//		if (!recv_message.empty() && alive) {
-
-		//			for (auto new_it = conns.begin(); new_it != conns.end(); new_it++) {
-		//				Connection* temp_c = *new_it;
-		//				if (FD_ISSET(temp_c->sock->get(), &writeable)) {
-		//					NetUtil::print(recv_message);
-
-		//					alive &= temp_c->do_write(recv_message);
-
-		//				}
-		//			}
-		//		}
-		//	}
-		//	
-		//
-
-		//	if (!alive)
-		//	{
-		//		delete conn;
-		//		it = conns.erase(it);
-		//	}
-		//	else
-		//		++it;
-		//}
+					if (ok < 0) {
+						delete conn;
+						it = conns.erase(it);
+					}
+					else
+						it++;
+				}
+			}
+		}
 	}
 
 	void Server::close() {
@@ -104,5 +62,18 @@ namespace Ryno {
 	void Server::set_timeout(U32 microseconds) {
 		timeout.tv_sec = microseconds/1000000;
 		timeout.tv_usec = microseconds%1000000;
+	}
+
+	Connection* Server::add_to_connections(const sockaddr_in& addr) {
+		bool exist = false;
+		for (Connection* c : conns)
+			if (addr.sin_addr.s_addr == c->addr.sin_addr.s_addr && addr.sin_port == c->addr.sin_port)
+				exist = true;
+		if (!exist) {
+			Connection* new_conn = new Connection(addr);
+			conns.push_back(new_conn);
+			return new_conn;
+		}
+		return nullptr;
 	}
 }

@@ -3,6 +3,10 @@
 
 namespace Ryno{
 
+	struct pos {
+		C c;
+	};
+
 	class NetEntity{
 	public:
 		NetEntity::NetEntity(C* _ip, U32 _port) : server_ip(_ip), server_port(_port) {}

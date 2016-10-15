@@ -6,6 +6,8 @@
 #pragma once
 #include "Global.h"
 #include <winsock2.h>
+#include "NetUtil.h"
+
 
 namespace Ryno{
 
@@ -47,10 +49,9 @@ namespace Ryno{
 		State connect_state;
 		State accept_state;
 
-		template<class T>
-		I32 Socket::send_struct(const T* message, const I32 offset, const sockaddr_in& to) {
+		I32 Socket::send_struct(const C* message, const I32 offset, const sockaddr_in& to) {
 
-			I32 size = ::sendto(sock, (C*)(message + offset), sizeof(T) - offset, 0, (sockaddr*)&to, sizeof(sockaddr_in));
+			I32 size = ::sendto(sock, message + offset, sizeof(C), 0, (sockaddr*)&to, sizeof(sockaddr_in));
 			if (size == SOCKET_ERROR)
 			{
 				I32 error = WSAGetLastError();
@@ -64,12 +65,9 @@ namespace Ryno{
 			return offset + size;
 		}
 
-		template<class T>
-		I32 recv_struct(T* message, const I32 offset, sockaddr_in* from) {
-			I32 length;
-			NetUtil::print((int)(message+offset));
-
-			I32 size = ::recvfrom(sock, (C*)((U64)message + offset), sizeof(T), 0, (sockaddr*)from,&length);
+		I32 recv_struct(C* message, const I32 offset, sockaddr_in* from) {
+			I32 length = sizeof(sockaddr_in);
+			I32 size = ::recvfrom(sock, message+offset, sizeof(C), 0, (sockaddr*)from,&length);
 			if (size == SOCKET_ERROR) {
 				I32 error = WSAGetLastError();
 				if (error == WSAEWOULDBLOCK) {

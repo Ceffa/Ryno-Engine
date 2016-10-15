@@ -5,13 +5,11 @@ namespace Ryno{
 
 	class Connection {
 	public:
-		Socket* sock;
-		std::string read_buffer;
 		U32 written_data = 0;
-
+		sockaddr_in addr;
 
 		Connection::Connection();
-		Connection::Connection(Socket* _sock);
+		Connection::Connection(const sockaddr_in& _addr);
 		Connection::~Connection();
 		bool want_read();
 		bool want_write();

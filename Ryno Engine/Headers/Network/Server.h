@@ -1,8 +1,9 @@
 #pragma once
 #include "NetEntity.h"
 #include "Connection.h"
-#include <list>
+#include <set>
 namespace Ryno{
+
 
 	class Server : public NetEntity{
 	public:
@@ -17,6 +18,9 @@ namespace Ryno{
 		std::list<Connection*> conns;
 		U32 max_conns = 100;
 		timeval timeout;
+
+		Connection* add_to_connections(const sockaddr_in& addr);
+		
 
 	};
 }

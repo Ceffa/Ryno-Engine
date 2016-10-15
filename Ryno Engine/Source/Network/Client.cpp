@@ -3,10 +3,6 @@
 
 namespace Ryno {
 
-	struct pos {
-		C c;
-	};
-
 	void Client::start() {
 
 		if (!sock.init(true)) {
@@ -14,19 +10,20 @@ namespace Ryno {
 			return;
 		}
 		sock.set_blocking(false);
+		sock.bind(server_ip, 0);
+
 	}
 
 	void Client::update() {
 		if (!sock.create_state.up())
 			return;
 
-		std::string ss;
-		pos p;
-
-		int res = 0;
 		sockaddr_in addr;
+		pos p;
+		I32 res = 0;
 
-		res = sock.recv_struct(&p,res,&addr);
+
+		res = sock.recv_struct(&p.c,res,&addr);
 		if (res == 1) {
 			NetUtil::print(p.c);
 		}		

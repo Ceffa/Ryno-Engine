@@ -266,8 +266,9 @@ namespace Ryno {
 			struct pos {
 				C c;
 			} p;
+			p.c = s[0];
 			sockaddr_in addr = NetUtil::get_sockaddr("127.0.0.1", 5555);
-			Network::get_instance()->net_entity->sock.send_struct(&p,0,addr);
+			Network::get_instance()->net_entity->sock.send_struct(&p.c,0,addr);
 		}
 		else if (command.compare("client") == 0) {
 			Network::get_instance()->start_client();
