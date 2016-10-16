@@ -16,7 +16,5 @@ namespace Ryno{
 	
 		void start() override;
 		void update() override;
-	
-		
 	};
 }

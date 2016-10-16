@@ -28,7 +28,7 @@ namespace Ryno{
 		glm::vec3 Up;
 	};
 
-
+	class Game;
 	class DeferredRenderer{
 		friend class Shell;
 	public:
@@ -51,6 +51,8 @@ namespace Ryno{
 		void init();
 
 		void init_frame();
+
+		void fill_batches();
 
 		//Call before drawing geometry
 		void geometry_pass();
@@ -112,6 +114,7 @@ namespace Ryno{
 		FBO_Deferred m_fbo_deferred;
 		FBO_Shadow m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
+		Game* game;
 
 		//PROGRAMS
 		Shader m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_blit_program,m_flat_program,m_sprite_program,m_font_program;
@@ -128,10 +131,6 @@ namespace Ryno{
 		glm::mat4 directional_light_VP;
 		glm::mat4 bias;
 		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 
-
-		std::vector<PointLight*> point_lights;
-		std::vector<SpotLight*> spot_lights;
-		std::vector<DirectionalLight*> directional_lights;
 	};
 	
 }

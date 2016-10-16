@@ -187,6 +187,7 @@
     <ClCompile Include="Source\Managers\TimeManager.cpp" />
     <ClCompile Include="Source\Network\Client.cpp" />
     <ClCompile Include="Source\Network\Connection.cpp" />
+    <ClCompile Include="Source\Network\NetObject.cpp" />
     <ClCompile Include="Source\Network\NetUtil.cpp" />
     <ClCompile Include="Source\Network\Network.cpp" />
     <ClCompile Include="Source\Network\Server.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="Headers\Managers\TimeManager.h" />
     <ClInclude Include="Headers\Network\Client.h" />
     <ClInclude Include="Headers\Network\Connection.h" />
+    <ClInclude Include="Headers\Network\NetObject.h" />
     <ClInclude Include="Headers\Network\Network.h" />
     <ClInclude Include="Headers\Network\NetUtil.h" />
     <ClInclude Include="Headers\Network\NetEntity.h" />

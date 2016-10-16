@@ -11,6 +11,4 @@ namespace Ryno {
 	void NetworkScene::update() {
 
 	}
-	
-	
 }

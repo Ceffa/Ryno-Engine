@@ -1,6 +1,7 @@
 #include "DeferredRenderer.h"
 #include "GameObject.h"
 #include "GuiObject.h"
+#include "Game.h"
 
 #include "Shell.h"
 
@@ -43,6 +44,7 @@ namespace Ryno{
 	}
 	void DeferredRenderer::init(){
 
+		game = Game::get_instance();
 		//GENERAL SETUP
 		m_mesh_manager = MeshManager::get_instance();
 		m_texture_manager = TextureManager::get_instance();
@@ -110,12 +112,6 @@ namespace Ryno{
 	void DeferredRenderer::init_frame(){
 
 
-		
-		//Clear lights vectors
-		point_lights.clear();
-		spot_lights.clear();
-		directional_lights.clear();
-
 		//Calculate camera matrix once and for all
 		inverse_P_matrix = glm::inverse(m_camera->get_P_matrix());
 		inverse_VP_matrix = glm::inverse(m_camera->get_VP_matrix());
@@ -124,11 +120,7 @@ namespace Ryno{
 		m_fbo_deferred.start_frame();
 		m_fbo_shadow.start_frame();
 
-		//Iterate once and for all through the GameObjects
-	
-		m_shadow_batch3d.begin();
-		m_geometry_batch3d.begin();
-
+		//Iterate once and for all through the GameObject
 		//First generate individual model matrices
 		for (GameObject* go : GameObject::game_objects)
 			if(go->active)
@@ -137,54 +129,32 @@ namespace Ryno{
 		for (GameObject* go : GameObject::game_objects)
 			if (go->active)
 				go->transform.combine_model_matrices();
-
-		for (GameObject* go : GameObject::game_objects)
-		{
-			//Iterate scripts
-			for (auto* s : go->scripts) {
-
-				//Add models
-				if (geometry_enabled && Script::is_type<Model>(s)) {
-
-					Model* model = (Model*)s;
-					if (go->active) {
-						for (SubModel& s : model->sub_models)
-							s.material.set_attribute("in_M", go->transform.hinerited_matrix * go->transform.model_matrix);
-						m_geometry_batch3d.draw(model);
-
-						if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled)
-							m_shadow_batch3d.draw(model);
-					}
-				}
-
-				//Add ligths
-				else if (point_light_enabled && Script::is_type<PointLight>(s)) {
-					PointLight* l = (PointLight*)s;
-					if (l->active)
-						point_lights.push_back(l);
-				}
-				else if (spot_light_enabled && Script::is_type<SpotLight>(s)) {
-					SpotLight* l = (SpotLight*)s;
-					if (l->active)
-						spot_lights.push_back(l);
-				}
-				else if (directional_light_enabled && Script::is_type<DirectionalLight>(s)) {
-					DirectionalLight* l = (DirectionalLight*)s;
-					if (l->active)
-						directional_lights.push_back(l);
-				}
-			}
 		
+	}
+
+
+	void DeferredRenderer::fill_batches() {
+
+		m_shadow_batch3d.begin();
+		m_geometry_batch3d.begin();
+
+		for (Model* model : game->models) {
+			for (SubModel& s : model->sub_models)
+				s.material.set_attribute("in_M", model->game_object->transform.hinerited_matrix * model->game_object->transform.model_matrix);
+			m_geometry_batch3d.draw(model);
+
+			if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled)
+				m_shadow_batch3d.draw(model);
 		}
+
 		m_shadow_batch3d.end();
-	
 		m_geometry_batch3d.end();
 	}
 
 
 	void DeferredRenderer::geometry_pass()
 	{
-		//Batch was filled in the init method
+		
 
 		m_fbo_deferred.bind_for_geometry_pass();
 
@@ -209,7 +179,7 @@ namespace Ryno{
 		if (!point_light_enabled)
 			return;
 		int i = 0;
-		for (auto* l : point_lights){
+		for (auto* l : game->point_lights){
 			point_shadow_subpass(l);
 			point_lighting_subpass(l);
 		}
@@ -223,7 +193,7 @@ namespace Ryno{
 	{
 		if (!spot_light_enabled)
 			return;
-		for (auto* l : spot_lights){
+		for (auto* l : game->spot_lights){
 			spot_shadow_subpass(l);
 			spot_lighting_subpass(l);
 
@@ -236,7 +206,7 @@ namespace Ryno{
 	{
 		if (!directional_light_enabled)
 			return;
-		for (auto* l : directional_lights){
+		for (auto* l : game->directional_lights){
 			directional_shadow_subpass(l);
 			directional_lighting_subpass(l);
 		}

@@ -3,6 +3,8 @@
 #include "NetEntity.h"
 #include "Global.h"
 #include "NetUtil.h"
+#include "NetObject.h"
+
 
 namespace Ryno{
 

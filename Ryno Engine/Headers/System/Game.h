@@ -46,7 +46,7 @@ namespace Ryno{
 	class Scene;
 	class Game
 	{
-
+		friend class DeferredRenderer;
 	public:
 
 		static Game* get_instance();
@@ -92,7 +92,12 @@ namespace Ryno{
 
 		void handle_input();//make initializations, then call input
 
+		void handle_network();
 		void update();
+
+		void get_components();
+		void clear_components();
+
 
 		void draw();
 
@@ -110,6 +115,12 @@ namespace Ryno{
 
 	private:
 		Game::Game(){}
+
+		std::vector<PointLight*> point_lights;
+		std::vector<SpotLight*> spot_lights;
+		std::vector<DirectionalLight*> directional_lights;
+		std::vector<Model*> models;
+		std::vector<NetObject*> net_objects;
 
 	};
 }

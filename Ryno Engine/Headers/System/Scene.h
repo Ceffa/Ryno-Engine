@@ -11,12 +11,11 @@ namespace Ryno{
 	public:
 		
 		Camera3D* camera;
-
-
 		Scene() {
 		
 		}
 		void init();
+		
 		virtual ~Scene() = 0{}
 		virtual void start() {}
 		virtual void input() {}
@@ -25,9 +24,7 @@ namespace Ryno{
 		virtual void update_scripts() final;
 		void camera_update();
 
-		Game* game;
-
-		
+		Game* game;		
 
 	};
 	
