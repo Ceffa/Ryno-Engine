@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Lights/AbstractLight.h"
-#include <list>
+#include <set>
 
 namespace Ryno{
 	
@@ -9,10 +9,11 @@ namespace Ryno{
 	class SpotLight : public AbstractLight{
 	public:
 	
-		SpotLight() { blur = 0; shadow_strength = .75f; }
-		~SpotLight(){}
-		SpotLight* clone() override { return new SpotLight(*this); }
+		SpotLight();
+		~SpotLight();
+		SpotLight* clone() override;
 
+		static std::set<SpotLight*> spot_lights;
 	
 		void set_rotation(F32 _pitch, F32 _yaw, F32 _roll);
 		void set_rotation(glm::vec3 euler);

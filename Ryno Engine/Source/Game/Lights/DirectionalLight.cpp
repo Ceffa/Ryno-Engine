@@ -3,6 +3,26 @@
 namespace Ryno{
 
 
+	DirectionalLight::DirectionalLight()
+	{
+		blur = 0; shadow_strength = .75f; dir_lights.insert(this);
+	}
+
+	DirectionalLight::~DirectionalLight()
+	{
+		dir_lights.erase(this);
+	}
+
+	DirectionalLight* DirectionalLight::clone()
+	{
+
+		DirectionalLight* temp = new DirectionalLight(*this);
+		dir_lights.insert(temp);
+		return temp;
+	}
+
+	std::set<DirectionalLight*> DirectionalLight::dir_lights;
+
 	void DirectionalLight::set_rotation(F32 _pitch, F32 _yaw, F32 _roll)
 	{
 		set_rotation(glm::vec3(_pitch, _yaw, _roll));

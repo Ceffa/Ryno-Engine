@@ -5,7 +5,7 @@
 #include "TextureManager.h"
 #include "Structures.h"
 #include "Material.h"
-#include <list>
+#include <set>
 #include "Script.h"
 
 namespace Ryno{
@@ -25,11 +25,12 @@ namespace Ryno{
 	
 		SubModel& add_sub_model();
 
-		Model() {}
-		~Model(){}
+		Model() { models.insert(this); }
+		~Model() { models.erase(this); }
 		void copy(const Model& cp);
 		Model(const Model& cp);
 		std::vector<SubModel> sub_models;
+		static std::set<Model*> models;
 
 		void update() override {}
 		void input() override {}

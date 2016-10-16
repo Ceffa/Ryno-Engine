@@ -95,10 +95,6 @@ namespace Ryno{
 		void handle_network();
 		void update();
 
-		void get_components();
-		void clear_components();
-
-
 		void draw();
 
 		void end();
@@ -115,12 +111,5 @@ namespace Ryno{
 
 	private:
 		Game::Game(){}
-
-		std::vector<PointLight*> point_lights;
-		std::vector<SpotLight*> spot_lights;
-		std::vector<DirectionalLight*> directional_lights;
-		std::vector<Model*> models;
-		std::vector<NetObject*> net_objects;
-
 	};
 }

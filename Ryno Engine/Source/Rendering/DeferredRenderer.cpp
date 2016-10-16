@@ -138,7 +138,7 @@ namespace Ryno{
 		m_shadow_batch3d.begin();
 		m_geometry_batch3d.begin();
 
-		for (Model* model : game->models) {
+		for (Model* model : Model::models) {
 			for (SubModel& s : model->sub_models)
 				s.material.set_attribute("in_M", model->game_object->transform.hinerited_matrix * model->game_object->transform.model_matrix);
 			m_geometry_batch3d.draw(model);
@@ -179,7 +179,9 @@ namespace Ryno{
 		if (!point_light_enabled)
 			return;
 		int i = 0;
-		for (auto* l : game->point_lights){
+		for (auto* l : PointLight::point_lights){
+			if (!l->active)
+				continue;
 			point_shadow_subpass(l);
 			point_lighting_subpass(l);
 		}
@@ -193,7 +195,9 @@ namespace Ryno{
 	{
 		if (!spot_light_enabled)
 			return;
-		for (auto* l : game->spot_lights){
+		for (auto* l : SpotLight::spot_lights){
+			if (!l->active)
+				continue;
 			spot_shadow_subpass(l);
 			spot_lighting_subpass(l);
 
@@ -206,7 +210,9 @@ namespace Ryno{
 	{
 		if (!directional_light_enabled)
 			return;
-		for (auto* l : game->directional_lights){
+		for (auto* l : DirectionalLight::dir_lights){
+			if (!l->active)
+				continue;
 			directional_shadow_subpass(l);
 			directional_lighting_subpass(l);
 		}

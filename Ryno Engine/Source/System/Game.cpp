@@ -104,7 +104,6 @@ namespace Ryno{
 				game_state = GameState::Running;
 			}
 			time_manager->begin_frame();
-			get_components();
 			handle_input();
 			handle_network();
 			if (game_state == GameState::ChangeScene)
@@ -239,58 +238,6 @@ namespace Ryno{
 		scene->update_scripts();
 	}
 
-	void Game::get_components()
-	{
-		clear_components();
-		for (GameObject* go : GameObject::game_objects)
-		{
-
-			if (!go->active)
-				continue;
-
-			//Iterate scripts
-			for (auto* s : go->scripts) {
-
-				//Add models
-				if (deferred_renderer->geometry_enabled && Script::is_type<Model>(s)) {
-					Model* model = (Model*)s;
-					models.push_back(model);
-				}
-
-				//Add ligths
-				else if (deferred_renderer->point_light_enabled && Script::is_type<PointLight>(s)) {
-					PointLight* l = (PointLight*)s;
-					if (l->active)
-						point_lights.push_back(l);
-				}
-				else if (deferred_renderer->spot_light_enabled && Script::is_type<SpotLight>(s)) {
-					SpotLight* l = (SpotLight*)s;
-					if (l->active)
-						spot_lights.push_back(l);
-				}
-				else if (deferred_renderer->directional_light_enabled && Script::is_type<DirectionalLight>(s)) {
-					DirectionalLight* l = (DirectionalLight*)s;
-					if (l->active)
-						directional_lights.push_back(l);
-				}
-				//Add network objects
-				else if (Script::is_type<NetObject>(s)) {
-					NetObject* no = (NetObject*)s;
-					net_objects.push_back(no);
-				}
-			}
-
-		}
-	}
-
-	void Game::clear_components() {
-		//Clear  vectors
-		point_lights.clear();
-		spot_lights.clear();
-		directional_lights.clear();
-		net_objects.clear();
-		models.clear();
-	}
 
 	void Game::handle_network() {
 		network->update();

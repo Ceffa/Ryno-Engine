@@ -3,6 +3,25 @@
 
 namespace Ryno{
 
+	SpotLight::SpotLight()
+	{
+		blur = 0; shadow_strength = .75f; spot_lights.insert(this);
+	}
+
+	SpotLight::~SpotLight()
+	{
+		spot_lights.erase(this);
+	}
+
+	SpotLight* SpotLight::clone()
+	{
+		SpotLight* temp = new SpotLight(*this);
+		spot_lights.insert(temp);
+		return temp;
+	}
+
+	std::set<SpotLight*> SpotLight::spot_lights;
+
 	void SpotLight::set_rotation(F32 _pitch, F32 _yaw, F32 _roll)
 	{		
 		set_rotation(glm::vec3(_pitch , _yaw, _roll));

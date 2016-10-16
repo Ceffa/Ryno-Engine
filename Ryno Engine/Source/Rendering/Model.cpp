@@ -4,8 +4,6 @@
 namespace Ryno{
 
 	
-
-
 	SubModel& Model::add_sub_model()
 	{
 		sub_models.emplace_back();
@@ -24,9 +22,12 @@ namespace Ryno{
 	
 	Model::Model(const Model& cp) {
 		copy(cp);
+		models.insert(this);
 	}
 
 	
+
+	std::set<Model*> Model::models;
 
 	SubModel::SubModel(const SubModel& cp)
 	{

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Lights/AbstractLight.h"
-#include <list>
+#include <set>
 namespace Ryno{
 	
 
@@ -9,9 +9,11 @@ namespace Ryno{
 	public:
 
 		//Constructors
-		PointLight() { shadow_strength = .75f; }
-		~PointLight(){}
-		PointLight* clone() override { return new PointLight(*this); }
+		PointLight();
+		~PointLight();
+		PointLight* clone() override;
+
+		static std::set<PointLight*> point_lights;
 
 
 		void calculate_max_radius();

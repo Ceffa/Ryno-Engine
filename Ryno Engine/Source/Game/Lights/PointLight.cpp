@@ -2,9 +2,25 @@
 
 namespace Ryno{
 
-	
+	PointLight::PointLight()
+	{
+		shadow_strength = .75f;
+		point_lights.insert(this);
+	}
 
+	PointLight::~PointLight()
+	{
+		point_lights.erase(this);
+	}
 
+	PointLight* PointLight::clone()
+	{
+		PointLight* temp = new PointLight(*this);
+		point_lights.insert(temp);
+		return temp;
+	}
+
+	std::set<PointLight*> PointLight::point_lights;
 
 	void PointLight::calculate_max_radius()
 	{

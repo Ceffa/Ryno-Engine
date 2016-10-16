@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Lights/AbstractLight.h"
-
+#include <set>
 namespace Ryno{
 	
 	
@@ -10,10 +10,12 @@ namespace Ryno{
 	public:
 
 	
-		DirectionalLight() { blur = 0; shadow_strength = .75f; }
-		~DirectionalLight(){}
+		DirectionalLight();
+		~DirectionalLight();
 
-		DirectionalLight* clone() override { return new DirectionalLight(*this); }
+		DirectionalLight* clone() override;
+
+		static std::set<DirectionalLight*> dir_lights;
 
 		
 
