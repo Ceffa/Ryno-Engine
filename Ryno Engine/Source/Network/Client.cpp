@@ -10,7 +10,8 @@ namespace Ryno {
 			return;
 		}
 		sock.set_blocking(false);
-		sock.bind(server_ip, 0);
+		sock.bind(local_address);
+		NetUtil::print(local_address.to_string());
 
 	}
 
@@ -18,11 +19,11 @@ namespace Ryno {
 		if (!sock.create_state.up())
 			return;
 
-		sockaddr_in addr;
+		Address addr;
 		pos p;
 		I32 res = 0;
 
-		res = sock.recv_struct(&p,&addr);
+		res = sock.recv_struct(&p,addr);
 
 		if (res > 0) {
 

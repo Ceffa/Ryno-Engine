@@ -11,6 +11,29 @@
 
 namespace Ryno{
 
+	struct Address : public sockaddr_in {
+		Address() {}
+		Address(const std::string& ip,const U16 port) {
+			set(ip, port);
+		}
+		void set(const std::string& ip, const U16 port) {
+			sin_family = AF_INET;
+			sin_addr.s_addr = inet_addr(ip.c_str());
+			sin_port = htons(port);
+		}
+
+		std::string to_string() const{
+			std::string s = inet_ntoa(sin_addr);
+			s += " : ";
+			s += std::to_string(ntohs(sin_port));
+			return s;
+		}
+
+		bool equals(const Address& other) const {
+			return sin_addr.s_addr == other.sin_addr.s_addr && sin_port == other.sin_port;
+		}
+	};
+
 	struct State {
 	private:
 		I8 value = -1;
@@ -33,7 +56,8 @@ namespace Ryno{
 		const SOCKET get();
 		bool init(bool datagram);
 		void close();
-		bool bind(const C* ip, U32 port);
+		bool bind(Address& address);
+		Address get_socket_address();
 		I8 connect(const C* server_ip, U32 server_port);
 		bool listen();
 		Socket* accept();
@@ -50,7 +74,7 @@ namespace Ryno{
 		State accept_state;
 
 		template <class T>
-		I32 send_struct(const T& message, const sockaddr_in& to) {
+		I32 send_struct(const T& message, const Address& to) {
 
 			I32 size = ::sendto(sock, (C*)&message, sizeof(T), 0, (sockaddr*)&to, sizeof(sockaddr_in));
 			if (size == SOCKET_ERROR)
@@ -67,9 +91,9 @@ namespace Ryno{
 		}
 
 		template <class T>
-		I32 recv_struct(T* message, sockaddr_in* from) {
+		I32 recv_struct(T* message, Address& from) {
 			I32 length = sizeof(sockaddr_in);
-			I32 size = ::recvfrom(sock, (C*)message, sizeof(T), 0, (sockaddr*)from,&length);
+			I32 size = ::recvfrom(sock, (C*)message, sizeof(T), 0, (sockaddr*)&from,&length);
 			if (size == SOCKET_ERROR) {
 				I32 error = WSAGetLastError();
 				if (error == WSAEWOULDBLOCK) {

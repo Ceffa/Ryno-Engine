@@ -3,8 +3,8 @@
 
 namespace Ryno {
 
-	Connection::Connection(Socket& _sock, const sockaddr_in& _addr)
-		: sock(&_sock),addr(_addr)
+	Connection::Connection(Socket& _sock, const Address& _addr)
+		: sock(&_sock),address(_addr)
 	{
 	}
 

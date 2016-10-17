@@ -63,23 +63,29 @@ namespace Ryno {
 		return 1;
 	}
 
-	bool Socket::bind(const C* ip, U32 port) {
+	bool Socket::bind(Address& address) {
 		if (!create_state.up()) {
 			NetUtil::print("Cannot connect if socket not created.");
 			return nullptr;
 		}
-		sockaddr_in addr;
-		addr.sin_family = AF_INET;
-		addr.sin_addr.s_addr = inet_addr(ip);
-		addr.sin_port = htons(port);
-		if (::bind(sock, (const sockaddr *)&addr, sizeof(addr)) == SOCKET_ERROR) {
+	
+		if (::bind(sock, (const sockaddr *)&address, sizeof(address)) == SOCKET_ERROR) {
 			bind_state.set_down();
 			NetUtil::print_error("Bind failed: ");
 			return false;
 		}
 		bind_state.set_up();
 		NetUtil::print("Bind success.");
+		address = get_socket_address();
 		return true;
+	}
+
+	Address Socket::get_socket_address() {
+		Address addr;
+		I32 len = sizeof(sockaddr_in);
+		if (getsockname(sock, (struct sockaddr *)&addr, &len) == SOCKET_ERROR)
+			NetUtil::print_error("Get socket name error: ");
+		return addr;
 	}
 
 	I8 Socket::connect(const C* server_ip, U32 server_port) {

@@ -58,11 +58,4 @@ namespace Ryno {
 		Log::println(s + get_error());
 	}
 
-	sockaddr_in NetUtil::get_sockaddr(const std::string& ip, U32 port) {
-		sockaddr_in addr;
-		addr.sin_family = AF_INET;
-		addr.sin_addr.s_addr = inet_addr(ip.c_str());
-		addr.sin_port = htons(port);
-		return addr;
-	}
 }

@@ -10,14 +10,15 @@ namespace Ryno {
 			return;
 		}
 		sock.set_blocking(false);
-		sock.bind(server_ip,server_port);
+		sock.bind(local_address);
+		NetUtil::print(local_address.to_string());
 	}
 
 
 
 	void Server::update()
 	{
-		sockaddr_in addr;
+		Address addr;
 		pos p;
 		I32 res;		
 
@@ -31,7 +32,7 @@ namespace Ryno {
 		
 		if (FD_ISSET(sock.get(), &readable))
 		{
-			res = sock.recv_struct(&p, &addr);
+			res = sock.recv_struct(&p, addr);
 
 			if (res > 0) {
 				add_to_connections(addr);
@@ -60,10 +61,10 @@ namespace Ryno {
 		timeout.tv_usec = microseconds%1000000;
 	}
 
-	Connection* Server::add_to_connections(const sockaddr_in& addr) {
+	Connection* Server::add_to_connections(const Address& addr) {
 		bool exist = false;
 		for (Connection* c : conns)
-			if (addr.sin_addr.s_addr == c->addr.sin_addr.s_addr && addr.sin_port == c->addr.sin_port)
+			if (addr.equals(c->address))
 				exist = true;
 		if (!exist) {
 			Connection* new_conn = new Connection(sock,addr);
