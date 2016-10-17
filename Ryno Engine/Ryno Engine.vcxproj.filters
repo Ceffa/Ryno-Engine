@@ -794,38 +794,11 @@
     <ClInclude Include="Headers\Particles\Emitter.h">
       <Filter>Header Files\Particles</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Managers\ParticleManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Others\RynoMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Others\Types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Others\GenericMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Managers\MeshBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Others\PerlinNoise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\System\Game.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\System\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GUI\GUIObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Others\Transform2D.h">
       <Filter>Header Files\Others</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Rendering\Material.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Rendering\Shader.h">
       <Filter>Header Files\Rendering</Filter>
@@ -835,9 +808,6 @@
     </ClInclude>
     <ClInclude Include="Headers\Managers\ObjLoader.h">
       <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Managers\ImageLoader.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Network\Network.h">
       <Filter>Header Files\Network</Filter>
@@ -864,7 +834,37 @@
       <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Network\NetObject.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\ParticleManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\ImageLoader.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\GenericMap.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\System\Scene.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\Types.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\RynoMath.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Others\PerlinNoise.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Managers\MeshBuilder.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GUI\GUIObject.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rendering\Material.h">
+      <Filter>Header Files\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
