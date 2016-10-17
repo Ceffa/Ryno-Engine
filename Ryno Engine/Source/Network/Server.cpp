@@ -19,7 +19,7 @@ namespace Ryno {
 	void Server::update()
 	{
 		Address addr;
-		pos p;
+		SmallAddress p;
 		I32 res;		
 
 		fd_set readable;

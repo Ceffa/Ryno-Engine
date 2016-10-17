@@ -1,5 +1,8 @@
 #include "Client.h"
 #include "NetUtil.h"
+#include "Scene.h"
+#include "Game.h"
+
 
 namespace Ryno {
 
@@ -20,14 +23,13 @@ namespace Ryno {
 			return;
 
 		Address addr;
-		pos p;
+		SmallAddress p;
 		I32 res = 0;
 
 		res = sock.recv_struct(&p,addr);
 
 		if (res > 0) {
-
-			NetUtil::print(p.to_string());
+			Game::get_instance()->get_scene()->network_object_created(p);
 
 		}		
 	}

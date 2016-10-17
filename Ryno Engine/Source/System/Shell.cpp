@@ -263,13 +263,8 @@ namespace Ryno {
 			if (s.empty()) {
 				print_message("missing argument(s)."); return;
 			}
-			struct pos {
-				F32 x, y, z, _pad;
-			} p;
-			p.x = s[0];
-			p.y = s[0]+1;
-			p.z = s[0]+2;
-			p._pad = 0;
+			
+			SmallAddress p(Network::get_instance()->net_entity->local_address);
 			Address addr("127.0.0.1", 5555);
 			Network::get_instance()->net_entity->sock.send_struct(p,addr);
 		}

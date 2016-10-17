@@ -7,6 +7,8 @@ namespace Ryno{
 
 	class Game;
 	class Camera3D;
+	class SmallAddress;
+
 	class Scene{
 	public:
 		
@@ -22,6 +24,7 @@ namespace Ryno{
 		virtual void input_scripts() final;
 		virtual void update() {}
 		virtual void update_scripts() final;
+		virtual void network_object_created(const SmallAddress& creator_address) {}
 		void camera_update();
 
 		Game* game;		
