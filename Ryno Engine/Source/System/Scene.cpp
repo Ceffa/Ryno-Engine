@@ -44,7 +44,7 @@ namespace Ryno{
 			if (game->input_manager->is_key_down(SDLK_a, KEYBOARD)){
 				camera->move_left(game->delta_time);
 			}
-			if (game->input_manager->is_key_down(SDLK_w, KEYBOARD) || game->input_manager->is_key_down(SDL_BUTTON_LEFT, MOUSE)){
+			if (game->input_manager->is_key_down(SDLK_w, KEYBOARD)){
 				camera->move_forward(game->delta_time);
 			}
 			if (game->input_manager->is_key_down(SDLK_s, KEYBOARD)){

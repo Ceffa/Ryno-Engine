@@ -259,14 +259,10 @@ namespace Ryno {
 			Network::get_instance()->start_server();
 		}
 		else if (command.compare("send") == 0) {
-			std::string s = string_argument();
-			if (s.empty()) {
-				print_message("missing argument(s)."); return;
-			}
-			
 			Message mess;
 			mess.id.set(Network::get_instance()->net_entity->local_address);
 			SmallAddress addr("127.0.0.1", 5555);
+			NetUtil::print(addr.to_string());
 			Network::get_instance()->net_entity->sock.send_struct(mess,addr);
 		}
 		else if (command.compare("client") == 0) {

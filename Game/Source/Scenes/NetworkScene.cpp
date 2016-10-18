@@ -36,26 +36,50 @@ namespace Ryno {
 		l->set_ambient_color(255, 255, 255);
 		l->shadows = false;
 
+		controlled = create_net_obj(NetId(net_entity->local_address))->game_object;
+		controlled->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+
 	}
 
-	void NetworkScene::update() {
+	void NetworkScene::input() {
+		if (!game->shell->active) {
 
+			float speed = 10.0f;
+			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
+				controlled->transform.add_position(game->delta_time * speed * glm::vec3(1, 0, 0));
+			}
+			if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
+				controlled->transform.add_position(game->delta_time * speed * glm::vec3(-1, 0, 0));
+			}
+			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
+				controlled->transform.add_position(game->delta_time * speed * glm::vec3(0, 1, 0));
+			}
+			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
+				controlled->transform.add_position(game->delta_time * speed * glm::vec3(0, -1, 0));
+			}
+		}
 	}
 	void NetworkScene::network_object_created(const Message& message) {
+		NetObject* received = NetObject::find(message.id);
+		NetUtil::print(message.id.to_string());
 
-		if (NetObject::find(message.id))
-			return;
+		if(received == nullptr)
+			received = create_net_obj(message.id);
+		
+		F32 x = *(F32*)&message.x;
+		F32 y = *(F32*)&message.y;
+		F32 z = *(F32*)&message.z;
+
+		received->game_object->transform.set_position(glm::vec3(x,y,z));
+		
+	}
+
+	NetObject* NetworkScene::create_net_obj(const NetId& id) {
 		net_cubes.emplace_back();
 
-
-		std::cout << net_entity->local_address.port << "  ";
-		std::cout << message.id.addr.port <<std::endl;
-
-	
-
 		GameObject& cube = net_cubes.back();
-		cube.add_script(new NetObject(message.id));
-		cube.transform.set_scale(3, 3, 3);
+		NetObject* net_obj = cube.add_script(new NetObject(id));
+		cube.transform.set_scale(1,1,1);
 		auto& m = cube.add_script<Model>()->add_sub_model();
 
 		m.material.set_shader(&shader);
@@ -67,5 +91,7 @@ namespace Ryno {
 		m.material.set_uniform("normal_map_sampler", white_normal.id);
 		m.mesh = mesh;
 		m.cast_shadows = false;
+
+		return net_obj;
 	}
 }

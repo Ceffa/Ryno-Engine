@@ -5,12 +5,12 @@ namespace Ryno {
 
 
 
-	bool NetObject::find(const NetId& id) {
+	NetObject* NetObject::find(const NetId& id) {
 		for (NetObject* obj : net_objects) {
 			if (obj->id.equals(id))
-				return true;
+				return obj;
 		}
-		return false;
+		return nullptr;
 	}
 
 }

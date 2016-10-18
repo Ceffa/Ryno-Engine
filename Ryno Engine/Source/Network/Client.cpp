@@ -30,17 +30,20 @@ namespace Ryno {
 		res = sock.recv_struct(&mess, addr);
 
 		if (res > 0) {
-			NetUtil::print(mess.x);
 			Game::get_instance()->get_scene()->network_object_created(mess);
 		}
+
 		for (NetObject* net_obj : NetObject::net_objects) {
-			Message m;
-			m.id = local_address;
-			glm::vec3 p = net_obj->game_object->transform.get_position();
-			m.x = p.x;
-			m.y = p.y;
-			m.z = p.z;
-			sock.send_struct(m, server_address);
+			if (local_address.equals(net_obj->id.addr)) {
+				Message m;
+				m.id = net_obj->id;
+				glm::vec3 p = net_obj->game_object->transform.get_position();
+
+				m.x = *(U32*)&p.x;
+				m.y = *(U32*)&p.y;
+				m.z = *(U32*)&p.z;
+				sock.send_struct(m, server_address);
+			}
 		}
 	}
 	

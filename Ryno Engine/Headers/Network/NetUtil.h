@@ -97,16 +97,16 @@ namespace Ryno{
 	//The message unit sent over the network. It contains at least a NetId
 	struct Message {
 		NetId id;
-		F32 x, y, z;
+		U32 x, y, z;
 		void to_network_order() {
-			x = htons(x);
-			y = htons(y);
-			z = htons(z);
+			x = htonl(x);
+			y = htonl(y);
+			z = htonl(z);
 		}
 		void to_hardware_order() {
-			x = ntohs(x);
-			y = ntohs(y);
-			z = ntohs(z);
+			x = ntohl(x);
+			y = ntohl(y);
+			z = ntohl(z);
 		}
 	};
 

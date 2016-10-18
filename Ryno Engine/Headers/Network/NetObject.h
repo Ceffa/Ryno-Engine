@@ -14,7 +14,7 @@ namespace Ryno{
 		NetId id;
 		static std::set<NetObject*> net_objects;
 
-		static bool find(const NetId& id);
+		static NetObject* find(const NetId& id);
 		NetObject* clone() override { return nullptr; }
 		void update() override {}
 		void input() override {}

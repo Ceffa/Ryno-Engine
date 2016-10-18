@@ -30,13 +30,14 @@ namespace Ryno {
 		if (FD_ISSET(sock.get(), &readable))
 		{
 			while (sock.recv_struct(&mess, addr) > 0) {
-		
+				NetUtil::print(addr.to_string());
+
 				add_to_connections(addr);
 				for (auto it = conns.begin(); it != conns.end(); )  //No increment
 				{
 					Connection *conn = *it;
 
-					if ( !conn->do_write(mess)) {
+					if (!conn->address.equals(addr) && !conn->do_write(mess)) {
 						delete conn;
 						it = conns.erase(it);
 					}
