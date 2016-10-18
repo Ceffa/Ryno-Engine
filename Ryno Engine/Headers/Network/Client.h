@@ -5,9 +5,12 @@ namespace Ryno{
 
 	class Client : public NetEntity{
 	public:
-		Client::Client(C* _server_ip, U32 _server_port) : NetEntity(_server_ip, _server_port){ }
-		Client::~Client() { close(); }
+		Client(C* _server_ip, U32 _server_port,C* _local_ip, U32 _local_port = 0) : server_address(_server_ip, _server_port){
+			local_address.set(_local_ip, _local_port);
+		}
+		~Client() { close(); }
 
+		SmallAddress server_address;
 		void start() override;
 		void update() override;
 		void close() override;

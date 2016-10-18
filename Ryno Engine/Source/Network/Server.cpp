@@ -18,35 +18,30 @@ namespace Ryno {
 
 	void Server::update()
 	{
-		Address addr;
-		SmallAddress p;
-		I32 res;		
-
-		fd_set readable;
-
 		FD_ZERO(&readable);
 		FD_SET(sock.get(), &readable);
 
 		if (select(0, &readable, nullptr, NULL, &timeout) == SOCKET_ERROR)
 			NetUtil::print_error("Select error: ");
-		
+
+
+		SmallAddress addr;
+		Message mess;
 		if (FD_ISSET(sock.get(), &readable))
 		{
-			res = sock.recv_struct(&p, addr);
-
-			if (res > 0) {
+			while (sock.recv_struct(&mess, addr) > 0) {
+		
 				add_to_connections(addr);
-
 				for (auto it = conns.begin(); it != conns.end(); )  //No increment
 				{
 					Connection *conn = *it;
-					
-					if (!conn->do_write(p)) {
+
+					if ( !conn->do_write(mess)) {
 						delete conn;
 						it = conns.erase(it);
 					}
-					else
-						it++;
+					else it++;
+	
 				}
 			}
 		}
@@ -61,15 +56,18 @@ namespace Ryno {
 		timeout.tv_usec = microseconds%1000000;
 	}
 
-	Connection* Server::add_to_connections(const Address& addr) {
+	Connection* Server::add_to_connections(const SmallAddress& addr) {
 		bool exist = false;
 		for (Connection* c : conns)
-			if (addr.equals(c->address))
+			if (addr.equals(c->address)) {
 				exist = true;
+				break;
+			}
+
 		if (!exist) {
 			Connection* new_conn = new Connection(sock,addr);
 			conns.push_back(new_conn);
-			NetUtil::print(std::string("New connection: ") + std::to_string(conns.size()));
+			NetUtil::print(std::string("New connection: ") +addr.to_string());
 			return new_conn;
 		}
 		return nullptr;

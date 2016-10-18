@@ -28,6 +28,8 @@ void before_commands(char* argv[]) {
 	
 	Ryno::Game::get_instance()->set_window_pos(x, y);
 	Ryno::Game::get_instance()->set_window_size(w, h);
+	//Ryno::Game::get_instance()->set_window_pos(0,0);
+	//Ryno::Game::get_instance()->set_window_size(1920, 1200);
 
 
 }

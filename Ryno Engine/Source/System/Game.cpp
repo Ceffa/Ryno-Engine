@@ -105,6 +105,7 @@ namespace Ryno{
 			}
 			time_manager->begin_frame();
 			handle_input();
+
 			handle_network();
 			if (game_state == GameState::ChangeScene)
 				continue;

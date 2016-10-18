@@ -264,9 +264,10 @@ namespace Ryno {
 				print_message("missing argument(s)."); return;
 			}
 			
-			SmallAddress p(Network::get_instance()->net_entity->local_address);
-			Address addr("127.0.0.1", 5555);
-			Network::get_instance()->net_entity->sock.send_struct(p,addr);
+			Message mess;
+			mess.id.set(Network::get_instance()->net_entity->local_address);
+			SmallAddress addr("127.0.0.1", 5555);
+			Network::get_instance()->net_entity->sock.send_struct(mess,addr);
 		}
 		else if (command.compare("client") == 0) {
 			Network::get_instance()->start_client();

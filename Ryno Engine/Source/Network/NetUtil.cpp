@@ -3,6 +3,10 @@
 
 namespace Ryno {
 
+	U16 NetId::last_id = 0;
+	I32 NetUtil::error_limit = 3;
+
+
 	U32 NetUtil::compress_ip(std::string s) {
 
 		std::vector<U32> split;
@@ -55,7 +59,8 @@ namespace Ryno {
 		Log::println(i);
 	}
 	void NetUtil::print_error(std::string s) {
-		Log::println(s + get_error());
+		if(error_limit-->0)
+			Log::println(s + get_error());
 	}
 
 }

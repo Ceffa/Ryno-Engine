@@ -41,14 +41,20 @@ namespace Ryno {
 	void NetworkScene::update() {
 
 	}
-	void NetworkScene::network_object_created(const SmallAddress& creator_address) {
+	void NetworkScene::network_object_created(const Message& message) {
 
-		SmallAddress local(net_entity->local_address);
-		if (local.equals(creator_address))
+		if (NetObject::find(message.id))
 			return;
 		net_cubes.emplace_back();
+
+
+		std::cout << net_entity->local_address.port << "  ";
+		std::cout << message.id.addr.port <<std::endl;
+
+	
+
 		GameObject& cube = net_cubes.back();
-		cube.add_script(new NetObject(creator_address));
+		cube.add_script(new NetObject(message.id));
 		cube.transform.set_scale(3, 3, 3);
 		auto& m = cube.add_script<Model>()->add_sub_model();
 

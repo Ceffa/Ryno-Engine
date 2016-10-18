@@ -1,6 +1,16 @@
 #include "NetObject.h"
 
 namespace Ryno {
+	std::set<NetObject*> NetObject::net_objects;
 
-	U32 NetObjId::last_net_id =0;
+
+
+	bool NetObject::find(const NetId& id) {
+		for (NetObject* obj : net_objects) {
+			if (obj->id.equals(id))
+				return true;
+		}
+		return false;
+	}
+
 }

@@ -18,7 +18,7 @@ namespace Ryno{
 	
 		void start() override;
 		void update() override;
-		void network_object_created(const SmallAddress& creator_address) override;
+		void network_object_created(const Message& message) override;
 
 		NetEntity* net_entity;
 		GameObject cube;

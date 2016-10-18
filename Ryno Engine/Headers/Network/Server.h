@@ -7,7 +7,7 @@ namespace Ryno{
 
 	class Server : public NetEntity{
 	public:
-		Server::Server(C* _ip, U32 _port) : NetEntity(_ip, _port) {}
+		Server::Server(C* _ip, U32 _port)  { local_address.set(_ip, _port); }
 		Server::~Server() { close(); }
 		void start() override;
 		void update() override;
@@ -18,8 +18,9 @@ namespace Ryno{
 		std::list<Connection*> conns;
 		U32 max_conns = 100;
 		timeval timeout;
+		fd_set readable;
 
-		Connection* add_to_connections(const Address& addr);
+		Connection* add_to_connections(const SmallAddress& addr);
 		
 
 	};

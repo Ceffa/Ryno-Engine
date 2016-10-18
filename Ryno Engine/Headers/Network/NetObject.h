@@ -4,31 +4,17 @@
 
 namespace Ryno{
 
-	struct NetObjId {
-		NetObjId(const SmallAddress& addr)
-		{
-			get_from_address(addr);
-		}
-		void get_from_address(const SmallAddress& addr)  {
-			ip = addr.ip;
-			port = addr.port;
-			local_id = ++last_net_id;	//first id is 1, 0 is error
-		}
-		U32 ip;
-		U32 port;
-		U32 local_id;
-
-		static U32 last_net_id;
-	};
 	class NetObject : public Script {
 	public:
 
-		NetObject(const SmallAddress& addr) : id(addr) {}
-		~NetObject() {}
+		NetObject(const NetId& addr) : id(addr) { net_objects.insert(this); }
+		~NetObject() { net_objects.erase(this); }
 		NetObject(const NetObject& cp) = delete;
 
-		NetObjId id;
+		NetId id;
+		static std::set<NetObject*> net_objects;
 
+		static bool find(const NetId& id);
 		NetObject* clone() override { return nullptr; }
 		void update() override {}
 		void input() override {}

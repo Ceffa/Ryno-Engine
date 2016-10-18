@@ -33,7 +33,7 @@ namespace Ryno {
 
 	void Network::start_client() {
 		reset_entity();
-		net_entity = new Client("127.0.0.1", 0);
+		net_entity = new Client("127.0.0.1", 0,"127.0.0.1");
 		net_entity->start();
 	}
 

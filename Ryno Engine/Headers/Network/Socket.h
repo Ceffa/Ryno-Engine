@@ -33,8 +33,8 @@ namespace Ryno{
 		const SOCKET get();
 		bool init(bool datagram);
 		void close();
-		bool bind(Address& address);
-		Address get_socket_address();
+		bool bind(SmallAddress& address);
+		SmallAddress get_socket_address();
 		I8 connect(const C* server_ip, U32 server_port);
 		bool listen();
 		Socket* accept();
@@ -50,10 +50,10 @@ namespace Ryno{
 		State connect_state;
 		State accept_state;
 
-		template <class T>
-		I32 send_struct(const T& message, const Address& to) {
-
-			I32 size = ::sendto(sock, (C*)&message, sizeof(T), 0, (sockaddr*)&to, sizeof(sockaddr_in));
+		I32 send_struct(Message& message, const SmallAddress& to) {
+			message.to_network_order();
+			Address a = to.get_address();
+			I32 size = ::sendto(sock, (C*)&message, sizeof(Message), 0, (sockaddr*)&a, sizeof(sockaddr_in));
 			if (size == SOCKET_ERROR)
 			{
 				I32 error = WSAGetLastError();
@@ -67,10 +67,10 @@ namespace Ryno{
 			return size;
 		}
 
-		template <class T>
-		I32 recv_struct(T* message, Address& from) {
+		I32 recv_struct(Message* message, SmallAddress& from) {
+			Address a;
 			I32 length = sizeof(sockaddr_in);
-			I32 size = ::recvfrom(sock, (C*)message, sizeof(T), 0, (sockaddr*)&from,&length);
+			I32 size = ::recvfrom(sock, (C*)message, sizeof(Message), 0, (sockaddr*)&a,&length);
 			if (size == SOCKET_ERROR) {
 				I32 error = WSAGetLastError();
 				if (error == WSAEWOULDBLOCK) {
@@ -81,6 +81,8 @@ namespace Ryno{
 					return -1;
 				}
 			}
+			message->to_hardware_order();
+			from.set(a);
 			return size;
 		}
 

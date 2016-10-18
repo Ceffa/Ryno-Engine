@@ -63,13 +63,14 @@ namespace Ryno {
 		return 1;
 	}
 
-	bool Socket::bind(Address& address) {
+	bool Socket::bind(SmallAddress& address) {
+		Address a = address.get_address();
 		if (!create_state.up()) {
 			NetUtil::print("Cannot connect if socket not created.");
 			return nullptr;
 		}
 	
-		if (::bind(sock, (const sockaddr *)&address, sizeof(address)) == SOCKET_ERROR) {
+		if (::bind(sock, (const sockaddr *)&a, sizeof(a)) == SOCKET_ERROR) {
 			bind_state.set_down();
 			NetUtil::print_error("Bind failed: ");
 			return false;
@@ -80,12 +81,13 @@ namespace Ryno {
 		return true;
 	}
 
-	Address Socket::get_socket_address() {
+	SmallAddress Socket::get_socket_address() {
 		Address addr;
 		I32 len = sizeof(sockaddr_in);
 		if (getsockname(sock, (struct sockaddr *)&addr, &len) == SOCKET_ERROR)
 			NetUtil::print_error("Get socket name error: ");
-		return addr;
+
+		return SmallAddress(addr);
 	}
 
 	I8 Socket::connect(const C* server_ip, U32 server_port) {
