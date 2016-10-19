@@ -23,8 +23,8 @@ namespace Ryno{
 
 		NetEntity* net_entity;
 		GameObject cube;
-		GameObject* controlled;
-		std::vector<GameObject> net_cubes;
+		NetObject* controlled = nullptr;
+		std::list<GameObject> net_cubes;
 		I32 mesh;
 		Shader shader, dir_light_shader;
 		Texture white, white_normal;

@@ -50,42 +50,8 @@ namespace Ryno{
 		State connect_state;
 		State accept_state;
 
-		I32 send_struct(Message& message, const SmallAddress& to) {
-			message.to_network_order();
-			Address a = to.get_address();
-			I32 size = ::sendto(sock, (C*)&message, sizeof(Message), 0, (sockaddr*)&a, sizeof(sockaddr_in));
-			if (size == SOCKET_ERROR)
-			{
-				I32 error = WSAGetLastError();
-				if (error == WSAEWOULDBLOCK) {
-					return 0;
-				}
-				NetUtil::print_error("Send error: ");
-				return -1;
-			}
-
-			return size;
-		}
-
-		I32 recv_struct(Message* message, SmallAddress& from) {
-			Address a;
-			I32 length = sizeof(sockaddr_in);
-			I32 size = ::recvfrom(sock, (C*)message, sizeof(Message), 0, (sockaddr*)&a,&length);
-			if (size == SOCKET_ERROR) {
-				I32 error = WSAGetLastError();
-				if (error == WSAEWOULDBLOCK) {
-					return 0;
-				}
-				else {
-					NetUtil::print_error("Recv error: ");
-					return -1;
-				}
-			}
-			message->to_hardware_order();
-			from.set(a);
-			return size;
-		}
-
+		I32 send_struct(Message& message, const SmallAddress& to);
+		I32 recv_struct(Message* message, SmallAddress& from);
 
 	private:
 

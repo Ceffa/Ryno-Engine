@@ -27,21 +27,26 @@ namespace Ryno {
 		Message mess;
 		I32 res = 0;
 
-		res = sock.recv_struct(&mess, addr);
 
-		if (res > 0) {
+		while (sock.recv_struct(&mess, addr) > 0) {
+			mess.to_hardware_order();
 			Game::get_instance()->get_scene()->network_object_created(mess);
 		}
 
 		for (NetObject* net_obj : NetObject::net_objects) {
-			if (local_address.equals(net_obj->id.addr)) {
+			if (net_obj->moved && local_address.equals(net_obj->id.addr)) {
 				Message m;
 				m.id = net_obj->id;
 				glm::vec3 p = net_obj->game_object->transform.get_position();
+				ColorRGBA* col = (ColorRGBA*)net_obj->game_object->get_script<Model>()->sub_models[0].material.get_attribute("in_DiffuseColor");
 
 				m.x = *(U32*)&p.x;
 				m.y = *(U32*)&p.y;
 				m.z = *(U32*)&p.z;
+				m.color = *(U32*)col;
+
+
+				m.to_network_order();
 				sock.send_struct(m, server_address);
 			}
 		}

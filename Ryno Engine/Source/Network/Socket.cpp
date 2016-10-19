@@ -183,4 +183,39 @@ namespace Ryno {
 		connect_state.set_down();
 		accept_state.set_down();
 	}
+
+	I32 Socket::send_struct(Message& message, const SmallAddress& to) {
+		Address a = to.get_address();
+		I32 size = ::sendto(sock, (C*)&message, sizeof(Message), 0, (sockaddr*)&a, sizeof(sockaddr_in));
+		if (size == SOCKET_ERROR)
+		{
+			I32 error = WSAGetLastError();
+			if (error == WSAEWOULDBLOCK) {
+				return 0;
+			}
+			NetUtil::print_error("Send error: ");
+			return -1;
+		}
+
+		return size;
+	}
+
+	I32 Socket::recv_struct(Message* message, SmallAddress& from) {
+		Address a;
+		I32 length = sizeof(sockaddr_in);
+		I32 size = ::recvfrom(sock, (C*)message, sizeof(Message), 0, (sockaddr*)&a, &length);
+		if (size == SOCKET_ERROR) {
+			I32 error = WSAGetLastError();
+			if (error == WSAEWOULDBLOCK) {
+				return 0;
+			}
+			else {
+				NetUtil::print_error("Recv error: ");
+				return -1;
+			}
+		}
+		from.set(a);
+		return size;
+	}
+
 }

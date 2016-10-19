@@ -1,6 +1,9 @@
 #pragma once
 #include <GLM/glm.hpp>
 #include "Types.h"
+#include <string>
+#include <GLM\gtx\string_cast.hpp>
+
 
 namespace Ryno{
 	struct ColorRGB{
@@ -48,10 +51,10 @@ namespace Ryno{
 				set_color(_r, _g, _b);
 				set_alpha(_a);
 			}
-			glm::vec4 to_vec4(){
+			glm::vec4 to_vec4() const{
 				return glm::vec4(r, g, b, a);
 			}
-			glm::vec3 to_vec3(){
+			glm::vec3 to_vec3()const {
 				return glm::vec3(r, g, b);
 			}
 
@@ -60,6 +63,10 @@ namespace Ryno{
 				g = col.g;
 				b = col.b;
 				a = col.a;
+			}
+			std::string to_string()const {
+				return glm::to_string(to_vec4());
+
 			}
 
 			U8 r; U8 g; U8 b; U8 a;

@@ -6,13 +6,13 @@ namespace Ryno{
 
 	class NetObject : public Script {
 	public:
-
 		NetObject(const NetId& addr) : id(addr) { net_objects.insert(this); }
-		~NetObject() { net_objects.erase(this); }
+		~NetObject() { net_objects.erase(this);  }
 		NetObject(const NetObject& cp) = delete;
 
 		NetId id;
 		static std::set<NetObject*> net_objects;
+		bool moved = true;
 
 		static NetObject* find(const NetId& id);
 		NetObject* clone() override { return nullptr; }

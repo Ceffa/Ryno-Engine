@@ -36,51 +36,69 @@ namespace Ryno {
 		l->set_ambient_color(255, 255, 255);
 		l->shadows = false;
 
-		controlled = create_net_obj(NetId(net_entity->local_address))->game_object;
-		controlled->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255, 0, 0, 255));
+		
+
+		
 
 	}
 
 	void NetworkScene::input() {
+		if (!controlled) {
+			controlled = create_net_obj(NetId(net_entity->local_address));
+			controlled->game_object->transform.set_position(ryno_math::rand_vec3_range(glm::vec3(-4, -2, 0), glm::vec3(4, 2, 0)));
+			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white));
+			controlled->moved = true;
+		}
+		else {
+			controlled->moved = false;
+		}
 		if (!game->shell->active) {
-
-			float speed = 10.0f;
-			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-				controlled->transform.add_position(game->delta_time * speed * glm::vec3(1, 0, 0));
-			}
-			if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-				controlled->transform.add_position(game->delta_time * speed * glm::vec3(-1, 0, 0));
-			}
-			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-				controlled->transform.add_position(game->delta_time * speed * glm::vec3(0, 1, 0));
-			}
-			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-				controlled->transform.add_position(game->delta_time * speed * glm::vec3(0, -1, 0));
+			if(controlled) {
+				float speed = 10.0f;
+				if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
+					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(1, 0, 0));
+					controlled->moved = true;
+				}
+				if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
+					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(-1, 0, 0));
+					controlled->moved = true;
+				}
+				if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
+					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(0, 1, 0));
+					controlled->moved = true;
+				}
+				if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
+					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(0, -1, 0));
+					controlled->moved = true;
+				}
 			}
 		}
 	}
 	void NetworkScene::network_object_created(const Message& message) {
 		NetObject* received = NetObject::find(message.id);
-		NetUtil::print(message.id.to_string());
 
-		if(received == nullptr)
+		if (received == nullptr) 
 			received = create_net_obj(message.id);
 		
 		F32 x = *(F32*)&message.x;
 		F32 y = *(F32*)&message.y;
 		F32 z = *(F32*)&message.z;
+		ColorRGBA color = *(ColorRGBA*)&message.color;
+
+
+		glm::vec3 p = glm::vec3(x, y, z);
 
 		received->game_object->transform.set_position(glm::vec3(x,y,z));
-		
+		received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", color);
 	}
 
 	NetObject* NetworkScene::create_net_obj(const NetId& id) {
 		net_cubes.emplace_back();
 
-		GameObject& cube = net_cubes.back();
-		NetObject* net_obj = cube.add_script(new NetObject(id));
-		cube.transform.set_scale(1,1,1);
-		auto& m = cube.add_script<Model>()->add_sub_model();
+		GameObject* c = &(net_cubes.back());
+		NetObject* net_obj = c->add_script(new NetObject(id));
+		c->transform.set_scale(glm::vec3(1,1,1));
+		auto& m = c->add_script<Model>()->add_sub_model();
 
 		m.material.set_shader(&shader);
 		m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 255));
