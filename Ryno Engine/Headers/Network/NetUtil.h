@@ -98,15 +98,18 @@ namespace Ryno{
 	struct Message {
 		NetId id;
 		U32 x, y, z;
+		U32 color;
 		void to_network_order() {
 			x = htonl(x);
 			y = htonl(y);
 			z = htonl(z);
+			color = htonl(color);
 		}
 		void to_hardware_order() {
 			x = ntohl(x);
 			y = ntohl(y);
 			z = ntohl(z);
+			color = htonl(color);
 		}
 	};
 

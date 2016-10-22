@@ -452,8 +452,8 @@ namespace Ryno {
 			log->history_length = 0;
 			log->iterator = log->history.begin();
 		}
-		else if (command.compare("clearlogscreen") == 0){
-			for (GUIObject& go : lines)
+		else if (command.compare("clr") == 0){
+			for (GUIObject& go : log->lines)
 				go.text->text = "";
 
 		}
