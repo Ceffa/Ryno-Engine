@@ -27,11 +27,9 @@ namespace Ryno {
 		Message mess;
 		I32 res = 0;
 
-		res = sock.recv_struct(&mess, addr);
-
-		if (res > 0) {
+		while(sock.recv_struct(&mess, addr)>0)
 			Game::get_instance()->get_scene()->network_object_created(mess);
-		}
+		
 
 		for (NetObject* net_obj : NetObject::net_objects) {
 			if (local_address.equals(net_obj->id.addr)) {
