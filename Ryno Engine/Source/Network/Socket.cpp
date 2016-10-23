@@ -184,9 +184,9 @@ namespace Ryno {
 		accept_state.set_down();
 	}
 
-	I32 Socket::send_struct(Message& message, const SmallAddress& to) {
+	I32 Socket::send_struct(const Message* message, const SmallAddress& to) {
 		Address a = to.get_address();
-		I32 size = ::sendto(sock, (C*)&message, sizeof(Message), 0, (sockaddr*)&a, sizeof(sockaddr_in));
+		I32 size = ::sendto(sock, (C*)message, message->size(), 0, (sockaddr*)&a, sizeof(sockaddr_in));
 		if (size == SOCKET_ERROR)
 		{
 			I32 error = WSAGetLastError();
@@ -203,7 +203,7 @@ namespace Ryno {
 	I32 Socket::recv_struct(Message* message, SmallAddress& from) {
 		Address a;
 		I32 length = sizeof(sockaddr_in);
-		I32 size = ::recvfrom(sock, (C*)message, sizeof(Message), 0, (sockaddr*)&a, &length);
+		I32 size = ::recvfrom(sock, (C*)message, message->size(), 0, (sockaddr*)&a, &length);
 		if (size == SOCKET_ERROR) {
 			I32 error = WSAGetLastError();
 			if (error == WSAEWOULDBLOCK) {

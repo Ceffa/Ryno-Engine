@@ -94,22 +94,39 @@ namespace Ryno{
 		static U16 last_id;
 	};
 
-	//The message unit sent over the network. It contains at least a NetId
+	//The message unit sent over the network.
+	//Extend to add behaviors
 	struct Message {
 		NetId id;
+
+		virtual void to_network_order() = 0;
+		virtual void to_hardware_order() = 0;
+		virtual I32 size() const = 0;
+		template <class To, class From>
+		static To convert(From f) {
+			return *(To*)&f;
+		}
+
+	};
+
+	struct PosAndColor: public Message {
 		U32 x, y, z;
 		U32 color;
-		void to_network_order() {
+		void to_network_order() override {
 			x = htonl(x);
 			y = htonl(y);
 			z = htonl(z);
 			color = htonl(color);
 		}
-		void to_hardware_order() {
+		void to_hardware_order() override {
 			x = ntohl(x);
 			y = ntohl(y);
 			z = ntohl(z);
 			color = htonl(color);
+		}
+
+		I32 size() const override {
+			return sizeof (PosAndColor);
 		}
 	};
 

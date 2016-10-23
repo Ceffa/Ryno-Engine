@@ -6,7 +6,7 @@ namespace Ryno {
 
 	void NetworkScene::start() {
 
-		net_entity = Network::get_instance()->net_entity;
+		client = Network::get_instance()->client;
 
 		camera->position = glm::vec4(0,0,-10,1);
 		camera->yaw = 0;
@@ -44,8 +44,8 @@ namespace Ryno {
 
 	void NetworkScene::input() {
 		if (!controlled) {
-			controlled = create_net_obj(NetId(net_entity->local_address));
-			controlled->game_object->transform.set_position(ryno_math::rand_vec3_range(glm::vec3(-4, -2, 0), glm::vec3(4, 2, 0)));
+			controlled = create_net_obj(NetId(client->local_address));
+			controlled->game_object->transform.set_position(ryno_math::rand_vec3_range(glm::vec3(-4, -2, -1), glm::vec3(4, 2, 1)));
 			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white));
 			controlled->moved = true;
 		}
@@ -74,22 +74,40 @@ namespace Ryno {
 			}
 		}
 	}
-	void NetworkScene::network_object_created(const Message& message) {
-		NetObject* received = NetObject::find(message.id);
+	void NetworkScene::network_recv(const Message* message) {
+		NetObject* received = NetObject::find(message->id);
 
-		if (received == nullptr) 
-			received = create_net_obj(message.id);
+		const PosAndColor* pos_and_col = (const PosAndColor*)message;
+
+		if (received == nullptr) {
+			received = create_net_obj(message->id);
+			ColorRGBA color = Message::convert<ColorRGBA>(pos_and_col->color);
+			received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", color);
+		}
+
 		
-		F32 x = *(F32*)&message.x;
-		F32 y = *(F32*)&message.y;
-		F32 z = *(F32*)&message.z;
-		ColorRGBA color = *(ColorRGBA*)&message.color;
+		F32 x = Message::convert<F32>(pos_and_col->x);
+		F32 y = Message::convert<F32>(pos_and_col->y);
+		F32 z = Message::convert<F32>(pos_and_col->z);
 
 
 		glm::vec3 p = glm::vec3(x, y, z);
 
 		received->game_object->transform.set_position(glm::vec3(x,y,z));
-		received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", color);
+	}
+
+	void NetworkScene::network_send(NetObject* sender, Message* message) {
+		if (!sender->moved)
+			return;
+		PosAndColor& m = *(PosAndColor*)message;
+		m.id = sender->id;
+		glm::vec3 p = sender->game_object->transform.get_position();
+		ColorRGBA col = *(ColorRGBA*)sender->game_object->get_script<Model>()->sub_models[0].material.get_attribute("in_DiffuseColor");
+
+		m.x = Message::convert<U32>(p.x);
+		m.y = Message::convert<U32>(p.y);
+		m.z = Message::convert<U32>(p.z);
+		m.color = Message::convert<U32>(col);
 	}
 
 	NetObject* NetworkScene::create_net_obj(const NetId& id) {

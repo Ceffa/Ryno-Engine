@@ -3,7 +3,7 @@
 #include "Scene.h"
 #include "Game.h"
 #include "Network.h"
-
+#include "Client.h"
 
 #include <vector>
 
@@ -18,10 +18,12 @@ namespace Ryno{
 	
 		void start() override;
 		void input() override;
-		void network_object_created(const Message& message) override;
+		void network_recv(const Message* message) override;
+		void network_send(NetObject* sender, Message* message) override;
+
 		NetObject* create_net_obj(const NetId& id);
 
-		NetEntity* net_entity;
+		Client* client;
 		GameObject cube;
 		NetObject* controlled = nullptr;
 		std::list<GameObject> net_cubes;

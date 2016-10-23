@@ -50,7 +50,7 @@ namespace Ryno{
 		State connect_state;
 		State accept_state;
 
-		I32 send_struct(Message& message, const SmallAddress& to);
+		I32 send_struct(const Message* message, const SmallAddress& to);
 		I32 recv_struct(Message* message, SmallAddress& from);
 
 	private:

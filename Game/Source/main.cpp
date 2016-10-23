@@ -39,8 +39,7 @@ void after_commands(char* argv[]) {
 
 	if (server)
 		Ryno::Game::get_instance()->network->start_server();
-	else
-		Ryno::Game::get_instance()->network->start_client();
+	Ryno::Game::get_instance()->network->start_client();
 
 }
 

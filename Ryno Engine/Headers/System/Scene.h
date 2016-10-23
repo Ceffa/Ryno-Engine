@@ -8,6 +8,7 @@ namespace Ryno{
 	class Game;
 	class Camera3D;
 	class Message;
+	class NetObject;
 
 	class Scene{
 	public:
@@ -24,7 +25,8 @@ namespace Ryno{
 		virtual void input_scripts() final;
 		virtual void update() {}
 		virtual void update_scripts() final;
-		virtual void network_object_created(const Message& creator_address) {}
+		virtual void network_recv(const Message* message) {}
+		virtual void network_send(NetObject* sender, Message* message) {}
 		void camera_update();
 
 		Game* game;		

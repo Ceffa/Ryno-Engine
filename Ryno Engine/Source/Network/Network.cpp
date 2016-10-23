@@ -11,7 +11,8 @@ namespace Ryno {
 	}
 
 	Network::~Network() {
-		reset_entity();
+		stop_client();
+		stop_server();
 	}
 
 	void Network::init() {
@@ -26,26 +27,37 @@ namespace Ryno {
 	}
 	
 	void Network::start_server() {
-		reset_entity();
-		net_entity = new Server("127.0.0.1", 5555);
-		net_entity->start();
+		stop_server();
+		has_server = true;
+		server = new Server("127.0.0.1", 5555);
+		server->start();
 	}
 
 	void Network::start_client() {
-		reset_entity();
-		net_entity = new Client("127.0.0.1", 5555,"127.0.0.1");
-		net_entity->start();
+		stop_client();
+		client = new Client("127.0.0.1", 5555,"127.0.0.1");
+		has_client = true;
+		client->start();
 	}
 
 	void Network::update() {
-		net_entity->update();
+		if (has_server && server) server->update();
+		if (has_client && client) client->update();
 	}
 
 
-	void Network::reset_entity() {
-		if (net_entity) {
-			delete net_entity;
-			net_entity = nullptr;
+	void Network::stop_client() {
+		if (client) {
+			delete client;
+			client = nullptr;
 		}
+		has_client = false;
+	}
+	void Network::stop_server() {
+		if (server) {
+			delete server;
+			server = nullptr;
+		}
+		has_server = false;
 	}
 }

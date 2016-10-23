@@ -26,7 +26,7 @@ namespace Ryno {
 
 
 		SmallAddress addr;
-		Message mess;
+		PosAndColor mess;
 		if (FD_ISSET(sock.get(), &readable))
 		{
 			while (sock.recv_struct(&mess, addr) > 0) {
@@ -35,12 +35,11 @@ namespace Ryno {
 				{
 					Connection *conn = *it;
 
-					if (!conn->address.equals(addr) && !conn->do_write(mess)) {
+					if (!conn->address.equals(addr) && !conn->do_write(&mess)) {
 						delete conn;
 						it = conns.erase(it);
 					}
 					else it++;
-	
 				}
 			}
 		}

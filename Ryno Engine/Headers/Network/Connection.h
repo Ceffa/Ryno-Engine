@@ -17,7 +17,7 @@ namespace Ryno{
 		bool do_read(Message* message) {
 			return sock->recv_struct(message, address) >= 0;
 		}
-		bool do_write(Message& message) {
+		bool do_write(const Message* message) {
 			return sock->send_struct(message, address) >= 0;
 		}
 
