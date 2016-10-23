@@ -59,6 +59,7 @@ namespace Ryno{
 		void set_scene(I32 scene_nr);
 
 		void reset_scene();
+		void reset();
 		void next_scene();
 		Scene* get_scene() { return scene; }
 

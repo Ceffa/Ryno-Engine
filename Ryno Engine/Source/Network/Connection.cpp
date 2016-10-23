@@ -11,7 +11,6 @@ namespace Ryno {
 	Connection::Connection() : Connection() {}
 
 	Connection::~Connection() {
-		NetUtil::print("Close connection");
 	}
 
 	bool Connection::want_read() {

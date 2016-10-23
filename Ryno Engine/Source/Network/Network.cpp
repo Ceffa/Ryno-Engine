@@ -24,6 +24,8 @@ namespace Ryno {
 	
 		if (w.wVersion != 0x0202)
 			Log::println("Wrong WinSock version");
+
+		
 	}
 	
 	void Network::start_server() {
@@ -38,6 +40,17 @@ namespace Ryno {
 		client = new Client("127.0.0.1", 5555,"127.0.0.1");
 		has_client = true;
 		client->start();
+	}
+
+	//Function that reset the network when the scene
+	//is restarted
+	void Network::reset() {
+		if (has_server && server)
+			start_server();
+		if (has_client && client)
+			start_client();
+		NetId::last_id = 0;
+
 	}
 
 	void Network::update() {

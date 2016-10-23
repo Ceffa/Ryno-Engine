@@ -21,7 +21,5 @@ namespace Ryno{
 		fd_set readable;
 
 		Connection* add_to_connections(const SmallAddress& addr);
-		
-
 	};
 }

@@ -17,6 +17,7 @@ namespace Ryno{
 		void stop_client();
 		void stop_server();
 		void update();
+		void reset();
 		static Network* get_instance();
 		Client* client = nullptr;
 		Server* server = nullptr;

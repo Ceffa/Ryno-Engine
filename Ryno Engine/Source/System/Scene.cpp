@@ -72,7 +72,4 @@ namespace Ryno{
 		Log::print(camera->pitch);*/
 	}
 
-	
-	
-
 }

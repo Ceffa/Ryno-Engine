@@ -97,18 +97,15 @@ namespace Ryno{
 		//Main Loop
 		while (game_state != GameState::Exit){
 			if (game_state == GameState::ChangeScene) {
-				physics_world->reset();
-				Batch3DGeometry::sorting = true;
-				Batch3DShadow::sorting = true;
+				reset();
 				scene->start();
 				game_state = GameState::Running;
 			}
 			time_manager->begin_frame();
 			handle_input();
-
-			handle_network();
 			if (game_state == GameState::ChangeScene)
 				continue;
+			handle_network();
 			scene->camera_update();
 			if (game_state != GameState::Paused) update();
 			physics_world->physics_step(delta_time);
@@ -119,7 +116,13 @@ namespace Ryno{
 		end();
 		exit_game();
 
+	}
 
+	void Game::reset() {
+		network->reset();
+		physics_world->reset();
+		Batch3DGeometry::sorting = true;
+		Batch3DShadow::sorting = true;
 	}
 	void Game::set_scene(const std::string& scene_name)
 	{
