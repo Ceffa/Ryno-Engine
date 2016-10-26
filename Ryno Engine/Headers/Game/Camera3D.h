@@ -16,6 +16,9 @@ namespace Ryno{
 		void move_forward(F32 speed);
 		void move_relative_to_view(F32 speed, glm::vec2 coords);
 		void move_right(F32 speed);
+		void move_up(F32 speed);
+		void move_down(F32 speed);
+
 		void move_back(F32 speed);
 		void move_left(F32 speed);
 		void rotate(F32 y, F32 p);

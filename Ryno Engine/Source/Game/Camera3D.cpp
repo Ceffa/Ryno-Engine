@@ -39,9 +39,6 @@ namespace Ryno{
 		light_V_matrix = glm::transpose(glm::inverse(V_matrix));
 	}
 	
-	void Camera3D::move_forward(F32 speed) {
-		position += speed* movement_speed *glm::vec4(sin(yaw), -sin(pitch), cos(yaw),0);
-	}
 
 	void Camera3D::move_relative_to_view(F32 speed, glm::vec2 coords){
 		
@@ -50,10 +47,20 @@ namespace Ryno{
 		move_right(speed * coords.x / total_speed);
 
 	}
+	void Camera3D::move_forward(F32 speed) {
+		position += speed* movement_speed *glm::vec4(sin(yaw), -sin(pitch), cos(yaw),0);
+	}
 
 	void Camera3D::move_right(F32 speed){
 		position += speed * movement_speed* glm::vec4(cos(yaw), 0, -sin(yaw), 0);
 
+	}
+	void Camera3D::move_up(F32 speed) {
+		position += speed * movement_speed* glm::vec4(sin(yaw)*sin(pitch), cos(pitch), sin(pitch) * cos(yaw), 0);
+
+	}
+	void Camera3D::move_down(F32 speed) {
+		move_up(-speed);
 	}
 	void Camera3D::move_back(F32 speed){
 		move_forward(-speed);

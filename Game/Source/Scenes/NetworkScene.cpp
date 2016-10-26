@@ -11,7 +11,7 @@ namespace Ryno {
 		camera->position = glm::vec4(0,0,-10,1);
 		camera->yaw = 0;
 		camera->pitch = 0;
-		camera->movement_speed = 100;
+		camera->movement_speed = 20;
 		camera->have_skybox = true;
 		camera->skybox = game->texture_manager->load_cube_map("day", ".png", GAME);
 
@@ -47,29 +47,22 @@ namespace Ryno {
 			controlled = create_net_obj(NetId(client->local_address));
 			controlled->game_object->transform.set_position(ryno_math::rand_vec3_range(glm::vec3(-4, -2, -1), glm::vec3(4, 2, 1)));
 			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white));
-			controlled->moved = true;
 		}
-		else {
-			controlled->moved = false;
-		}
+
 		if (!game->shell->active) {
 			if(controlled) {
 				float speed = 10.0f;
 				if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
 					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(1, 0, 0));
-					controlled->moved = true;
 				}
 				if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
 					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(-1, 0, 0));
-					controlled->moved = true;
 				}
 				if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
 					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(0, 1, 0));
-					controlled->moved = true;
 				}
 				if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
 					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(0, -1, 0));
-					controlled->moved = true;
 				}
 			}
 		}
@@ -97,8 +90,6 @@ namespace Ryno {
 	}
 
 	void NetworkScene::network_send(NetObject* sender, Message* message) {
-		if (!sender->moved)
-			return;
 		PosAndColor& m = *(PosAndColor*)message;
 		m.id = sender->id;
 		glm::vec3 p = sender->game_object->transform.get_position();

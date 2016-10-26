@@ -9,6 +9,8 @@ namespace Ryno {
 
 	void Client::start() {
 
+		game = Game::get_instance();
+
 		if (!sock.init(true)) {
 			close();
 			return;
@@ -30,11 +32,14 @@ namespace Ryno {
 
 		while (sock.recv_struct(&mess, addr) > 0) {
 			mess.to_hardware_order();
-			Game::get_instance()->get_scene()->network_recv(&mess);
+			game->get_scene()->network_recv(&mess);
 		}
 
 		for (NetObject* net_obj : NetObject::net_objects) {
-			if (local_address.equals(net_obj->id.addr)) {
+			bool need_update = net_obj->last_send + delay <= game->time;
+			need_update &= local_address.equals(net_obj->id.addr);
+			if (need_update) {
+				net_obj->last_send = game->time;
 				PosAndColor m;
 				Game::get_instance()->get_scene()->network_send(net_obj,&m);
 				m.to_network_order();
