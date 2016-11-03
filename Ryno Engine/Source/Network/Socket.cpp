@@ -1,4 +1,5 @@
 #include "Socket.h"
+#include "Network.h"
 
 namespace Ryno {
 
@@ -184,9 +185,9 @@ namespace Ryno {
 		accept_state.set_down();
 	}
 
-	I32 Socket::send_struct(const Message* message, const SmallAddress& to) {
+	I32 Socket::send_struct(const NetMessage* message, const SmallAddress& to) {
 		Address a = to.get_address();
-		I32 size = ::sendto(sock, (C*)message, message->size(), 0, (sockaddr*)&a, sizeof(sockaddr_in));
+		I32 size = ::sendto(sock, (C*)message, sizeof(NetMessage), 0, (sockaddr*)&a, sizeof(sockaddr_in));
 		if (size == SOCKET_ERROR)
 		{
 			I32 error = WSAGetLastError();
@@ -200,10 +201,10 @@ namespace Ryno {
 		return size;
 	}
 
-	I32 Socket::recv_struct(Message* message, SmallAddress& from) {
+	I32 Socket::recv_struct(NetMessage* message, SmallAddress& from) {
 		Address a;
 		I32 length = sizeof(sockaddr_in);
-		I32 size = ::recvfrom(sock, (C*)message, message->size(), 0, (sockaddr*)&a, &length);
+		I32 size = ::recvfrom(sock, (C*)message, sizeof(NetMessage), 0, (sockaddr*)&a, &length);
 		if (size == SOCKET_ERROR) {
 			I32 error = WSAGetLastError();
 			if (error == WSAEWOULDBLOCK) {

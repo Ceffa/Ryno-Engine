@@ -2,12 +2,12 @@
 
 #include "Client.h"
 #include "Server.h"
-#include "Global.h"
-#include "NetUtil.h"
 #include "NetObject.h"
 
 
 namespace Ryno{
+
+	enum NetCode{POS_AND_COLOR,U_INT};
 
 	static class Network {
 	public:

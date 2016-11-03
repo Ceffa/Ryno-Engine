@@ -1,5 +1,6 @@
 #include "NetObject.h"
 
+
 namespace Ryno {
 	std::set<NetObject*> NetObject::net_objects;
 

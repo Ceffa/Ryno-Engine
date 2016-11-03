@@ -3,7 +3,6 @@
 
 namespace Ryno {
 
-	U16 NetId::last_id = 0;
 	I32 NetUtil::error_limit = 3;
 
 
@@ -57,6 +56,9 @@ namespace Ryno {
 	}
 	void NetUtil::print(I32 i) {
 		Log::println(i);
+	}
+	void NetUtil::print(F32 f) {
+		Log::println(f);
 	}
 	void NetUtil::print_error(std::string s) {
 		if(error_limit-->0)

@@ -1,5 +1,6 @@
 #include "Connection.h"
 #include "NetUtil.h"
+#include "Network.h"
 
 namespace Ryno {
 
@@ -22,5 +23,15 @@ namespace Ryno {
 	}
 
 	
+
+	bool Connection::do_read(NetMessage* message)
+	{
+		return sock->recv_struct(message, address) >= 0;
+	}
+
+	bool Connection::do_write(const NetMessage* message)
+	{
+		return sock->send_struct(message, address) >= 0;
+	}
 
 }

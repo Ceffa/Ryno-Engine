@@ -1,15 +1,11 @@
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-#define WIN32_LEAN_AND_MEAN
-
-#pragma comment(lib, "ws2_32.lib")
-
 #pragma once
-#include "Global.h"
-#include <winsock2.h>
 #include "NetUtil.h"
+#include "NetStructs.h"
+
 
 
 namespace Ryno{
+	class Network;
 
 	struct State {
 	private:
@@ -50,8 +46,8 @@ namespace Ryno{
 		State connect_state;
 		State accept_state;
 
-		I32 send_struct(const Message* message, const SmallAddress& to);
-		I32 recv_struct(Message* message, SmallAddress& from);
+		I32 send_struct(const NetMessage* message, const SmallAddress& to);
+		I32 recv_struct(NetMessage* message, SmallAddress& from);
 
 	private:
 

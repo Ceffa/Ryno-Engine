@@ -1,6 +1,8 @@
 #pragma once
 
 #include "NetworkScene.h"
+#include "Network.h"
+
 #include <thread>
 namespace Ryno {
 
@@ -67,21 +69,19 @@ namespace Ryno {
 			}
 		}
 	}
-	void NetworkScene::network_recv(const Message* message) {
-		NetObject* received = NetObject::find(message->id);
-
-		const PosAndColor* pos_and_col = (const PosAndColor*)message;
+	void NetworkScene::network_recv(const NetMessage* message) {
+		NetObject* received = NetObject::find(message->header.id);
 
 		if (received == nullptr) {
-			received = create_net_obj(message->id);
-			ColorRGBA color = Message::convert<ColorRGBA>(pos_and_col->color);
+			received = create_net_obj(message->header.id);
+			ColorRGBA color = NetStruct::convert<ColorRGBA>(message->pos_and_color.color);
 			received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", color);
 		}
 
 		
-		F32 x = Message::convert<F32>(pos_and_col->x);
-		F32 y = Message::convert<F32>(pos_and_col->y);
-		F32 z = Message::convert<F32>(pos_and_col->z);
+		F32 x = NetStruct::convert<F32>(message->pos_and_color.x);
+		F32 y = NetStruct::convert<F32>(message->pos_and_color.y);
+		F32 z = NetStruct::convert<F32>(message->pos_and_color.z);
 
 
 		glm::vec3 p = glm::vec3(x, y, z);
@@ -89,19 +89,21 @@ namespace Ryno {
 		received->game_object->transform.set_position(glm::vec3(x,y,z));
 	}
 
-	void NetworkScene::network_send(NetObject* sender, Message* message) {
-		PosAndColor& m = *(PosAndColor*)message;
-		m.id = sender->id;
+	void NetworkScene::network_send(NetObject* sender, NetMessage* message) {
+		message->header.id = sender->id;
+		message->header.code = NetStruct::convert<U32>(NetCode::POS_AND_COLOR);
+		message->header.time = NetStruct::convert<U32>(game->time);
 		glm::vec3 p = sender->game_object->transform.get_position();
 		ColorRGBA col = *(ColorRGBA*)sender->game_object->get_script<Model>()->sub_models[0].material.get_attribute("in_DiffuseColor");
 
-		m.x = Message::convert<U32>(p.x);
-		m.y = Message::convert<U32>(p.y);
-		m.z = Message::convert<U32>(p.z);
-		m.color = Message::convert<U32>(col);
+		message->pos_and_color.x = NetStruct::convert<U32>(p.x);
+		message->pos_and_color.y = NetStruct::convert<U32>(p.y);
+		message->pos_and_color.z = NetStruct::convert<U32>(p.z);
+		message->pos_and_color.color = NetStruct::convert<U32>(col);
 	}
 
 	NetObject* NetworkScene::create_net_obj(const NetId& id) {
+
 		net_cubes.emplace_back();
 
 		GameObject* c = &(net_cubes.back());

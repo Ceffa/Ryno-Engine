@@ -1,6 +1,7 @@
 #pragma once
 #include "Script.h"
-#include "NetUtil.h"
+#include "NetStructs.h"
+#include <set>
 
 namespace Ryno{
 

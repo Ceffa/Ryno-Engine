@@ -1,7 +1,9 @@
 #pragma once
 #include "Socket.h"
+#include "NetStructs.h"
 
 namespace Ryno{
+	
 
 	class Connection {
 	public:
@@ -14,12 +16,8 @@ namespace Ryno{
 		bool want_read();
 		bool want_write();
 
-		bool do_read(Message* message) {
-			return sock->recv_struct(message, address) >= 0;
-		}
-		bool do_write(const Message* message) {
-			return sock->send_struct(message, address) >= 0;
-		}
+		bool do_read(NetMessage* message);
+		bool do_write(const NetMessage* message);
 
 	};
 }

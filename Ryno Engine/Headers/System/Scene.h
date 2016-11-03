@@ -2,12 +2,13 @@
 #include "Global.h"
 #include "Transform.h"
 #include <map>
+#include "Network.h"
 
 namespace Ryno{
 
 	class Game;
 	class Camera3D;
-	class Message;
+	class NetStruct;
 	class NetObject;
 
 	class Scene{
@@ -25,8 +26,8 @@ namespace Ryno{
 		virtual void input_scripts() final;
 		virtual void update() {}
 		virtual void update_scripts() final;
-		virtual void network_recv(const Message* message) {}
-		virtual void network_send(NetObject* sender, Message* message) {}
+		virtual void network_recv(const NetMessage* message) {}
+		virtual void network_send(NetObject* sender, NetMessage* message) {}
 		void camera_update();
 
 		Game* game;		

@@ -1,5 +1,6 @@
 #include "Server.h"
 #include "NetUtil.h"
+#include "Network.h"
 
 namespace Ryno {
 
@@ -24,12 +25,13 @@ namespace Ryno {
 		if (select(0, &readable, nullptr, NULL, &timeout) == SOCKET_ERROR)
 			NetUtil::print_error("Select error: ");
 
-
 		SmallAddress addr;
-		PosAndColor mess;
+		NetMessage mess;
+
 		if (FD_ISSET(sock.get(), &readable))
 		{
 			while (sock.recv_struct(&mess, addr) > 0) {
+
 				add_to_connections(addr);
 				for (auto it = conns.begin(); it != conns.end(); )  //No increment
 				{

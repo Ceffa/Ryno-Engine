@@ -699,6 +699,9 @@
     <ClCompile Include="Source\GUI\GUIObject.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Network\NetStructs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Game\Camera3D.h">
@@ -865,6 +868,9 @@
     </ClInclude>
     <ClInclude Include="Headers\Rendering\Material.h">
       <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Network\NetStructs.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

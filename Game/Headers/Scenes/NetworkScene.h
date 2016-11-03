@@ -2,13 +2,14 @@
 
 #include "Scene.h"
 #include "Game.h"
-#include "Network.h"
+#include "NetStructs.h"
 #include "Client.h"
 
 #include <vector>
 
 
 namespace Ryno{
+
 	class NetworkScene : public Scene
 	{
 
@@ -18,8 +19,8 @@ namespace Ryno{
 	
 		void start() override;
 		void input() override;
-		void network_recv(const Message* message) override;
-		void network_send(NetObject* sender, Message* message) override;
+		void network_recv(const NetMessage* message) override;
+		void network_send(NetObject* sender, NetMessage* message) override;
 
 		NetObject* create_net_obj(const NetId& id);
 

@@ -1,5 +1,5 @@
 #include "Client.h"
-#include "NetUtil.h"
+#include "NetStructs.h"
 #include "Scene.h"
 #include "Game.h"
 
@@ -26,12 +26,13 @@ namespace Ryno {
 			return;
 
 		SmallAddress addr;
-		PosAndColor mess;
+		NetMessage mess;
 		I32 res = 0;
 
 
 		while (sock.recv_struct(&mess, addr) > 0) {
-			mess.to_hardware_order();
+			mess.header.to_hardware_order();
+			mess.pos_and_color.to_hardware_order();
 			game->get_scene()->network_recv(&mess);
 		}
 
@@ -40,9 +41,11 @@ namespace Ryno {
 			need_update &= local_address.equals(net_obj->id.addr);
 			if (need_update) {
 				net_obj->last_send = game->time;
-				PosAndColor m;
+				NetMessage m;
 				Game::get_instance()->get_scene()->network_send(net_obj,&m);
-				m.to_network_order();
+				m.header.to_network_order();
+				m.pos_and_color.to_network_order();
+
 				sock.send_struct(&m, server_address);
 			}
 		}
