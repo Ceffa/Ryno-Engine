@@ -205,6 +205,7 @@ namespace Ryno {
 		Address a;
 		I32 length = sizeof(sockaddr_in);
 		I32 size = ::recvfrom(sock, (C*)message, sizeof(NetMessage), 0, (sockaddr*)&a, &length);
+		from.set(a);
 		if (size == SOCKET_ERROR) {
 			I32 error = WSAGetLastError();
 			if (error == WSAEWOULDBLOCK) {
@@ -215,7 +216,6 @@ namespace Ryno {
 				return -1;
 			}
 		}
-		from.set(a);
 		return size;
 	}
 

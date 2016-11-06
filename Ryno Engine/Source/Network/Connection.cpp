@@ -7,11 +7,16 @@ namespace Ryno {
 	Connection::Connection(Socket& _sock, const SmallAddress& _addr)
 		: sock(&_sock),address(_addr)
 	{
+		NetUtil::print(std::string("New connection: ") + address.to_string());
+
 	}
 
-	Connection::Connection() : Connection() {}
+	Connection::Connection() {
+		NetUtil::print(std::string("New connection: ") + address.to_string());
+	}
 
 	Connection::~Connection() {
+		NetUtil::print(std::string("Closed connection: ") + address.to_string());
 	}
 
 	bool Connection::want_read() {

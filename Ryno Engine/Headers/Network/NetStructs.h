@@ -99,7 +99,6 @@ namespace Ryno{
 		NetStruct() {}
 		virtual void to_network_order() = 0;
 		virtual void to_hardware_order() = 0;
-		virtual I32 size() const = 0;
 		template <class To, class From>
 		static To convert(From f) {
 			return *(To*)&f;
@@ -122,12 +121,24 @@ namespace Ryno{
 			time = ntohl(time);
 			code = ntohl(code);
 		}
-
-		I32 size() const override {
-			return sizeof(Header);
-		}
 	};
 
+	
+
+	struct RequestClientTime : public NetStruct {
+		void to_network_order() override {}
+		void to_hardware_order() override {}
+	};
+	struct SendClientTime : public NetStruct {
+		U32 time;
+		void to_network_order() override {}
+		void to_hardware_order() override {}
+	};
+	struct SendNetworkTime : public NetStruct {
+		U32 time;
+		void to_network_order() override {}
+		void to_hardware_order() override {}
+	};
 
 	struct PosAndColor : public NetStruct {
 		PosAndColor() {}
@@ -146,10 +157,6 @@ namespace Ryno{
 			z = ntohl(z);
 			color = htonl(color);
 		}
-
-		I32 size() const override {
-			return sizeof(PosAndColor);
-		}
 	};
 
 	struct NetMessage {
@@ -157,8 +164,12 @@ namespace Ryno{
 		Header header;
 		union {
 			PosAndColor pos_and_color;
-			Header u32;//just for testing, to be removed
+			RequestClientTime request_client_time;
+			SendClientTime send_client_time;
+			SendNetworkTime send_network_time;
 		};
 
 	};
+
+
 }

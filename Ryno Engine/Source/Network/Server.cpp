@@ -30,18 +30,25 @@ namespace Ryno {
 
 		if (FD_ISSET(sock.get(), &readable))
 		{
-			while (sock.recv_struct(&mess, addr) > 0) {
+			I32 res = 0;
+			while ((res = sock.recv_struct(&mess, addr)) != 0) {
 
-				add_to_connections(addr);
-				for (auto it = conns.begin(); it != conns.end(); )  //No increment
-				{
-					Connection *conn = *it;
+				//Delete 
+				if (res < 0)
+					remove_from_connections(addr);
+				else {
+					if(!is_connection(addr))
+						add_to_connections(addr);
+					for (auto it = conns.begin(); it != conns.end(); )  //No increment
+					{
+						Connection *conn = *it;
 
-					if (!conn->address.equals(addr) && !conn->do_write(&mess)) {
-						delete conn;
-						it = conns.erase(it);
+						if (!conn->address.equals(addr) && !conn->do_write(&mess)) {
+							delete conn;
+							it = conns.erase(it);
+						}
+						else it++;
 					}
-					else it++;
 				}
 			}
 		}
@@ -52,24 +59,29 @@ namespace Ryno {
 	}
 
 	void Server::set_timeout(U32 microseconds) {
-		timeout.tv_sec = microseconds/1000000;
-		timeout.tv_usec = microseconds%1000000;
+		timeout.tv_sec = microseconds / 1000000;
+		timeout.tv_usec = microseconds % 1000000;
 	}
 
 	Connection* Server::add_to_connections(const SmallAddress& addr) {
-		bool exist = false;
-		for (Connection* c : conns)
-			if (addr.equals(c->address)) {
-				exist = true;
-				break;
-			}
+		Connection* new_conn = new Connection(sock, addr);
+		conns.push_back(new_conn);
+		return new_conn;
+	}
 
-		if (!exist) {
-			Connection* new_conn = new Connection(sock,addr);
-			conns.push_back(new_conn);
-			NetUtil::print(std::string("New connection: ") +addr.to_string());
-			return new_conn;
-		}
-		return nullptr;
+	void Server::remove_from_connections(const SmallAddress& addr) {
+		for (Connection* c : conns)
+			if (c->address.equals(addr))
+			{
+				conns.remove(c);
+				delete c;
+				return;
+			}
+	}
+	bool Server::is_connection(const SmallAddress& addr) {
+		for (Connection* c : conns)
+			if (addr.equals(c->address)) 
+				return true;
+		return false;
 	}
 }

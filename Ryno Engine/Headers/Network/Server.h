@@ -21,5 +21,7 @@ namespace Ryno{
 		fd_set readable;
 
 		Connection* add_to_connections(const SmallAddress& addr);
+		void remove_from_connections(const SmallAddress& addr);
+		bool is_connection(const SmallAddress& addr);
 	};
 }

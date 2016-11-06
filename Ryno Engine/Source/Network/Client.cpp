@@ -2,6 +2,7 @@
 #include "NetStructs.h"
 #include "Scene.h"
 #include "Game.h"
+#include "NetworkScene.h"
 
 
 namespace Ryno {
@@ -10,6 +11,7 @@ namespace Ryno {
 	void Client::start() {
 
 		game = Game::get_instance();
+		net_scene = (NetworkScene*)Game::get_instance()->get_scene();
 
 		if (!sock.init(true)) {
 			close();
@@ -33,22 +35,28 @@ namespace Ryno {
 		while (sock.recv_struct(&mess, addr) > 0) {
 			mess.header.to_hardware_order();
 			mess.pos_and_color.to_hardware_order();
-			game->get_scene()->network_recv(&mess);
+			net_scene->network_recv(&mess);
 		}
 
 		for (NetObject* net_obj : NetObject::net_objects) {
-			bool need_update = net_obj->last_send + delay <= game->time;
-			need_update &= local_address.equals(net_obj->id.addr);
-			if (need_update) {
-				net_obj->last_send = game->time;
+			bool owned = local_address.equals(net_obj->id.addr);
+			bool need_update = net_obj->last_update + net_obj->send_delay <= game->time;
+			bool need_disconnect = net_obj->last_modified + net_obj->disconnect_delay <= game->time;
+
+			if (need_update && owned) {
+				net_obj->last_update = game->time;
 				NetMessage m;
-				Game::get_instance()->get_scene()->network_send(net_obj,&m);
+				net_scene->network_send(net_obj,&m);
 				m.header.to_network_order();
 				m.pos_and_color.to_network_order();
 
 				sock.send_struct(&m, server_address);
 			}
+			else if (need_disconnect && !owned) {
+				net_obj->mark_for_destruction = true;
+			}
 		}
+		net_scene->remove_unused_net_objects();
 	}
 	
 	void Client::close() {

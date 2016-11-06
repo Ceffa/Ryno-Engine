@@ -132,7 +132,7 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Scenes\LightsScene.cpp" />
     <ClCompile Include="Source\Scenes\MinecraftScene.cpp" />
-    <ClCompile Include="Source\Scenes\NetworkScene.cpp" />
+    <ClCompile Include="Source\Scenes\Tron.cpp" />
     <ClCompile Include="Source\Scenes\ValleyScene.cpp" />
     <ClCompile Include="Source\Scenes\FireworkScene.cpp" />
     <ClCompile Include="Source\Scenes\HouseScene.cpp" />
@@ -143,7 +143,7 @@
     <ClInclude Include="Headers\Preferences\ScenesList.h" />
     <ClInclude Include="Headers\Scenes\LightsScene.h" />
     <ClInclude Include="Headers\Scenes\MinecraftScene.h" />
-    <ClInclude Include="Headers\Scenes\NetworkScene.h" />
+    <ClInclude Include="Headers\Scenes\Tron.h" />
     <ClInclude Include="Headers\Scenes\ValleyScene.h" />
     <ClInclude Include="Headers\Scenes\FireworkScene.h" />
     <ClInclude Include="Headers\Scenes\HouseScene.h" />

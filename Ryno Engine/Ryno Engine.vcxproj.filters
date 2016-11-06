@@ -702,6 +702,9 @@
     <ClCompile Include="Source\Network\NetStructs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Network\NetworkScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Game\Camera3D.h">
@@ -870,6 +873,9 @@
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Network\NetStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Network\NetworkScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
