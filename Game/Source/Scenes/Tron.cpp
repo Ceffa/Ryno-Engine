@@ -86,7 +86,7 @@ namespace Ryno {
 
 		glm::vec3 p = glm::vec3(x, y, z);
 
-		received->game_object->transform.set_position(glm::vec3(x, y, z));
+		received->set_network_position(glm::vec3(x, y, z));
 	}
 
 	void Tron::network_send(NetObject* sender, NetMessage* message) {

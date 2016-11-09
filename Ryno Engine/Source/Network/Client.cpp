@@ -39,11 +39,10 @@ namespace Ryno {
 		}
 
 		for (NetObject* net_obj : NetObject::net_objects) {
-			bool owned = local_address.equals(net_obj->id.addr);
 			bool need_update = net_obj->last_update + net_obj->send_delay <= game->time;
 			bool need_disconnect = net_obj->last_modified + net_obj->disconnect_delay <= game->time;
 
-			if (need_update && owned) {
+			if (need_update && net_obj->owned) {
 				net_obj->last_update = game->time;
 				NetMessage m;
 				net_scene->network_send(net_obj,&m);
@@ -52,7 +51,7 @@ namespace Ryno {
 
 				sock.send_struct(&m, server_address);
 			}
-			else if (need_disconnect && !owned) {
+			else if (need_disconnect && !net_obj->owned) {
 				net_obj->mark_for_destruction = true;
 			}
 		}
