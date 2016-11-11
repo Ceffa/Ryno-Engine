@@ -11,12 +11,13 @@ namespace Ryno{
 		glm::vec3 vel[2];
 		glm::vec3 acc[2];
 		glm::vec3 jerk;
+		glm::vec3 last_predicted_pos;
 		void new_position(const glm::vec3& new_pos);
 		void calculate_times();
 		void calculate_velocities();
 		void calcultate_accelerations();
 		void calculate_jerk();
-		void recalculate();
+		void recalculate(const glm::vec3& last_pos);
 	};
 
 	class NetObject : public Script {
@@ -46,6 +47,7 @@ namespace Ryno{
 		bool mark_for_destruction = false;
 		static F32 disconnect_delay;
 		static F32 send_delay;
+		static F32 extrapolation_length;
 		TimeCache time_cache;
 		bool owned;
 	};

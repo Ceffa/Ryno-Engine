@@ -26,7 +26,7 @@ namespace Ryno{
 		virtual void input_scripts() final;
 		virtual void update() {}
 		virtual void update_scripts() final;
-		
+		bool camera_control_enabled = true;
 		void camera_update();
 		Game* game;		
 
