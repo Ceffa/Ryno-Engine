@@ -40,7 +40,7 @@ namespace Ryno {
 	void NetObject::update()
 	{
 		if (!owned) {
-			F32 t = Game::get_instance()->time - time_cache.times[0];
+			F32 t = TimeManager::time - time_cache.times[0];
 			F32 lerp_value = t / extrapolation_length;
 			glm::vec3 start_pos = ryno_math::lerp(time_cache.last_predicted_pos, time_cache.pos[0], lerp_value);
 
@@ -51,7 +51,7 @@ namespace Ryno {
 	}
 	void TimeCache::calculate_times() {
 		times[1] = times[0];
-		times[0] = Game::get_instance()->time;
+		times[0] = TimeManager::time;
 	}
 	void TimeCache::new_position(const glm::vec3& newPos) {
 		pos[1] = pos[0];

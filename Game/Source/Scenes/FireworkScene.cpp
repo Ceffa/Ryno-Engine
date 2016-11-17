@@ -195,7 +195,7 @@ namespace Ryno{
 
 	void FireworkScene::update()
 	{
-		shader2.set_uniform("g_Time", game->time);
+		shader2.set_uniform("g_Time", TimeManager::time);
 	}
 
 	void FireworkScene::input(){
@@ -205,16 +205,16 @@ namespace Ryno{
 				idx = ++idx % 4;
 			}
 			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)){
-				go[idx].transform.add_position(game->delta_time * 1.0f * glm::vec3(1, 0, 0));
+				go[idx].transform.add_position(TimeManager::delta_time * 1.0f * glm::vec3(1, 0, 0));
 			}
 			if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)){
-				go[idx].transform.add_position(game->delta_time * 1.0f * glm::vec3(-1, 0, 0));
+				go[idx].transform.add_position(TimeManager::delta_time * 1.0f * glm::vec3(-1, 0, 0));
 			}
 			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)){
-				go[idx].transform.add_position(game->delta_time * 1.0f * glm::vec3(0,1, 0));
+				go[idx].transform.add_position(TimeManager::delta_time * 1.0f * glm::vec3(0,1, 0));
 			}
 			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)){
-				go[idx].transform.add_position(game->delta_time * 1.0f * glm::vec3(0, -1, 0));
+				go[idx].transform.add_position(TimeManager::delta_time * 1.0f * glm::vec3(0, -1, 0));
 			}
 		}
 	}

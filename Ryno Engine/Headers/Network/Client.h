@@ -1,6 +1,7 @@
 #pragma once
 #include "NetStructs.h"
 #include "NetEntity.h"
+#include "NetworkTime.h"
 
 
 namespace Ryno{
@@ -20,6 +21,7 @@ namespace Ryno{
 
 	private: 
 		NetworkScene* net_scene;
+		bool connected;
+		NetworkTime net_time;
 	};
-
 }

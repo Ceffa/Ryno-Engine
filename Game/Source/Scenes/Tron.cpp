@@ -53,16 +53,16 @@ namespace Ryno {
 			if (controlled) {
 				float speed = 10.0f;
 				if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(1, 0, 0));
+					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(1, 0, 0));
 				}
 				if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(-1, 0, 0));
+					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(-1, 0, 0));
 				}
 				if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(0, 1, 0));
+					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(0, 1, 0));
 				}
 				if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-					controlled->game_object->transform.add_position(game->delta_time * speed * glm::vec3(0, -1, 0));
+					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(0, -1, 0));
 				}
 			}
 		}
@@ -77,7 +77,7 @@ namespace Ryno {
 			received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", color);
 		}
 
-		received->last_modified = game->time;
+		received->last_modified = TimeManager::time;
 
 		F32 x = NetStruct::convert<F32>(message->pos_and_color.x);
 		F32 y = NetStruct::convert<F32>(message->pos_and_color.y);
@@ -92,7 +92,7 @@ namespace Ryno {
 	void Tron::network_send(NetObject* sender, NetMessage* message) {
 		message->header.id = sender->id;
 		message->header.code = NetStruct::convert<U32>(NetCode::POS_AND_COLOR);
-		message->header.time = NetStruct::convert<U32>(game->time);
+		message->header.time = NetStruct::convert<U32>(TimeManager::time);
 		glm::vec3 p = sender->game_object->transform.get_position();
 		ColorRGBA col = *(ColorRGBA*)sender->game_object->get_script<Model>()->sub_models[0].material.get_attribute("in_DiffuseColor");
 

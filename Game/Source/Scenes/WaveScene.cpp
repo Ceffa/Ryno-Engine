@@ -73,18 +73,12 @@ namespace Ryno {
 
 	void WaveScene::update() {
 		
-	
-		
-		F32 _time = Game::get_instance()->time * 1000;
+		F32 _time = TimeManager::time * 1000;
 		for (GameObject& o : cubes) {
-
 			o.transform.set_position(o.transform.get_position().x, 15.0f*sin(sqrt(pow(o.transform.get_position().x / 25.0f, 2) + pow(o.transform.get_position().z / 25.0f, 2)) - (_time / 400.0f)), o.transform.get_position().z);
 			
 			o.get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(0, (o.transform.get_position().y + 15.0f)*255.0f / 30.0f, 255 - (o.transform.get_position().y + 15.0f)*255.0f / 30.0f, 150));
-			}
-
-
-
+		}
 	}
 
 	

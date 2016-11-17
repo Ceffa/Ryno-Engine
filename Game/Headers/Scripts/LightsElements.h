@@ -107,22 +107,22 @@ namespace Ryno {
 		}
 		void input() override {
 			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-				center.transform.add_position(game->delta_time * speed* glm::vec3(1, 0, 0));
+				center.transform.add_position(TimeManager::delta_time * speed* glm::vec3(1, 0, 0));
 			}
 			if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-				center.transform.add_position(game->delta_time * speed* glm::vec3(-1, 0, 0));
+				center.transform.add_position(TimeManager::delta_time * speed* glm::vec3(-1, 0, 0));
 			}
 			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-				center.transform.add_position(game->delta_time * speed* glm::vec3(0, 0, 1));
+				center.transform.add_position(TimeManager::delta_time * speed* glm::vec3(0, 0, 1));
 			}
 			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-				center.transform.add_position(game->delta_time * speed* glm::vec3(0, 0, -1));
+				center.transform.add_position(TimeManager::delta_time * speed* glm::vec3(0, 0, -1));
 			}
 			if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
-				center.transform.add_rotation(glm::quat(game->delta_time * speed* glm::vec3(0, +.02f, 0)));
+				center.transform.add_rotation(glm::quat(TimeManager::delta_time * speed* glm::vec3(0, +.02f, 0)));
 			}
 			if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)) {
-				center.transform.add_rotation(glm::quat(game->delta_time * speed* glm::vec3(0, -.02f, 0)));
+				center.transform.add_rotation(glm::quat(TimeManager::delta_time * speed* glm::vec3(0, -.02f, 0)));
 			}
 			if (game->input_manager->is_key_pressed(SDLK_z, KEYBOARD)) {
 				for (auto* c : center.transform.children) {
@@ -137,7 +137,7 @@ namespace Ryno {
 
 		void update() {
 			for (auto* c : center.transform.children)
-				c->add_rotation(glm::quat(game->delta_time * speed* glm::vec3(0, +.02f, 0)));
+				c->add_rotation(glm::quat(TimeManager::delta_time * speed* glm::vec3(0, +.02f, 0)));
 		}
 
 		void set_speed(F32 s) {

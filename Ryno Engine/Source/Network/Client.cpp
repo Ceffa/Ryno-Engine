@@ -39,11 +39,11 @@ namespace Ryno {
 		}
 
 		for (NetObject* net_obj : NetObject::net_objects) {
-			bool need_update = net_obj->last_update + net_obj->send_delay <= game->time;
-			bool need_disconnect = net_obj->last_modified + net_obj->disconnect_delay <= game->time;
+			bool need_update = net_obj->last_update + net_obj->send_delay <= TimeManager::time;
+			bool need_disconnect = net_obj->last_modified + net_obj->disconnect_delay <= TimeManager::time;
 
 			if (need_update && net_obj->owned) {
-				net_obj->last_update = game->time;
+				net_obj->last_update = TimeManager::time;
 				NetMessage m;
 				net_scene->network_send(net_obj,&m);
 				m.header.to_network_order();

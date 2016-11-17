@@ -192,6 +192,7 @@
     <ClCompile Include="Source\Network\NetUtil.cpp" />
     <ClCompile Include="Source\Network\Network.cpp" />
     <ClCompile Include="Source\Network\NetworkScene.cpp" />
+    <ClCompile Include="Source\Network\NetworkTime.cpp" />
     <ClCompile Include="Source\Network\Server.cpp" />
     <ClCompile Include="Source\Network\Socket.cpp" />
     <ClCompile Include="Source\Others\PerlinNoise.cpp" />
@@ -247,6 +248,7 @@
     <ClInclude Include="Headers\Network\NetUtil.h" />
     <ClInclude Include="Headers\Network\NetEntity.h" />
     <ClInclude Include="Headers\Network\NetworkScene.h" />
+    <ClInclude Include="Headers\Network\NetworkTime.h" />
     <ClInclude Include="Headers\Network\Server.h" />
     <ClInclude Include="Headers\Network\Socket.h" />
     <ClInclude Include="Headers\Network\Thread.h" />

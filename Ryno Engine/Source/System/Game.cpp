@@ -108,9 +108,9 @@ namespace Ryno{
 			handle_network();
 			scene->camera_update();
 			if (game_state != GameState::Paused) update();
-			physics_world->physics_step(delta_time);
+			physics_world->physics_step(TimeManager::delta_time);
 			draw();
-			time_manager->end_frame(&time, &delta_time);
+			time_manager->end_frame();
 			if (game_state != GameState::Paused) time_manager->print_fps();
 		}
 		end();
@@ -237,7 +237,7 @@ namespace Ryno{
 		
 	void Game::update()
 	{
-		particle_manager->update(delta_time);
+		particle_manager->update(TimeManager::delta_time);
 		scene->update();
 		scene->update_scripts();
 	}
