@@ -23,28 +23,42 @@ namespace Ryno {
 
 	}
 
-	void Client::update() {
+	bool Client::update() {
 		if (!sock.create_state.up())
-			return;
+			return false;
 
 		SmallAddress addr;
 		NetMessage mess;
 		I32 res = 0;
 
+		send_client_update();
 
-		while (sock.recv_struct(&mess, addr) > 0) {
+		//Receive and dispatch messages.
+		//It handles directly only updates from the server.
+		//Every other message is forwarded to the scene
+		while ((res = sock.recv_struct(&mess, addr)) != 0) {
+			if (res < 0) {
+				net_scene->remove_every_net_object();
+				return false;
+			}
 			mess.header.to_hardware_order();
 			if (mess.header.code == NetCode::SERVER_UPDATE) {
 				mess.server_update.to_hardware_order();
 				connected = true;
-				net_time.recv_time(mess.server_update.net_time);
+				F32 new_time = NetStruct::convert<F32>(mess.server_update.net_time);
+
+				net_time.recv_time(new_time);
+
 				client_id = mess.server_update.client_id;
+				Log::println(TimeManager::time - net_time.time);
+
 			}
 			else if (connected){
 				mess.pos_and_color.to_hardware_order();
 				net_scene->network_recv(&mess);
 			}
 		}
+		//If connected starts to send updates about net object
 		if (connected) {
 			for (NetObject* net_obj : NetObject::net_objects) {
 				bool need_update = net_obj->last_update + net_obj->send_delay <= TimeManager::time;
@@ -65,9 +79,25 @@ namespace Ryno {
 			}
 		}
 		net_scene->remove_unused_net_objects();
+		return true;
 	}
 	
+	void Client::send_client_update() {
+		//Return if just sent a message
+		if (net_time.last_sent + net_time.update_frequence > TimeManager::time)
+			return;
+
+		NetMessage message;
+		message.header.id = NetId(local_address);
+		message.header.code = NetStruct::convert<U32>(NetCode::CLIENT_UPDATE);
+		message.header.to_network_order();
+		message.client_update.to_network_order();
+		net_time.last_sent = TimeManager::time;
+		sock.send_struct(&message, server_address);
+
+	}
 	void Client::close() {
 		sock.close();
+		connected = false;
 	}
 }

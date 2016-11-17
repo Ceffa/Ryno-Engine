@@ -4,20 +4,24 @@
 
 namespace Ryno {
 
+	Ryno::U32 Connection::last_client_id = 0;
 	Connection::Connection(Socket& _sock, const SmallAddress& _addr)
 		: sock(&_sock),address(_addr)
 	{
 		NetUtil::print(std::string("New connection: ") + address.to_string());
+		client_id = last_client_id++;
 
 	}
 
 	Connection::Connection() {
+		client_id = last_client_id++;
 		NetUtil::print(std::string("New connection: ") + address.to_string());
 	}
 
 	Connection::~Connection() {
 		NetUtil::print(std::string("Closed connection: ") + address.to_string());
 	}
+
 
 	bool Connection::want_read() {
 		return true;

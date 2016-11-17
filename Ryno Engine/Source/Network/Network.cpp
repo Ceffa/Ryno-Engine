@@ -54,8 +54,12 @@ namespace Ryno {
 	}
 
 	void Network::update() {
-		if (has_server && server) server->update();
-		if (has_client && client) client->update();
+		if (has_server && server)
+			if (!server->update())
+				stop_server();
+		if (has_client && client)
+			if (!client->update())
+				stop_client();
 	}
 
 

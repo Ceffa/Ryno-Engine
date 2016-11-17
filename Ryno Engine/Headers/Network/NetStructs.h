@@ -122,12 +122,9 @@ namespace Ryno{
 
 	//Sent by client periodically
 	struct ClientUpdate : public NetStruct {
-		U32 client_time;
 		void to_network_order() override {
-			client_time = htonl(client_time);
 		}
 		void to_hardware_order() override {
-			client_time = ntohl(client_time);
 		}
 	};
 	struct ServerUpdate : public NetStruct {

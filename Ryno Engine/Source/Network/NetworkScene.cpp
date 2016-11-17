@@ -24,5 +24,16 @@ namespace Ryno {
 				it++;
 		}
 	}
+	void NetworkScene::remove_every_net_object()
+	{
+		for (auto it = net_game_objects.begin(); it != net_game_objects.end(); )  //No increment
+		{
+			NetObject* no = it->get_script<NetObject>();
+			if (!no->owned)
+				it = net_game_objects.erase(it);
+			else
+				it++;
+		}
+	}
 
 }

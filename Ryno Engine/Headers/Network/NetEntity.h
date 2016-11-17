@@ -9,7 +9,7 @@ namespace Ryno{
 		NetEntity::~NetEntity() {}
 		
 		virtual void start() = 0;
-		virtual void update() = 0;
+		virtual bool update() = 0;
 		virtual void close() = 0;
 
 		SmallAddress local_address;

@@ -1,5 +1,6 @@
 #include "Server.h"
 #include "NetUtil.h"
+#include "TimeManager.h"
 #include "Network.h"
 
 namespace Ryno {
@@ -17,7 +18,7 @@ namespace Ryno {
 
 
 
-	void Server::update()
+	bool Server::update()
 	{
 		FD_ZERO(&readable);
 		FD_SET(sock.get(), &readable);
@@ -37,21 +38,38 @@ namespace Ryno {
 				if (res < 0)
 					remove_from_connections(addr);
 				else {
-					if(!is_connection(addr))
-						add_to_connections(addr);
-					for (auto it = conns.begin(); it != conns.end(); )  //No increment
-					{
-						Connection *conn = *it;
+					if (mess.header.code == NetCode::CLIENT_UPDATE) {
+						Connection* conn_handle = find_connection(addr);
+						if (!conn_handle)
+							conn_handle = add_to_connections(addr);
 
-						if (!conn->address.equals(addr) && !conn->do_write(&mess)) {
-							delete conn;
-							it = conns.erase(it);
+						NetMessage m;
+						m.header.id = NetId(local_address);
+						m.header.code = NetCode::SERVER_UPDATE;
+						m.header.to_network_order();
+						
+						m.server_update.client_id = conn_handle->client_id;
+
+						m.server_update.net_time = NetStruct::convert<U32>(TimeManager::time);
+						m.server_update.to_network_order();
+						conn_handle->do_write(&m);
+					}
+					else {
+						for (auto it = conns.begin(); it != conns.end(); )  //No increment
+						{
+							Connection *conn = *it;
+
+							if (!conn->address.equals(addr) && !conn->do_write(&mess)) {
+								delete conn;
+								it = conns.erase(it);
+							}
+							else it++;
 						}
-						else it++;
 					}
 				}
 			}
 		}
+		return true;
 	}
 
 	void Server::close() {
@@ -78,10 +96,10 @@ namespace Ryno {
 				return;
 			}
 	}
-	bool Server::is_connection(const SmallAddress& addr) {
+	Connection* Server::find_connection(const SmallAddress& addr) {
 		for (Connection* c : conns)
 			if (addr.equals(c->address)) 
-				return true;
-		return false;
+				return c;
+		return nullptr;
 	}
 }

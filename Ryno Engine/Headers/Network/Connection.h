@@ -7,6 +7,8 @@ namespace Ryno{
 
 	class Connection {
 	public:
+		static U32 last_client_id;
+		U32 client_id;
 		Socket* sock;
 		SmallAddress address;
 
