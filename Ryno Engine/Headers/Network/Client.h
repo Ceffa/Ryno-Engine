@@ -10,6 +10,7 @@ namespace Ryno{
 	public:
 		Client(C* _server_ip, U16 _server_port,C* _local_ip, U16 _local_port = 0) : server_address(_server_ip, _server_port){
 			local_address.set(_local_ip, _local_port);
+			connected = true;
 		}
 		~Client() { close(); }
 
@@ -22,6 +23,7 @@ namespace Ryno{
 	private: 
 		NetworkScene* net_scene;
 		bool connected;
+		U32 client_id;
 		NetworkTime net_time;
 	};
 }

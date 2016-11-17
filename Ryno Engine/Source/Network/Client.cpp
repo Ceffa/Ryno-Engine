@@ -34,25 +34,34 @@ namespace Ryno {
 
 		while (sock.recv_struct(&mess, addr) > 0) {
 			mess.header.to_hardware_order();
-			mess.pos_and_color.to_hardware_order();
-			net_scene->network_recv(&mess);
-		}
-
-		for (NetObject* net_obj : NetObject::net_objects) {
-			bool need_update = net_obj->last_update + net_obj->send_delay <= TimeManager::time;
-			bool need_disconnect = net_obj->last_modified + net_obj->disconnect_delay <= TimeManager::time;
-
-			if (need_update && net_obj->owned) {
-				net_obj->last_update = TimeManager::time;
-				NetMessage m;
-				net_scene->network_send(net_obj,&m);
-				m.header.to_network_order();
-				m.pos_and_color.to_network_order();
-
-				sock.send_struct(&m, server_address);
+			if (mess.header.code == NetCode::SERVER_UPDATE) {
+				mess.server_update.to_hardware_order();
+				connected = true;
+				net_time.recv_time(mess.server_update.net_time);
+				client_id = mess.server_update.client_id;
 			}
-			else if (need_disconnect && !net_obj->owned) {
-				net_obj->mark_for_destruction = true;
+			else if (connected){
+				mess.pos_and_color.to_hardware_order();
+				net_scene->network_recv(&mess);
+			}
+		}
+		if (connected) {
+			for (NetObject* net_obj : NetObject::net_objects) {
+				bool need_update = net_obj->last_update + net_obj->send_delay <= TimeManager::time;
+				bool need_disconnect = net_obj->last_modified + net_obj->disconnect_delay <= TimeManager::time;
+
+				if (need_update && net_obj->owned) {
+					net_obj->last_update = TimeManager::time;
+					NetMessage m;
+					net_scene->network_send(net_obj, &m);
+					m.header.to_network_order();
+					m.pos_and_color.to_network_order();
+
+					sock.send_struct(&m, server_address);
+				}
+				else if (need_disconnect && !net_obj->owned) {
+					net_obj->mark_for_destruction = true;
+				}
 			}
 		}
 		net_scene->remove_unused_net_objects();

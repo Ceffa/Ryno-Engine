@@ -7,7 +7,6 @@
 
 namespace Ryno{
 
-	enum NetCode{POS_AND_COLOR,U_INT};
 
 	static class Network {
 	public:

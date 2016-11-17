@@ -91,8 +91,7 @@ namespace Ryno {
 
 	void Tron::network_send(NetObject* sender, NetMessage* message) {
 		message->header.id = sender->id;
-		message->header.code = NetStruct::convert<U32>(NetCode::POS_AND_COLOR);
-		message->header.time = NetStruct::convert<U32>(TimeManager::time);
+		message->header.code = NetStruct::convert<U32>(NetCode::POS_AND_COL);
 		glm::vec3 p = sender->game_object->transform.get_position();
 		ColorRGBA col = *(ColorRGBA*)sender->game_object->get_script<Model>()->sub_models[0].material.get_attribute("in_DiffuseColor");
 

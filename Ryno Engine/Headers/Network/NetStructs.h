@@ -162,13 +162,15 @@ namespace Ryno{
 		}
 	};
 
+	enum NetCode { CLIENT_UPDATE,SERVER_UPDATE, POS_AND_COL };
+
 	struct NetMessage {
 		NetMessage() {}
 		Header header;
 		union {
-			PosAndColor pos_and_color;
 			ClientUpdate client_update;
 			ServerUpdate server_update;
+			PosAndColor pos_and_color;
 		};
 
 	};
