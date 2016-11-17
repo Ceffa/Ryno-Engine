@@ -109,35 +109,38 @@ namespace Ryno{
 	//information about a packet
 	struct Header : NetStruct {
 		Header() {}
-		Header(const NetId& _id, U32 _time, U32 _code) :id(_id), time(_time), code(_code) {}
+		Header(const NetId& _id, U32 _net_time, U32 _code) :id(_id), code(_code) {}
 		NetId id;
-		U32 time;
 		U32 code;
 		void to_network_order() override {
-			time = htonl(time);
 			code = htonl(code);
 		}
 		void to_hardware_order() override {
-			time = ntohl(time);
 			code = ntohl(code);
 		}
 	};
 
-	
-
-	struct RequestClientTime : public NetStruct {
-		void to_network_order() override {}
-		void to_hardware_order() override {}
+	//Sent by client periodically
+	struct ClientUpdate : public NetStruct {
+		U32 client_time;
+		void to_network_order() override {
+			client_time = htonl(client_time);
+		}
+		void to_hardware_order() override {
+			client_time = ntohl(client_time);
+		}
 	};
-	struct SendClientTime : public NetStruct {
-		U32 time;
-		void to_network_order() override {}
-		void to_hardware_order() override {}
-	};
-	struct SendNetworkTime : public NetStruct {
-		U32 time;
-		void to_network_order() override {}
-		void to_hardware_order() override {}
+	struct ServerUpdate : public NetStruct {
+		U32 net_time;
+		U32 client_id;
+		void to_network_order() override {
+			net_time = htonl(net_time);
+			client_id = htonl(client_id);
+		}
+		void to_hardware_order() override {
+			net_time = ntohl(net_time);
+			client_id = ntohl(client_id);
+		}
 	};
 
 	struct PosAndColor : public NetStruct {
@@ -164,9 +167,8 @@ namespace Ryno{
 		Header header;
 		union {
 			PosAndColor pos_and_color;
-			RequestClientTime request_client_time;
-			SendClientTime send_client_time;
-			SendNetworkTime send_network_time;
+			ClientUpdate client_update;
+			ServerUpdate server_update;
 		};
 
 	};
