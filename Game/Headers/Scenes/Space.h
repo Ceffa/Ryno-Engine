@@ -3,15 +3,16 @@
 
 namespace Ryno{
 
-	class Tron : public NetworkScene
+	class Space : public NetworkScene
 	{
 	friend class Client;
 
 	public:
-		Tron() : NetworkScene(){}
+		Space() : NetworkScene(){}
 	private:
 	
 		void start() override;
+		void update() override;
 		void input() override;
 		void network_recv(const NetMessage* message) override;
 		void network_send(NetObject* sender, NetMessage* message) override;
@@ -23,5 +24,7 @@ namespace Ryno{
 		I32 mesh;
 		Shader shader, dir_light_shader;
 		Texture white, white_normal;
+		GUIObject timer;
+		Font font;
 	};
 }

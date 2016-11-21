@@ -50,7 +50,6 @@ namespace Ryno {
 				net_time.recv_time(new_time);
 
 				client_id = mess.server_update.client_id;
-				Log::println(TimeManager::time - net_time.time);
 
 			}
 			else if (connected){

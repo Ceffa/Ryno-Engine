@@ -8,15 +8,11 @@ namespace Ryno{
 	struct TimeCache {
 		F32 times[2];
 		glm::vec3 pos[2];
-		glm::vec3 vel[2];
-		glm::vec3 acc[2];
-		glm::vec3 jerk;
+		glm::vec3 vel;
 		glm::vec3 last_predicted_pos;
 		void new_position(const glm::vec3& new_pos);
 		void calculate_times();
 		void calculate_velocities();
-		void calcultate_accelerations();
-		void calculate_jerk();
 		void recalculate(const glm::vec3& last_pos);
 	};
 

@@ -81,7 +81,7 @@
     <ClCompile Include="Source\Scenes\LightsScene.cpp">
       <Filter>Source\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scenes\Tron.cpp">
+    <ClCompile Include="Source\Scenes\Space.cpp">
       <Filter>Source\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,7 +116,7 @@
     <ClInclude Include="Headers\Scenes\LightsScene.h">
       <Filter>Header\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Scenes\Tron.h">
+    <ClInclude Include="Headers\Scenes\Space.h">
       <Filter>Header\Scenes</Filter>
     </ClInclude>
   </ItemGroup>

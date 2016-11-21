@@ -20,11 +20,11 @@ namespace Ryno{
 		bool update() override;
 		void close() override;	
 
+		NetworkTime net_time;
 	private: 
 		void send_client_update();
 		NetworkScene* net_scene;
 		bool connected;
 		U32 client_id;
-		NetworkTime net_time;
 	};
 }

@@ -32,9 +32,10 @@ namespace Ryno {
 	void TimeCache::recalculate(const glm::vec3& last_pos) {
 		last_predicted_pos = last_pos;
 		calculate_times();
+
+		
+
 		calculate_velocities();
-		calcultate_accelerations();
-		calculate_jerk();
 	}
 
 	void NetObject::update()
@@ -45,7 +46,6 @@ namespace Ryno {
 			glm::vec3 start_pos = ryno_math::lerp(time_cache.last_predicted_pos, time_cache.pos[0], lerp_value);
 
 			start_pos += t * time_cache.vel[0];// +t*t *time_cache.acc[0] + t*t*t * time_cache.jerk[0];
-			
 			game_object->transform.set_position(start_pos);
 		}
 	}
@@ -58,14 +58,11 @@ namespace Ryno {
 		pos[0] = newPos;
 	}
 	void TimeCache::calculate_velocities() {
-		vel[1] = vel[0];
-		vel[0] = (pos[0] - pos[1])/(times[0] - times[1]);
+		//Get delta time and error check for nan
+		F32 time_delta = times[0] - times[1];
+		if (time_delta < .00001f)
+			time_delta = .00001f;
+		vel = (pos[0] - pos[1])/time_delta;
 	}
-	void TimeCache::calcultate_accelerations() {
-		acc[1] = acc[0];
-		acc[0] = (vel[0] - vel[1]) / (times[0] - times[1]);
-	}
-	void TimeCache::calculate_jerk() {
-		jerk = (acc[0] - acc[1]) / (times[0] - times[1]);
-	}
+	
 }
