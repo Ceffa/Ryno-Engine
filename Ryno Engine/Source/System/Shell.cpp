@@ -78,7 +78,7 @@ namespace Ryno {
 				
 		iterator = history.begin();
 		history_length = 0;
-
+		hide();
 		
 	}
 	void Shell::set_text_color(U8 r, U8 g, U8 b)

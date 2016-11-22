@@ -75,8 +75,8 @@ namespace Ryno {
 			lines[i].text->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
 		}
 
-		
 		Log::print("");
+		hide();
 	
 		
 	}

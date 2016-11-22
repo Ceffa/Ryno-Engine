@@ -7,9 +7,9 @@ namespace Ryno {
 
 		client = Network::get_instance()->client;
 
-		camera->position = glm::vec4(0, 0, -10, 1);
+		camera->position = glm::vec4(0, 20, 0, 1);
 		camera->yaw = 0;
-		camera->pitch = 0;
+		camera->pitch = 90;
 		camera->movement_speed = 20;
 		camera->have_skybox = true;
 		camera->skybox = game->texture_manager->load_cube_map("day", ".png", GAME);
@@ -63,10 +63,10 @@ namespace Ryno {
 					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(-1, 0, 0));
 				}
 				if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(0, 1, 0));
+					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(0, 0, 1));
 				}
 				if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(0, -1, 0));
+					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(0, 0, -1));
 				}
 			}
 		}
@@ -145,12 +145,12 @@ namespace Ryno {
 		return c;
 	}
 	glm::vec3 Space::get_start_pos_from_id(U32 i) {
-		static F32 off = 3;
+		static F32 off = 5;
 		glm::vec3 p = glm::vec3(0, 0, 0);
 		if (i < 3)
-			p.y = off;
+			p.z = off;
 		else if (i>4)
-			p.y = -off;
+			p.z = -off;
 
 		if (i == 0 || i == 3 || i == 5)
 			p.x = -off;
