@@ -20,8 +20,9 @@ namespace Ryno {
 
 		virtual void start() = 0;
 		virtual void input() = 0;
-		virtual void network_recv(const NetMessage* message) = 0;
-		virtual void network_send(NetObject* sender, NetMessage* message) = 0;
+		virtual void on_network_recv(const NetMessage* message) = 0;
+		virtual void on_network_send(NetObject* sender, NetMessage* message) = 0;
+		virtual void on_client_started() = 0;
 		NetObject* create_net_obj(const NetId& id);
 		void remove_unused_net_objects();	//clean objects that didn't receive updates for a while
 		void remove_every_net_object();		//clean every net objects if the client is disconnected (except his)

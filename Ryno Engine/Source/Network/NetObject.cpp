@@ -28,13 +28,19 @@ namespace Ryno {
 		time_cache.recalculate(game_object->transform.get_position());
 	}
 
+	void NetObject::reset_network_position(const glm::vec3& new_pos) {
+		time_cache.pos[0] = new_pos;
+		time_cache.pos[1] = new_pos;
+		time_cache.vel = glm::vec3(0, 0, 0);
+		time_cache.last_predicted_pos = new_pos;
+		time_cache.times[0] = TimeManager::time;
+		time_cache.times[1] = TimeManager::time;
+	}
+
 
 	void TimeCache::recalculate(const glm::vec3& last_pos) {
 		last_predicted_pos = last_pos;
 		calculate_times();
-
-		
-
 		calculate_velocities();
 	}
 

@@ -44,17 +44,20 @@ namespace Ryno {
 			mess.header.to_hardware_order();
 			if (mess.header.code == NetCode::SERVER_UPDATE) {
 				mess.server_update.to_hardware_order();
-				connected = true;
 				F32 new_time = NetStruct::convert<F32>(mess.server_update.net_time);
 
+				if (!connected) {
+					client_id = mess.server_update.client_id;
+					connected = true;
+					net_scene->on_client_started();
+				}
 				net_time.recv_time(new_time);
 
-				client_id = mess.server_update.client_id;
 
 			}
 			else if (connected){
 				mess.pos_and_color.to_hardware_order();
-				net_scene->network_recv(&mess);
+				net_scene->on_network_recv(&mess);
 			}
 		}
 		//If connected starts to send updates about net object
@@ -66,7 +69,7 @@ namespace Ryno {
 				if (need_update && net_obj->owned) {
 					net_obj->last_update = TimeManager::time;
 					NetMessage m;
-					net_scene->network_send(net_obj, &m);
+					net_scene->on_network_send(net_obj, &m);
 					m.header.to_network_order();
 					m.pos_and_color.to_network_order();
 

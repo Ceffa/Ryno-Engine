@@ -14,8 +14,9 @@ namespace Ryno{
 		void start() override;
 		void update() override;
 		void input() override;
-		void network_recv(const NetMessage* message) override;
-		void network_send(NetObject* sender, NetMessage* message) override;
+		void on_network_recv(const NetMessage* message) override;
+		void on_network_send(NetObject* sender, NetMessage* message) override;
+		void on_client_started() override;
 
 		void initialize_net_obj(const NetObject* net_obj);
 

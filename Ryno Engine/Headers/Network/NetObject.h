@@ -36,7 +36,10 @@ namespace Ryno{
 		bool is_copyable() override { return false; };
 		F32 last_modified;		//needed to desync the object if inactive
 
+		//Add a new position to the time cache buffer
 		void set_network_position(const glm::vec3& newPos);
+		//Hard reset of a position to avoid interpolation
+		void reset_network_position(const glm::vec3& newPos);
 
 	private:
 		F32 last_update = 0;	//needed to send messages in regular time intervals

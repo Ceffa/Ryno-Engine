@@ -51,12 +51,7 @@ namespace Ryno {
 	}
 
 	void Space::input() {
-		if (!controlled) {
-			controlled = create_net_obj(NetId(client->local_address));
-			initialize_net_obj(controlled);
-			controlled->game_object->transform.set_position(ryno_math::rand_vec3_range(glm::vec3(-4, -2, -1), glm::vec3(4, 2, 1)));
-			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white));
-		}
+		
 
 		if (!game->shell->active) {
 			if (controlled) {
@@ -76,7 +71,7 @@ namespace Ryno {
 			}
 		}
 	}
-	void Space::network_recv(const NetMessage* message) {
+	void Space::on_network_recv(const NetMessage* message) {
 		NetObject* received = NetObject::find(message->header.id);
 
 		if (received == nullptr) {
@@ -97,7 +92,7 @@ namespace Ryno {
 		received->set_network_position(glm::vec3(x, y, z));
 	}
 
-	void Space::network_send(NetObject* sender, NetMessage* message) {
+	void Space::on_network_send(NetObject* sender, NetMessage* message) {
 		message->header.id = sender->id;
 		message->header.code = NetStruct::convert<U32>(NetCode::POS_AND_COL);
 		glm::vec3 p = sender->game_object->transform.get_position();
@@ -107,6 +102,23 @@ namespace Ryno {
 		message->pos_and_color.y = NetStruct::convert<U32>(p.y);
 		message->pos_and_color.z = NetStruct::convert<U32>(p.z);
 		message->pos_and_color.color = NetStruct::convert<U32>(col);
+	}
+
+	void Space::on_client_started() {
+		if (!controlled) {
+			controlled = create_net_obj(NetId(client->local_address));
+			initialize_net_obj(controlled);
+			controlled->reset_network_position(ryno_math::rand_vec3_range(glm::vec3(-4, -2, -1), glm::vec3(4, 2, 1)));
+			ColorRGBA c = ColorRGBA::black;
+			auto i = client->client_id;
+			if (i == 0 || i == 4 || i == 6 || i == 7)
+				c.r = 255;
+			if (i == 1 || i == 4 || i == 5 || i == 7)
+				c.g = 255;
+			if (i == 2 || i == 5 || i == 6 || i == 7)
+				c.b = 255;
+			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", c);
+		}
 	}
 
 	void Space::initialize_net_obj(const NetObject* net_obj) {
