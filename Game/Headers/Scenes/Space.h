@@ -2,7 +2,7 @@
 #include "NetworkScene.h"
 
 namespace Ryno{
-
+	enum ObjectCode {PLAYER,BALL};
 	class Space : public NetworkScene
 	{
 	friend class Client;
@@ -17,6 +17,8 @@ namespace Ryno{
 		void on_network_recv(const NetMessage* message) override;
 		void on_network_send(NetObject* sender, NetMessage* message) override;
 		void on_client_started() override;
+		void receive_player(const NetMessage* message);
+		void receive_ball(const NetMessage* message);
 
 		ColorRGBA get_start_color_from_id(U32 i);
 		glm::vec3 get_start_pos_from_id(U32 i);

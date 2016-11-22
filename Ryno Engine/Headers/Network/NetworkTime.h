@@ -8,7 +8,7 @@ namespace Ryno{
 	class NetworkTime {
 	friend class Client;
 	public:
-		NetworkTime() : update_frequence(1) {}
+		NetworkTime() : update_frequence(1),last_sent(-999) {}
 		NetworkTime(F32 _update_frequence) : update_frequence(_update_frequence) {}
 		F32 get_time();
 

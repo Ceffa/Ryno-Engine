@@ -44,7 +44,7 @@ namespace Ryno {
 			mess.header.to_hardware_order();
 			if (mess.header.code == NetCode::SERVER_UPDATE) {
 				mess.server_update.to_hardware_order();
-				F32 new_time = NetStruct::convert<F32>(mess.server_update.net_time);
+				F32 new_time = mess.server_update.get_time();
 
 				if (!connected) {
 					client_id = mess.server_update.client_id;
@@ -55,8 +55,8 @@ namespace Ryno {
 
 
 			}
-			else if (connected){
-				mess.pos_and_color.to_hardware_order();
+			else if (connected && mess.header.code == NetCode::OBJECT){
+				mess.object_update.to_hardware_order();
 				net_scene->on_network_recv(&mess);
 			}
 		}
@@ -72,7 +72,7 @@ namespace Ryno {
 					net_scene->on_network_send(net_obj, &m);
 					m.header.id.client_id = client_id;
 					m.header.to_network_order();
-					m.pos_and_color.to_network_order();
+					m.object_update.to_network_order();
 
 					sock.send_struct(&m, server_address);
 				}
@@ -91,7 +91,7 @@ namespace Ryno {
 			return;
 
 		NetMessage message;
-		message.header.code = NetStruct::convert<U32>(NetCode::CLIENT_UPDATE);
+		message.header.code = NetCode::CLIENT_UPDATE;
 		message.header.to_network_order();
 		message.client_update.to_network_order();
 		net_time.last_sent = TimeManager::time;

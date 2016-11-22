@@ -72,13 +72,15 @@ namespace Ryno {
 		}
 	}
 	void Space::on_network_recv(const NetMessage* message) {
+		if (message->object_update.code == ObjectCode::PLAYER)
+			receive_player(message);
+	}
+
+	void Space::receive_player(const NetMessage* message) {
+	
 		NetObject* received = NetObject::find(message->header.id);
 
-		F32 x = NetStruct::convert<F32>(message->pos_and_color.x);
-		F32 y = NetStruct::convert<F32>(message->pos_and_color.y);
-		F32 z = NetStruct::convert<F32>(message->pos_and_color.z);
-
-		glm::vec3 p = glm::vec3(x, y, z);
+		glm::vec3 p = message->object_update.get_pos();
 
 		//Reset position if just intantiated, otherwise just set the network pos
 		if (received == nullptr) {
@@ -96,14 +98,10 @@ namespace Ryno {
 
 	void Space::on_network_send(NetObject* sender, NetMessage* message) {
 		message->header.id = sender->id;
-		message->header.code = NetStruct::convert<U32>(NetCode::POS_AND_COL);
+		message->header.code = NetCode::OBJECT;
 		glm::vec3 p = sender->game_object->transform.get_position();
-		ColorRGBA col = *(ColorRGBA*)sender->game_object->get_script<Model>()->sub_models[0].material.get_attribute("in_DiffuseColor");
-
-		message->pos_and_color.x = NetStruct::convert<U32>(p.x);
-		message->pos_and_color.y = NetStruct::convert<U32>(p.y);
-		message->pos_and_color.z = NetStruct::convert<U32>(p.z);
-		message->pos_and_color.color = NetStruct::convert<U32>(col);
+		message->object_update.set_pos(p);
+		message->object_update.code = ObjectCode::PLAYER;
 	}
 
 	void Space::on_client_started() {
@@ -112,7 +110,6 @@ namespace Ryno {
 			initialize_net_obj(controlled);
 			
 		
-
 			controlled->reset_network_position(get_start_pos_from_id(client->client_id));
 			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(client->client_id));
 		}

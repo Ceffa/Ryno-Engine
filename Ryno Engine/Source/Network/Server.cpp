@@ -49,7 +49,7 @@ namespace Ryno {
 						
 						m.server_update.client_id = conn_handle->client_id;
 
-						m.server_update.net_time = NetStruct::convert<U32>(TimeManager::time);
+						m.server_update.set_time(TimeManager::time);
 						m.server_update.to_network_order();
 						conn_handle->do_write(&m);
 					}

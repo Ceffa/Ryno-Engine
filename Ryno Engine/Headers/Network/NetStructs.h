@@ -91,7 +91,8 @@ namespace Ryno{
 
 	//Base network struct that supports 
 	//conversion to and from network order
-	struct NetStruct {
+	class NetStruct {
+	public:
 		NetStruct() {}
 		virtual void to_network_order() = 0;
 		virtual void to_hardware_order() = 0;
@@ -103,7 +104,8 @@ namespace Ryno{
 
 	//Net struct that contains mandatory 
 	//information about a packet
-	struct Header : NetStruct {
+	class Header : public NetStruct {
+	public:
 		Header() {}
 		Header(U32 _code, const NetId& _id) : code(_code), id(_id){}
 		U32 code;
@@ -121,14 +123,15 @@ namespace Ryno{
 	};
 
 	//Sent by client periodically
-	struct ClientUpdate : public NetStruct {
+	class ClientUpdate : public NetStruct {
+	public:
 		void to_network_order() override {
 		}
 		void to_hardware_order() override {
 		}
 	};
-	struct ServerUpdate : public NetStruct {
-		U32 net_time;
+	class ServerUpdate : public NetStruct {
+	public:
 		U32 client_id;
 		void to_network_order() override {
 			net_time = htonl(net_time);
@@ -138,28 +141,92 @@ namespace Ryno{
 			net_time = ntohl(net_time);
 			client_id = ntohl(client_id);
 		}
+		void set_time(F32 t) {
+			net_time = NetStruct::convert<U32>(t);
+		}
+		F32 get_time() {
+			return NetStruct::convert<F32>(net_time);
+		}
+
+	private:
+		U32 net_time;
 	};
 
-	struct PosAndColor : public NetStruct {
-		PosAndColor() {}
-		PosAndColor(U32 _x, U32 _y, U32 _z, U32 _color) :x(_x), y(_y), z(_z), color(_color) {}
-		U32 x, y, z;
-		U32 color;
+	class ObjectUpdate : public NetStruct {
+	public:
+		ObjectUpdate() {}
+		ObjectUpdate(U32 _code): code(_code) {}
+		U32 code;
+		
 		void to_network_order() override {
+			code = htonl(code);
 			x = htonl(x);
 			y = htonl(y);
 			z = htonl(z);
-			color = htonl(color);
+			pitch = htonl(pitch);
+			yaw = htonl(yaw);
+			roll = htonl(roll);
+			w = htonl(w);
+			h = htonl(h);
+			d = htonl(d);
 		}
 		void to_hardware_order() override {
+			code = ntohl(code);
 			x = ntohl(x);
 			y = ntohl(y);
 			z = ntohl(z);
-			color = htonl(color);
+			pitch = ntohl(pitch);
+			yaw = ntohl(yaw);
+			roll = ntohl(roll);
+			w = ntohl(w);
+			h = ntohl(h);
+			d = ntohl(d);
 		}
+
+		void set_pos(glm::vec3 pos) {
+			x = NetStruct::convert<U32>(pos.x);
+			y = NetStruct::convert<U32>(pos.y);
+			z = NetStruct::convert<U32>(pos.z);
+		}
+		void set_rot(glm::vec3 rot) {
+			pitch = NetStruct::convert<U32>(rot.x);
+			yaw = NetStruct::convert<U32>(rot.y);
+			roll = NetStruct::convert<U32>(rot.z);
+		}
+		void set_scale(glm::vec3 scale) {
+			w = NetStruct::convert<U32>(scale.x);
+			h = NetStruct::convert<U32>(scale.y);
+			d = NetStruct::convert<U32>(scale.z);
+		}
+		glm::vec3 get_pos() const {
+			glm::vec3 pos;
+			pos.x = NetStruct::convert<F32>(x);
+			pos.y = NetStruct::convert<F32>(y);
+			pos.z = NetStruct::convert<F32>(z);
+			return pos;
+		}
+		glm::vec3 get_rot()const {
+			glm::vec3 rot;
+			rot.x = NetStruct::convert<F32>(pitch);
+			rot.y = NetStruct::convert<F32>(yaw);
+			rot.z = NetStruct::convert<F32>(roll);
+			return rot;
+		}
+		glm::vec3 get_scale() const {
+			glm::vec3 scale;
+			scale.x = NetStruct::convert<F32>(w);
+			scale.y = NetStruct::convert<F32>(h);
+			scale.z = NetStruct::convert<F32>(d);
+			return scale;
+		}
+
+	private:
+		U32 x, y, z;
+		U32 pitch, yaw, roll;
+		U32 w, h, d;
 	};
 
-	enum NetCode { CLIENT_UPDATE,SERVER_UPDATE, POS_AND_COL };
+	enum NetCode { CLIENT_UPDATE,SERVER_UPDATE, OBJECT };
 
 	struct NetMessage {
 		NetMessage() {}
@@ -167,7 +234,7 @@ namespace Ryno{
 		union {
 			ClientUpdate client_update;
 			ServerUpdate server_update;
-			PosAndColor pos_and_color;
+			ObjectUpdate object_update;
 		};
 
 	};
