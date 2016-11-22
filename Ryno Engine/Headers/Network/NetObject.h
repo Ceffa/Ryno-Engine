@@ -8,12 +8,20 @@ namespace Ryno{
 	struct TimeCache {
 		F32 times[2];
 		glm::vec3 pos[2];
-		glm::vec3 vel;
+		glm::vec3 d_pos;
+		glm::quat rot[2];
+		glm::quat d_rot;
+		glm::vec3 scale[2];
+		glm::vec3 d_scale;
 		glm::vec3 last_predicted_pos;
+		glm::quat last_predicted_rot;
+		glm::vec3 last_predicted_scale;
 		void new_position(const glm::vec3& new_pos);
+		void new_rotation(const glm::quat& new_rot);
+		void new_scale(const glm::vec3& new_scale);
 		void calculate_times();
 		void calculate_velocities();
-		void recalculate(const glm::vec3& last_pos);
+		void recalculate(const glm::vec3& last_pos, const glm::quat& last_rot, const glm::vec3& last_scale);
 	};
 
 	class NetObject : public Script {
@@ -37,9 +45,9 @@ namespace Ryno{
 		F32 last_modified;		//needed to desync the object if inactive
 
 		//Add a new position to the time cache buffer
-		void set_network_position(const glm::vec3& newPos);
+		void set_network_transform(const glm::vec3& new_pos, const glm::quat& new_rot, const glm::vec3& new_scale);
 		//Hard reset of a position to avoid interpolation
-		void reset_network_position(const glm::vec3& newPos);
+		void reset_network_transform(const glm::vec3& new_pos, const glm::quat& new_rot, const glm::vec3& new_scale);
 
 	private:
 		F32 last_update = 0;	//needed to send messages in regular time intervals

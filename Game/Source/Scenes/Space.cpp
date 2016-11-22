@@ -56,6 +56,8 @@ namespace Ryno {
 		if (!game->shell->active) {
 			if (controlled) {
 				float speed = 10.0f;
+				float scaleSpeed = 5.0f;
+				float rotSpeed = 70.0f;
 				if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
 					controlled->game_object->transform.add_position(TimeManager::delta_time* speed * glm::vec3(1, 0, 0));
 				}
@@ -67,6 +69,18 @@ namespace Ryno {
 				}
 				if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
 					controlled->game_object->transform.add_position(TimeManager::delta_time * speed * glm::vec3(0, 0, -1));
+				}
+				if (game->input_manager->is_key_down(SDLK_z, KEYBOARD)) {
+					controlled->game_object->transform.add_scale(TimeManager::delta_time * scaleSpeed * glm::vec3(1,1,1));
+				}
+				if (game->input_manager->is_key_down(SDLK_x, KEYBOARD)) {
+					controlled->game_object->transform.add_scale(TimeManager::delta_time * scaleSpeed * glm::vec3(-1, -1, -1));
+				}
+				if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
+					controlled->game_object->transform.add_rotation(TimeManager::delta_time * rotSpeed * glm::vec3(0,1,0));
+				}
+				if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)) {
+					controlled->game_object->transform.add_rotation(TimeManager::delta_time * rotSpeed * glm::vec3(0,-1,0));
 				}
 			}
 		}
@@ -80,18 +94,22 @@ namespace Ryno {
 	
 		NetObject* received = NetObject::find(message->header.id);
 
-		glm::vec3 p = message->object_update.get_pos();
+		glm::vec3 pos = message->object_update.get_pos();
+		glm::quat rot = message->object_update.get_rot();
+		glm::vec3 scale = message->object_update.get_scale();
+
+	
 
 		//Reset position if just intantiated, otherwise just set the network pos
 		if (received == nullptr) {
 			received = create_net_obj(message->header.id);
 			initialize_net_obj(received);
-			received->reset_network_position(p);
+			received->reset_network_transform(pos,rot,scale);
 			received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(message->header.id.client_id));
 
 		}
 		else
-			received->set_network_position(p);
+			received->set_network_transform(pos, rot, scale);
 
 		received->last_modified = client->net_time.get_time();
 	}
@@ -99,8 +117,9 @@ namespace Ryno {
 	void Space::on_network_send(NetObject* sender, NetMessage* message) {
 		message->header.id = sender->id;
 		message->header.code = NetCode::OBJECT;
-		glm::vec3 p = sender->game_object->transform.get_position();
-		message->object_update.set_pos(p);
+		message->object_update.set_pos(sender->game_object->transform.get_position());
+		message->object_update.set_rot(sender->game_object->transform.get_rotation());
+		message->object_update.set_scale(sender->game_object->transform.get_scale());
 		message->object_update.code = ObjectCode::PLAYER;
 	}
 
@@ -110,14 +129,14 @@ namespace Ryno {
 			initialize_net_obj(controlled);
 			
 		
-			controlled->reset_network_position(get_start_pos_from_id(client->client_id));
+			controlled->reset_network_transform(get_start_pos_from_id(client->client_id),glm::quat(glm::vec3(0,0,0)),glm::vec3(1,1,1));
 			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(client->client_id));
 		}
 	}
 
 	void Space::initialize_net_obj(const NetObject* net_obj) {
 
-		net_obj->game_object->transform.set_scale(glm::vec3(1, 1, 1));
+		//net_obj->game_object->transform.set_scale(glm::vec3(1, 1, 1));
 		auto& m = net_obj->game_object->add_script<Model>()->add_sub_model();
 
 		m.material.set_shader(&shader);

@@ -163,9 +163,10 @@ namespace Ryno{
 			x = htonl(x);
 			y = htonl(y);
 			z = htonl(z);
-			pitch = htonl(pitch);
-			yaw = htonl(yaw);
-			roll = htonl(roll);
+			q0 = htonl(q0);
+			q1 = htonl(q1);
+			q2 = htonl(q2);
+			q3 = htonl(q3);
 			w = htonl(w);
 			h = htonl(h);
 			d = htonl(d);
@@ -175,9 +176,10 @@ namespace Ryno{
 			x = ntohl(x);
 			y = ntohl(y);
 			z = ntohl(z);
-			pitch = ntohl(pitch);
-			yaw = ntohl(yaw);
-			roll = ntohl(roll);
+			q0 = ntohl(q0);
+			q1 = ntohl(q1);
+			q2 = ntohl(q2);
+			q3 = ntohl(q3);
 			w = ntohl(w);
 			h = ntohl(h);
 			d = ntohl(d);
@@ -188,10 +190,11 @@ namespace Ryno{
 			y = NetStruct::convert<U32>(pos.y);
 			z = NetStruct::convert<U32>(pos.z);
 		}
-		void set_rot(glm::vec3 rot) {
-			pitch = NetStruct::convert<U32>(rot.x);
-			yaw = NetStruct::convert<U32>(rot.y);
-			roll = NetStruct::convert<U32>(rot.z);
+		void set_rot(glm::quat rot) {
+			q0 = NetStruct::convert<U32>(rot.x);
+			q1 = NetStruct::convert<U32>(rot.y);
+			q2 = NetStruct::convert<U32>(rot.z);
+			q3 = NetStruct::convert<U32>(rot.w);
 		}
 		void set_scale(glm::vec3 scale) {
 			w = NetStruct::convert<U32>(scale.x);
@@ -205,11 +208,12 @@ namespace Ryno{
 			pos.z = NetStruct::convert<F32>(z);
 			return pos;
 		}
-		glm::vec3 get_rot()const {
-			glm::vec3 rot;
-			rot.x = NetStruct::convert<F32>(pitch);
-			rot.y = NetStruct::convert<F32>(yaw);
-			rot.z = NetStruct::convert<F32>(roll);
+		glm::quat get_rot()const {
+			glm::quat rot;
+			rot.x = NetStruct::convert<F32>(q0);
+			rot.y = NetStruct::convert<F32>(q1);
+			rot.z = NetStruct::convert<F32>(q2);
+			rot.w = NetStruct::convert<F32>(q3);
 			return rot;
 		}
 		glm::vec3 get_scale() const {
@@ -222,7 +226,7 @@ namespace Ryno{
 
 	private:
 		U32 x, y, z;
-		U32 pitch, yaw, roll;
+		U32 q0,q1,q2,q3;
 		U32 w, h, d;
 	};
 
