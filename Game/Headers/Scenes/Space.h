@@ -18,6 +18,9 @@ namespace Ryno{
 		void on_network_send(NetObject* sender, NetMessage* message) override;
 		void on_client_started() override;
 
+		ColorRGBA get_start_color_from_id(U32 i);
+		glm::vec3 get_start_pos_from_id(U32 i);
+
 		void initialize_net_obj(const NetObject* net_obj);
 
 		GameObject cube;

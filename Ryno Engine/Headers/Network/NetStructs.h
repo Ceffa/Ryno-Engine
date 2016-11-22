@@ -109,14 +109,17 @@ namespace Ryno{
 	//information about a packet
 	struct Header : NetStruct {
 		Header() {}
-		Header(const NetId& _id, U32 _net_time, U32 _code) :id(_id), code(_code) {}
+		Header(const NetId& _id, U32 _net_time, U32 _code,U32 _client_id) :id(_id), code(_code), client_id(_client_id) {}
 		NetId id;
 		U32 code;
+		U32 client_id;
 		void to_network_order() override {
 			code = htonl(code);
+			client_id = htonl(client_id);
 		}
 		void to_hardware_order() override {
 			code = ntohl(code);
+			client_id = ntohl(client_id);
 		}
 	};
 

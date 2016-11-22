@@ -74,22 +74,24 @@ namespace Ryno {
 	void Space::on_network_recv(const NetMessage* message) {
 		NetObject* received = NetObject::find(message->header.id);
 
-		if (received == nullptr) {
-			received = create_net_obj(message->header.id);
-			initialize_net_obj(received);
-			ColorRGBA color = NetStruct::convert<ColorRGBA>(message->pos_and_color.color);
-			received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", color);
-		}
-
-		received->last_modified = client->net_time.get_time();
-
 		F32 x = NetStruct::convert<F32>(message->pos_and_color.x);
 		F32 y = NetStruct::convert<F32>(message->pos_and_color.y);
 		F32 z = NetStruct::convert<F32>(message->pos_and_color.z);
 
-
 		glm::vec3 p = glm::vec3(x, y, z);
-		received->set_network_position(glm::vec3(x, y, z));
+
+		//Reset position if just intantiated, otherwise just set the network pos
+		if (received == nullptr) {
+			received = create_net_obj(message->header.id);
+			initialize_net_obj(received);
+			received->reset_network_position(p);
+			received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(message->header.client_id));
+
+		}
+		else
+			received->set_network_position(p);
+
+		received->last_modified = client->net_time.get_time();
 	}
 
 	void Space::on_network_send(NetObject* sender, NetMessage* message) {
@@ -108,16 +110,11 @@ namespace Ryno {
 		if (!controlled) {
 			controlled = create_net_obj(NetId(client->local_address));
 			initialize_net_obj(controlled);
-			controlled->reset_network_position(ryno_math::rand_vec3_range(glm::vec3(-4, -2, -1), glm::vec3(4, 2, 1)));
-			ColorRGBA c = ColorRGBA::black;
-			auto i = client->client_id;
-			if (i == 0 || i == 4 || i == 6 || i == 7)
-				c.r = 255;
-			if (i == 1 || i == 4 || i == 5 || i == 7)
-				c.g = 255;
-			if (i == 2 || i == 5 || i == 6 || i == 7)
-				c.b = 255;
-			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", c);
+			
+		
+
+			controlled->reset_network_position(get_start_pos_from_id(client->client_id));
+			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(client->client_id));
 		}
 	}
 
@@ -136,4 +133,30 @@ namespace Ryno {
 		m.mesh = mesh;
 		m.cast_shadows = false;
 	}
+
+	ColorRGBA Space::get_start_color_from_id(U32 i) {
+		ColorRGBA c = ColorRGBA::black;
+		if (i == 0 || i == 4 || i == 6 || i == 7)
+			c.r = 255;
+		if (i == 1 || i == 4 || i == 5 || i == 7)
+			c.g = 255;
+		if (i == 2 || i == 5 || i == 6 || i == 7)
+			c.b = 255;
+		return c;
+	}
+	glm::vec3 Space::get_start_pos_from_id(U32 i) {
+		static F32 off = 3;
+		glm::vec3 p = glm::vec3(0, 0, 0);
+		if (i < 3)
+			p.y = off;
+		else if (i>4)
+			p.y = -off;
+
+		if (i == 0 || i == 3 || i == 5)
+			p.x = -off;
+		else if (i == 2 || i == 4 || i == 7)
+			p.x = off;
+		return p;
+	}
+
 }

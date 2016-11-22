@@ -70,6 +70,7 @@ namespace Ryno {
 					net_obj->last_update = TimeManager::time;
 					NetMessage m;
 					net_scene->on_network_send(net_obj, &m);
+					m.header.client_id = client_id;
 					m.header.to_network_order();
 					m.pos_and_color.to_network_order();
 

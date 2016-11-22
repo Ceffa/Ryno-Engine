@@ -35,6 +35,7 @@ namespace Ryno {
 		time_cache.last_predicted_pos = new_pos;
 		time_cache.times[0] = TimeManager::time;
 		time_cache.times[1] = TimeManager::time;
+		game_object->transform.set_position(new_pos);
 	}
 
 
@@ -51,7 +52,7 @@ namespace Ryno {
 			F32 lerp_value = t / extrapolation_length;
 			glm::vec3 start_pos = ryno_math::lerp(time_cache.last_predicted_pos, time_cache.pos[0], lerp_value);
 
-			start_pos += t * time_cache.vel[0];// +t*t *time_cache.acc[0] + t*t*t * time_cache.jerk[0];
+			start_pos += t * time_cache.vel;// +t*t *time_cache.acc[0] + t*t*t * time_cache.jerk[0];
 			game_object->transform.set_position(start_pos);
 		}
 	}
