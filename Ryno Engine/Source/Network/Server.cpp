@@ -44,7 +44,6 @@ namespace Ryno {
 							conn_handle = add_to_connections(addr);
 
 						NetMessage m;
-						m.header.id = NetId(local_address);
 						m.header.code = NetCode::SERVER_UPDATE;
 						m.header.to_network_order();
 						

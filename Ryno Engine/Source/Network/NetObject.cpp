@@ -12,7 +12,7 @@ namespace Ryno {
 	NetObject::NetObject(const NetId& addr) : id(addr), last_update(0) {
 		net_objects.insert(this);
 		Client* c = Network::get_instance()->client;
-		owned = id.addr.equals(c->local_address);
+		owned = id.client_id == c->client_id;
 	}
 
 	NetObject* NetObject::find(const NetId& id) {

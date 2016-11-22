@@ -72,23 +72,19 @@ namespace Ryno{
 	//It fully identifies an object over a network
 	struct NetId {
 		NetId() {}
-		NetId(const SmallAddress& address) { set(address); }
-		void set(const SmallAddress& address) {
-			addr = address;
-			local_id = htons(++last_id);
+		NetId(U32 _client_id) { set(_client_id); }
+		void set(U32 _client_id) {
+			client_id = _client_id;
+			object_id = ++last_id;
 		}
 		bool equals(const NetId& other)const {
-			return same_client(other) && local_id == other.local_id;
+			return same_client(other) && object_id == other.object_id;
 		}
 		bool same_client(const NetId& other)const {
-			return addr.equals(other.addr);
+			return client_id == other.client_id;
 		}
 
-		std::string to_string() const {
-			return addr.to_string() + " : " + std::to_string(ntohs(local_id));
-		}
-		SmallAddress addr;
-		U16 local_id;
+		U16 client_id, object_id;
 
 		static U16 last_id;
 	};
@@ -109,17 +105,18 @@ namespace Ryno{
 	//information about a packet
 	struct Header : NetStruct {
 		Header() {}
-		Header(const NetId& _id, U32 _net_time, U32 _code,U32 _client_id) :id(_id), code(_code), client_id(_client_id) {}
-		NetId id;
+		Header(U32 _code, const NetId& _id) : code(_code), id(_id){}
 		U32 code;
-		U32 client_id;
+		NetId id;
 		void to_network_order() override {
 			code = htonl(code);
-			client_id = htonl(client_id);
+			id.object_id = htons(id.object_id);
+			id.client_id = htons(id.client_id);
 		}
 		void to_hardware_order() override {
 			code = ntohl(code);
-			client_id = ntohl(client_id);
+			id.object_id = ntohs(id.object_id);
+			id.client_id = ntohs(id.client_id);
 		}
 	};
 

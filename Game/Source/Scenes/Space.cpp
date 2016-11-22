@@ -85,7 +85,7 @@ namespace Ryno {
 			received = create_net_obj(message->header.id);
 			initialize_net_obj(received);
 			received->reset_network_position(p);
-			received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(message->header.client_id));
+			received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(message->header.id.client_id));
 
 		}
 		else
@@ -108,7 +108,7 @@ namespace Ryno {
 
 	void Space::on_client_started() {
 		if (!controlled) {
-			controlled = create_net_obj(NetId(client->local_address));
+			controlled = create_net_obj(NetId(client->client_id));
 			initialize_net_obj(controlled);
 			
 		
