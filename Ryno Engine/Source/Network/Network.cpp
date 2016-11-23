@@ -5,6 +5,12 @@
 
 namespace Ryno {
 
+	Client* Network::client = nullptr;
+	Server* Network::server = nullptr;
+	bool Network::has_client = false;
+	bool Network::has_server = false;
+
+
 	Network* Network::get_instance() {
 		static Network instance;//only at the beginning
 		return &instance;

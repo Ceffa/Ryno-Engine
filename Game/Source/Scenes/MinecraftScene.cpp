@@ -32,7 +32,7 @@ namespace Ryno{
 		material.create("Geometry/material", GAME);
 
 		//sponza - sibenik
-		sponza.add_script(game->mesh_manager->load_model("lost_empire", Owner::GAME, material));
+		sponza.add_script(game->mesh_manager->load_model("ship", Owner::GAME, material));
 		sponza.transform.set_position(0, 0, 0);
 		sponza.transform.set_rotation(0, 0, 0);
 

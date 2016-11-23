@@ -42,7 +42,7 @@ namespace Ryno {
 				return false;
 			}
 			mess.header.to_hardware_order();
-			if (mess.header.code == NetCode::SERVER_UPDATE) {
+			if (mess.header.code == NetCode::SERVER_TIME) {
 				mess.server_update.to_hardware_order();
 				F32 new_time = mess.server_update.get_time();
 
@@ -55,6 +55,11 @@ namespace Ryno {
 
 
 			}
+			if (mess.header.code == NetCode::UPDATE) {
+				mess.net_array.to_hardware_order();
+				net_scene->on_periodic_update(&mess);
+
+			}
 			else if (connected && mess.header.code == NetCode::OBJECT){
 				mess.object_update.to_hardware_order();
 				net_scene->on_network_recv(&mess);
@@ -63,11 +68,11 @@ namespace Ryno {
 		//If connected starts to send updates about net object
 		if (connected) {
 			for (NetObject* net_obj : NetObject::net_objects) {
-				bool need_update = net_obj->last_update + net_obj->send_delay <= TimeManager::time;
-				bool need_disconnect = net_obj->last_modified + net_obj->disconnect_delay <= TimeManager::time;
+				bool need_update = net_obj->last_sent + net_obj->send_delay <= TimeManager::time;
+				bool need_disconnect = net_obj->last_received + net_obj->disconnect_delay <= TimeManager::time;
 
 				if (need_update && net_obj->owned) {
-					net_obj->last_update = TimeManager::time;
+					net_obj->last_sent = TimeManager::time;
 					NetMessage m;
 					net_scene->on_network_send(net_obj, &m);
 					m.header.id.client_id = client_id;
@@ -91,7 +96,7 @@ namespace Ryno {
 			return;
 
 		NetMessage message;
-		message.header.code = NetCode::CLIENT_UPDATE;
+		message.header.code = NetCode::CLIENT_TIME;
 		message.header.to_network_order();
 		message.client_update.to_network_order();
 		net_time.last_sent = TimeManager::time;

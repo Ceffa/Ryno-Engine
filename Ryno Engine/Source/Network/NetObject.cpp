@@ -9,7 +9,7 @@ namespace Ryno {
 	Ryno::F32 NetObject::send_delay = .1f;
 	Ryno::F32 NetObject::extrapolation_length = .2;
 
-	NetObject::NetObject(const NetId& addr) : id(addr), last_update(0) {
+	NetObject::NetObject(const NetId& addr) : id(addr), last_sent(0) {
 		net_objects.insert(this);
 		Client* c = Network::get_instance()->client;
 		owned = id.client_id == c->client_id;
@@ -65,6 +65,8 @@ namespace Ryno {
 		if (!owned) {
 			F32 t = TimeManager::time - time_cache.times[0];
 			F32 lerp_value = t / extrapolation_length;
+			lerp_value = lerp_value > 1 ? 1 : lerp_value;
+			lerp_value = lerp_value < 0 ? 0 : lerp_value;
 			glm::vec3 start_pos = ryno_math::lerp(time_cache.last_predicted_pos, time_cache.pos[0], lerp_value);
 			glm::quat start_rot = glm::lerp(time_cache.last_predicted_rot, time_cache.rot[0], lerp_value);
 			glm::vec3 start_scale = ryno_math::lerp(time_cache.last_predicted_scale, time_cache.scale[0], lerp_value);

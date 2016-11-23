@@ -230,7 +230,43 @@ namespace Ryno{
 		U32 w, h, d;
 	};
 
-	enum NetCode { CLIENT_UPDATE,SERVER_UPDATE, OBJECT };
+	//contains an array of U32
+	class NetArray : public NetStruct {
+	public:
+		NetArray() {}
+		NetArray(U32 _length, U32 _code) : code(_code),length(_length) {}
+		U32 code;
+		U32 length;
+		
+
+		void to_network_order() override {
+			for (int i = 0; i < length; i++) {
+				array[i] = htonl(array[i]);
+			}
+			code = htonl(code);
+			length = htonl(length);
+		}
+		void to_hardware_order() override {
+			code = ntohl(code);
+			length = ntohl(length);
+			for (int i = 0; i < length; i++) {
+				array[i] = ntohl(array[i]);
+			}
+		}
+
+		void set_value(U32 idx, U32 value) {
+			array[idx] = value;
+		}
+	
+		U32 get_value(U32 idx) const {
+			return array[idx];
+		}
+
+	private:
+		U32 array[30];
+	};
+
+	enum NetCode { CLIENT_TIME,SERVER_TIME, OBJECT, UPDATE };
 
 	struct NetMessage {
 		NetMessage() {}
@@ -239,6 +275,7 @@ namespace Ryno{
 			ClientUpdate client_update;
 			ServerUpdate server_update;
 			ObjectUpdate object_update;
+			NetArray net_array;
 		};
 
 	};

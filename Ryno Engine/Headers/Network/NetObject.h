@@ -42,15 +42,16 @@ namespace Ryno{
 		void start() override {}
 		bool is_unique() override { return true; };
 		bool is_copyable() override { return false; };
-		F32 last_modified;		//needed to desync the object if inactive
+		F32 last_received;		//needed to desync the object if inactive
 
 		//Add a new position to the time cache buffer
 		void set_network_transform(const glm::vec3& new_pos, const glm::quat& new_rot, const glm::vec3& new_scale);
 		//Hard reset of a position to avoid interpolation
 		void reset_network_transform(const glm::vec3& new_pos, const glm::quat& new_rot, const glm::vec3& new_scale);
 
+		U32 tag;//used to differentiate types of objects
+		F32 last_sent = 0;	//needed to send messages in regular time intervals
 	private:
-		F32 last_update = 0;	//needed to send messages in regular time intervals
 		bool mark_for_destruction = false;
 		static F32 disconnect_delay;
 		static F32 send_delay;

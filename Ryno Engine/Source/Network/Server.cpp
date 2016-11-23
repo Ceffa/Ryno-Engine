@@ -2,6 +2,7 @@
 #include "NetUtil.h"
 #include "TimeManager.h"
 #include "Network.h"
+#include "NetworkScene.h"
 
 namespace Ryno {
 
@@ -14,6 +15,8 @@ namespace Ryno {
 		sock.set_blocking(false);
 		sock.bind(local_address);
 		NetUtil::print(local_address.to_string());
+		net_scene = (NetworkScene*)Game::get_instance()->get_scene();
+
 	}
 
 
@@ -38,13 +41,13 @@ namespace Ryno {
 				if (res < 0)
 					remove_from_connections(addr);
 				else {
-					if (mess.header.code == NetCode::CLIENT_UPDATE) {
+					if (mess.header.code == NetCode::CLIENT_TIME) {
 						Connection* conn_handle = find_connection(addr);
 						if (!conn_handle)
 							conn_handle = add_to_connections(addr);
 
 						NetMessage m;
-						m.header.code = NetCode::SERVER_UPDATE;
+						m.header.code = NetCode::SERVER_TIME;
 						m.header.to_network_order();
 						
 						m.server_update.client_id = conn_handle->client_id;
@@ -65,6 +68,26 @@ namespace Ryno {
 							else it++;
 						}
 					}
+				}
+			}
+
+			if (TimeManager::time > last_periodic_update + update_frequence) {
+				last_periodic_update = TimeManager::time;
+				NetMessage m;
+				m.header.code = NetCode::UPDATE;
+				m.header.to_network_order();
+				net_scene->on_periodic_update(&m);
+				m.net_array.to_network_order();
+				for (auto it = conns.begin(); it != conns.end(); )  //No increment
+				{
+					Connection *conn = *it;
+					m.server_update.client_id = conn->client_id;
+
+					if (!conn->address.equals(addr) && !conn->do_write(&m)) {
+						delete conn;
+						it = conns.erase(it);
+					}
+					else it++;
 				}
 			}
 		}

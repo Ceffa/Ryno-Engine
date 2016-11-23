@@ -24,7 +24,6 @@ namespace Ryno{
 		U32 client_id;
 	private: 
 		void send_client_update();
-		NetworkScene* net_scene;
 		bool connected;
 	};
 }

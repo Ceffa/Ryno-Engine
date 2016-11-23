@@ -1,6 +1,6 @@
 #pragma once
 #include "NetworkScene.h"
-
+#define MAX_CLIENTS 30
 namespace Ryno{
 	enum ObjectCode {PLAYER,BALL};
 	class Space : public NetworkScene
@@ -16,6 +16,7 @@ namespace Ryno{
 		void input() override;
 		void on_network_recv(const NetMessage* message) override;
 		void on_network_send(NetObject* sender, NetMessage* message) override;
+		void on_periodic_update(NetMessage* message) override;
 		void on_client_started() override;
 		void receive_player(const NetMessage* message);
 		void receive_ball(const NetMessage* message);
@@ -23,14 +24,19 @@ namespace Ryno{
 		ColorRGBA get_start_color_from_id(U32 i);
 		glm::vec3 get_start_pos_from_id(U32 i);
 
-		void initialize_net_obj(const NetObject* net_obj);
+		void initialize_player(const NetObject* net_obj);
+		void initialize_ball(const NetObject* net_obj);
 
 		GameObject cube;
 		NetObject* controlled = nullptr;
-		I32 mesh;
-		Shader shader, dir_light_shader;
+		NetObject* ball = nullptr;
+		std::list<NetObject*> players;
+		I32 ship_mesh, sphere_mesh;
+		Shader shader, dir_light_shader, material;
 		Texture white, white_normal;
-		GUIObject timer;
+		GUIObject timer,score_text, client_text;
 		Font font;
+
+		I32 scores[MAX_CLIENTS];
 	};
 }

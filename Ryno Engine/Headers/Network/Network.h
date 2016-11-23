@@ -18,11 +18,10 @@ namespace Ryno{
 		void update();
 		void reset();
 		static Network* get_instance();
-		Client* client = nullptr;
-		Server* server = nullptr;
-		bool has_server = false;
-		bool has_client = false;
-
+		static Client* client;
+		static Server* server;
+		static bool has_server;
+		static bool has_client;
 	private:
 		Network::Network() {}
 		Network::~Network();

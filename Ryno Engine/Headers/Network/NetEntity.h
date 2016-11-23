@@ -2,7 +2,7 @@
 #include "Socket.h"
 
 namespace Ryno{
-
+	class NetworkScene;
 	class NetEntity{
 	public:
 		NetEntity::NetEntity() {}
@@ -14,5 +14,7 @@ namespace Ryno{
 
 		SmallAddress local_address;
 		Socket sock;
+	protected:
+		NetworkScene* net_scene;
 	};
 }
