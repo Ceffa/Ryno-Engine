@@ -23,6 +23,9 @@ namespace Ryno {
 	}
 
 	void NetObject::set_network_transform(const glm::vec3& new_pos,const glm::quat& new_rot, const glm::vec3& new_scale, F32 last_net_time) {
+		//Avoid duplicates and out of order
+		if (time_cache.times[0] - last_net_time > -.00001f)
+			return;
 		time_cache.new_position(new_pos);//probably add lerp here between estimated and actual pos
 		time_cache.new_rotation(new_rot);//probably add lerp here between estimated and actual pos
 		time_cache.new_scale(new_scale);//probably add lerp here between estimated and actual pos
@@ -31,6 +34,9 @@ namespace Ryno {
 	}
 
 	void NetObject::reset_network_transform(const glm::vec3& new_pos, const glm::quat& new_rot, const glm::vec3& new_scale, F32 last_net_time) {
+		//Avoid duplicates and out of order
+		if (time_cache.times[0] - last_net_time > -.00001f)
+			return;
 		time_cache.pos[0] = new_pos;
 		time_cache.pos[1] = new_pos;
 		time_cache.rot[0] = new_rot;
