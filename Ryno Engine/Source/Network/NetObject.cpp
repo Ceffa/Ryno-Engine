@@ -6,8 +6,7 @@
 namespace Ryno {
 	std::set<NetObject*> NetObject::net_objects;
 	Ryno::F32 NetObject::disconnect_delay = 2;
-	Ryno::F32 NetObject::send_delay = .1f;
-	Ryno::F32 NetObject::interpolation_length =	.5f;
+	Ryno::F32 NetObject::send_delay = .2f;
 
 	NetObject::NetObject(const NetId& addr) : id(addr), last_sent(0) {
 		net_objects.insert(this);
@@ -65,7 +64,7 @@ namespace Ryno {
 		if (!owned) {
 			F32 delta_t_net = Network::client->net_time.get_time() - time_cache.times[0];
 			F32 delta_t_loc = TimeManager::time - time_cache.last_received_time;
-			F32 lerp_net = glm::clamp(delta_t_net / interpolation_length, 0.0f, 1.0f);
+			F32 lerp_net = glm::clamp(delta_t_net / send_delay, 0.0f, 1.0f);
 			
 			glm::vec3 start_pos = ryno_math::lerp(time_cache.last_predicted_pos, time_cache.pos[0], lerp_net);
 			glm::quat start_rot = glm::slerp(time_cache.last_predicted_rot, time_cache.rot[0], lerp_net);

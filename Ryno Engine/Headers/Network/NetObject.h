@@ -56,7 +56,6 @@ namespace Ryno{
 		bool mark_for_destruction = false;
 		static F32 disconnect_delay;
 		static F32 send_delay;
-		static F32 interpolation_length;
 		TimeCache time_cache;
 		bool owned;
 	};
