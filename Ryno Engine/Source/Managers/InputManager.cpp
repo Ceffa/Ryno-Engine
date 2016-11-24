@@ -23,8 +23,7 @@ namespace Ryno {
 
 	void InputManager::init(SDL_Window* window){
 		m_window = window;
-		SDL_WarpMouseInWindow(m_window, WindowSize::w / 2.0f, WindowSize::h / 2.0f);
-
+		//SDL_WarpMouseInWindow(m_window, WindowSize::w / 2.0f, WindowSize::h / 2.0f);
 	}
 
 	Input InputManager::get_input(){

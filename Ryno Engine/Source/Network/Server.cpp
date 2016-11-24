@@ -104,12 +104,14 @@ namespace Ryno {
 	}
 
 	Connection* Server::add_to_connections(const SmallAddress& addr) {
+		last_periodic_update = -999;
 		Connection* new_conn = new Connection(sock, addr);
 		conns.push_back(new_conn);
 		return new_conn;
 	}
 
 	void Server::remove_from_connections(const SmallAddress& addr) {
+		last_periodic_update = -999;
 		for (Connection* c : conns)
 			if (c->address.equals(addr))
 			{

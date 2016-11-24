@@ -29,7 +29,6 @@ namespace Ryno {
 		NetObject* create_net_obj(const NetId& id);
 		void remove_unused_net_objects();	//clean objects that didn't receive updates for a while
 		void remove_every_net_object();		//clean every net objects if the client is disconnected (except his)
-		Client* client;
 		std::list<GameObject> net_game_objects;
 	};
 }

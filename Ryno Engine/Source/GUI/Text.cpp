@@ -33,6 +33,7 @@ namespace Ryno {
 
 	Text::Text() {
 		anchor_point = CENTER;
+		text = "";
     }
 
 	Text::Text(const Text* t)

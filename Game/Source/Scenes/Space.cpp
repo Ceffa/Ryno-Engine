@@ -5,7 +5,6 @@ namespace Ryno {
 
 	void Space::start() {
 
-		client = Network::get_instance()->client;
 
 		camera->position = glm::vec4(0, 20, 0, 1);
 		camera->yaw = 0;
@@ -67,7 +66,8 @@ namespace Ryno {
 	}
 
 	void Space::update() {
-		timer.text->text = std::to_string(client->net_time.get_time());
+		if (Network::has_client)
+			timer.text->text = std::to_string(Network::client->net_time.get_time());
 
 		if (Network::has_server) {
 
@@ -80,7 +80,7 @@ namespace Ryno {
 					F32 squared_diff = glm::length2(dist);
 					if (squared_diff < 3) {
 						ball->last_sent = 0;	//require update to be sent immediately
-						ball->reset_network_transform(ryno_math::rand_vec3_range(glm::vec3(-17, 0, -11), glm::vec3(17, 0, 11)), glm::quat(glm::vec3(0, 0, 0)), glm::vec3(.4f));
+						ball->reset_network_transform(ryno_math::rand_vec3_range(glm::vec3(-17, 0, -10), glm::vec3(17, 0, 10)), glm::quat(glm::vec3(0, 0, 0)), glm::vec3(.4f));
 						scores[no->id.client_id]++;
 						if (Network::has_server) {
 							Network::server->last_periodic_update = -999;	//force update of clients
@@ -154,7 +154,7 @@ namespace Ryno {
 		else
 			received->set_network_transform(pos, rot, scale);
 
-		received->last_received = client->net_time.get_time();
+		received->last_received = Network::client->net_time.get_time();
 	}
 
 	void Space::receive_ball(const NetMessage* message) {
@@ -175,7 +175,7 @@ namespace Ryno {
 
 		received->reset_network_transform(pos, rot, scale);
 
-		received->last_received = client->net_time.get_time();
+		received->last_received = Network::client->net_time.get_time();
 	}
 
 	void Space::on_network_send(NetObject* sender, NetMessage* message) {
@@ -191,27 +191,35 @@ namespace Ryno {
 		if (Network::has_server) {
 			I32 i = 0;
 			for (i = 0; i < MAX_CLIENTS; i++) {
-				if (scores[i] < 0)
-					break;
+				if (scores[i] < 0) {
+					if (i < Connection::last_client_id)
+						scores[i] = 0;
+					else
+						break;
+				}
 				message->net_array.set_value(i, scores[i]);
 			}
 			message->net_array.length = i;
 		}
 		if (Network::has_client) {
 			score_text.text->text = "";
-			
-			
+						
 			for (int i = 0; i < MAX_CLIENTS; i++) {
-				if (scores[i] < 0)
+				I32 value = message->net_array.get_value(i);
+				if (value < 0)
 					break;
 				std::string s;
 
-				s += "Player ";
-				s += std::to_string(i);
+				if (i == Network::client->client_id)
+					s += "You ";
+				else {
+					s += "Ship ";
+					s += std::to_string(i);
+				}
+
 				s += ": ";
-				s += std::to_string(message->net_array.get_value(i));
+				s += std::to_string(value);
 				s += '\n';
-				Log::println(s);
 				score_text.text->text += s;
 			}
 		}
@@ -219,22 +227,22 @@ namespace Ryno {
 
 
 	void Space::on_client_started() {
-		client_text.text->text = std::to_string(client->client_id);
+		client_text.text->text = std::to_string(Network::client->client_id);
 		if (!controlled) {
-			controlled = create_net_obj(NetId(client->client_id));
-			scores[client->client_id] = 0;
+			controlled = create_net_obj(NetId(Network::client->client_id));
+			scores[Network::client->client_id] = 0;
 			controlled->tag = ObjectCode::PLAYER;
 			initialize_player(controlled);
 		
-			controlled->reset_network_transform(get_start_pos_from_id(client->client_id),glm::quat(glm::vec3(0,0,0)),glm::vec3(.2f,.15f,.1f));
-			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(client->client_id));
+			controlled->reset_network_transform(get_start_pos_from_id(Network::client->client_id),glm::quat(glm::vec3(0,0,0)),glm::vec3(.2f,.15f,.1f));
+			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(Network::client->client_id));
 		}
 
 		if (!ball && Network::has_server) {
-			ball = create_net_obj(NetId(client->client_id));
+			ball = create_net_obj(NetId(Network::client->client_id));
 			ball->tag = ObjectCode::BALL;
 			initialize_ball(ball);
-			ball->reset_network_transform(ryno_math::rand_vec3_range(glm::vec3(-7,4,-7),glm::vec3(7,4,7)),glm::quat(glm::vec3(0,0,0)),glm::vec3(.4f));
+			ball->reset_network_transform(ryno_math::rand_vec3_range(glm::vec3(-17,4,-10),glm::vec3(17,4,10)),glm::quat(glm::vec3(0,0,0)),glm::vec3(.4f));
 
 		}
 	}
