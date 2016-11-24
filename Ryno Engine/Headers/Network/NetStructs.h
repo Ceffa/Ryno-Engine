@@ -107,19 +107,30 @@ namespace Ryno{
 	class Header : public NetStruct {
 	public:
 		Header() {}
-		Header(U32 _code, const NetId& _id) : code(_code), id(_id){}
+		Header(U32 _code, const NetId& _id, F32 _timestamp) : code(_code), id(_id), timestamp(_timestamp){}
 		U32 code;
 		NetId id;
 		void to_network_order() override {
 			code = htonl(code);
+			timestamp = htonl(timestamp);
 			id.object_id = htons(id.object_id);
 			id.client_id = htons(id.client_id);
 		}
 		void to_hardware_order() override {
 			code = ntohl(code);
+			timestamp = ntohl(timestamp);
 			id.object_id = ntohs(id.object_id);
 			id.client_id = ntohs(id.client_id);
 		}
+
+		void set_timestamp(F32 time) {
+			timestamp = NetStruct::convert<U32>(time);
+		}
+		F32 get_timestamp() const {
+			return NetStruct::convert<F32>(timestamp);
+		}
+	private:
+		U32 timestamp;
 	};
 
 	//Sent by client periodically

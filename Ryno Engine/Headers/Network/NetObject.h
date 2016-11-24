@@ -6,6 +6,7 @@
 namespace Ryno{
 
 	struct TimeCache {
+		F32 last_received_time;
 		F32 times[2];
 		glm::vec3 pos[2];
 		glm::vec3 d_pos;
@@ -19,9 +20,9 @@ namespace Ryno{
 		void new_position(const glm::vec3& new_pos);
 		void new_rotation(const glm::quat& new_rot);
 		void new_scale(const glm::vec3& new_scale);
-		void calculate_times();
+		void calculate_times(F32 last_net_time);
 		void calculate_velocities();
-		void recalculate(const glm::vec3& last_pos, const glm::quat& last_rot, const glm::vec3& last_scale);
+		void recalculate(const glm::vec3& last_pos, const glm::quat& last_rot, const glm::vec3& last_scale,F32 last_net_time);
 	};
 
 	class NetObject : public Script {
@@ -45,9 +46,9 @@ namespace Ryno{
 		F32 last_received;		//needed to desync the object if inactive
 
 		//Add a new position to the time cache buffer
-		void set_network_transform(const glm::vec3& new_pos, const glm::quat& new_rot, const glm::vec3& new_scale);
+		void set_network_transform(const glm::vec3& new_pos, const glm::quat& new_rot, const glm::vec3& new_scale, F32 last_net_time);
 		//Hard reset of a position to avoid interpolation
-		void reset_network_transform(const glm::vec3& new_pos, const glm::quat& new_rot, const glm::vec3& new_scale);
+		void reset_network_transform(const glm::vec3& new_pos, const glm::quat& new_rot, const glm::vec3& new_scale, F32 last_net_time);
 
 		U32 tag;//used to differentiate types of objects
 		F32 last_sent = 0;	//needed to send messages in regular time intervals
@@ -55,7 +56,7 @@ namespace Ryno{
 		bool mark_for_destruction = false;
 		static F32 disconnect_delay;
 		static F32 send_delay;
-		static F32 extrapolation_length;
+		static F32 interpolation_length;
 		TimeCache time_cache;
 		bool owned;
 	};

@@ -76,6 +76,7 @@ namespace Ryno {
 					NetMessage m;
 					net_scene->on_network_send(net_obj, &m);
 					m.header.id.client_id = client_id;
+					m.header.set_timestamp(net_time.get_time());
 					m.header.to_network_order();
 					m.object_update.to_network_order();
 
@@ -97,6 +98,7 @@ namespace Ryno {
 
 		NetMessage message;
 		message.header.code = NetCode::CLIENT_TIME;
+		message.header.set_timestamp(net_time.get_time());
 		message.header.to_network_order();
 		message.client_update.to_network_order();
 		net_time.last_sent = TimeManager::time;

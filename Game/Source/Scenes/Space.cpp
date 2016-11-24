@@ -68,7 +68,7 @@ namespace Ryno {
 	void Space::update() {
 		if (Network::has_client)
 			timer.text->text = std::to_string(Network::client->net_time.get_time());
-
+		
 		if (Network::has_server) {
 
 			for (auto& go : net_game_objects) {
@@ -80,7 +80,7 @@ namespace Ryno {
 					F32 squared_diff = glm::length2(dist);
 					if (squared_diff < 3) {
 						ball->last_sent = 0;	//require update to be sent immediately
-						ball->reset_network_transform(ryno_math::rand_vec3_range(glm::vec3(-17, 0, -10), glm::vec3(17, 0, 10)), glm::quat(glm::vec3(0, 0, 0)), glm::vec3(.4f));
+						ball->reset_network_transform(ryno_math::rand_vec3_range(glm::vec3(-17, 0, -10), glm::vec3(17, 0, 10)), glm::quat(glm::vec3(0, 0, 0)), glm::vec3(.4f), Network::client->net_time.get_time());
 						scores[no->id.client_id]++;
 						if (Network::has_server) {
 							Network::server->last_periodic_update = -999;	//force update of clients
@@ -148,11 +148,11 @@ namespace Ryno {
 			scores[message->header.id.client_id] = 0;
 			received->tag = ObjectCode::PLAYER;
 			initialize_player(received);
-			received->reset_network_transform(pos,rot,scale);
+			received->reset_network_transform(pos,rot,scale,message->header.get_timestamp());
 			received->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(message->header.id.client_id));
 		}
 		else
-			received->set_network_transform(pos, rot, scale);
+			received->set_network_transform(pos, rot, scale,message->header.get_timestamp());
 
 		received->last_received = Network::client->net_time.get_time();
 	}
@@ -173,7 +173,7 @@ namespace Ryno {
 			initialize_ball(received);
 		}
 
-		received->reset_network_transform(pos, rot, scale);
+		received->reset_network_transform(pos, rot, scale, message->header.get_timestamp());
 
 		received->last_received = Network::client->net_time.get_time();
 	}
@@ -234,7 +234,7 @@ namespace Ryno {
 			controlled->tag = ObjectCode::PLAYER;
 			initialize_player(controlled);
 		
-			controlled->reset_network_transform(get_start_pos_from_id(Network::client->client_id),glm::quat(glm::vec3(0,0,0)),glm::vec3(.2f,.15f,.1f));
+			controlled->reset_network_transform(get_start_pos_from_id(Network::client->client_id),glm::quat(glm::vec3(0,0,0)),glm::vec3(.2f,.15f,.1f), Network::client->net_time.get_time());
 			controlled->game_object->get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", get_start_color_from_id(Network::client->client_id));
 		}
 
@@ -242,7 +242,7 @@ namespace Ryno {
 			ball = create_net_obj(NetId(Network::client->client_id));
 			ball->tag = ObjectCode::BALL;
 			initialize_ball(ball);
-			ball->reset_network_transform(ryno_math::rand_vec3_range(glm::vec3(-17,4,-10),glm::vec3(17,4,10)),glm::quat(glm::vec3(0,0,0)),glm::vec3(.4f));
+			ball->reset_network_transform(ryno_math::rand_vec3_range(glm::vec3(-17,4,-10),glm::vec3(17,4,10)),glm::quat(glm::vec3(0,0,0)),glm::vec3(.4f), Network::client->net_time.get_time());
 
 		}
 	}
