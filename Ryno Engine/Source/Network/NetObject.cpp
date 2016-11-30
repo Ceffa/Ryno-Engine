@@ -62,18 +62,27 @@ namespace Ryno {
 	void NetObject::update()
 	{
 		if (!owned) {
-			F32 delta_t_net = Network::client->net_time.get_time() - time_cache.times[0];
-			F32 delta_t_loc = TimeManager::time - time_cache.last_received_time;
-			F32 lerp_net = glm::clamp(delta_t_net / send_delay, 0.0f, 1.0f);
+			F32 delta_t = Network::client->net_time.get_time() - time_cache.times[0];
+			F32 lerp_net = glm::clamp(delta_t / send_delay, 0.0f, 1.0f);
 			
-			glm::vec3 start_pos = ryno_math::lerp(time_cache.last_predicted_pos, time_cache.pos[0], lerp_net);
-			glm::quat start_rot = glm::slerp(time_cache.last_predicted_rot, time_cache.rot[0], lerp_net);
-			glm::vec3 start_scale = ryno_math::lerp(time_cache.last_predicted_scale, time_cache.scale[0], lerp_net);
+			//Calculate the predicted transform when a packet is received.
+			//This is different from the previously predicted transform, this is based on the last packet, 
+			//and the prediction is what could happen during the latency
+			glm::vec3 start_pos = time_cache.pos[0] + time_cache.lag * time_cache.d_pos;
+			glm::quat start_rot = glm::slerp(time_cache.rot[0], time_cache.rot[0] * time_cache.d_rot, time_cache.lag);
+			glm::vec3 start_scale = time_cache.scale[0] + time_cache.lag * time_cache.d_scale;
 
-			start_pos += delta_t_net * time_cache.d_pos;
-			start_rot = glm::slerp(start_rot, start_rot * time_cache.d_rot,delta_t_net);
-			start_scale += delta_t_net * time_cache.d_scale;
+			//Interpolate between the last predicted transform and the current predicted transform
+			start_pos = ryno_math::lerp(time_cache.last_predicted_pos, start_pos, lerp_net);
+			start_rot = glm::lerp(time_cache.last_predicted_rot, start_rot, lerp_net);
+			start_scale = ryno_math::lerp(time_cache.last_predicted_scale, start_scale, lerp_net);
+
+			//Finally extrapolate to get the final prediction
+			start_pos += delta_t * time_cache.d_pos;
+			start_rot = glm::slerp(start_rot, start_rot * time_cache.d_rot,delta_t);
+			start_scale += delta_t * time_cache.d_scale;
 			
+			//Set the new transform
 			game_object->transform.set_position(start_pos);
 			game_object->transform.set_rotation(start_rot);
 			game_object->transform.set_scale(start_scale);
@@ -82,7 +91,7 @@ namespace Ryno {
 	void TimeCache::calculate_times(F32 last_net_time) {
 		times[1] = times[0];
 		times[0] = last_net_time;
-		last_received_time = TimeManager::time;
+		lag = Network::client->net_time.get_time() - last_net_time;
 	}
 	void TimeCache::new_position(const glm::vec3& newPos) {
 		pos[1] = pos[0];
