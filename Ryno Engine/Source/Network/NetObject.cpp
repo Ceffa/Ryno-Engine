@@ -68,8 +68,8 @@ namespace Ryno {
 	void NetObject::update()
 	{
 		if (!owned) {
-			F32 delta_t = Network::client->net_time.get_time() - time_cache.times[0];
-			F32 lerp_net = glm::clamp(delta_t / send_delay, 0.0f, 1.0f);
+			F32 delta_t_loc = TimeManager::time - time_cache.last_recv;
+			F32 lerp_net = glm::clamp(delta_t_loc / send_delay, 0.0f, 1.0f);
 			
 			//Calculate the predicted transform when a packet is received.
 			//This is different from the previously predicted transform, this is based on the last packet, 
@@ -84,9 +84,9 @@ namespace Ryno {
 			start_scale = ryno_math::lerp(time_cache.last_predicted_scale, start_scale, lerp_net);
 
 			//Finally extrapolate to get the final prediction
-			start_pos += delta_t * time_cache.d_pos;
-			start_rot = glm::slerp(start_rot, start_rot * time_cache.d_rot,delta_t);
-			start_scale += delta_t * time_cache.d_scale;
+			start_pos += delta_t_loc * time_cache.d_pos;
+			start_rot = glm::slerp(start_rot, start_rot * time_cache.d_rot, delta_t_loc);
+			start_scale += delta_t_loc * time_cache.d_scale;
 			
 			//Set the new transform
 			game_object->transform.set_position(start_pos);
@@ -98,6 +98,7 @@ namespace Ryno {
 		times[1] = times[0];
 		times[0] = last_net_time;
 		lag = Network::client->net_time.get_time() - last_net_time;
+		last_recv = TimeManager::time;
 	}
 	void TimeCache::new_position(const glm::vec3& newPos) {
 		pos[1] = pos[0];

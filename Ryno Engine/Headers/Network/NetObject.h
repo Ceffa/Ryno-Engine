@@ -7,6 +7,7 @@ namespace Ryno{
 
 	struct TimeCache {
 		F32 lag;
+		F32 last_recv;
 		F32 times[2];
 		glm::vec3 pos[2];
 		glm::vec3 d_pos;
