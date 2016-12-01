@@ -8,6 +8,7 @@ namespace Ryno {
 
 	void Server::start() {
 
+		//Connect and initialize socket
 		if (!sock.init(true)) {
 			close();
 			return;
@@ -35,13 +36,16 @@ namespace Ryno {
 		if (FD_ISSET(sock.get(), &readable))
 		{
 			I32 res = 0;
-			while ((res = sock.recv_struct(&mess, addr)) != 0) {
 
-				//Delete 
+			//**RECEIVE MESSAGES**
+			while ((res = sock.recv_struct(&mess, addr)) != 0) {
 				if (res < 0)
 					remove_from_connections(addr);
 				else {
-					if (mess.header.code == NetCode::CLIENT_TIME) {
+					U32 code = ntohl(mess.header.code);
+					//If a client requests the net time, send it to him.
+					//Also, if the client is not yet in the connections, add it
+					if (code == NetCode::CLIENT_TIME) {
 						Connection* conn_handle = find_connection(addr);
 						if (!conn_handle)
 							conn_handle = add_to_connections(addr);
@@ -56,8 +60,9 @@ namespace Ryno {
 						m.server_update.to_network_order();
 						conn_handle->do_write(&m);
 					}
-					else {
-						for (auto it = conns.begin(); it != conns.end(); )  //No increment
+					else if (code == NetCode::OBJECT){
+						//Forward all the object messages to every client except the sender 
+						for (auto it = conns.begin(); it != conns.end(); )  
 						{
 							Connection *conn = *it;
 
@@ -71,13 +76,18 @@ namespace Ryno {
 				}
 			}
 
+			//**SEND MESSAGES**
+			//Every once in a while send an update to every client.
+			//The network scene is responsible to define the protocol for it,
+			//both in sending and reception
 			if (TimeManager::time > last_periodic_update + update_frequence) {
 				last_periodic_update = TimeManager::time;
 				NetMessage m;
 				m.header.code = NetCode::UPDATE;
 				m.header.to_network_order();
-				net_scene->on_periodic_update(&m);
+				net_scene->on_periodic_update_send(&m);
 				m.net_array.to_network_order();
+				//Dispatch to every client
 				for (auto it = conns.begin(); it != conns.end(); )  //No increment
 				{
 					Connection *conn = *it;
@@ -98,20 +108,15 @@ namespace Ryno {
 		sock.close();
 	}
 
-	void Server::set_timeout(U32 microseconds) {
-		timeout.tv_sec = microseconds / 1000000;
-		timeout.tv_usec = microseconds % 1000000;
-	}
-
 	Connection* Server::add_to_connections(const SmallAddress& addr) {
-		last_periodic_update = -999;
+		request_update();
 		Connection* new_conn = new Connection(sock, addr);
 		conns.push_back(new_conn);
 		return new_conn;
 	}
 
 	void Server::remove_from_connections(const SmallAddress& addr) {
-		last_periodic_update = -999;
+		request_update();
 		for (Connection* c : conns)
 			if (c->address.equals(addr))
 			{

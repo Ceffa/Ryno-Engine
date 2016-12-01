@@ -22,7 +22,7 @@ namespace Ryno {
 	}
 
 	void Network::init() {
-		// Initialise the WinSock library -- we want version 2.2.
+		//Initialise win sock
 		WSADATA w;
 		int error = WSAStartup(0x0202, &w);
 		if (error != 0)
@@ -30,19 +30,17 @@ namespace Ryno {
 	
 		if (w.wVersion != 0x0202)
 			Log::println("Wrong WinSock version");
-
-		
 	}
 	
 	void Network::start_server() {
-		stop_server();
-		has_server = true;
+		stop_server();	//just in case
 		server = new Server("127.0.0.1", 5555);
+		has_server = true;
 		server->start();
 	}
 
 	void Network::start_client() {
-		stop_client();
+		stop_client();	//just in case
 		client = new Client("127.0.0.1", 5555,"127.0.0.1");
 		has_client = true;
 		client->start();
@@ -59,6 +57,7 @@ namespace Ryno {
 
 	}
 
+	//Call update on server and/or client
 	void Network::update() {
 		if (has_server && server)
 			if (!server->update())
@@ -67,7 +66,6 @@ namespace Ryno {
 			if (!client->update())
 				stop_client();
 	}
-
 
 	void Network::stop_client() {
 		if (client) {

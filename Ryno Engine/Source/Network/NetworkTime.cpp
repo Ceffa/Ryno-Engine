@@ -11,11 +11,15 @@ namespace Ryno {
 
 	}
 
-	F32 NetworkTime::get_time() {
-		F32 time = 0;
+	void NetworkTime::update_time() {
+		net_time = 0;
 		for (I32 i = 0; i < TIME_SAMPLES; i++) {
-			time += time_samples[i] + (TimeManager::time -  time_recv[i]);
+			net_time += time_samples[i] + (TimeManager::time -  time_recv[i]);
 		}
-		return time / TIME_SAMPLES;
+		net_time /= TIME_SAMPLES;
+	}
+
+	F32 NetworkTime::get_time() const {
+		return net_time;
 	}
 }

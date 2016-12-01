@@ -5,7 +5,6 @@ namespace Ryno {
 
 	void Space::start() {
 
-
 		camera->position = glm::vec4(0, 20, 0, 1);
 		camera->yaw = 0;
 		camera->pitch = 90;
@@ -65,10 +64,15 @@ namespace Ryno {
 	
 	}
 
+	//Called every frame
 	void Space::update() {
+		//Update score
 		if (Network::has_client)
 			timer.text->text = std::to_string(Network::client->net_time.get_time());
 		
+		//If server: run the simple phyisics simulation to determine 
+		//if the ball has been collected by a player.
+		//If so, update the score and require an immediate server update
 		if (Network::has_server) {
 
 			for (auto& go : net_game_objects) {
@@ -83,19 +87,19 @@ namespace Ryno {
 						ball->reset_network_transform(ryno_math::rand_vec3_range(glm::vec3(-17, 0, -10), glm::vec3(17, 0, 10)), glm::quat(glm::vec3(0, 0, 0)), glm::vec3(.4f), Network::client->net_time.get_time());
 						scores[no->id.client_id]++;
 						if (Network::has_server) {
-							Network::server->last_periodic_update = -999;	//force update of clients
+							Network::server->request_update();	//force update of clients
 						}
 					}
-
 				}
-
 			}
-
 		}
 	}
 
 	void Space::input() {
 		
+		//Control player. It is possible to rotate and move in the direction of rotation.
+		//It is also possible to scale the size of the ship, even though it's not really a
+		//feature of the game
 
 		if (!game->shell->active) {
 			if (controlled) {
@@ -105,6 +109,11 @@ namespace Ryno {
 
 				if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
 					glm::vec3 dir = TimeManager::delta_time * speed * glm::vec3(-1,0,0);
+					dir = glm::inverse(controlled->game_object->transform.get_rotation()) * dir;
+					controlled->game_object->transform.add_position(dir);
+				}
+				if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
+					glm::vec3 dir = TimeManager::delta_time * speed * glm::vec3(1, 0, 0);
 					dir = glm::inverse(controlled->game_object->transform.get_rotation()) * dir;
 					controlled->game_object->transform.add_position(dir);
 				}
@@ -124,15 +133,18 @@ namespace Ryno {
 			}
 		}
 	}
+
+	//When a net_object message is received from the network,
+	//dispatch it differently depending on wether it is tagged as player or ball
 	void Space::on_network_recv(const NetMessage* message) {
 		if (message->object_update.code == ObjectCode::PLAYER)
 			receive_player(message);
 		else if (message->object_update.code == ObjectCode::BALL)
 			receive_ball(message);
-
-
 	}
 
+	//Update the requested player transform. If the player has not been created,
+	//create it and initialize it first
 	void Space::receive_player(const NetMessage* message) {
 	
 		NetObject* received = NetObject::find(message->header.id);
@@ -142,7 +154,7 @@ namespace Ryno {
 		glm::vec3 scale = message->object_update.get_scale();
 
 
-		//Reset position if just intantiated, otherwise just set the network pos
+		//Create net object if it is not already present
 		if (received == nullptr) {
 			received = create_net_obj(message->header.id);
 			scores[message->header.id.client_id] = 0;
@@ -154,9 +166,12 @@ namespace Ryno {
 		else
 			received->set_network_transform(pos, rot, scale,message->header.get_timestamp());
 
+		//Refresh its time
 		received->last_received = Network::client->net_time.get_time();
 	}
 
+	//Handle ball similarly to player, but hard reset the transform 
+	//instead of using the interpolation functions
 	void Space::receive_ball(const NetMessage* message) {
 
 		NetObject* received = NetObject::find(message->header.id);
@@ -178,6 +193,7 @@ namespace Ryno {
 		received->last_received = Network::client->net_time.get_time();
 	}
 
+	//Fill NetObject message differntly depending on tag, before sending it to the server
 	void Space::on_network_send(NetObject* sender, NetMessage* message) {
 		message->header.id = sender->id;
 		message->header.code = NetCode::OBJECT;
@@ -186,46 +202,48 @@ namespace Ryno {
 		message->object_update.set_scale(sender->game_object->transform.get_scale());
 		message->object_update.code = sender == ball ? ObjectCode::BALL : ObjectCode::PLAYER;
 	}
-	void Space::on_periodic_update(NetMessage* message) {
-		//If server send an update, if client read it
-		if (Network::has_server) {
-			I32 i = 0;
-			for (i = 0; i < MAX_CLIENTS; i++) {
-				if (scores[i] < 0) {
-					if (i < Connection::last_client_id)
-						scores[i] = 0;
-					else
-						break;
-				}
-				message->net_array.set_value(i, scores[i]);
-			}
-			message->net_array.length = i;
-		}
-		if (Network::has_client) {
-			score_text.text->text = "";
-						
-			for (int i = 0; i < MAX_CLIENTS; i++) {
-				I32 value = message->net_array.get_value(i);
-				if (value < 0)
+
+	//Function that handles sending periodic server updates .
+	void Space::on_periodic_update_send(NetMessage* message) {
+		I32 i = 0;
+		for (i = 0; i < MAX_CLIENTS; i++) {
+			if (scores[i] < 0) {
+				if (i < Connection::last_client_id)
+					scores[i] = 0;
+				else
 					break;
-				std::string s;
-
-				if (i == Network::client->client_id)
-					s += "You ";
-				else {
-					s += "Ship ";
-					s += std::to_string(i);
-				}
-
-				s += ": ";
-				s += std::to_string(value);
-				s += '\n';
-				score_text.text->text += s;
 			}
+			message->net_array.set_value(i, scores[i]);
+		}
+		message->net_array.length = i;
+	}
+	//Function that handles receiving periodic server updates.
+	//It mainly print the new scores
+	void Space::on_periodic_update_recv(NetMessage* message) {
+		score_text.text->text = "";
+						
+		for (int i = 0; i < MAX_CLIENTS; i++) {
+			I32 value = message->net_array.get_value(i);
+			if (value < 0)
+				break;
+			std::string s;
+
+			if (i == Network::client->client_id)
+				s += "You ";
+			else {
+				s += "Ship ";
+				s += std::to_string(i);
+			}
+
+			s += ": ";
+			s += std::to_string(value);
+			s += '\n';
+			score_text.text->text += s;
 		}
 	}
 
-
+	//As soon as the clients connect create and initialize local player.
+	//If the machine is a server, also initialize the ball.
 	void Space::on_client_started() {
 		client_text.text->text = std::to_string(Network::client->client_id);
 		if (!controlled) {
@@ -246,7 +264,7 @@ namespace Ryno {
 
 		}
 	}
-
+	//Just a function that creates the player gameobject
 	void Space::initialize_player(const NetObject* net_obj) {
 
 		//net_obj->game_object->transform.set_scale(glm::vec3(1, 1, 1));
@@ -263,7 +281,7 @@ namespace Ryno {
 		m.cast_shadows = false;
 
 	}
-
+	//Just a function that creates the ball gameobject
 	void Space::initialize_ball(const NetObject* net_obj) {
 
 		//net_obj->game_object->transform.set_scale(glm::vec3(1, 1, 1));
@@ -280,6 +298,7 @@ namespace Ryno {
 		m.cast_shadows = false;
 	}
 
+	//Assign a color depending on the client id
 	ColorRGBA Space::get_start_color_from_id(U32 i) {
 		ColorRGBA c = ColorRGBA::black;
 		if (i == 0 || i == 4 || i == 6 || i == 7)
@@ -290,6 +309,8 @@ namespace Ryno {
 			c.b = 255;
 		return c;
 	}
+
+	//Assigna starting position depending on the client id
 	glm::vec3 Space::get_start_pos_from_id(U32 i) {
 		static F32 off = 5;
 		glm::vec3 p = glm::vec3(0, 0, 0);

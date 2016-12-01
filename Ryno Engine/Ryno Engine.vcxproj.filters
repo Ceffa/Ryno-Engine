@@ -821,9 +821,6 @@
     <ClInclude Include="Headers\Network\Network.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Network\Thread.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Network\Socket.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>

@@ -7,21 +7,27 @@
 
 namespace Ryno{
 
-
+	//The main network class, which manages everything related to the network
 	static class Network {
 	public:
+
+		//Life cycle
 		void init(); 
-		void start_client();
-		void start_server();
-		void stop_client();
-		void stop_server();
 		void update();
 		void reset();
-		static Network* get_instance();
-		static Client* client;
-		static Server* server;
-		static bool has_server;
+
+		//Client
 		static bool has_client;
+		static Client* client;
+		void start_client();
+		void stop_client();
+
+		//Server
+		static bool has_server;
+		static Server* server;
+		void start_server();
+		void stop_server();
+		static Network* get_instance();
 	private:
 		Network::Network() {}
 		Network::~Network();

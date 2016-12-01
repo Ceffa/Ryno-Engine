@@ -7,6 +7,7 @@
 namespace Ryno{
 	class Network;
 
+	//Struct that represent a state better than a simple boolean
 	struct State {
 	private:
 		I8 value = -1;
@@ -19,6 +20,8 @@ namespace Ryno{
 		void set_loading() { value = 0; }
 	};
 
+	//High level, object oriented wrapper of a socket, with better logging and error handling.
+	//Particularly useful are the send_struct and recv_struct functions
 	class Socket {
 	private:
 		SOCKET sock = SOCKET_ERROR;
@@ -40,6 +43,7 @@ namespace Ryno{
 
 		void set_blocking(bool b);
 
+		//Keep track of states
 		State create_state;
 		State bind_state;
 		State listen_state;

@@ -16,7 +16,8 @@ namespace Ryno{
 		void input() override;
 		void on_network_recv(const NetMessage* message) override;
 		void on_network_send(NetObject* sender, NetMessage* message) override;
-		void on_periodic_update(NetMessage* message) override;
+		void on_periodic_update_send(NetMessage* message) override;
+		void on_periodic_update_recv(NetMessage* message) override;
 		void on_client_started() override;
 		void receive_player(const NetMessage* message);
 		void receive_ball(const NetMessage* message);

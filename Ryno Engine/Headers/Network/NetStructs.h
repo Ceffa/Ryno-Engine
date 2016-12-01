@@ -9,7 +9,10 @@
 
 namespace Ryno{
 
-	//Big structure to handle locally information about an address
+	//**This header contains many useful structs and classes,
+	//as well as the types of messages that can be used exchanged**
+
+	//Wrapper of sockaddr_in
 	struct Address : public sockaddr_in {
 		Address() {}
 		Address(const std::string& ip, const U16 port) {
@@ -38,7 +41,7 @@ namespace Ryno{
 		}
 	};
 
-	//Small structure that holds info about an address. Send this over network
+	//Smaller representation of an address. Should be used locally.
 	struct SmallAddress {
 		SmallAddress() {}
 		SmallAddress(const std::string& _ip, const U16 _port) : SmallAddress(Address(_ip, _port)) {}
@@ -68,8 +71,8 @@ namespace Ryno{
 		static U16 last_id;
 	};
 
-	//Small struct to pack address and local id of a network object.
-	//It fully identifies an object over a network
+	//Small struct to pack client id and local id of a network object.
+	//It fully identifies an object over the network
 	struct NetId {
 		NetId() {}
 		NetId(U32 _client_id) { set(_client_id); }
@@ -90,7 +93,7 @@ namespace Ryno{
 	};
 
 	//Base network struct that supports 
-	//conversion to and from network order
+	//conversion to and from network order.
 	class NetStruct {
 	public:
 		NetStruct() {}
@@ -103,7 +106,7 @@ namespace Ryno{
 	};
 
 	//Net struct that contains mandatory 
-	//information about a packet
+	//information about a message
 	class Header : public NetStruct {
 	public:
 		Header() {}
@@ -133,7 +136,7 @@ namespace Ryno{
 		U32 timestamp;
 	};
 
-	//Sent by client periodically
+	//Message sent by client periodically
 	class ClientUpdate : public NetStruct {
 	public:
 		void to_network_order() override {
@@ -141,6 +144,7 @@ namespace Ryno{
 		void to_hardware_order() override {
 		}
 	};
+	//Message sent by server in response to client update
 	class ServerUpdate : public NetStruct {
 	public:
 		U32 client_id;
@@ -163,6 +167,8 @@ namespace Ryno{
 		U32 net_time;
 	};
 
+	//The main net structure: it packs info about a transform, and it's
+	//automatically sent by net_ojects
 	class ObjectUpdate : public NetStruct {
 	public:
 		ObjectUpdate() {}
@@ -241,7 +247,8 @@ namespace Ryno{
 		U32 w, h, d;
 	};
 
-	//contains an array of U32
+	//A generic purpose array.
+	//It's up to the game code to decide how to use it
 	class NetArray : public NetStruct {
 	public:
 		NetArray() {}
@@ -277,8 +284,10 @@ namespace Ryno{
 		U32 array[30];
 	};
 
+	//Types of net structures
 	enum NetCode { CLIENT_TIME,SERVER_TIME, OBJECT, UPDATE };
 
+	//Network message: contains an header, and a union with every other net struct in it
 	struct NetMessage {
 		NetMessage() {}
 		Header header;
