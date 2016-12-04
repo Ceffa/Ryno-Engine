@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Script.h"
+#include "Component.h"
 
 namespace Ryno {
 
-	class GroundElements : public Script {
+	class GroundElements : public Component {
 
 	public:
 
@@ -34,7 +34,7 @@ namespace Ryno {
 			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 			shader.create("Geometry/geometry", GAME);
 
-			auto& sm = base.add_script<Model>()->add_sub_model();
+			auto& sm = base.add_component<Model>()->add_sub_model();
 
 			sm.material.set_shader(&shader);
 			sm.mesh = cube_mesh;
@@ -53,7 +53,7 @@ namespace Ryno {
 			poles.resize(s*s);
 			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 
-			auto& m = poles[0].add_script<Model>()->add_sub_model();
+			auto& m = poles[0].add_component<Model>()->add_sub_model();
 			m.material.set_shader(&shader);
 			m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
 			sm.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));

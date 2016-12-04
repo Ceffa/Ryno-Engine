@@ -2,7 +2,7 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include <GLM/gtx/quaternion.hpp>
-#include "Script.h"
+#include "Component.h"
 #include "Transform.h"
 #include <iostream>
 
@@ -32,17 +32,17 @@ namespace Ryno{
 		transform.copy(go.transform);
 		transform.game_object = this;
 	
-		scripts.clear();
-		for (auto s : go.scripts) {
+		components.clear();
+		for (auto s : go.components) {
 			if (s->is_copyable())
-				add_script(s->clone());
+				add_component(s->clone());
 		}
 		
 	}
 
 	GameObject::~GameObject() {
 
-		for (auto* s : scripts) {
+		for (auto* s : components) {
 			delete s;
 			s = nullptr;
 		}

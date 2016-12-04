@@ -60,7 +60,7 @@ namespace Ryno{
 	void Emitter::remove_particle(Particle3D* p){
 		
 		//Disable emitter component on the particle, in case it has one
-		Emitter* e = p->get_script<Emitter>();
+		Emitter* e = p->get_component<Emitter>();
 		if (e) e->disable();
 		m_pool.push_back(p);
 		p->active = false;

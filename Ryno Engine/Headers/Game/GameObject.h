@@ -5,7 +5,7 @@
 
 namespace Ryno{
 
-	class Script;
+	class Component;
 	class GameObject{
 		friend class Scene;
 	public:
@@ -17,7 +17,7 @@ namespace Ryno{
 		
 		Transform transform;
 
-		std::list<Script*> scripts;
+		std::list<Component*> components;
 
 		bool active = true;
 
@@ -27,59 +27,59 @@ namespace Ryno{
 		//Templates
 
 		template<class T>
-		T* add_script(T* s) {
+		T* add_component(T* s) {
 						
 			s->game_object = this;
-			scripts.push_back(s);
+			components.push_back(s);
 			s->start();
 			return s;
 		}
 		template<class T>
-		T* add_script() {
-			return add_script(new T());
+		T* add_component() {
+			return add_component(new T());
 		}
 
 		template<class T>
-		T* remove_script(T* s)
+		T* remove_component(T* s)
 		{
 			s->game_object = nullptr;
-			scripts.remove(s);
+			components.remove(s);
 			return s;
 		}
 
 		template<class T>
-		T* remove_script()
+		T* remove_component()
 		{
-			return remove_script(get_script<T>());
+			return remove_component(get_component<T>());
 		}
 
 
 		template<class T>
-		void delete_script()
+		void delete_component()
 		{
-			delete_script(get_script<T>());
+			delete_component(get_component<T>());
 		}
 		template<class T>
-		void delete_script(T* s)
+		void delete_component(T* s)
 		{
-			scripts.remove(s);
+			components.remove(s);
 			delete s;
 		}
 
 
 
 		template<class T>
-		T* get_script() {
-			for (auto* s : scripts)
+		T* get_component() {
+			for (auto* s : components)
 				if (T* v = dynamic_cast<T*>(s))
 					return v;
 			return nullptr;
 		}
 
 		template<class T>
-		std::list<T*> get_scripts() {
+		std::list<T*> get_components() {
 			std::list<T*> T_list;
-			for (auto* s : scripts)
+			for (auto* s : components)
 				if (T* v = dynamic_cast<T*>(s))
 					T_list.push_back(v);
 			return std::move(T_list);

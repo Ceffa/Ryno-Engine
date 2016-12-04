@@ -35,5 +35,6 @@ namespace Ryno {
 
 		//Keep track of list of net_objects in the scene
 		std::list<GameObject> net_game_objects;
+		
 	};
 }

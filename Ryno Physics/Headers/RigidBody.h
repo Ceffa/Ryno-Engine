@@ -1,12 +1,12 @@
 #pragma once
 #include "Core.h"
-#include "Script.h"
+#include "Component.h"
 
 
 namespace Ryno {
 
 	class CollisionPrimitive;
-	class RigidBody : public Ryno::Script {
+	class RigidBody : public Ryno::Component {
 		friend class Contact;
 	protected:
 		F inverse_mass;

@@ -6,13 +6,13 @@
 namespace Ryno {
 	
 	class GameObject;
-	class Script {
+	class Component {
 
 	public:
 
-		virtual ~Script() {}
+		virtual ~Component() {}
 
-		virtual Script* clone() = 0;
+		virtual Component* clone() = 0;
 
 		virtual void start() {}
 		virtual void update() {}
@@ -22,7 +22,7 @@ namespace Ryno {
 		virtual bool is_copyable() { return true; }
 
 		template<class T>
-		static bool is_type(Script* s) {
+		static bool is_type(Component* s) {
 			if (dynamic_cast<T*>(s))
 				return true;
 			return false;

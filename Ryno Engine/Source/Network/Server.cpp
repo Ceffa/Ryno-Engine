@@ -93,7 +93,7 @@ namespace Ryno {
 					Connection *conn = *it;
 					m.server_update.client_id = conn->client_id;
 
-					if (!conn->address.equals(addr) && !conn->do_write(&m)) {
+					if (!conn->do_write(&m)) {
 						delete conn;
 						it = conns.erase(it);
 					}

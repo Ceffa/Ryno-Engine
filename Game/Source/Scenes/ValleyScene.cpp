@@ -17,8 +17,8 @@ namespace Ryno {
 
 
 
-		sphere.add_script<LightsElements>();
-		floor.add_script<GroundElements>();
+		sphere.add_component<LightsElements>();
+		floor.add_component<GroundElements>();
 	}
 
 	void ValleyScene::update() {

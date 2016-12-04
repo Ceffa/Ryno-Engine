@@ -1,5 +1,5 @@
 #pragma once
-#include "Script.h"
+#include "Component.h"
 #include "NetStructs.h"
 #include <set>
 
@@ -37,7 +37,7 @@ namespace Ryno{
 	};
 
 	//NetObject is the component (inherits from Script) that makes an object a network entity.
-	class NetObject : public Script {
+	class NetObject : public Component {
 		friend class Client;
 		friend class NetworkScene;
 	public:

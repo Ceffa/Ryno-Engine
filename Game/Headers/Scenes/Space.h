@@ -1,6 +1,7 @@
 #pragma once
 #include "NetworkScene.h"
 #define MAX_CLIENTS 30
+#define NO_SCORE 9999999
 namespace Ryno{
 	enum ObjectCode {PLAYER,BALL};
 	class Space : public NetworkScene
@@ -38,6 +39,6 @@ namespace Ryno{
 		GUIObject timer,score_text, client_text;
 		Font font;
 
-		I32 scores[MAX_CLIENTS];
+		U32 scores[MAX_CLIENTS];
 	};
 }

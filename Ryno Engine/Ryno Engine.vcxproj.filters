@@ -812,9 +812,6 @@
     <ClInclude Include="Headers\Rendering\Shader.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Game\Script.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Managers\ObjLoader.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
@@ -880,6 +877,9 @@
     </ClInclude>
     <ClInclude Include="Headers\Network\NetworkTime.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Game\Component.h">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

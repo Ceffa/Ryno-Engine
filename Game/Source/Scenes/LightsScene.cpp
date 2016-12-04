@@ -27,7 +27,7 @@ namespace Ryno {
 
 		base.transform.set_scale(2500, 5, 2500);
 		base.transform.set_position(0, 0, 0);
-		SubModel& m = base.add_script<Model>()->add_sub_model();
+		SubModel& m = base.add_component<Model>()->add_sub_model();
 
 		m.material.set_shader(&shader);
 		m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
@@ -41,7 +41,7 @@ namespace Ryno {
 		lights.resize(lato * lato);
 		lights[0].copy(base);
 	
-		auto* p = lights[0].add_script<PointLight>();
+		auto* p = lights[0].add_component<PointLight>();
 		p->model.material.set_shader(&point_light_shader);
 		p->diffuse_intensity = 1.75f;
 		p->specular_intensity = 0;
@@ -50,7 +50,7 @@ namespace Ryno {
 		p->shadows = false;
 
 		
-		lights[0].delete_script<Model>();
+		lights[0].delete_component<Model>();
 
 
 		
@@ -63,7 +63,7 @@ namespace Ryno {
 				
 				lights[i*lato + j].transform.set_position(i * 30 - 30 *lato/2 , 6.5f, j * 30 - 30 * lato/2);
 				lights[i*lato + j].transform.set_parent(&parent.transform);
-				lights[i*lato + j].get_script<PointLight>()->diffuse_color = ryno_math::rand_color_range(ColorRGBA(70,70,70,255),ColorRGBA(255,255,255,255));
+				lights[i*lato + j].get_component<PointLight>()->diffuse_color = ryno_math::rand_color_range(ColorRGBA(70,70,70,255),ColorRGBA(255,255,255,255));
 			}
 
 

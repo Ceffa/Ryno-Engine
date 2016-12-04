@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Scene.h"
-#include "Script.h"
+#include "Component.h"
 namespace Ryno{
 
 	std::vector<Scene*(*)()> SceneManager::scenes;
@@ -19,14 +19,14 @@ namespace Ryno{
 	void Scene::update_scripts()
 	{
 		for (auto* g : GameObject::game_objects)
-			for (auto* s : g->scripts)
+			for (auto* s : g->components)
 				s->update();
 	}
 
 	void Scene::input_scripts()
 	{
 		for (auto* g : GameObject::game_objects)
-			for (auto* s : g->scripts)
+			for (auto* s : g->components)
 				s->input();
 	}
 

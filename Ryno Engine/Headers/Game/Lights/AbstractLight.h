@@ -6,12 +6,12 @@
 #include "Structures.h"
 #include "Model.h"
 #include <GLM\glm.hpp>
-#include "Script.h"
+#include "Component.h"
 
 namespace Ryno{
 	
 	
-	class AbstractLight : public Script{
+	class AbstractLight : public Component{
 	public:
 		void set_diffuse_color(U8 r, U8 g, U8 b);
 		void set_specular_color(U8 r, U8 g, U8 b);

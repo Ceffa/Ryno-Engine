@@ -7,7 +7,7 @@
 #include <vector>
 #include <functional>
 #include "GenericMap.h"
-#include "Script.h" 
+#include "Component.h" 
 
 namespace Ryno{
 	
@@ -33,7 +33,7 @@ namespace Ryno{
 	};
 
 
-class Emitter : public Script{
+class Emitter : public Component{
 
 
 	friend class Particle3D;

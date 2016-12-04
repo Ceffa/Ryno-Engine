@@ -37,11 +37,11 @@ void after_commands(char* argv[]) {
 
 	bool server = argv[1][0] == '0' ? true : false;
 
-	if (server)
+	if (server) 
 		Ryno::Game::get_instance()->network->start_server();
-	//if(argv[1][0] != '3' && argv[1][0] != '2')
+		//if(argv[1][0] != '3' && argv[1][0] != '2')
 		Ryno::Game::get_instance()->network->start_client();
-
+	
 }
 
 int main(int argc, char* argv[]) {

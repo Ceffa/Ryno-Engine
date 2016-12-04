@@ -6,7 +6,7 @@
 namespace Ryno {
 	std::set<NetObject*> NetObject::net_objects;
 	Ryno::F32 NetObject::disconnect_delay = 2;
-	Ryno::F32 NetObject::send_delay = .2f;
+	Ryno::F32 NetObject::send_delay = .1f;
 
 	NetObject::NetObject(const NetId& addr) : id(addr), last_sent(0) {
 		net_objects.insert(this);

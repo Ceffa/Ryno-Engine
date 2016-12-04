@@ -7,7 +7,7 @@ namespace Ryno{
 	//Server class
 	class Server : public NetEntity{
 	public:
-		Server::Server(C* _ip, U32 _port) { local_address.set(_ip, _port); last_periodic_update = -999; update_frequence = 1; }
+		Server::Server(C* _ip, U32 _port) { local_address.set(_ip, _port); last_periodic_update = -999; update_frequence = .5f; }
 		Server::~Server() { close(); }
 		void start() override;
 		bool update() override;

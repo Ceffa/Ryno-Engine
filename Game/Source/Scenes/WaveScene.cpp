@@ -28,7 +28,7 @@ namespace Ryno {
 
 
 		t.transform.set_scale(size/2,size/2,size/2);
-		auto& m = t.add_script<Model>()->add_sub_model();
+		auto& m = t.add_component<Model>()->add_sub_model();
 
 
 		m.material.set_shader(&shader);
@@ -53,7 +53,7 @@ namespace Ryno {
 		}
 
 		//dir light
-		auto* l = t.add_script<DirectionalLight>();
+		auto* l = t.add_component<DirectionalLight>();
 		l->model.material.set_shader(&dir_light_shader);
 		l->set_rotation(-50, 10, 0);
 		l->diffuse_intensity = 1.5f;
@@ -65,7 +65,7 @@ namespace Ryno {
 		l->shadows = false;
 
 	
-		t.delete_script<Model>();
+		t.delete_component<Model>();
 	
 
 		
@@ -77,7 +77,7 @@ namespace Ryno {
 		for (GameObject& o : cubes) {
 			o.transform.set_position(o.transform.get_position().x, 15.0f*sin(sqrt(pow(o.transform.get_position().x / 25.0f, 2) + pow(o.transform.get_position().z / 25.0f, 2)) - (_time / 400.0f)), o.transform.get_position().z);
 			
-			o.get_script<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(0, (o.transform.get_position().y + 15.0f)*255.0f / 30.0f, 255 - (o.transform.get_position().y + 15.0f)*255.0f / 30.0f, 150));
+			o.get_component<Model>()->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(0, (o.transform.get_position().y + 15.0f)*255.0f / 30.0f, 255 - (o.transform.get_position().y + 15.0f)*255.0f / 30.0f, 150));
 		}
 	}
 

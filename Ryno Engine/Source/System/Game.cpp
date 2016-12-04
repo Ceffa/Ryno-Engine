@@ -119,7 +119,8 @@ namespace Ryno{
 	}
 
 	void Game::reset() {
-		network->reset();
+		network->stop_client();
+		network->stop_server();
 		physics_world->reset();
 		Batch3DGeometry::sorting = true;
 		Batch3DShadow::sorting = true;

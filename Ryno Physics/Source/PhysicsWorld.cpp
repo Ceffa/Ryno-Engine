@@ -24,7 +24,7 @@ namespace Ryno {
 		bodies.clear();
 
 		for (auto b : GameObject::game_objects) if (b->active) {
-			RigidBody* r = b->get_script<RigidBody>();
+			RigidBody* r = b->get_component<RigidBody>();
 			if (r) {
 				r->calculate_derived_data();
 				bodies.push_back(r);

@@ -1,11 +1,11 @@
 #pragma once
 #include "Core.h"
-#include "Script.h"
+#include "Component.h"
 
 
 namespace Ryno {
 
-	class Particle : public Ryno::Script {
+	class Particle : public Ryno::Component {
 
 	protected:
 		F inverse_mass;

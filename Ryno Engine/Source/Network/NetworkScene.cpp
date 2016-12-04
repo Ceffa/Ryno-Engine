@@ -10,14 +10,14 @@ namespace Ryno {
 		net_game_objects.emplace_back();
 
 		GameObject* go = &(net_game_objects.back());
-		return go->add_script(new NetObject(id));
+		return go->add_component(new NetObject(id));
 	}
 
 	void NetworkScene::remove_unused_net_objects()
 	{
 		for (auto it = net_game_objects.begin(); it != net_game_objects.end(); )  //No increment
 		{
-			NetObject* no = it->get_script<NetObject>();
+			NetObject* no = it->get_component<NetObject>();
 			if (no->mark_for_destruction)
 				it = net_game_objects.erase(it);
 			else
@@ -28,7 +28,7 @@ namespace Ryno {
 	{
 		for (auto it = net_game_objects.begin(); it != net_game_objects.end(); )  //No increment
 		{
-			NetObject* no = it->get_script<NetObject>();
+			NetObject* no = it->get_component<NetObject>();
 			if (!no->owned)
 				it = net_game_objects.erase(it);
 			else

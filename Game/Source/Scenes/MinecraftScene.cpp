@@ -32,12 +32,12 @@ namespace Ryno{
 		material.create("Geometry/material", GAME);
 
 		//sponza - sibenik
-		sponza.add_script(game->mesh_manager->load_model("ship", Owner::GAME, material));
+		sponza.add_component(game->mesh_manager->load_model("ship", Owner::GAME, material));
 		sponza.transform.set_position(0, 0, 0);
 		sponza.transform.set_rotation(0, 0, 0);
 
 		sponza.transform.set_scale(2,2,2);
-		auto* l = sponza.add_script<DirectionalLight>();
+		auto* l = sponza.add_component<DirectionalLight>();
 		l->model.material.set_shader(&dir_light_shader);
 		l->set_rotation(-70, 10, 0);
 		l->diffuse_intensity = 3;
@@ -50,7 +50,7 @@ namespace Ryno{
 		material.set_uniform("g_Time", 0);
 		material.set_uniform("g_Power", 0);
 
-		for (auto& m : sponza.get_script<Model>()->sub_models) {
+		for (auto& m : sponza.get_component<Model>()->sub_models) {
 			m.cast_shadows = false;
 			ColorRGBA* attr = (ColorRGBA*)m.material.get_attribute("diffuse_color");
 			if (attr != nullptr) {

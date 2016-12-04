@@ -137,7 +137,7 @@ namespace Ryno{
 	};
 
 	//Message sent by client periodically
-	class ClientUpdate : public NetStruct {
+	class ClientTime : public NetStruct {
 	public:
 		void to_network_order() override {
 		}
@@ -145,7 +145,7 @@ namespace Ryno{
 		}
 	};
 	//Message sent by server in response to client update
-	class ServerUpdate : public NetStruct {
+	class ServerTime : public NetStruct {
 	public:
 		U32 client_id;
 		void to_network_order() override {
@@ -292,8 +292,8 @@ namespace Ryno{
 		NetMessage() {}
 		Header header;
 		union {
-			ClientUpdate client_update;
-			ServerUpdate server_update;
+			ClientTime client_update;
+			ServerTime server_update;
 			ObjectUpdate object_update;
 			NetArray net_array;
 		};

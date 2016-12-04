@@ -6,7 +6,7 @@
 #include "Structures.h"
 #include "Material.h"
 #include <set>
-#include "Script.h"
+#include "Component.h"
 
 namespace Ryno{
 	class Model;
@@ -20,7 +20,7 @@ namespace Ryno{
 		void copy(const SubModel& cp);
 		Model* parent;
 	};
-	class Model : public Script{
+	class Model : public Component{
 	public:
 	
 		SubModel& add_sub_model();
