@@ -26,26 +26,19 @@ void before_commands(char* argv[]) {
 	else
 		y = borderY / 3 + rect.h / 2;
 	
-	Ryno::Game::get_instance()->set_window_pos(x, y);
-	Ryno::Game::get_instance()->set_window_size(w, h);
-	//Ryno::Game::get_instance()->set_window_pos(0,0);
-	//Ryno::Game::get_instance()->set_window_size(1920, 1200);
+	//Swap these lines to toggle 4 windows multiplayer
+	//Ryno::Game::get_instance()->set_window_pos(x, y);
+	//Ryno::Game::get_instance()->set_window_size(w, h);
+	Ryno::Game::get_instance()->set_window_pos(0,0);
+	Ryno::Game::get_instance()->set_window_size(1920, 1200);
 
 
 }
 void after_commands(char* argv[]) {
-
-	bool server = argv[1][0] == '0' ? true : false;
-
-	if (server) 
-		Ryno::Game::get_instance()->network->start_server();
-		//if(argv[1][0] != '3' && argv[1][0] != '2')
-		Ryno::Game::get_instance()->network->start_client();
-	
+	Ryno::WindowIndex::idx = argv[1][0] - '0';	
 }
 
 int main(int argc, char* argv[]) {
-
 	Ryno::Game* game = Ryno::Game::get_instance();
 	Ryno::ScenesList::create_scenes();
 

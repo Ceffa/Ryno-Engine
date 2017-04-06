@@ -5,6 +5,21 @@
 
 namespace Ryno {
 
+	void NetworkScene::start_network_features()
+	{
+		game->network->init();
+
+		if (WindowIndex::idx == 0)
+			game->network->start_server();
+		game->network->start_client();
+	
+	}
+
+	void NetworkScene::stop_network_features()
+	{
+		game->network->reset();
+	}
+
 	NetObject* NetworkScene::create_net_obj(const NetId& id) {
 
 		net_game_objects.emplace_back();

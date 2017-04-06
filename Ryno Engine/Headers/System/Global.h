@@ -26,5 +26,7 @@ namespace Ryno {
 		static U32 x;
 		static U32 y;
 	};
-
+	struct WindowIndex {
+		static U32 idx;
+	};
 }

@@ -5,6 +5,7 @@ namespace Ryno {
 
 	void Space::start() {
 
+		NetworkScene::start();
 		camera->position = glm::vec4(0, 20, 0, 1);
 		camera->yaw = 0;
 		camera->pitch = 90;
@@ -38,21 +39,29 @@ namespace Ryno {
 		font.create("inconsolata", 26, ENGINE);
 		timer.text = new Text();
 		timer.text->set_position(1,0);
-		timer.text->set_scale(2, 2);
+		timer.text->set_scale(1.5f, 1.5f);
 		timer.text->set_color(0,0,0,255);
 		timer.text->anchor_point = AnchorPoint::BOTTOM_RIGHT;
 		timer.text->font = &font;
+
+		hint.text = new Text();
+		hint.text->set_position(.5f, 1);
+		hint.text->set_scale(1,1);
+		hint.text->set_color(255,255,255, 255);
+		hint.text->anchor_point = AnchorPoint::TOP_MIDDLE;
+		hint.text->font = &font;
+		hint.text->text = "Multiplayer requires multiple windows";
 	
 		score_text.text = new Text();
 		score_text.text->set_position(1, 1);
-		score_text.text->set_scale(2,2);
+		score_text.text->set_scale(1.5f, 1.5f);
 		score_text.text->set_color(0, 0, 0, 255);
 		score_text.text->anchor_point = AnchorPoint::TOP_RIGHT;
 		score_text.text->font = &font;
 
 		client_text.text = new Text();
 		client_text.text->set_position(0, 1);
-		client_text.text->set_scale(2, 2);
+		client_text.text->set_scale(1.5f, 1.5f);
 		client_text.text->set_color(0, 0, 0, 255);
 		client_text.text->anchor_point = AnchorPoint::TOP_LEFT;
 		client_text.text->font = &font;
@@ -60,12 +69,12 @@ namespace Ryno {
 		for (I32 i = 0; i < MAX_CLIENTS; i++) {
 			scores[i] = NO_SCORE;
 		}
-
-	
 	}
 
 	//Called every frame
 	void Space::update() {
+
+		
 		//Update score
 		if (Network::has_client)
 			timer.text->text = std::to_string(Network::client->net_time.get_time());

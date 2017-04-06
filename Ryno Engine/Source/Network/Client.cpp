@@ -127,6 +127,7 @@ namespace Ryno {
 
 	//Close client and wipe every net object from the scene
 	void Client::close() {
+		client_id = 0;
 		connected = false;
 		sock.close();
 	}

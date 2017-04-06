@@ -36,7 +36,7 @@ namespace Ryno{
 		I32 ship_mesh, sphere_mesh;
 		Shader shader, dir_light_shader, material;
 		Texture white, white_normal;
-		GUIObject timer,score_text, client_text;
+		GUIObject timer,score_text, client_text, hint;
 		Font font;
 
 		U32 scores[MAX_CLIENTS];

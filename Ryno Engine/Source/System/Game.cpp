@@ -73,7 +73,6 @@ namespace Ryno{
 		mesh_builder = MeshBuilder::get_instance();
 
 		network = Network::get_instance();
-		network->init();	
 	}
 
 	Game* Game::get_instance()
@@ -119,8 +118,6 @@ namespace Ryno{
 	}
 
 	void Game::reset() {
-		network->stop_client();
-		network->stop_server();
 		physics_world->reset();
 		Batch3DGeometry::sorting = true;
 		Batch3DShadow::sorting = true;

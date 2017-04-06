@@ -6,4 +6,6 @@ namespace Ryno {
 
 	U32 WindowSize::w = 0;	
 	U32 WindowSize::h = 0;
+
+	U32 WindowIndex::idx = 0;
 }

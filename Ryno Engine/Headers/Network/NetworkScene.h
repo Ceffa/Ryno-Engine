@@ -18,11 +18,14 @@ namespace Ryno {
 		friend class Server;
 
 	public:
-		NetworkScene() : Scene() {}
+		NetworkScene() : Scene() { }
+		~NetworkScene() { stop_network_features(); }
 	protected:
 
-		virtual void start() = 0;
+		virtual void start() override { start_network_features(); }
 		virtual void input() = 0;
+		void start_network_features();
+		void stop_network_features();
 		virtual void on_network_recv(const NetMessage* message) = 0;
 		virtual void on_network_send(NetObject* sender, NetMessage* message) = 0;
 		//Called periodically by the server to give info to the clients

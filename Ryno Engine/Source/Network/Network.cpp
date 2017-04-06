@@ -17,8 +17,7 @@ namespace Ryno {
 	}
 
 	Network::~Network() {
-		stop_client();
-		stop_server();
+		reset();
 	}
 
 	void Network::init() {
@@ -37,6 +36,7 @@ namespace Ryno {
 		server = new Server("127.0.0.1", 5555);
 		has_server = true;
 		server->start();
+		Log::print("server");
 	}
 
 	void Network::start_client() {
@@ -44,17 +44,17 @@ namespace Ryno {
 		client = new Client("127.0.0.1", 5555,"127.0.0.1");
 		has_client = true;
 		client->start();
+		Log::print("client");
+
 	}
 
 	//Function that reset the network when the scene
 	//is restarted
 	void Network::reset() {
-		if (has_server && server)
-			start_server();
-		if (has_client && client)
-			start_client();
+		stop_client();
+		stop_server();
 		NetId::last_id = 0;
-
+		Connection::last_client_id = 0;
 	}
 
 	//Call update on server and/or client
