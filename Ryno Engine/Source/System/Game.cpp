@@ -13,7 +13,7 @@ namespace Ryno{
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-		if ((window = SDL_CreateWindow("Ryno Engine", WindowPos::x, WindowPos::y, WindowSize::w, WindowSize::h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)) == NULL){
+		if ((window = SDL_CreateWindow("Ryno Engine", WindowPos::x, WindowPos::y, WindowSize::w, WindowSize::h, SDL_WINDOW_OPENGL)) == NULL){
 			std::cout<<"Failed to create SDL window: "+ std::string(SDL_GetError())<<std::endl;
 		}
 
