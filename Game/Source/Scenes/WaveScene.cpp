@@ -47,7 +47,7 @@ namespace Ryno {
 		cubes.resize(lato * lato);
 		for (I32 i = -lato/2; i < lato/2; i++) {
 			for (I32 j = -lato/2; j < lato/2; j++) {
-				cubes[(i+lato/2) * lato + j+lato/2].copy(t);
+				cubes[(i+lato/2) * lato + j+lato/2] = t;
 				cubes[(i + lato / 2) * lato + j + lato / 2].transform.set_position(i*size, 0, j*size);
 			}
 		}

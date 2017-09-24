@@ -73,7 +73,7 @@ namespace Ryno {
 			balls.resize(nr);
 			for (I32 i = 0; i < nr; i++) {
 
-				balls[i].copy(center);
+				balls[i] = center;
 
 				balls[i].transform.set_position(20 * sin(i * 360 / nr * DEG_TO_RAD), 0, 20 * cos(i * 360 / nr * DEG_TO_RAD));
 				balls[i].transform.set_scale(.4f, .4f, .4f);

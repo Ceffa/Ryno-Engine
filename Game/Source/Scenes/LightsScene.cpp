@@ -39,7 +39,7 @@ namespace Ryno {
 		m.cast_shadows = false;
 		
 		lights.resize(lato * lato);
-		lights[0].copy(base);
+		lights[0] = base;
 	
 		auto* p = lights[0].add_component<PointLight>();
 		p->model.material.set_shader(&point_light_shader);
@@ -59,7 +59,7 @@ namespace Ryno {
 		for (int i = 0; i < lato; i++)
 			for (int j = 0; j < lato; j++) {
 				if (!(i == j && j == 0))
-					lights[i*lato + j].copy(lights[0]);
+					lights[i*lato + j]=lights[0];
 				
 				lights[i*lato + j].transform.set_position(i * 30 - 30 *lato/2 , 6.5f, j * 30 - 30 * lato/2);
 				lights[i*lato + j].transform.set_parent(&parent.transform);

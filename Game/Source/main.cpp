@@ -29,8 +29,8 @@ void before_commands(char* argv[]) {
 	//Swap these lines to toggle 4 windows multiplayer
 	//Ryno::Game::get_instance()->set_window_pos(x, y);
 	//Ryno::Game::get_instance()->set_window_size(w, h);
-	Ryno::Game::get_instance()->set_window_pos(0,0);
-	Ryno::Game::get_instance()->set_window_size(1920, 1080);
+	Ryno::Game::get_instance()->set_window_pos(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	Ryno::Game::get_instance()->set_window_size(1280, 720);
 
 
 }

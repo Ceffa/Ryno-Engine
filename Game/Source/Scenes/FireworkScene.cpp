@@ -109,11 +109,11 @@ namespace Ryno{
 
 		};
 
-		go[1].copy(go[0]);
+		go[1]=go[0];
 		go[1].delete_component<DirectionalLight>();
 
-		go[2].copy(go[1]);
-		go[3].copy(go[1]);
+		go[2]=go[1];
+		go[3]=go[1];
 
 		auto* emit_3 = go[3].get_component<Emitter>();
 		auto* emit_2 = go[2].get_component<Emitter>();

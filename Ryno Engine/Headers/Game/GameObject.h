@@ -13,7 +13,7 @@ namespace Ryno{
 		GameObject();
 		~GameObject();
 		GameObject(const GameObject& go);
-		void copy(const GameObject& go);
+		GameObject& operator = (const GameObject &t) { return copy(t); };
 		
 		Transform transform;
 
@@ -84,11 +84,10 @@ namespace Ryno{
 					T_list.push_back(v);
 			return std::move(T_list);
 		}
+	
 
-		
+private:
+	GameObject& copy(const GameObject& go);
 
-		
 	};
-
-
 }

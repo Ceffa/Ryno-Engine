@@ -71,7 +71,7 @@ namespace Ryno {
 				for (I32 j = 0; j < s; j++)
 				{
 					if (i == j && i == 0)continue;
-					poles[i*s + j].copy(poles[0]);
+					poles[i*s + j] = poles[0];
 					poles[i*s + j].transform.set_position((i - s / 2) * 20, 10, (j - s / 2) * 20);
 				}
 			}

@@ -20,12 +20,11 @@ namespace Ryno{
 	
 	GameObject::GameObject(const GameObject& go) 
 	{
-		copy(go);
-		game_objects.push_back(this);		
+		game_objects.push_back(&copy(go));
 	}
 
 
-	void GameObject::copy(const GameObject& go)
+	GameObject& GameObject::copy(const GameObject& go)
 	{
 		active = go.active;
 
@@ -37,6 +36,7 @@ namespace Ryno{
 			if (s->is_copyable())
 				add_component(s->clone());
 		}
+		return *this;
 		
 	}
 
