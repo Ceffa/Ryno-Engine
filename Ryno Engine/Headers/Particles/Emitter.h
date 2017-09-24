@@ -12,13 +12,15 @@
 namespace Ryno{
 	
 
-	class Particle3D : public GameObject {
+	class Particle3D : public Component {
 
 	public:
 
 		Particle3D(const Particle3D& go) {}
 		Particle3D() {}
 		~Particle3D() {}
+
+		Particle3D* clone() override;
 
 		glm::vec3 direction;
 		F32 acceleration;
@@ -50,22 +52,22 @@ class Emitter : public Component{
 		Emitter* clone() override { return new Emitter(*this); }
 		
 		void init(U32 nr_particles);
-		Particle3D* new_particle();
+		GameObject* new_particle();
 		void update(F32 delta_time);
-		void remove_particle(Particle3D* p);
+		void remove_particle(GameObject* p);
 		void disable();
 
 
 		GenericMap save_map;
 
-		std::function<void(Emitter*, Particle3D*)> lambda_creation;
+		std::function<void(Emitter*, GameObject*)> lambda_creation;
 		std::function<void(Emitter*)> lambda_spawn;
-		std::function<void(Emitter*,Particle3D*, F32)> lambda_particle_update;
+		std::function<void(Emitter*, GameObject*, F32)> lambda_particle_update;
 
 		F32 m_elapsed_time;
 private:
-		std::vector <Particle3D> m_particles;
-		std::list <Particle3D*> m_pool;
+		std::vector <GameObject> m_particles;
+		std::list <GameObject*> m_pool;
 	};
 
 

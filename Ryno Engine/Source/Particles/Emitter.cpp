@@ -11,6 +11,10 @@ namespace Ryno{
 		ParticleManager::get_instance()->remove_emitter(this);
 	}
 
+	Particle3D* Particle3D::clone() {
+		return new Particle3D(*this);
+	}
+
 	Emitter::Emitter(const Emitter& e){
 		//Instead of copying it, create it anew with the values 
 		//taken by the old emitter.
@@ -31,6 +35,7 @@ namespace Ryno{
 		m_particles.resize(nr_particles);
 
 		for (U32 i = 0; i < nr_particles; i++) {
+			m_particles[i].add_component<Particle3D>();
 			lambda_creation(this, &m_particles[i]);
 			m_particles[i].active = false;
 			m_pool.push_back(&m_particles[i]);
@@ -47,8 +52,9 @@ namespace Ryno{
 		
 			if (p.active){
 				lambda_particle_update(this,&p, delta_time);
-				p.lifetime += p.decay_rate * delta_time;
-				if (p.lifetime >= 1.0f){
+				auto cmp = p.get_component<Particle3D>();
+				cmp->lifetime += cmp->decay_rate * delta_time;
+				if (cmp->lifetime >= 1.0f){
 					remove_particle(&p);
 				}
 			}
@@ -57,7 +63,7 @@ namespace Ryno{
 	
 	
 
-	void Emitter::remove_particle(Particle3D* p){
+	void Emitter::remove_particle(GameObject* p){
 		
 		//Disable emitter component on the particle, in case it has one
 		Emitter* e = p->get_component<Emitter>();
@@ -71,8 +77,8 @@ namespace Ryno{
 			if (p.active) remove_particle(&p);
 		}
 	}
-	Particle3D* Emitter::new_particle(){
-		Particle3D* ret;
+	GameObject* Emitter::new_particle(){
+		GameObject* ret;
 		if (m_pool.empty()) ret = &m_particles[0]; //override first particle, whatever
 		else 
 		{
@@ -80,8 +86,9 @@ namespace Ryno{
 			m_pool.pop_back();
 		}
 		ret->active = true;
-		ret->lifetime = 0;
-		ret->save_map.clear();
+		auto cmp = ret->get_component<Particle3D>();
+		cmp->lifetime = 0;
+		cmp->save_map.clear();
 		return ret; 
 	}
 

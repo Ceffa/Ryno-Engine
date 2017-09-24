@@ -60,7 +60,7 @@ namespace Ryno{
 
 
 
-		emitter->lambda_creation = [](Emitter* e, Particle3D* p){
+		emitter->lambda_creation = [](Emitter* e, GameObject* p){
 			Texture* white, *normal;
 			Shader* shader;
 			//Emitter* emitter;
@@ -70,9 +70,10 @@ namespace Ryno{
 			mesh = e->save_map.get<I32>("mesh");
 			shader = e->save_map.get<Shader>("shad");
 
+			auto cmp = p->get_component<Particle3D>();
 
-			p->decay_rate = .5f;
-			p->speed =500;
+			cmp->decay_rate = .5f;
+			cmp->speed =500;
 			auto& sm = p->add_component<Model>()->add_sub_model();
 			sm.material.set_shader(shader);
 			sm.mesh = *mesh;
@@ -89,22 +90,24 @@ namespace Ryno{
 		};
 		emitter->lambda_spawn = [](Emitter* e){
 			for (U8 i = 0; i < 20; i++){
-				Particle3D* p = e->new_particle();
+				GameObject* p = e->new_particle();
+				auto cmp = p->get_component<Particle3D>();
 				p->transform.set_position(e->game_object->transform.get_position());
-				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
+				cmp->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 			}
 		};
 
-		emitter->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
+		emitter->lambda_particle_update = [](Emitter* e, GameObject* p, float _delta_time)
 		{
-			p->transform.add_position(p->direction * p->speed * _delta_time);
-			p->transform.set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
+			auto cmp = p->get_component<Particle3D>();
+			p->transform.add_position(cmp->direction * cmp->speed * _delta_time);
+			p->transform.set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), cmp->lifetime));
 
 			ColorRGBA from(255,255,0,255);
 			ColorRGBA to(255,0,0,255);
 
 			Model* model = p->get_component<Model>();
-			model->sub_models[0].material.set_attribute("in_DiffuseColor",ryno_math::lerp(from, to, power_lerper(p->lifetime,20)));
+			model->sub_models[0].material.set_attribute("in_DiffuseColor",ryno_math::lerp(from, to, power_lerper(cmp->lifetime,20)));
 			model->sub_models[0].material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
 
 		};
@@ -134,23 +137,26 @@ namespace Ryno{
 
 
 
-		emit_1->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
+		emit_1->lambda_particle_update = [](Emitter* e, GameObject* p, float _delta_time)
 		{
-			p->transform.add_position(p->direction * p->speed * _delta_time);
-			p->transform.set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
+			auto cmp = p->get_component<Particle3D>();
+			p->transform.add_position(cmp->direction * cmp->speed * _delta_time);
+			p->transform.set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), cmp->lifetime));
 
 			ColorRGBA from = ColorRGBA::green;
 			ColorRGBA to = ColorRGBA::blue;
 
 			Model* model = p->get_component<Model>();
-			model->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::lerp(from, to, power_lerper(p->lifetime, 20)));
+			model->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::lerp(from, to, power_lerper(cmp->lifetime, 20)));
 			model->sub_models[0].material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
 
 		};
-		emit_2->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
+		emit_2->lambda_particle_update = [](Emitter* e, GameObject* p, float _delta_time)
 		{
-			p->transform.add_position(p->direction * p->speed * _delta_time);
-			p->transform.set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), p->lifetime));
+			auto cmp = p->get_component<Particle3D>();
+
+			p->transform.add_position(cmp->direction * cmp->speed * _delta_time);
+			p->transform.set_scale(ryno_math::lerp(glm::vec3(30), glm::vec3(50), cmp->lifetime));
 
 			Model* model = p->get_component<Model>();
 			model->sub_models[0].material.set_attribute("in_DiffuseColor", ColorRGBA(255,255,255,0));
@@ -159,10 +165,12 @@ namespace Ryno{
 
 		};
 
-		emit_3->lambda_particle_update = [](Emitter* e, Particle3D* p, float _delta_time)
+		emit_3->lambda_particle_update = [](Emitter* e, GameObject* p, float _delta_time)
 		{
-			p->transform.add_position(p->direction * p->speed * _delta_time);
-			p->transform.set_scale(ryno_math::lerp(glm::vec3(60), glm::vec3(100), p->lifetime));
+			auto cmp = p->get_component<Particle3D>();
+
+			p->transform.add_position(cmp->direction * cmp->speed * _delta_time);
+			p->transform.set_scale(ryno_math::lerp(glm::vec3(60), glm::vec3(100), cmp->lifetime));
 			Model* model = p->get_component<Model>();
 			model->sub_models[0].material.set_attribute("in_SpecularColor", ColorRGBA(0, 0, 0, 0));
 
@@ -171,9 +179,11 @@ namespace Ryno{
 		
 		emit_3->lambda_spawn = [](Emitter* e){
 			for (U8 i = 0; i < 15; i++) {
-				Particle3D* p = e->new_particle();
+				GameObject* p = e->new_particle();
+				auto cmp = p->get_component<Particle3D>();
+
 				p->transform.set_position(e->game_object->transform.get_position());
-				p->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
+				cmp->direction = ryno_math::get_rand_dir(0, 360, 0, 360);
 
 				Model* model = p->get_component<Model>();
 				model->sub_models[0].material.set_attribute("in_DiffuseColor", ryno_math::rand_color_range(ColorRGBA(0, 0, 0, 0), ColorRGBA(255, 255, 255, 0)));
