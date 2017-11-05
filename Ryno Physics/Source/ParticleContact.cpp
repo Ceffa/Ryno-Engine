@@ -55,7 +55,7 @@ namespace Ryno {
 
 		F delta_velocity = new_sep_velocity - separating_velocity;
 
-		//Calculate global (inverse) mass
+		//Calculate glob (inverse) mass
 		F total_inverse_mass = particles[0]->get_inverse_mass();
 		if (particles[1]) total_inverse_mass += particles[1]->get_inverse_mass();
 

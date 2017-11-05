@@ -41,12 +41,7 @@ namespace Ryno{
 		U32 type;
 		U32 size;
 	};
-	struct global_uniforms{
-		U32 index;		//Index of the attribute
-		U32 type;
-		void* value;
-	};
-
+	
 	class Shader
 	{
 
@@ -134,8 +129,7 @@ namespace Ryno{
 
 		//Uniforms data: (each model has its own)
 		std::map<std::string, uniforms> uniforms_data;
-		//Global uniforms data: (sent one and for only by the shader itself)
-		std::map<std::string, global_uniforms> global_uniforms_data;
+		
 		
 		//This holds info about the vertex 3d struct.
 		//It is manually created, and it is shared among the shaders.
@@ -146,32 +140,17 @@ namespace Ryno{
 		bool is_vertex_attribute(const std::string& name);
 
 
-		template <class T>
-		bool set_uniform(const std::string& attr, const T& value){
-			auto res = global_uniforms_data.find(attr);
-			//If the value is present and its not global (starts with "c_")
-			if (res == global_uniforms_data.end()){
-				return false;
-			}
-			if (global_uniforms_data[attr].value == nullptr){
-				global_uniforms_data[attr].value = new T();
-			}
-			*(T*)global_uniforms_data[attr].value = value;
-			return true;
-		}
-
-	
-
 		//Check if a uniform is a sampler
 		static bool is_sampler(GLenum type, I32* type_of_texture);
 
 		//send uniform to shader. Depending on its type (matrix, int etc)
 		//the template function send_uniform_to_shader is called with a different argument
 		void send_material_uniform_to_shader(const std::string& name, void* value, U8* sampler_index);
-		void send_global_uniform_to_shader(const std::string& name, void* value, U8* sampler_index);
 		
 
 		U8 get_size_from_type(const GLenum type);
+
+		U32 get_id()const { return m_program_id; }
 	private:
 
 		//local enum to differentiate the shader type

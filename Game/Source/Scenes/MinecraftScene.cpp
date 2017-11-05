@@ -47,8 +47,6 @@ namespace Ryno{
 		l->ambient_intensity = 0;
 		l->set_ambient_color(255, 255, 255);
 		l->shadows = false;
-		material.set_uniform("g_Time", 0);
-		material.set_uniform("g_Power", 0);
 
 		for (auto& m : sponza.get_component<Model>()->sub_models) {
 			m.cast_shadows = false;

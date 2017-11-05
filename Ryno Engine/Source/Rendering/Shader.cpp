@@ -303,19 +303,15 @@ namespace Ryno{
 			GLchar* temp_name = (GLchar*)malloc(50);
 
 			glGetActiveUniform(m_program_id, i, 50, &temp_name_size, &temp_size, &temp_type, temp_name);
-			GLuint loc = glGetUniformLocation(m_program_id, temp_name);
-			if (temp_name[0] == 'g' && temp_name[1] == '_'){
-				global_uniforms_data[temp_name].index = loc;
-				global_uniforms_data[temp_name].type = temp_type;
-				global_uniforms_data[temp_name].value = nullptr;
-			}
-			else{
-				uniforms_data[temp_name].index = loc;
-				uniforms_data[temp_name].type = temp_type;
-				uniforms_data[temp_name].size = sizeof(U32) * get_size_from_type(temp_type) * temp_size;
+			int loc = glGetUniformLocation(m_program_id, temp_name);
+			if (loc < 0)
+				continue;
+			
+			uniforms_data[temp_name].index = loc;
+			uniforms_data[temp_name].type = temp_type;
+			uniforms_data[temp_name].size = sizeof(U32) * get_size_from_type(temp_type) * temp_size;
 
-			}
-
+	
 		}
 
 	}
@@ -373,12 +369,6 @@ namespace Ryno{
 	{
 		send_uniform_to_shader(name,value,sampler_index,uniforms_data);
 	}
-	void Shader::send_global_uniform_to_shader(const std::string& name, void* value, U8* sampler_index)
-	{
-		send_uniform_to_shader(name, value, sampler_index, global_uniforms_data);
-	}
-
-
 
 	U8 Shader::get_size_from_type(const GLenum type)
 	{

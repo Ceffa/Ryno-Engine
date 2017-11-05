@@ -14,10 +14,17 @@ out  vec4 spec_color;
 out  mat3 TBN;
 out  vec2 uvs;
 
-uniform mat4 g_V;
-uniform mat4 g_VP;
-uniform float g_Time;
-uniform int g_Power;
+layout(std140) uniform glob{
+	mat4 V;
+	mat4 iV;
+	mat4 P;
+	mat4 iP;
+	mat4 VP;
+	mat4 iVP;
+	vec4 cameraPos;
+	float time;
+};
+uniform int power;
 
 float split(uint color, int n);
 
@@ -27,15 +34,15 @@ void main(){
 	vec4 split_diffuse = vec4(split(diffuse_color, 0), split(diffuse_color, 1), split(diffuse_color, 2), split(diffuse_color, 3))/255.0;
 	vec4 split_specular = vec4(split(specular_color, 0), split(specular_color, 1), split(specular_color, 2), split(specular_color, 3))/255.0;
 	
-	mat4 MVP = g_VP * in_M;
+	mat4 MVP = VP * in_M;
 
-	gl_Position = MVP * vec4(in_Position + vec3(0,g_Power * sin(g_Time / 200)  * sin(in_Position.x /100),0), 1);
+	gl_Position = MVP * vec4(in_Position + vec3(0,power * sin(time / 200)  * sin(in_Position.x /100),0), 1);
 
 	uvs = in_Uv;
 	diff_color = split_diffuse;
 	spec_color = split_specular;
 
-	mat4 MV = g_V * in_M;
+	mat4 MV = V * in_M;
 	vec3 tangent = vec3(normalize(MV * vec4(in_Tangent,0)));
 	vec3 normal = vec3(normalize(MV*vec4(in_Normal,0)));
 	TBN = mat3(tangent, cross(normal, tangent), normal);

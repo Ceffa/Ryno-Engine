@@ -23,8 +23,6 @@ uniform sampler2DShadow shadow_tex;
 uniform int shadows_enabled;
 
 //Inverse projection matrix to get position from depth
-uniform mat4 inverse_P_matrix;
-uniform mat4 inverse_VP_matrix;
 uniform mat4 light_VP_matrix;
 uniform mat4 light_V_matrix;
 uniform DirectionalLight dir_light;
@@ -33,6 +31,17 @@ uniform int screen_width;
 uniform int screen_height;
 
 out vec3 fracolor;
+
+layout(std140) uniform glob {
+	mat4 V;
+	mat4 iV;
+	mat4 P;
+	mat4 iP;
+	mat4 VP;
+	mat4 iVP;
+	vec4 cameraPos;
+	float time;
+};
 
 
 float split(uint color, int n);
@@ -44,10 +53,10 @@ void main(){
 	float depth = texture(depth_tex, uv_coords).r *2.0 - 1.0;
 	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
 
-	vec4 position_view_space = inverse_P_matrix * position_screen_space;
+	vec4 position_view_space = iP * position_screen_space;
 	vec3 position = position_view_space.xyz / position_view_space.w;
 	
-	vec4 position_world_space = inverse_VP_matrix * position_screen_space;
+	vec4 position_world_space = iVP * position_screen_space;
 	vec4 position_light_ortho_matrix = light_VP_matrix * position_world_space;
 	vec3 position_light_ortho_matrix_norm = position_light_ortho_matrix.xyz / position_light_ortho_matrix.w;
 	vec3 view_dir_light = normalize(vec3(light_V_matrix * vec4(dir_light.direction,0)));

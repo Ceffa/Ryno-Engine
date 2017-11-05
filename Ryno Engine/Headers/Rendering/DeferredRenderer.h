@@ -32,6 +32,8 @@ namespace Ryno{
 	class DeferredRenderer{
 		friend class Shell;
 	public:
+
+		
 		~DeferredRenderer(){}
 		static DeferredRenderer* get_instance();
 
@@ -87,6 +89,22 @@ namespace Ryno{
 		Batch2DSprite m_sprite_batch2d;
 		Batch2DFont m_font_batch2d;
 
+		struct UBO_Global_Data {
+			glm::mat4 V;
+			glm::mat4 iV;
+			glm::mat4 P;
+			glm::mat4 iP;
+			glm::mat4 VP;
+			glm::mat4 iVP;
+			glm::vec4 cameraPos;
+			float time;
+		} ubo_global_data;
+
+		GLuint ubo = 0;
+
+		void bind_global_ubo(const Shader& s);
+
+
 	private:
 
 		DeferredRenderer() {}
@@ -125,8 +143,6 @@ namespace Ryno{
 		TextureManager* m_texture_manager;
 		SubModel m_bounding_sphere, m_blit_model, m_skybox_model, m_bounding_pyramid;
 		glm::mat4 MVP_camera;
-		glm::mat4 inverse_P_matrix;
-		glm::mat4 inverse_VP_matrix;
 		glm::mat4 spot_VP_matrix;
 		glm::mat4 directional_light_VP;
 		glm::mat4 bias;

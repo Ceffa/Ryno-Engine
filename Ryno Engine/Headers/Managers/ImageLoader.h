@@ -68,7 +68,7 @@
       - Added STBI_MALLOC, STBI_REALLOC, and STBI_FREE macros for replacing
         the memory allocator. Unlike other STBI libraries, these macros don't
         support a context parameter, so if you need to pass a context in to
-        the allocator, you'll have to store it in a global or a thread-local
+        the allocator, you'll have to store it in a glob or a thread-local
         variable.
 
       - Split existing STBI_NO_HDR flag into two flags, STBI_NO_HDR and
@@ -6717,7 +6717,7 @@ STBIDEF int stbi_info_from_callbacks(stbi_io_callbacks const *c, void *user, int
       1.11    Support installable IDCT, colorspace conversion routines
       1.10    Fixes for 64-bit (don't use "unsigned long")
               optimized upsampling by Fabian "ryg" Giesen
-      1.09    Fix format-conversion for PSD code (bad global variables!)
+      1.09    Fix format-conversion for PSD code (bad glob variables!)
       1.08    Thatcher Ulrich's PSD code integrated by Nicolas Schulz
       1.07    attempt to fix C++ warning/errors again
       1.06    attempt to fix C++ warning/errors again

@@ -20,12 +20,12 @@ namespace Ryno {
 		return &instance;
 	}
 	
-	void SimpleDrawer::draw(Model* model) {
+	void SimpleDrawer::draw(Model* model, bool enable_global_ubo) {
 		for (SubModel& s : model->sub_models)
-			draw(&s);
+			draw(&s,enable_global_ubo);
 	}
 
-	void SimpleDrawer::draw(SubModel* model) {
+	void SimpleDrawer::draw(SubModel* model, bool enable_global_ubo) {
 
 		auto m = m_mesh_manager->get_mesh(model->mesh);
 		auto s = model->material.shader;
@@ -43,6 +43,9 @@ namespace Ryno {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m->indices_number * sizeof(U32), &m->indices[0], GL_STATIC_DRAW);
 
+		if (enable_global_ubo)
+			DeferredRenderer::get_instance()->bind_global_ubo(*s);
+
 		glDrawElements(GL_TRIANGLES, m->indices_number, GL_UNSIGNED_INT, (void*)0);
 		s->unuse();
 	}
@@ -59,14 +62,9 @@ namespace Ryno {
 			glVertexAttribPointer(cnt.second.loc, cnt.second.nr, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), cnt.second.offset);
 			glEnableVertexAttribArray(cnt.second.loc);
 		}
-		//SENDS GLOBAL UNIFORMS
-		U8 curr_samp = 0;
-		for (const auto& cnt : s->global_uniforms_data){
-			s->send_global_uniform_to_shader(cnt.first, cnt.second.value, &curr_samp);
-		}
-
+		
 		//SENDS MATERIAL UNIFORMS
-		curr_samp = 0;
+		U8 curr_samp = 0;
 		for (const auto& cnt : m.uniform_map)
 		{
 			s->send_material_uniform_to_shader(cnt.first, cnt.second, &curr_samp);

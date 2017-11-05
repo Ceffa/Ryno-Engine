@@ -205,7 +205,6 @@ namespace Ryno{
 
 	void FireworkScene::update()
 	{
-		shader2.set_uniform("g_Time", TimeManager::time);
 	}
 
 	void FireworkScene::input(){

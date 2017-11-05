@@ -28,11 +28,9 @@ uniform sampler2DShadow shadow_tex;
 uniform int shadows_enabled;
 
 //Inverse matrix to rebuild position from depth
-uniform mat4 inverse_P_matrix;
-uniform mat4 inverse_VP_matrix;
 uniform mat4 light_VP_matrix;
 uniform mat4 light_V_matrix;
-uniform mat4 V_matrix;
+
 
 
 //All the spot light uniforms
@@ -48,6 +46,17 @@ out vec3 fracolor;
 
 
 float split(uint color, int n);
+
+layout(std140) uniform glob {
+	mat4 V;
+	mat4 iV;
+	mat4 P;
+	mat4 iP;
+	mat4 VP;
+	mat4 iVP;
+	vec4 cameraPos;
+	float time;
+};
 
 
 //This function generate a depth value from the direction vector, so that it can be compared 
@@ -71,12 +80,12 @@ void main(){
 	//Rebuild position from depth
 	float depth = texture(depth_tex, uv_coords).r *2.0-1.0;
 	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
-	vec4 position_view_space_not_normalized = inverse_P_matrix * position_screen_space;
+	vec4 position_view_space_not_normalized = iP * position_screen_space;
 	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
-	vec4 position_world_space_not_normalized = inverse_VP_matrix * position_screen_space;
+	vec4 position_world_space_not_normalized = iVP * position_screen_space;
 	vec3 position_world_space = position_world_space_not_normalized.xyz / position_world_space_not_normalized.w;
 	vec4 light_world_space = vec4(spot_light.position, 1);
-	vec4 light_view_space = V_matrix * light_world_space;
+	vec4 light_view_space = V * light_world_space;
 
 	vec4 position_light_MVP_matrix = light_VP_matrix * vec4(position_world_space,1);
 	vec3 position_light_MVP_matrix_norm = position_light_MVP_matrix.xyz / position_light_MVP_matrix.w;

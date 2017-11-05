@@ -35,36 +35,36 @@ namespace Ryno{
 
 	void Scene::camera_update()
 	{
+		if (!game->shell->active) {
+			if (camera_control_enabled) {
 
-		if (camera_control_enabled) {
-
-			if (game->input_manager->is_key_down(SDLK_d, KEYBOARD)) {
-				camera->move_right(TimeManager::delta_time);
+				if (game->input_manager->is_key_down(SDLK_d, KEYBOARD)) {
+					camera->move_right(TimeManager::delta_time);
+				}
+				if (game->input_manager->is_key_down(SDLK_a, KEYBOARD)) {
+					camera->move_left(TimeManager::delta_time);
+				}
+				if (game->input_manager->is_key_down(SDLK_w, KEYBOARD)) {
+					camera->move_up(TimeManager::delta_time);
+				}
+				if (game->input_manager->is_key_down(SDLK_s, KEYBOARD)) {
+					camera->move_down(TimeManager::delta_time);
+				}
+				if (game->input_manager->is_key_down(SDLK_q, KEYBOARD)) {
+					camera->move_forward(TimeManager::delta_time);
+				}
+				if (game->input_manager->is_key_down(SDLK_e, KEYBOARD)) {
+					camera->move_back(TimeManager::delta_time);
+				}
 			}
-			if (game->input_manager->is_key_down(SDLK_a, KEYBOARD)) {
-				camera->move_left(TimeManager::delta_time);
-			}
-			if (game->input_manager->is_key_down(SDLK_w, KEYBOARD)) {
-				camera->move_up(TimeManager::delta_time);
-			}
-			if (game->input_manager->is_key_down(SDLK_s, KEYBOARD)) {
-				camera->move_down(TimeManager::delta_time);
-			}
-			if (game->input_manager->is_key_down(SDLK_q, KEYBOARD)) {
-				camera->move_forward(TimeManager::delta_time);
-			}
-			if (game->input_manager->is_key_down(SDLK_e, KEYBOARD)) {
-				camera->move_back(TimeManager::delta_time);
-			}
+			glm::vec2 mouse_coords = game->input_manager->get_mouse_movement();
+			camera->rotate(mouse_coords.x * TimeManager::delta_time, mouse_coords.y* TimeManager::delta_time);
+			glm::vec2 rotation_view = game->input_manager->get_controller_RX_coords();
+			camera->rotate(0.01f * rotation_view.x* TimeManager::delta_time, 0.01f* rotation_view.y* TimeManager::delta_time);
+			glm::vec2 direction = game->input_manager->get_controller_LX_coords();
+			camera->move_forward(TimeManager::delta_time *1.0f * -direction.y);
+			camera->move_right(TimeManager::delta_time * 1.0f * direction.x);
 		}
-		glm::vec2 mouse_coords = game->input_manager->get_mouse_movement();
-		camera->rotate(mouse_coords.x * TimeManager::delta_time, mouse_coords.y* TimeManager::delta_time);
-		glm::vec2 rotation_view = game->input_manager->get_controller_RX_coords();
-		camera->rotate(0.01f * rotation_view.x* TimeManager::delta_time, 0.01f* rotation_view.y* TimeManager::delta_time);
-		glm::vec2 direction = game->input_manager->get_controller_LX_coords();
-		camera->move_forward(TimeManager::delta_time *1.0f * -direction.y);
-		camera->move_right(TimeManager::delta_time * 1.0f * direction.x);
-		
 		camera->generate_matrices();
 		camera->get_light_V_matrix();
 		

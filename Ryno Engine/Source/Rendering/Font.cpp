@@ -277,7 +277,7 @@ namespace Ryno {
 		glm::vec2 position_zero = message->get_position() * glm::vec2(WindowSize::w, WindowSize::h);
 		glm::vec2 tp = position_zero;
 		std::vector<F32> line_widths;//Size of each line of text
-		glm::vec2 size = measure(message->text, &line_widths);//Global size of the text
+		glm::vec2 size = measure(message->text, &line_widths);//glob size of the text
 		U32 line_counter = 0;
 
 		glm::vec2 message_scale = message->get_scale();

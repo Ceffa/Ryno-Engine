@@ -171,7 +171,8 @@ namespace Ryno {
 	
 
 	void Batch3DGeometry::create_vertex_array(){
-		//Create vao
+		//Create 
+
 		if (!m_vao){
 			glGenVertexArrays(1, &m_vao);
 		}
@@ -215,15 +216,11 @@ namespace Ryno {
 			if (old_shader)old_shader_size = old_shader->attributes_struct_size;
 
 			//If the new batch has a different shader than the one before, 
-			//enable attributes and send global data
+			//enable attributes and send glob data
 			if (old_shader != curr_shader){
 				old_shader = curr_shader;
 				enable_attributes(curr_shader);
 				U8 curr_samp = 0;
-				//Send global shader uniforms
-				for (const auto& cnt : curr_shader->global_uniforms_data){
-					curr_shader->send_global_uniform_to_shader(cnt.first, cnt.second.value, &curr_samp);
-				}
 			}
 
 			U8 current_sampler = 0;
@@ -238,6 +235,8 @@ namespace Ryno {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			buffer_data_offset += rb.num_instances* curr_shader->attributes_struct_size;
 			U32 offset = rb.indices_offset * sizeof(U32);
+
+			DeferredRenderer::get_instance()->bind_global_ubo(*curr_shader);
 
 			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_INT, (void*)offset, rb.num_instances, rb.vertex_offset);
 

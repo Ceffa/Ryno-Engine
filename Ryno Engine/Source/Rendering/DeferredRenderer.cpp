@@ -30,6 +30,7 @@ namespace Ryno{
 	};
 
 	
+	
 	DeferredRenderer* DeferredRenderer::get_instance() {
 
 		static DeferredRenderer instance;//only at the beginning
@@ -107,14 +108,32 @@ namespace Ryno{
 			0.5, 0.5, 0.5, 1.0
 			);
 
+		ubo = 0;
+		glGenBuffers(1, &ubo);
+		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(UBO_Global_Data), &ubo_global_data, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 	}
 	
 	void DeferredRenderer::init_frame(){
 
+		//Fill UBO data
+		ubo_global_data.V = m_camera->get_V_matrix();
+		ubo_global_data.iV = glm::inverse(ubo_global_data.V);
+		ubo_global_data.P = m_camera->get_P_matrix();
+		ubo_global_data.iP = glm::inverse(ubo_global_data.P);
+		ubo_global_data.VP = m_camera->get_VP_matrix();
+		ubo_global_data.iVP = glm::inverse(ubo_global_data.VP);
+		ubo_global_data.cameraPos = m_camera->position;
+		ubo_global_data.time = TimeManager::time;
 
-		//Calculate camera matrix once and for all
-		inverse_P_matrix = glm::inverse(m_camera->get_P_matrix());
-		inverse_VP_matrix = glm::inverse(m_camera->get_VP_matrix());
+
+		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+		GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+		memcpy(p, &ubo_global_data, sizeof(UBO_Global_Data));
+		glUnmapBuffer(GL_UNIFORM_BUFFER);
+	
 
 		//Setup the two fbos for this frame
 		m_fbo_deferred.start_frame();
@@ -164,14 +183,7 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
 
-
-		
-		for (Shader* s : m_geometry_batch3d.shaders){
-			s->set_uniform("g_V", m_camera->get_V_matrix());
-			s->set_uniform("g_VP", m_camera->get_VP_matrix());
-		}
 		m_geometry_batch3d.render_batch();
 	}
 	
@@ -219,7 +231,6 @@ namespace Ryno{
 			directional_lighting_subpass(l);
 		}
 	}	
-
 
 	void DeferredRenderer::point_shadow_subpass(PointLight* p)
 	{
@@ -339,7 +350,7 @@ namespace Ryno{
 		mat.set_uniform("point_light.shadow_strength", p->shadow_strength);
 
 
-		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM GLOBAL
+		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM glob
 		mat.set_uniform("screen_width", WindowSize::w);
 		mat.set_uniform("screen_height", WindowSize::h);
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
@@ -350,15 +361,13 @@ namespace Ryno{
 	
 		//SEND OTHER UNIFORMS
 		mat.set_uniform("max_fov", p->max_radius);
-		mat.set_uniform("inverse_P_matrix",inverse_P_matrix);
-		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
 		mat.set_uniform("light_V_matrix",m_camera->get_light_V_matrix());
 		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
 
 
 		mat.set_uniform("MVP", MVP_camera);
 		mat.set_uniform("shadows_enabled", (point_shadow_enabled && p->shadows) ? 1 : 0);
-		m_simple_drawer->draw(mod);
+		m_simple_drawer->draw(mod,true);
 
 		glDisable(GL_BLEND);
 
@@ -407,7 +416,7 @@ namespace Ryno{
 		//Send Vp matrix and world light position to shader, then render
 		m_spot_shadow_program.use();
 
-		glUniformMatrix4fv(m_spot_shadow_program.getUniformLocation("in_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
+		glUniformMatrix4fv(m_spot_shadow_program.getUniformLocation("light_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
 
 		m_shadow_batch3d.render_batch();
 		m_spot_shadow_program.unuse();
@@ -490,15 +499,13 @@ namespace Ryno{
 
 		
 		mat.set_uniform("light_VP_matrix", biased_light_VP_matrix);
-		mat.set_uniform("inverse_P_matrix", inverse_P_matrix);
-		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
 		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
 		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
 		
 		mat.set_uniform("MVP",MVP_camera);
 		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && s->shadows) ? 1 : 0);
 
-		m_simple_drawer->draw(mod);
+		m_simple_drawer->draw(mod,true);
 
 		glDisable(GL_BLEND);
 	}
@@ -596,12 +603,10 @@ namespace Ryno{
 		//SEND OTHER UNIFORMS
 
 		mat.set_uniform("light_VP_matrix", dir_light_VPB);
-		mat.set_uniform("inverse_P_matrix",inverse_P_matrix);
 		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
-		mat.set_uniform("inverse_VP_matrix", inverse_VP_matrix);
 		mat.set_uniform("shadows_enabled", (directional_shadow_enabled && d->shadows) ? 1:0);
 
-		m_simple_drawer->draw(mod);
+		m_simple_drawer->draw(mod,true);
 
 		
 		
@@ -620,11 +625,8 @@ namespace Ryno{
 
 		m_blit_model.material.set_uniform("source_buffer", m_fbo_deferred.m_textures[3]);
 	
-
-
-
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
-		m_simple_drawer->draw(&m_blit_model);
+		m_simple_drawer->draw(&m_blit_model,false);
 
 		glDepthMask(GL_FALSE);
 		
@@ -646,7 +648,7 @@ namespace Ryno{
 		m_skybox_model.material.set_uniform("have_skybox", m_camera->have_skybox ? 1 : 0);
 
 		
-		m_simple_drawer->draw(&m_skybox_model);
+		m_simple_drawer->draw(&m_skybox_model,false);
 
 		//Restore depth
 		glDepthRange(0.0, 1.0);
@@ -712,8 +714,16 @@ namespace Ryno{
 	}
 
 
-	void DeferredRenderer::destroy(){
-		
+	void DeferredRenderer::destroy() {
+	}
+
+
+	void DeferredRenderer::bind_global_ubo(const Shader& s)
+	{
+		unsigned int block_index = glGetUniformBlockIndex(s.get_id(), "glob");
+		GLuint binding_point_index = 0;
+		glBindBufferBase(GL_UNIFORM_BUFFER, binding_point_index, ubo);
+		glUniformBlockBinding(s.get_id(), block_index, binding_point_index);
 	}
 
 
