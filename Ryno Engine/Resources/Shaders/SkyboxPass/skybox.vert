@@ -2,10 +2,21 @@
 
 in vec3 in_Position;
 
-uniform mat4 no_trans_VP;
 uniform uint background;
 out vec3 coords_3d;
 out vec3 color;
+
+
+layout(std140) uniform glob {
+	mat4 V;
+	mat4 iV;
+	mat4 P;
+	mat4 iP;
+	mat4 VP;
+	mat4 iVP;
+	vec4 cameraPos;
+	float time;
+};
 
 
 float split(uint color, int n){
@@ -15,7 +26,7 @@ float split(uint color, int n){
 
 void main()
 {
-	gl_Position = no_trans_VP *  vec4(in_Position, 1.0);
+	gl_Position = P * vec4((V *  vec4(in_Position, 0.0)).xyz,1.0);
 	coords_3d = vec3(in_Position.xy,-in_Position.z); // true because centered in 0
 	color = vec3(split(background, 0), split(background, 1), split(background, 2));
 }

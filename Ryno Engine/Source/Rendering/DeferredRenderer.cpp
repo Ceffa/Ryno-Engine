@@ -638,17 +638,13 @@ namespace Ryno{
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
 
 
-		//Remove translation from VP matrix
-		glm::mat4 no_trans_VP = m_camera->get_P_matrix() *  glm::mat4(glm::mat3(m_camera->get_V_matrix()));
-
-	
-		m_skybox_model.material.set_uniform("no_trans_VP",no_trans_VP);
+			
 		m_skybox_model.material.set_uniform("cube_map", m_camera->skybox.id);
 		m_skybox_model.material.set_uniform("background", m_camera->background);
 		m_skybox_model.material.set_uniform("have_skybox", m_camera->have_skybox ? 1 : 0);
 
 		
-		m_simple_drawer->draw(&m_skybox_model,false);
+		m_simple_drawer->draw(&m_skybox_model,true);
 
 		//Restore depth
 		glDepthRange(0.0, 1.0);
