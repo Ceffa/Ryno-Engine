@@ -105,7 +105,8 @@ namespace Ryno{
 			if (game_state == GameState::ChangeScene)
 				continue;
 			handle_network();
-			scene->camera_update();
+			if(!shell->active)
+				scene->camera_update();
 			if (game_state != GameState::Paused) update();
 			physics_world->physics_step(TimeManager::delta_time);
 			draw();
@@ -226,7 +227,7 @@ namespace Ryno{
 		
 
 		//Process user inputs
-		 if (game_state != GameState::Paused && game_state!=GameState::ChangeScene) {
+		 if (!shell->active && game_state != GameState::Paused && game_state!=GameState::ChangeScene) {
 			 scene->input();
 			 scene->input_scripts();
 		 }

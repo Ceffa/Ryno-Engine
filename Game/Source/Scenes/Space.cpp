@@ -109,36 +109,33 @@ namespace Ryno {
 		//Control player. It is possible to rotate and move in the direction of rotation.
 		//It is also possible to scale the size of the ship, even though it's not really a
 		//feature of the game
+		if (controlled) {
+			float speed = 20.0f;
+			float scaleSpeed = .5f;
+			float rotSpeed = 200.0f;
 
-		if (!game->shell->active) {
-			if (controlled) {
-				float speed = 20.0f;
-				float scaleSpeed = .5f;
-				float rotSpeed = 200.0f;
+			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
+				glm::vec3 dir = TimeManager::delta_time * speed * glm::vec3(-1,0,0);
+				dir = glm::inverse(controlled->game_object->transform.get_rotation()) * dir;
+				controlled->game_object->transform.add_position(dir);
+			}
+			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
+				glm::vec3 dir = TimeManager::delta_time * speed * glm::vec3(1, 0, 0);
+				dir = glm::inverse(controlled->game_object->transform.get_rotation()) * dir;
+				controlled->game_object->transform.add_position(dir);
+			}
 
-				if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-					glm::vec3 dir = TimeManager::delta_time * speed * glm::vec3(-1,0,0);
-					dir = glm::inverse(controlled->game_object->transform.get_rotation()) * dir;
-					controlled->game_object->transform.add_position(dir);
-				}
-				if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-					glm::vec3 dir = TimeManager::delta_time * speed * glm::vec3(1, 0, 0);
-					dir = glm::inverse(controlled->game_object->transform.get_rotation()) * dir;
-					controlled->game_object->transform.add_position(dir);
-				}
-
-				if (game->input_manager->is_key_down(SDLK_z, KEYBOARD)) {
-					controlled->game_object->transform.add_scale(TimeManager::delta_time * scaleSpeed * glm::vec3(1,1,1));
-				}
-				if (game->input_manager->is_key_down(SDLK_x, KEYBOARD)) {
-					controlled->game_object->transform.add_scale(TimeManager::delta_time * scaleSpeed * glm::vec3(-1, -1, -1));
-				}
-				if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
-					controlled->game_object->transform.add_rotation(TimeManager::delta_time * rotSpeed * glm::vec3(0,1,0));
-				}
-				if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-					controlled->game_object->transform.add_rotation(TimeManager::delta_time * rotSpeed * glm::vec3(0,-1,0));
-				}
+			if (game->input_manager->is_key_down(SDLK_z, KEYBOARD)) {
+				controlled->game_object->transform.add_scale(TimeManager::delta_time * scaleSpeed * glm::vec3(1,1,1));
+			}
+			if (game->input_manager->is_key_down(SDLK_x, KEYBOARD)) {
+				controlled->game_object->transform.add_scale(TimeManager::delta_time * scaleSpeed * glm::vec3(-1, -1, -1));
+			}
+			if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
+				controlled->game_object->transform.add_rotation(TimeManager::delta_time * rotSpeed * glm::vec3(0,1,0));
+			}
+			if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
+				controlled->game_object->transform.add_rotation(TimeManager::delta_time * rotSpeed * glm::vec3(0,-1,0));
 			}
 		}
 	}
