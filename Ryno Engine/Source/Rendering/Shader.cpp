@@ -295,14 +295,14 @@ namespace Ryno{
 		GLint unif_num;
 		glGetProgramiv(m_program_id, GL_ACTIVE_UNIFORMS, &unif_num);
 		//Temp arrays. They contain only instances attributes, not the vertex ones
-		U8 max_name_char = 50;
+		const U8 max_name_char = 50;
 		for (GLuint i = 0; i < unif_num; i++){
 			//Temp return values
 			GLint temp_size, temp_name_size;
 			GLenum temp_type;
-			GLchar* temp_name = (GLchar*)malloc(50);
+			GLchar* temp_name = (GLchar*)malloc(max_name_char);
 
-			glGetActiveUniform(m_program_id, i, 50, &temp_name_size, &temp_size, &temp_type, temp_name);
+			glGetActiveUniform(m_program_id, i, max_name_char, &temp_name_size, &temp_size, &temp_type, temp_name);
 			int loc = glGetUniformLocation(m_program_id, temp_name);
 			if (loc < 0)
 				continue;

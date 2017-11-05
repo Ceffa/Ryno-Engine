@@ -14,6 +14,8 @@ out  vec4 spec_color;
 out  mat3 TBN;
 out  vec2 uvs;
 
+uniform int power;
+
 layout(std140) uniform glob{
 	mat4 V;
 	mat4 iV;
@@ -24,7 +26,6 @@ layout(std140) uniform glob{
 	vec4 cameraPos;
 	float time;
 };
-uniform int power;
 
 float split(uint color, int n);
 

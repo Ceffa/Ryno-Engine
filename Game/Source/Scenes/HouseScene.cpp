@@ -63,7 +63,7 @@ namespace Ryno{
 
 	}
 
-
+	
 	bool attach = true;
 	int power = 0;
 
@@ -76,8 +76,8 @@ namespace Ryno{
 		}
 		if (game->input_manager->is_key_pressed(SDLK_x, KEYBOARD)) {
 			power = power == 0 ? 100 : 0;
-			for (auto& m : sponza.get_component<Model>()->sub_models)
-				m.material.set_uniform("power", power);
+		//	for (auto& m : sponza.get_component<Model>()->sub_models)
+		//		m.material.set_uniform("power", power);
 			
 			sponza.get_component<DirectionalLight>()->shadows = !sponza.get_component<DirectionalLight>()->shadows;
 			for (auto& l : light)

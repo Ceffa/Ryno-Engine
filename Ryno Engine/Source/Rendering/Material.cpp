@@ -8,13 +8,13 @@ namespace Ryno {
 	{
 		shader = _shader;
 		free(attribute_memory);
-		attribute_memory = malloc(shader->attributes_struct_size);
+		attribute_memory = calloc(shader->attributes_struct_size,1);
 		if (!attribute_memory){
 			std::cout << "Failed to allocate material struct" << std::endl;
 			return false;
 		}
-		for (auto cnt : shader->uniforms_data){
-			uniform_map[cnt.first] = nullptr;
+		for (auto& cnt : shader->uniforms_data){
+			uniform_map[cnt.first] = calloc (cnt.second.size,1);
 		}
 		return true;
 	}
