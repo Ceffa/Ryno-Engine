@@ -652,7 +652,6 @@ namespace Ryno{
 		glDepthRange(0.0, 1.0);
 
 
-
 	}
 
 	void DeferredRenderer::post_processing_pass() {
@@ -693,6 +692,7 @@ namespace Ryno{
 	{
 
 		m_fbo_deferred.bind_for_GUI_pass();
+		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 
