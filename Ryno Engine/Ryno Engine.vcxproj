@@ -32,6 +32,8 @@
     <None Include="Resources\Shaders\LightPass\spot.vert" />
     <None Include="Resources\Shaders\Others\blit.frag" />
     <None Include="Resources\Shaders\Others\blit.vert" />
+    <None Include="Resources\Shaders\post.frag" />
+    <None Include="Resources\Shaders\post.vert" />
     <None Include="Resources\Shaders\ShadowPass\directional.vert" />
     <None Include="Resources\Shaders\ShadowPass\point.geom" />
     <None Include="Resources\Shaders\ShadowPass\point.vert" />

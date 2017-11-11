@@ -24,15 +24,16 @@ namespace Ryno{
 		void bind_for_stencil_pass();
 		void bind_for_light_pass();
 		void bind_for_skybox_pass();
-		void bind_for_final_rendering_pass();
+		void bind_for_post_processing();
+		void bind_for_blit();
 		void bind_for_GUI_pass();
 
 	
 		U32 m_fbo;
 		U32 m_textures[FRAME_NUM_TEXTURES];
 		U32 m_depth_texture;
-		U32 m_final_texture; //Render here the final image, and then send it to screen 
-
+		U32 m_final_textures[2];				//two final textures to ping-pong post processing effects
+		U32 m_current_scene_texture;
 	private:
 		void bind_fbo();
 

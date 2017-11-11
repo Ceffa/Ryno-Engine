@@ -183,6 +183,8 @@
     <None Include="Resources\Shaders\GUIPass\sprite.vert">
       <Filter>Header Files\Resource Files\Shaders\GUIPass</Filter>
     </None>
+    <None Include="Resources\Shaders\post.frag" />
+    <None Include="Resources\Shaders\post.vert" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">

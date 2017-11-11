@@ -21,7 +21,7 @@ namespace Ryno {
 		// Create the frame buffer textures
 		glGenTextures(FRAME_NUM_TEXTURES, m_textures);
 		glGenTextures(1, &m_depth_texture);
-		glGenTextures(1, &m_final_texture);
+		glGenTextures(2, m_final_textures);
 
 		
 		//bind g diff texture
@@ -60,10 +60,15 @@ namespace Ryno {
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depth_texture, 0);
 
 		
-		//Bind final texture
-		glBindTexture(GL_TEXTURE_2D, m_final_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_FLOAT, NULL);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_final_texture, 0);
+		//Bind first final texture 
+		glBindTexture(GL_TEXTURE_2D, m_final_textures[0]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_final_textures[0], 0);
+
+		//Bind second final texture
+		glBindTexture(GL_TEXTURE_2D, m_final_textures[1]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, m_final_textures[1], 0);
 
 		//Check if ok
 		GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -128,12 +133,21 @@ namespace Ryno {
 	
 	}
 
-	void FBO_Deferred::bind_for_final_rendering_pass()
+	void FBO_Deferred::bind_for_post_processing()
+	{
+		bind_fbo();
+
+		m_current_scene_texture = 1 - m_current_scene_texture;
+		glDrawBuffer(GL_COLOR_ATTACHMENT4 + m_current_scene_texture);
+
+	}
+
+	void FBO_Deferred::bind_for_blit()
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 	
-		glReadBuffer(GL_COLOR_ATTACHMENT4);
+		glReadBuffer(GL_COLOR_ATTACHMENT4 + m_current_scene_texture);
 		glBlitFramebuffer(0, 0, WindowSize::w, WindowSize::h,
 			0,0, WindowSize::w , WindowSize::h, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	}
@@ -142,7 +156,7 @@ namespace Ryno {
 	void FBO_Deferred::bind_for_GUI_pass()
 	{
 		bind_fbo();
-		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+		glDrawBuffer(GL_COLOR_ATTACHMENT4 + m_current_scene_texture);
 	}
 
 	void FBO_Deferred::bind_fbo()

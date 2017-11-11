@@ -86,6 +86,8 @@ namespace Ryno{
 		m_blit_model.material.set_uniform("screen_width", WindowSize::w);
 		m_blit_model.material.set_uniform("screen_height", WindowSize::h);
 
+		m_post_proc.create("post", ENGINE);
+
 		//Sprite program
 		m_sprite_program.create("GUIPass/sprite", ENGINE);
 		m_sprite_program.use();
@@ -648,10 +650,41 @@ namespace Ryno{
 
 		//Restore depth
 		glDepthRange(0.0, 1.0);
-		glDepthMask(GL_TRUE);
 
 
 
+	}
+
+	void DeferredRenderer::post_processing_pass() {
+
+		m_fbo_deferred.m_current_scene_texture = 0; //the fbo is going to start the ping-pong of texture, set the entry point
+
+		SubModel mod{};
+		mod.mesh = m_blit_model.mesh;
+		auto& mat = mod.material;
+		mat.set_shader(&m_post_proc);
+		auto& s = mat.shader;
+
+		m_fbo_deferred.bind_for_post_processing();
+
+		glDisable(GL_BLEND);
+		
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+
+		mat.set_uniform("screen_width", WindowSize::w);
+		mat.set_uniform("screen_height", WindowSize::h);
+		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+		mat.set_uniform("scene_tex", m_fbo_deferred.m_final_textures[1-m_fbo_deferred.m_current_scene_texture]);
+
+
+		m_simple_drawer->draw(&mod, true);
 	}
 
 
@@ -704,7 +737,7 @@ namespace Ryno{
 
 
 	void DeferredRenderer::final_pass(){
-		m_fbo_deferred.bind_for_final_rendering_pass();
+		m_fbo_deferred.bind_for_blit();
 
 	
 	}

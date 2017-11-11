@@ -45,16 +45,16 @@ namespace Ryno{
 					camera->move_left(TimeManager::delta_time);
 				}
 				if (game->input_manager->is_key_down(SDLK_w, KEYBOARD)) {
-					camera->move_up(TimeManager::delta_time);
-				}
-				if (game->input_manager->is_key_down(SDLK_s, KEYBOARD)) {
-					camera->move_down(TimeManager::delta_time);
-				}
-				if (game->input_manager->is_key_down(SDLK_q, KEYBOARD)) {
 					camera->move_forward(TimeManager::delta_time);
 				}
-				if (game->input_manager->is_key_down(SDLK_e, KEYBOARD)) {
+				if (game->input_manager->is_key_down(SDLK_s, KEYBOARD)) {
 					camera->move_back(TimeManager::delta_time);
+				}
+				if (game->input_manager->is_key_down(SDLK_q, KEYBOARD)) {
+					camera->move_up(TimeManager::delta_time);
+				}
+				if (game->input_manager->is_key_down(SDLK_e, KEYBOARD)) {
+					camera->move_down(TimeManager::delta_time);
 				}
 			}
 			glm::vec2 mouse_coords = game->input_manager->get_mouse_movement();

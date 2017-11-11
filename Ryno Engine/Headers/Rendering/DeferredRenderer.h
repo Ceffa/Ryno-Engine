@@ -71,8 +71,13 @@ namespace Ryno{
 		//Pass for directional lights
 		void directional_light_pass();
 
+
+		//Post processing effects, GUI not influenced
+		void post_processing_pass();
+
 		//GUI pass
 		void GUI_pass();
+
 
 
 		//Print on screen the result of the whole deferred rendering
@@ -136,7 +141,7 @@ namespace Ryno{
 
 		//PROGRAMS
 		Shader m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_blit_program,m_flat_program,m_sprite_program,m_font_program;
-
+		Shader m_post_proc;
 		
 
 		MeshManager* m_mesh_manager;
