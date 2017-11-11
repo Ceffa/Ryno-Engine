@@ -63,11 +63,15 @@ namespace Ryno {
 		//Bind first final texture 
 		glBindTexture(GL_TEXTURE_2D, m_final_textures[0]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_final_textures[0], 0);
 
 		//Bind second final texture
 		glBindTexture(GL_TEXTURE_2D, m_final_textures[1]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, m_final_textures[1], 0);
 
 		//Check if ok
@@ -147,7 +151,7 @@ namespace Ryno {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 	
-		glReadBuffer(GL_COLOR_ATTACHMENT5);
+		glReadBuffer(GL_COLOR_ATTACHMENT4 + m_current_scene_texture);
 		glBlitFramebuffer(0, 0, WindowSize::w, WindowSize::h,
 			0,0, WindowSize::w , WindowSize::h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	}
@@ -156,7 +160,7 @@ namespace Ryno {
 	void FBO_Deferred::bind_for_GUI_pass()
 	{
 		bind_fbo();
-		glDrawBuffer(GL_COLOR_ATTACHMENT5);
+		glDrawBuffer(GL_COLOR_ATTACHMENT4 + m_current_scene_texture);
 	}
 
 	void FBO_Deferred::bind_fbo()

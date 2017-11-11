@@ -62,7 +62,7 @@ FragmentData get_fragment_data(){
 void main(){
 	
 	FragmentData data = get_fragment_data();
-	fracolor = data.scene_color + data.diff_color * .3;
+	fracolor = vec3(1, 1, 1) - data.scene_color;
 	
 }
 
