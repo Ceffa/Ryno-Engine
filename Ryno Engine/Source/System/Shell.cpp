@@ -241,7 +241,7 @@ namespace Ryno {
 		}
 	}
 
-
+	//GARBAGE CODE - Could really use a refactoring
 	void Shell::parse_command(const std::string& command)
 	{
 		if (command.compare("winpos") == 0) {
