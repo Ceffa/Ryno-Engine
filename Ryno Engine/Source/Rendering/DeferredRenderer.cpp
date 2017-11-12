@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "GuiObject.h"
 #include "Game.h"
+#include "Scene.h"
 
 #include "Shell.h"
 
@@ -68,6 +69,7 @@ namespace Ryno{
 		m_blit_model_depth.mesh = m_mesh_manager->load_mesh("square", ENGINE);
 
 		m_blit_model_color.mesh = m_blit_model_depth.mesh;
+		m_post_proc_model.mesh = m_blit_model_depth.mesh;
 
 		m_skybox_model.mesh = m_mesh_manager->load_mesh("cubemap_cube", ENGINE);
 
@@ -89,9 +91,6 @@ namespace Ryno{
 
 		m_blit_color.create("Others/blit2color", ENGINE);
 		m_blit_model_color.material.set_shader(&m_blit_color);
-
-
-		m_post_proc.create("post", ENGINE);
 
 		//Sprite program
 		m_sprite_program.create("GUIPass/sprite", ENGINE);
@@ -657,32 +656,29 @@ namespace Ryno{
 
 	void DeferredRenderer::post_processing_pass() {
 
+		if (!postprocessor_enabled)
+			return;
 		m_fbo_deferred.m_current_scene_texture = 0; //the fbo is going to start the ping-pong of texture, set the entry point
 
-		SubModel mod{};
-		mod.mesh = m_blit_model_depth.mesh;
-		auto& mat = mod.material;
-		mat.set_shader(&m_post_proc);
-		auto& s = mat.shader;
-
-		m_fbo_deferred.bind_for_post_processing();
 
 		glDisable(GL_BLEND);
-		
+
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 
-		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
-		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
-		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
-		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
-		mat.set_uniform("scene_tex", m_fbo_deferred.m_final_textures[1-m_fbo_deferred.m_current_scene_texture]);
-
-
-		m_simple_drawer->draw(&mod, true);
+		for (auto& m : game->scene->post_processor->effects) {
+			m_post_proc_model.material = m;
+			m_fbo_deferred.bind_for_post_processing();
+			m.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
+			m.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
+			m.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
+			m.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+			m.set_uniform("scene_tex", m_fbo_deferred.m_final_textures[1 - m_fbo_deferred.m_current_scene_texture]);
+			m_simple_drawer->draw(&m_post_proc_model, true);
+		}
 	}
 
 
@@ -736,7 +732,6 @@ namespace Ryno{
 
 
 	void DeferredRenderer::final_pass(){
-		GPUProfiler::start_time();
 		m_fbo_deferred.bind_for_blit();
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
@@ -747,7 +742,6 @@ namespace Ryno{
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_simple_drawer->draw(&m_blit_model_color, false);
-		std::cout << GPUProfiler::get_time() << std::endl;
 	
 	}
 

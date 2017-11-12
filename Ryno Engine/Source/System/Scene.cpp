@@ -12,8 +12,8 @@ namespace Ryno{
 	void Scene::init()
 	{
 		game = Game::get_instance();
-		camera = new Camera3D(WindowSize::w, WindowSize::h);
-
+		camera.reset(new Camera3D(WindowSize::w, WindowSize::h));
+		post_processor.reset(new PostProcessor());
 	}
 
 	void Scene::update_scripts()

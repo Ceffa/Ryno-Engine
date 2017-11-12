@@ -1,15 +1,15 @@
 #include "Global.h"
 #include <vector>
-#include "Shader.h"
+#include "Material.h"
 
 namespace Ryno {
 
 	class PostProcessor {
 		
 	public: 
-		Shader& add_effect(const std::string& name, Owner location);
+		Material& add_effect(const std::string& name, Owner location);
 
-		std::vector<Shader> effects;
+		std::vector<Material> effects;
 	};
 
 }

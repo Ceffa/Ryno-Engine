@@ -133,7 +133,7 @@ namespace Ryno{
 		if (scene)
 			destroy_scene(scene);
 		scene = SceneManager::new_scene(scene_nr);
-		deferred_renderer->set_camera(scene->camera);
+		deferred_renderer->set_camera(scene->camera.get());
 		game_state = GameState::ChangeScene;
 		shell->request_pause = false;
 	
@@ -143,7 +143,7 @@ namespace Ryno{
 		if (scene)
 			destroy_scene(scene);
 		scene = SceneManager::next_scene();
-		deferred_renderer->set_camera(scene->camera);
+		deferred_renderer->set_camera(scene->camera.get());
 		game_state = GameState::ChangeScene;
 		shell->request_pause = false;
 
@@ -153,7 +153,7 @@ namespace Ryno{
 		if (scene)
 			destroy_scene(scene);
 		scene = SceneManager::reset_scene();
-		deferred_renderer->set_camera(scene->camera);
+		deferred_renderer->set_camera(scene->camera.get());
 		game_state = GameState::ChangeScene;
 		shell->request_pause = false;
 	}

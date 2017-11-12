@@ -15,7 +15,9 @@ namespace Ryno {
 		camera->have_skybox = true;
 		camera->skybox = game->texture_manager->load_cube_map("full_moon", ".png", GAME);
 
-
+		auto& eff = post_processor->add_effect("PostProcessing/mask", GAME);
+		eff.set_uniform("mask", 2);
+		post_processor->add_effect("PostProcessing/neg", GAME);
 
 		sphere.add_component<LightsElements>();
 		floor.add_component<GroundElements>();

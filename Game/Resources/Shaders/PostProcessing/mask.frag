@@ -6,6 +6,8 @@ uniform sampler2D normal_tex;
 uniform sampler2D depth_tex;
 uniform sampler2D scene_tex;
 
+uniform int mask;
+
 
 out vec3 fracolor;
 
@@ -21,6 +23,7 @@ layout(std140) uniform glob {
 	int screen_width;
 	int screen_height;
 };
+
 
 struct FragmentData{
 
@@ -62,7 +65,8 @@ FragmentData get_fragment_data(){
 void main(){
 	
 	FragmentData data = get_fragment_data();
-	fracolor =  data.scene_color;
+	vec3 mask_color = vec3((mask / 4) % 2, (mask / 2) % 2, mask % 2);
+	fracolor = data.scene_color * mask_color;
 	
 }
 

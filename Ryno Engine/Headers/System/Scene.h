@@ -2,7 +2,9 @@
 #include "Global.h"
 #include "Transform.h"
 #include <map>
+#include <memory>
 #include "Network.h"
+#include "PostProcessor.h"
 
 namespace Ryno{
 
@@ -14,13 +16,15 @@ namespace Ryno{
 	class Scene{
 	public:
 		
-		Camera3D* camera;
+		std::unique_ptr<Camera3D> camera;
+		std::unique_ptr<PostProcessor> post_processor;
+
 		Scene() {
 		
 		}
 		void init();
 		
-		virtual ~Scene() = 0{}
+		virtual ~Scene() {}
 		virtual void start() {}
 		virtual void input() {}
 		virtual void input_scripts() final;

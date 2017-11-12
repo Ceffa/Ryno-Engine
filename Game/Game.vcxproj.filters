@@ -55,6 +55,9 @@
     <Filter Include="Header\Scripts">
       <UniqueIdentifier>{0d952eea-d11b-47d4-9324-838771f499a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\PostProcessing">
+      <UniqueIdentifier>{3651f79e-158a-4f8a-bf22-2627213f0531}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -152,6 +155,18 @@
     </None>
     <None Include="Resources\Shaders\Geometry\material.vert">
       <Filter>Resources\Shaders\Geometry</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostProcessing\neg.vert">
+      <Filter>Resources\Shaders\PostProcessing</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostProcessing\neg.frag">
+      <Filter>Resources\Shaders\PostProcessing</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostProcessing\mask.frag">
+      <Filter>Resources\Shaders\PostProcessing</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostProcessing\mask.vert">
+      <Filter>Resources\Shaders\PostProcessing</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -514,6 +514,12 @@ namespace Ryno {
 		else if (command.compare("gm") == 0){
 			deferred_renderer->geometry_enabled = true;
 		}
+		else if (command.compare("nopp") == 0) {
+			deferred_renderer->postprocessor_enabled = false;
+		}
+		else if (command.compare("pp") == 0) {
+			deferred_renderer->postprocessor_enabled = true;
+		}
 		else if (command.compare("nolights") == 0){
 			deferred_renderer->point_light_enabled = false;
 			deferred_renderer->spot_light_enabled = false;

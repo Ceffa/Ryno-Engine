@@ -64,7 +64,6 @@ namespace Ryno{
 			}
 		}
 		glDeleteProgram(m_program_id);
-
 	}
 
 	
