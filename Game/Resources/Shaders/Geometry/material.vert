@@ -16,7 +16,7 @@ out  vec2 uvs;
 
 uniform int power;
 
-layout(std140) uniform glob{
+layout(std140) uniform glob {
 	mat4 V;
 	mat4 iV;
 	mat4 P;
@@ -25,6 +25,8 @@ layout(std140) uniform glob{
 	mat4 iVP;
 	vec4 cameraPos;
 	float time;
+	int screen_width;
+	int screen_height;
 };
 
 float split(uint color, int n);

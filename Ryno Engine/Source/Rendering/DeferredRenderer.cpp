@@ -65,7 +65,9 @@ namespace Ryno{
 
 		m_bounding_pyramid.mesh = m_mesh_manager->load_mesh("bound_pyramid", ENGINE);
 
-		m_blit_model.mesh = m_mesh_manager->load_mesh("square", ENGINE);
+		m_blit_model_depth.mesh = m_mesh_manager->load_mesh("square", ENGINE);
+
+		m_blit_model_color.mesh = m_blit_model_depth.mesh;
 
 		m_skybox_model.mesh = m_mesh_manager->load_mesh("cubemap_cube", ENGINE);
 
@@ -81,10 +83,13 @@ namespace Ryno{
 		m_skybox_program.create("SkyboxPass/skybox",ENGINE);
 		m_skybox_model.material.set_shader(&m_skybox_program);
 
-		m_blit_program.create("Others/blit", ENGINE);
-		m_blit_model.material.set_shader(&m_blit_program);
-		m_blit_model.material.set_uniform("screen_width", WindowSize::w);
-		m_blit_model.material.set_uniform("screen_height", WindowSize::h);
+		m_blit_depth.create("Others/blit2depth", ENGINE);
+		m_blit_model_depth.material.set_shader(&m_blit_depth);
+		
+
+		m_blit_color.create("Others/blit2color", ENGINE);
+		m_blit_model_color.material.set_shader(&m_blit_color);
+
 
 		m_post_proc.create("post", ENGINE);
 
@@ -129,6 +134,8 @@ namespace Ryno{
 		ubo_global_data.iVP = glm::inverse(ubo_global_data.VP);
 		ubo_global_data.cameraPos = m_camera->position;
 		ubo_global_data.time = TimeManager::time;
+		ubo_global_data.screen_width = WindowSize::w;
+		ubo_global_data.screen_height = WindowSize::h;
 
 
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
@@ -353,8 +360,6 @@ namespace Ryno{
 
 
 		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM glob
-		mat.set_uniform("screen_width", WindowSize::w);
-		mat.set_uniform("screen_height", WindowSize::h);
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
@@ -489,8 +494,6 @@ namespace Ryno{
 		mat.set_uniform("spot_light.blur", s->blur);
 		mat.set_uniform("spot_light.shadow_strength", s->shadow_strength);
 
-		mat.set_uniform("screen_width", WindowSize::w);
-		mat.set_uniform("screen_height", WindowSize::h);
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
@@ -553,7 +556,7 @@ namespace Ryno{
 
 		GameObject* go = d->game_object;
 		auto* mod = &d->model;
-		mod->mesh = m_blit_model.mesh;
+		mod->mesh = m_blit_model_depth.mesh;
 		auto& mat = mod->material;
 		auto* s =mat.shader;
 		m_fbo_deferred.bind_for_light_pass();
@@ -579,8 +582,6 @@ namespace Ryno{
 		}
 
 	
-		mat.set_uniform("screen_width", WindowSize::w);
-		mat.set_uniform("screen_height", WindowSize::h);
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
@@ -625,10 +626,10 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		m_blit_model.material.set_uniform("source_buffer", m_fbo_deferred.m_textures[3]);
+		m_blit_model_depth.material.set_uniform("source_buffer", m_fbo_deferred.m_textures[3]);
 	
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
-		m_simple_drawer->draw(&m_blit_model,false);
+		m_simple_drawer->draw(&m_blit_model_depth,false);
 
 		glDepthMask(GL_FALSE);
 		
@@ -659,7 +660,7 @@ namespace Ryno{
 		m_fbo_deferred.m_current_scene_texture = 0; //the fbo is going to start the ping-pong of texture, set the entry point
 
 		SubModel mod{};
-		mod.mesh = m_blit_model.mesh;
+		mod.mesh = m_blit_model_depth.mesh;
 		auto& mat = mod.material;
 		mat.set_shader(&m_post_proc);
 		auto& s = mat.shader;
@@ -674,8 +675,6 @@ namespace Ryno{
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 
-		mat.set_uniform("screen_width", WindowSize::w);
-		mat.set_uniform("screen_height", WindowSize::h);
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
@@ -737,8 +736,18 @@ namespace Ryno{
 
 
 	void DeferredRenderer::final_pass(){
+		GPUProfiler::start_time();
 		m_fbo_deferred.bind_for_blit();
+		glDisable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
+		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[m_fbo_deferred.m_current_scene_texture]);
+
+		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
+		m_simple_drawer->draw(&m_blit_model_color, false);
+		std::cout << GPUProfiler::get_time() << std::endl;
 	
 	}
 

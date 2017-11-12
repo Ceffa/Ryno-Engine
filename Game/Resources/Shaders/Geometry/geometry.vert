@@ -24,6 +24,8 @@ layout(std140) uniform glob {
 	mat4 iVP;
 	vec4 cameraPos;
 	float time;
+	int screen_width;
+	int screen_height;
 };
 
 

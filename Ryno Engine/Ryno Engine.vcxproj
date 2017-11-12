@@ -30,8 +30,10 @@
     <None Include="Resources\Shaders\LightPass\point.vert" />
     <None Include="Resources\Shaders\LightPass\spot.frag" />
     <None Include="Resources\Shaders\LightPass\spot.vert" />
-    <None Include="Resources\Shaders\Others\blit.frag" />
-    <None Include="Resources\Shaders\Others\blit.vert" />
+    <None Include="Resources\Shaders\Others\blit2color.frag" />
+    <None Include="Resources\Shaders\Others\blit2color.vert" />
+    <None Include="Resources\Shaders\Others\blit2depth.frag" />
+    <None Include="Resources\Shaders\Others\blit2depth.vert" />
     <None Include="Resources\Shaders\post.frag" />
     <None Include="Resources\Shaders\post.vert" />
     <None Include="Resources\Shaders\ShadowPass\directional.vert" />

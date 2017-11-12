@@ -103,6 +103,8 @@ namespace Ryno{
 			glm::mat4 iVP;
 			glm::vec4 cameraPos;
 			float time;
+			U32 screen_width;
+			U32 screen_height;
 		} ubo_global_data;
 
 		GLuint ubo = 0;
@@ -140,13 +142,14 @@ namespace Ryno{
 		Game* game;
 
 		//PROGRAMS
-		Shader m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_blit_program,m_flat_program,m_sprite_program,m_font_program;
+		Shader m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_flat_program,m_sprite_program,m_font_program;
+		Shader m_blit_depth, m_blit_color;
 		Shader m_post_proc;
 		
 
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
-		SubModel m_bounding_sphere, m_blit_model, m_skybox_model, m_bounding_pyramid;
+		SubModel m_bounding_sphere, m_blit_model_depth, m_blit_model_color, m_skybox_model, m_bounding_pyramid;
 		glm::mat4 MVP_camera;
 		glm::mat4 spot_VP_matrix;
 		glm::mat4 directional_light_VP;

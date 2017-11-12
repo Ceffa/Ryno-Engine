@@ -164,8 +164,6 @@ namespace Ryno{
 		mesh_manager->reset();
 		texture_manager->reset();
 		audio_manager->reset();
-		CPUProfiler::reset();
-		GPUProfiler::reset();
 		delete scene;
 		scene = nullptr;
 	}

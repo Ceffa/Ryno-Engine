@@ -4,53 +4,27 @@
 
 namespace Ryno{
 
-	std::vector<GPUProfiler::Times> GPUProfiler::times;
-	U8 GPUProfiler::current_time;
+	U32 GPUProfiler::queries[2]{ {0} };
 
-	void GPUProfiler::begin(){
-		times.resize(0);
-		current_time = 0;
-	}
 	void GPUProfiler::start_time(){
-		times.resize(current_time+1);
-		glGenQueries(2, &times[current_time].query_id_0);
-		glQueryCounter(times[current_time].query_id_0, GL_TIMESTAMP);
+		glGenQueries(2, queries);
+		glQueryCounter(queries[0], GL_TIMESTAMP);
 	}
 
-	void GPUProfiler::next_time(){
-		end_time();
-		start_time();
-
-	}
-
-	void GPUProfiler::end_time(){
-		glQueryCounter(times[current_time].query_id_1, GL_TIMESTAMP);
-		current_time++;
-	}
-
-	void GPUProfiler::print_time(){
-
-
-		for (U8 i = 0; i < current_time; i++){
-			I32 stopTimerAvailable = 0;
-			while (!stopTimerAvailable) {
-				glGetQueryObjectiv(times[i].query_id_1,
-					GL_QUERY_RESULT_AVAILABLE,
-					&stopTimerAvailable);
-			}
-
-			// get query results
-			glGetQueryObjectui64v(times[i].query_id_0, GL_QUERY_RESULT, &times[i].start);
-			glGetQueryObjectui64v(times[i].query_id_1, GL_QUERY_RESULT, &times[i].end);
-
-			printf("%f  ", times[i].get_elapsed_time() / 1000000.0);
+	float GPUProfiler::get_time(){
+		glQueryCounter(queries[1], GL_TIMESTAMP);
+		I32 stopTimerAvailable = 0;
+		while (!stopTimerAvailable) {
+			glGetQueryObjectiv(queries[1],
+				GL_QUERY_RESULT_AVAILABLE,
+				&stopTimerAvailable);
 		}
-		printf("\n");
+
+		U64 start, end;
+		glGetQueryObjectui64v(queries[0], GL_QUERY_RESULT, &start);
+		glGetQueryObjectui64v(queries[1], GL_QUERY_RESULT, &end);
+		return ((float)(end - start)) / 1000000.0;
 	}
 
-	void GPUProfiler::reset()
-	{
-		times.clear();
-	}
 
 }

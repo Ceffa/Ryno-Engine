@@ -6,8 +6,6 @@ uniform sampler2D normal_tex;
 uniform sampler2D depth_tex;
 uniform sampler2D scene_tex;
 
-uniform int screen_width;
-uniform int screen_height;
 
 out vec3 fracolor;
 
@@ -20,6 +18,8 @@ layout(std140) uniform glob {
 	mat4 iVP;
 	vec4 cameraPos;
 	float time;
+	int screen_width;
+	int screen_height;
 };
 
 struct FragmentData{
@@ -62,7 +62,7 @@ FragmentData get_fragment_data(){
 void main(){
 	
 	FragmentData data = get_fragment_data();
-	fracolor = vec3(1, 1, 1) - data.scene_color;
+	fracolor =  data.scene_color;
 	
 }
 

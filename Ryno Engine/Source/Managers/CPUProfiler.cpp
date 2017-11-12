@@ -1,45 +1,21 @@
 #include "CPUProfiler.h"
-#include <SDL\SDL.h>
+#include <gl\glew.h>
 
 
-namespace Ryno{
+namespace Ryno {
 
-	std::vector<CPUProfiler::Times> CPUProfiler::times;
-	U8 CPUProfiler::current_time;
+	I64 CPUProfiler::time_0 = 0;
 
-	void CPUProfiler::begin(){
-		times.clear();
-		current_time = 0;
-	}
-	void CPUProfiler::start_time(){
-		times.emplace_back((U32)SDL_GetTicks());
+	void CPUProfiler::start_time() {
+		glGetInteger64v(GL_TIMESTAMP, &time_0);
 	}
 
-	void CPUProfiler::next_time(){
-		end_time();
-		start_time();
+	float CPUProfiler::get_time() {
+		I64 end;
+		glGetInteger64v(GL_TIMESTAMP, &end);
 
+		return ((float)(end - time_0)) / 1000000.0;
 	}
 
-	void CPUProfiler::end_time(){
-		times[current_time].end = (U32) SDL_GetTicks();
-		current_time++;
-	}
-
-	void CPUProfiler::print_time(){
-
-
-		for (U8 i = 0; i < current_time; i++){
-
-			printf("%f  ", (F32)times[i].get_elapsed_time());
-
-		}
-		printf("\n");
-	}
-
-	void CPUProfiler::reset()
-	{
-		times.clear();
-	}
 
 }

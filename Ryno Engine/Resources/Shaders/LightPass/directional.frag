@@ -27,8 +27,6 @@ uniform mat4 light_VP_matrix;
 uniform mat4 light_V_matrix;
 uniform DirectionalLight dir_light;
 
-uniform int screen_width;
-uniform int screen_height;
 
 out vec3 fracolor;
 
@@ -41,6 +39,8 @@ layout(std140) uniform glob {
 	mat4 iVP;
 	vec4 cameraPos;
 	float time;
+	int screen_width;
+	int screen_height;
 };
 
 

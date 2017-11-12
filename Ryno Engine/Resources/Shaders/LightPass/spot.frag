@@ -35,9 +35,7 @@ uniform mat4 light_V_matrix;
 
 //All the spot light uniforms
 uniform SpotLight spot_light;
-//Screen size uniforms
-uniform int screen_width;
-uniform int screen_height;
+
 
 //Max fov of the light, to reconstruct depth correctly
 uniform float max_fov;
@@ -56,8 +54,9 @@ layout(std140) uniform glob {
 	mat4 iVP;
 	vec4 cameraPos;
 	float time;
+	int screen_width;
+	int screen_height;
 };
-
 
 //This function generate a depth value from the direction vector, so that it can be compared 
 //with the depth value in the shadow cube

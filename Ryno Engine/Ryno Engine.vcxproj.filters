@@ -159,12 +159,6 @@
     <None Include="Resources\Shaders\ShadowPass\spot.vert">
       <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
     </None>
-    <None Include="Resources\Shaders\Others\blit.vert">
-      <Filter>Header Files\Resource Files\Shaders\Others</Filter>
-    </None>
-    <None Include="Resources\Shaders\Others\blit.frag">
-      <Filter>Header Files\Resource Files\Shaders\Others</Filter>
-    </None>
     <None Include="Resources\Shaders\SkyboxPass\skybox.frag">
       <Filter>Header Files\Resource Files\Shaders\SkyboxPass</Filter>
     </None>
@@ -185,6 +179,10 @@
     </None>
     <None Include="Resources\Shaders\post.frag" />
     <None Include="Resources\Shaders\post.vert" />
+    <None Include="Resources\Shaders\Others\blit2color.frag" />
+    <None Include="Resources\Shaders\Others\blit2color.vert" />
+    <None Include="Resources\Shaders\Others\blit2depth.frag" />
+    <None Include="Resources\Shaders\Others\blit2depth.vert" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">
