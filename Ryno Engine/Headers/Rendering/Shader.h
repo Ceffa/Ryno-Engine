@@ -47,7 +47,8 @@ namespace Ryno{
 
 	public:
 
-		Shader(){}
+		Shader() {}
+		Shader(const std::string& name, Owner location) { create(name, location); }
 		~Shader(){ destroy(); }
 
 		/**

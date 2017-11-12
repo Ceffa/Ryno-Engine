@@ -177,6 +177,7 @@
     <ClCompile Include="Source\Game\Lights\DirectionalLight.cpp" />
     <ClCompile Include="Source\Game\Lights\PointLight.cpp" />
     <ClCompile Include="Source\Game\Lights\SpotLight.cpp" />
+    <ClCompile Include="Source\Game\PostProcessor.cpp" />
     <ClCompile Include="Source\GUI\GUIObject.cpp" />
     <ClCompile Include="Source\GUI\Sprite.cpp" />
     <ClCompile Include="Source\GUI\Text.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="Headers\Game\Lights\PointLight.h" />
     <ClInclude Include="Headers\Game\Lights\SpotLight.h" />
     <ClInclude Include="Headers\Game\Component.h" />
+    <ClInclude Include="Headers\Game\PostProcessor.h" />
     <ClInclude Include="Headers\GUI\GUIObject.h" />
     <ClInclude Include="Headers\GUI\Sprite.h" />
     <ClInclude Include="Headers\GUI\Text.h" />
