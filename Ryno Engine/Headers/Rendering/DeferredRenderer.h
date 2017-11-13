@@ -28,6 +28,20 @@ namespace Ryno{
 		glm::vec3 Up;
 	};
 
+	struct DirLightStruct {
+		ColorRGBA diffuse;
+		ColorRGBA specular;
+		ColorRGBA ambient;
+		float diffuse_intensity;
+		float specular_intensity;
+		float ambient_intensity;
+		glm::vec3 direction;
+		U32 blur;
+		float shadow_strength;
+		glm::mat4 light_VP_matrix;
+		glm::mat4 light_V_matrix;
+	};
+
 	class Game;
 	class DeferredRenderer{
 		friend class Shell;
@@ -72,6 +86,7 @@ namespace Ryno{
 		//Pass for directional lights
 		void directional_light_pass();
 		void directional_light_tiled_pass();
+		DirLightStruct fillDirLightStruct(DirectionalLight* d);
 
 
 		//Post processing effects, GUI not influenced
@@ -135,7 +150,7 @@ namespace Ryno{
 		void directional_shadow_subpass(DirectionalLight* go);
 
 		//Lighting subpass for directional light
-		void directional_lighting_subpass(DirectionalLight* go);
+		void directional_lighting_subpass(DirectionalLight* go, DirLightStruct& dlc);
 
 	
 	

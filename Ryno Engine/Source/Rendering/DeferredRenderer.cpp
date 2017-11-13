@@ -1,4 +1,4 @@
-#include "DeferredRenderer.h"
+﻿#include "DeferredRenderer.h"
 #include "GameObject.h"
 #include "GuiObject.h"
 #include "Game.h"
@@ -18,7 +18,10 @@
 #define HALF_PI 1.57079632679489661923
 
 
+
 namespace Ryno{
+
+	
 
 	const CameraDirection DeferredRenderer::camera_directions[NUM_OF_LAYERS]=
 	{
@@ -230,21 +233,51 @@ namespace Ryno{
 
 	}
 
+	DirLightStruct DeferredRenderer::fillDirLightStruct(DirectionalLight* d) {
+		glm::mat4 dir_light_VPB = bias * directional_light_VP;
+
+		glm::quat rot = d->absolute_movement ? d->rotation : d->game_object->transform.get_rotation() * d->rotation;
+		Transform* parent = d->game_object->transform.get_parent();
+		while (parent != nullptr) {
+			rot = parent->get_rotation() * rot;
+			parent = parent->get_parent();
+		}
+		DirLightStruct dlc;
+		dlc.direction = rot * glm::vec3(0, 0, 1);
+		dlc.diffuse = d->diffuse_color;
+		dlc.specular = d->specular_color;
+		dlc.ambient = d->ambient_color;
+		dlc.diffuse_intensity = d->diffuse_intensity;
+		dlc.specular_intensity= d->specular_intensity;
+		dlc.ambient_intensity = d->ambient_intensity;
+		dlc.blur = d->blur;
+		dlc.shadow_strength = d->shadow_strength;
+		dlc.light_VP_matrix = dir_light_VPB;
+		dlc.light_V_matrix = m_camera->get_light_V_matrix();
+
+		return dlc;
+	}
 
 	void DeferredRenderer::directional_light_pass()
 	{
 		if (!directional_light_enabled)
 			return;
+
+		std::vector<DirLightStruct> computeLights;
 		for (auto* l : DirectionalLight::dir_lights){
 			if (!l->active || !l->game_object->active)
 				continue;
-			//if (l->shadows) {
+			DirLightStruct dlc = fillDirLightStruct(l);
+			if (true) {
 				directional_shadow_subpass(l);
-				directional_lighting_subpass(l);
-			//}
+				directional_lighting_subpass(l, dlc);
+			}
+			else {
+				
+			}
 		}
 
-		directional_light_tiled_pass();
+		//directional_light_tiled_pass();
 	}	
 
 	void DeferredRenderer::point_shadow_subpass(PointLight* p)
@@ -556,7 +589,7 @@ namespace Ryno{
 	}
 
 
-	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* d)
+	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* d, DirLightStruct& dlc)
 	{
 
 		GameObject* go = d->game_object;
@@ -577,16 +610,7 @@ namespace Ryno{
 		glDepthMask(GL_FALSE);
 		
 		
-		glm::mat4 dir_light_VPB = bias * directional_light_VP;
-
-		glm::quat rot = d->absolute_movement ? d->rotation : go->transform.get_rotation() * d->rotation;
-		Transform* parent = go->transform.get_parent();
-		while (parent != nullptr) {
-			rot = parent->get_rotation() * rot;
-			parent = parent->get_parent();
-		}
-
-	
+		
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
@@ -597,38 +621,42 @@ namespace Ryno{
 	
 
 		//SEND DIR LIGHT UNIFORMS
-		mat.set_uniform("dir_light.direction", rot * glm::vec3(0,0,1));
-		mat.set_uniform("dir_light.diffuse", d->diffuse_color);
-		mat.set_uniform("dir_light.specular", d->specular_color);
-		mat.set_uniform("dir_light.ambient", d->ambient_color);
-		mat.set_uniform("dir_light.diffuse_intensity", d->diffuse_intensity);
-		mat.set_uniform("dir_light.specular_intensity", d->specular_intensity);
-		mat.set_uniform("dir_light.ambient_intensity", d->ambient_intensity);
-		mat.set_uniform("dir_light.blur", d->blur);
+		mat.set_uniform("dir_light.direction", dlc.direction);
+		mat.set_uniform("dir_light.diffuse", dlc.diffuse);
+		mat.set_uniform("dir_light.specular", dlc.specular);
+		mat.set_uniform("dir_light.ambient", dlc.ambient);
+		mat.set_uniform("dir_light.diffuse_intensity", dlc.diffuse_intensity);
+		mat.set_uniform("dir_light.specular_intensity", dlc.specular_intensity);
+		mat.set_uniform("dir_light.ambient_intensity", dlc.ambient_intensity);
+		mat.set_uniform("dir_light.blur", dlc.blur);
 		mat.set_uniform("dir_light.shadow_strength", d->shadow_strength);
 
-
-		//SEND OTHER UNIFORMS
-
-		mat.set_uniform("light_VP_matrix", dir_light_VPB);
-		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
+		mat.set_uniform("dir_light.light_VP_matrix", dlc.light_VP_matrix);
+		mat.set_uniform("dir_light.light_V_matrix", dlc.light_V_matrix);
 		mat.set_uniform("shadows_enabled", (directional_shadow_enabled && d->shadows) ? 1:0);
 
 		m_simple_drawer->draw(mod,true);
 
-		
 		
 		glDisable(GL_BLEND);
 	}
 
 
 	void DeferredRenderer::directional_light_tiled_pass() {
+
+		//GLuint ssbo;
+		//glGenBuffers(1, &ssbo);
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+		//glBufferData(GL_SHADER_STORAGE_BUFFER, GLsizeiptr size​, data​, GLenum usage);
+		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
+
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		m_compute_dir.use();
 		m_fbo_deferred.bind_fbo();
 		U8 samplerIndex = 0;
 		m_compute_dir.send_material_uniform_to_shader("main_tex", &m_fbo_deferred.m_textures[0],&samplerIndex);
-		
+		bind_global_ubo(m_compute_dir);
 		
 		glDispatchCompute(std::ceil(WindowSize::w/32.0f), std::ceil(WindowSize::h / 32.0f), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -761,7 +789,7 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_textures[m_fbo_deferred.m_current_scene_texture]);
+		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[m_fbo_deferred.m_current_scene_texture]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_simple_drawer->draw(&m_blit_model_color, false);

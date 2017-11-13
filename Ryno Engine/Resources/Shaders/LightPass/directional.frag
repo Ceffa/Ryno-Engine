@@ -10,6 +10,8 @@ struct DirectionalLight{
 	vec3 direction;
 	uint blur;
 	float shadow_strength;
+	mat4 light_VP_matrix;
+	mat4 light_V_matrix;
 };
 
 uniform sampler2D diffuse_tex;
@@ -23,8 +25,6 @@ uniform sampler2DShadow shadow_tex;
 uniform int shadows_enabled;
 
 //Inverse projection matrix to get position from depth
-uniform mat4 light_VP_matrix;
-uniform mat4 light_V_matrix;
 uniform DirectionalLight dir_light;
 
 
@@ -57,9 +57,9 @@ void main(){
 	vec3 position = position_view_space.xyz / position_view_space.w;
 	
 	vec4 position_world_space = iVP * position_screen_space;
-	vec4 position_light_ortho_matrix = light_VP_matrix * position_world_space;
+	vec4 position_light_ortho_matrix = dir_light.light_VP_matrix * position_world_space;
 	vec3 position_light_ortho_matrix_norm = position_light_ortho_matrix.xyz / position_light_ortho_matrix.w;
-	vec3 view_dir_light = normalize(vec3(light_V_matrix * vec4(dir_light.direction,0)));
+	vec3 view_dir_light = normalize(vec3(dir_light.light_V_matrix * vec4(dir_light.direction,0)));
 
 	//Get color and flatness from g buffer
 	vec4 sample_diff = texture(diffuse_tex, uv_coords);
