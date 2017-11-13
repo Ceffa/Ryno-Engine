@@ -50,6 +50,7 @@ namespace Ryno{
 		m_shader_ids[VERT] = 0;
 		m_shader_ids[GEOM] = 0;
 		m_shader_ids[FRAG] = 0;
+		m_shader_ids[COMP] = 0;
 
 		m_program_id = glCreateProgram();
 	
@@ -57,7 +58,7 @@ namespace Ryno{
 
 	void Shader::destroy(){
 
-		for (U8 i = VERT; i < VERT + 3; i++){
+		for (U8 i = VERT; i < VERT + 4; i++){
 			if (is_shader_present[i]){
 				glDetachShader(m_program_id, m_shader_ids[i]);
 				glDeleteShader(m_shader_ids[i]);
@@ -72,11 +73,11 @@ namespace Ryno{
 
 	void Shader::load_shaders(const std::string& name, Owner loc){
 		shader_name = name;
-		static std::string extensions[3]{".vert", ".geom", ".frag"};
+		static std::string extensions[4]{".vert", ".geom", ".frag", ".comp"};
 		static const std::string middle_path = "Resources/Shaders/";
 
 
-		for (U8 i = VERT; i < VERT + 3; i++){
+		for (U8 i = VERT; i < VERT + 4; i++){
 			std::string path_and_name = BASE_PATHS[loc] + middle_path + name + extensions[i - VERT];
 			is_shader_present[i] = file_exists(path_and_name);
 			if (is_shader_present[i])
@@ -91,6 +92,7 @@ namespace Ryno{
 		case VERT:	m_shader_ids[VERT] = glCreateShader(GL_VERTEX_SHADER); break;
 		case GEOM:	m_shader_ids[GEOM] = glCreateShader(GL_GEOMETRY_SHADER); break;
 		case FRAG:	m_shader_ids[FRAG] = glCreateShader(GL_FRAGMENT_SHADER); break;
+		case COMP:	m_shader_ids[COMP] = glCreateShader(GL_COMPUTE_SHADER); break;
 		}
 
 		if (check_create_errors(index) < 0) {
@@ -109,7 +111,7 @@ namespace Ryno{
 
 
 	void Shader::compile_shaders(){
-		for (U8 i = VERT; i < VERT + 3; i++){
+		for (U8 i = VERT; i < VERT + 4; i++){
 			if (is_shader_present[i])
 				compile_shader((ShadersIndex) i);
 		}
@@ -129,7 +131,7 @@ namespace Ryno{
 	
 	void Shader::link_shaders(){
 
-		for (U8 i = VERT; i < VERT + 3; i++)
+		for (U8 i = VERT; i < VERT + 4; i++)
 			if (is_shader_present[i])
 				glAttachShader(m_program_id, m_shader_ids[i]);
 
@@ -347,9 +349,16 @@ namespace Ryno{
 
 	
 
-	bool Shader::is_sampler(GLenum type, I32* type_of_texture)
+	bool Shader::is_sampler(GLenum type, I32* type_of_texture, bool* computeTexture)
 	{
-		if (type == GL_SAMPLER_2D || type == GL_SAMPLER_2D_SHADOW){
+		if (type == GL_IMAGE_2D) {
+			*computeTexture = true;
+		}
+		else {
+			*computeTexture = false;
+		}
+		
+		if (type == GL_SAMPLER_2D || type == GL_SAMPLER_2D_SHADOW || type == GL_IMAGE_2D){
 			*type_of_texture = GL_TEXTURE_2D;
 			return true;
 		}
@@ -381,6 +390,7 @@ namespace Ryno{
 		case GL_SAMPLER_3D:
 		case GL_SAMPLER_CUBE:
 		case GL_SAMPLER_2D_SHADOW:
+		case GL_IMAGE_2D:
 			return 1;
 		case GL_FLOAT_VEC2:
 		case GL_INT_VEC2:
@@ -396,7 +406,6 @@ namespace Ryno{
 			return 4;
 		case GL_FLOAT_MAT4:
 			return 16;
-
 		}
 		return 0;
 

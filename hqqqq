@@ -1,0 +1,2435 @@
+[33mcommit 0dac5f3eaec3b92dde355d802817b915ea62e983[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Nov 12 17:37:35 2017 +0100
+
+    fix
+
+[33mcommit 9d716c3b5242f6d3ea9a320679be89a63adaa11b[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Nov 12 17:36:23 2017 +0100
+
+    Post processor managr complete, and commands in shell to handle it
+
+[33mcommit 5776ba0f897b8c78621c0e75a676088577e2da32[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Nov 12 14:33:34 2017 +0100
+
+    Skeleton of post processor class
+
+[33mcommit 21dd6dbcbb9251bd4f5650c0bb97f6c145d206d0[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Nov 12 13:08:51 2017 +0100
+
+    Moved width/height into ubo, removed blit in favor of shader, simplified gpu profiler
+
+[33mcommit 68a91b68e78af32637d0ab439234e5910c570d61[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Nov 11 18:27:53 2017 +0100
+
+    Post processor
+
+[33mcommit f38e46985592e1946be37625c11587bb49d49f4f[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Nov 11 18:11:39 2017 +0100
+
+    Fixed bug with clear depth
+
+[33mcommit 5260888e1eb629dde1cfb661b1b5db8042862aa8[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Nov 11 14:44:46 2017 +0100
+
+    Post processor wip
+
+[33mcommit 46d992e88d39470e3a05592fd5d55813396acfd2[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Nov 5 18:58:07 2017 +0100
+
+    Improved skybox pass
+
+[33mcommit 0184b0cae18ef51c01e355d136a7c9a2c4ea3d9d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Nov 5 18:44:32 2017 +0100
+
+    Fixed bug with materials uniforms memory
+
+[33mcommit 56a8b2e1678d979b7a2c80f2e90cd3126987d701[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Nov 5 18:01:59 2017 +0100
+
+    Uniform buffer objects to hold global data
+
+[33mcommit 5a28124bd039a645f8cf15048405f4c176071c18[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Nov 5 15:35:52 2017 +0100
+
+    Shell disables input update
+
+[33mcommit 3bf339846319286b65d0db4448fe0ff92d49f44b[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Sep 24 12:02:40 2017 +0200
+
+    Changed particle into a component
+
+[33mcommit 68b9b5e53b193645c1a36038af6ae37110f15f9d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Sep 24 11:34:53 2017 +0200
+
+    Copy operator and constructors in Game Object
+
+[33mcommit 3284345b676d54bf7d565dd0a3dd5f3962c8e036[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Apr 7 01:09:55 2017 +0100
+
+    few fixes
+
+[33mcommit b5c52e86c1206cd0c4d033a7b803796712c60aa6[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Apr 6 12:31:41 2017 +0100
+
+    Fixed bugs with networking so that the scene change doesn't create problems
+
+[33mcommit e17387ce178488677b1d4c59acf79092962ea267[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Dec 4 17:16:44 2016 +0000
+
+    ajustments
+
+[33mcommit 8934ceb746a243521f6ce89b2e4006847479ec84[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Thu Dec 1 16:15:11 2016 +0000
+
+    Improved code in many places, polished it and commented everything
+
+[33mcommit 7fb086f49344b54e2de46551027b3b6801e503b0[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Dec 1 11:44:02 2016 +0000
+
+    Added comments to NetObject
+
+[33mcommit 10a9d263674bb4ab3fee6be99163b9259f55284c[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Nov 30 23:36:22 2016 +0000
+
+    Perfect prediction: interpolation working perfectly with every possible network condition activated
+
+[33mcommit 3472c87450ef91fb97d82ce60fbf5899b4d4d9c4[m
+Merge: 19f3427 199d6bf
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Wed Nov 30 11:37:01 2016 +0000
+
+    Merge branch 'network' of https://www.github.com/Ceffa/Ryno-Engine into network
+
+[33mcommit 19f3427008f580876995f9dda661b4addee86d8c[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Wed Nov 30 11:36:36 2016 +0000
+
+    I believe I fixed the bad prediction during lag, and found the problem with the whole interpolation I had implemented, however I don't have clumsy available to test it and confirm it
+
+[33mcommit 199d6bf39227e55c086ca5f86738ab224ff38e69[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 24 18:03:28 2016 +0000
+
+    Check for duplicated packets and packets out of order
+
+[33mcommit 4d75d188e422e2517b3d6e1a4b65f02f8af4a1f3[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 24 17:16:16 2016 +0000
+
+    Tweaking stuff
+
+[33mcommit f28bc87d675ccfba7b24dd02461ca71774525639[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 24 15:46:54 2016 +0000
+
+    Correct quaternion interpolation, bug testing
+
+[33mcommit b45cf0bc0297c5bfb3b8902b52d605946a27d72d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 24 11:47:49 2016 +0000
+
+    Client disconnection handled
+
+[33mcommit ae43273226d5fa9544855a6e421cf06cf89255b7[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Nov 23 23:07:02 2016 +0000
+
+    Screen
+
+[33mcommit 72743f11440244bb0545ac8d0b6c2300a0051243[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Wed Nov 23 18:00:03 2016 +0000
+
+    Whole game implemented
+
+[33mcommit 1f46821493283354f2203abd7f22d84d98e140af[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Nov 22 13:26:26 2016 +0000
+
+    Rotation and Scale sent as well
+
+[33mcommit 277ab6d59abd65e62251783794786dee3667fc68[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Nov 22 12:33:31 2016 +0000
+
+    Added object code to detect different entities in message
+
+[33mcommit 64feefb09cedea1fdb3845a8ac57fe193296b9a0[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Nov 22 11:02:52 2016 +0000
+
+    few fixes
+
+[33mcommit 6ec89079c3b6f8c23d7301b073891ff6ed60e489[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Nov 22 10:51:51 2016 +0000
+
+    Simplified net id class
+
+[33mcommit 10fbd3d705b4b3bbd1d8b49e408938cd3e2c5436[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Nov 22 10:16:03 2016 +0000
+
+    Added proper initialization of net objects (both color and position). Maybe I can completely remove the need to send the ip over the network, and just use the client id instead
+
+[33mcommit 7a014f6a1a75e2eadbb5ba30c98bf095e54b500b[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Nov 22 09:38:09 2016 +0000
+
+    Added object initialization but problem with lerping
+
+[33mcommit 25bd0e627657f5be73f61948a04b3158847048c0[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Mon Nov 21 16:08:51 2016 +0000
+
+    screen
+
+[33mcommit 9634e16a79135bf8fdaa14b499764ebed5d57460[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Mon Nov 21 15:53:29 2016 +0000
+
+    Updated network syncronization, plotting net time, fixed problem with dragging window
+
+[33mcommit 95df5a0b5a84579812e1edb4440cc23a4b5bc007[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 17 13:27:53 2016 +0000
+
+    Net time sync
+
+[33mcommit f07ecc43635fe759922f932646b3b3dd590c2c33[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 17 12:19:22 2016 +0000
+
+    Added code in the client to check for server answers, and added "connected" state to the client
+
+[33mcommit 81c6b564f90fb453771d81b30444f391619922b0[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 17 12:01:21 2016 +0000
+
+    Updated packets to send network and client updated
+
+[33mcommit 3217336fa1f52604f9220aa0944dd821709bc459[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 17 11:51:31 2016 +0000
+
+    Completed NetworkTime class
+
+[33mcommit 68c6487bd6824f2ca2f379a78eb1c23a47409821[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 17 11:12:39 2016 +0000
+
+    Created base NetworkTime class, and refactored time to be handled by the time manager
+
+[33mcommit ee1cd0195d895efe64bcd9e7913bb1f29bca77d2[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Fri Nov 11 18:52:09 2016 +0000
+
+    linear interpolation
+
+[33mcommit 971d4b4267e549336111c637e860d33cb58ec933[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Wed Nov 9 17:48:49 2016 +0000
+
+    Linear interpolation
+
+[33mcommit 960392a017877fdaac6c34fc019435cf8e421133[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Nov 6 19:01:31 2016 +0000
+
+    Abstracted network scene, automatized disconnection
+
+[33mcommit 8dbfbe2715b35d78e321cb5042663fe4a11f21dd[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Nov 3 13:07:56 2016 +0000
+
+    Added data exchange through unions
+
+[33mcommit 47622db367b0dd1b615f1c3ff0380b19b19200cc[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Wed Oct 26 17:55:22 2016 +0100
+
+    Camera vertical movement and delay network messages
+
+[33mcommit 1ce889e5beffa685b781729c3d47be1752cf1ea6[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Oct 23 19:09:40 2016 +0100
+
+    adjustments
+
+[33mcommit 11a9f124115c8211bb240af3cc886fbd70eb7ead[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Oct 23 12:36:15 2016 +0100
+
+    Server alongside client, templated data conversion, handler of network events moved to scene and refactored message class to be a base class
+
+[33mcommit 82f53497c67b1edc4f5b473fbdbcfa28923ff7af[m
+Merge: c4191dd e497106
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Oct 22 18:59:48 2016 +0100
+
+    Merge
+
+[33mcommit c4191dd7aa618165b876a8569d6e96c436ed74a3[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Oct 22 18:55:21 2016 +0100
+
+    screen
+
+[33mcommit e49710650ed9be0fe2c459470744fed4e1adb481[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Wed Oct 19 12:27:42 2016 +0100
+
+    Sync of positions (and colors) over network correcly working
+
+[33mcommit f0166d4f190285355aad2aa3c849f26f68065321[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Oct 18 22:18:41 2016 +0100
+
+    Managed to move a cube transform, but still problems
+
+[33mcommit ace4ad25d5c8b17c3b62687ee679ae0f5d4ecf26[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Oct 18 18:49:41 2016 +0100
+
+    Working on passing position messages, but problem with message
+
+[33mcommit 76795261fc9745a9dd11e2306f529cb518d8faa3[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Mon Oct 17 17:52:35 2016 +0100
+
+    Naman cube spawning over network
+
+[33mcommit cbdef9fc505c46256f7eab6c2af869813274a50a[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Mon Oct 17 16:30:01 2016 +0100
+
+    fix
+
+[33mcommit 44e434c61f8461f41055519a9fbda943a06a1506[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Mon Oct 17 16:24:18 2016 +0100
+
+    Created the Address class which extends and improves the sockaddr_in class
+
+[33mcommit 10e049bd25bf19d4406b00db66d5589520cf673c[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Oct 16 13:02:04 2016 +0100
+
+    Now lights and models have their own static array to avoid calculating useless data every frame. This also allows to implement the network handling better
+
+[33mcommit 68d4f00d2cf5a1d6c81c541219f2bf6b4a547b0c[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Oct 16 12:34:00 2016 +0100
+
+    Refactoring of deferred renderer and game class
+
+[33mcommit f700764fab5092d8c7e322d7d146abe5b647459d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Oct 15 18:26:58 2016 +0100
+
+    Templated structure passing. Still missing network order and those optimizations
+
+[33mcommit 751a2909b5c740634f774952b55a54b11d90859a[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Oct 15 17:39:34 2016 +0100
+
+    Handling for big socket that may lose data. From next commit I'll remove it, go back here if needed in the future
+
+[33mcommit 11186ed24ce57bf64c24f48ac00ab63396b924b3[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Oct 15 17:33:59 2016 +0100
+
+    Chat working in udp.
+
+[33mcommit e676fb77c294d5c705561bb0a33c87ad42a66eea[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Fri Oct 14 18:46:34 2016 +0100
+
+    Implementing UDP struct exchange. Still a lot of things to do
+
+[33mcommit cd85edd48e913f3e0499ff70fb7fb58485ba903c[m
+Merge: 3ef6d5a 47f1668
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Thu Oct 13 11:13:41 2016 +0100
+
+    Merge branch 'network' of https://www.github.com/Ceffa/Ryno-Engine into network
+
+[33mcommit 3ef6d5a6d568dc41a389ac812138f071206325cf[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Thu Oct 13 11:13:11 2016 +0100
+
+    Added user preferences to .gitignore
+
+[33mcommit 47f1668506b224c568f12c40a6f64df9e929ae54[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Oct 12 23:27:01 2016 +0100
+
+    Fixed bug
+
+[33mcommit b32d323797958943d19eed5e4b45617c475c7652[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Wed Oct 12 17:55:12 2016 +0100
+
+    Refactoring non-blocking sockets, problem: duplicated empty message at each client reception
+
+[33mcommit 2c4e06e5c51c05afa5d42fe3b6e673d285e30850[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Oct 11 18:22:40 2016 +0100
+
+    Screenshot
+
+[33mcommit 0bfc1320a16651ea63927c442a6a6ea06c309164[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Oct 11 18:11:14 2016 +0100
+
+    Implemented chat with one server and three clients. Still problems about how to handle non blocking stuff on client side, but everything is working because I'm on localhost. Also refactored code about window size in many ways
+
+[33mcommit c603aa593bce329d9a0ec42751ad34935ea99c78[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Tue Oct 11 12:13:46 2016 +0100
+
+    Implemented select but problems related to (i think) thread syncing
+
+[33mcommit bf0880244b18a5d75775d066aba44f4be1b77897[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Fri Oct 7 16:39:44 2016 +0100
+
+    Completed base implementation of the connection class
+
+[33mcommit b94402a8f53f8744eabe3e481a7771c41b23e60c[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Fri Oct 7 16:30:18 2016 +0100
+
+    Connection stuff
+
+[33mcommit 53532acc121d0c2029c257cefe500cb1104ebc3c[m
+Author: Filippo Ceffa <1601658@MC10780.uad.ac.uk>
+Date:   Thu Oct 6 16:31:07 2016 +0100
+
+    Mega refactoring
+
+[33mcommit 97fa942c9ed0a0d6b37ccf0f64e3c0d7fe1545db[m
+Author: unknown <1601658@MC10780.uad.ac.uk>
+Date:   Tue Oct 4 11:35:53 2016 +0100
+
+    Implemented send and receive with arbitrary message length (reading byte by byte)
+
+[33mcommit f6592ea9b26522068470a496716556d5af15d548[m
+Author: unknown <1601658@MC10780.uad.ac.uk>
+Date:   Fri Sep 30 16:40:59 2016 +0100
+
+    Fixed tiny problem
+
+[33mcommit c087cd60c3cd923dc7a8ae8075ffe8d34202c128[m
+Author: unknown <1601658@MC10780.uad.ac.uk>
+Date:   Fri Sep 30 16:22:14 2016 +0100
+
+    Awesome error messages system and fixed/refactored stuff
+
+[33mcommit c7c04c54a5c0586f004cb2a5e42a24d1e4c06750[m
+Author: unknown <1601658@MC10780.uad.ac.uk>
+Date:   Fri Sep 30 14:40:56 2016 +0100
+
+    Error messages printed correctly
+
+[33mcommit 700907dcb569ec8aebf23abab202b44cd29c0f0c[m
+Author: unknown <1601658@MC10780.uad.ac.uk>
+Date:   Fri Sep 30 12:42:59 2016 +0100
+
+    Sockets wrappers. Shell commands to start sockets. Connection successfull between two processes
+
+[33mcommit 014c4f2a5887c51380dfc39bb5a15bbb662137e0[m
+Author: unknown <1601658@MC10780.uad.ac.uk>
+Date:   Wed Sep 28 15:34:46 2016 +0100
+
+    Server main functions working and implemented thread wrapper class
+
+[33mcommit e725a7b80556a7b1d812872b64e73e5080de9d3d[m
+Author: unknown <1601658@MC10780.uad.ac.uk>
+Date:   Wed Sep 28 12:28:52 2016 +0100
+
+    Base server class WIP
+
+[33mcommit 715c30a298d26ed5aae8abc00add0170481cc4ec[m
+Author: unknown <1601658@MC10780.uad.ac.uk>
+Date:   Wed Sep 28 11:44:43 2016 +0100
+
+    Multiple projects at the same time
+
+[33mcommit 3020cc328a0f2c5f0ddfe81eba137f87054a54ae[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Sep 25 19:25:11 2016 +0100
+
+    Better input control
+
+[33mcommit 708e3853a7b05843a56ec8e529c5cadb1c75e11c[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Sep 6 18:21:09 2016 +0100
+
+    Few fixes
+
+[33mcommit e78cd1b878e6fa81a5b1e4a6d831af75890dad5a[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Aug 24 15:04:20 2016 +0200
+
+    Fixed a bit of problems with the timer in rendering
+
+[33mcommit 2c8bb3786578ccfed5f3ff7f18d88343524a4653[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Aug 17 19:12:13 2016 +0200
+
+    Sleep
+
+[33mcommit b26e3f25bcd18b157236e60a6d9deb48da062e6b[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Aug 10 15:54:05 2016 +0200
+
+    Fixes
+
+[33mcommit c95063832725207c83a419bdfabaa7fa1df5f7ae[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Aug 10 12:11:54 2016 +0200
+
+    Implemented a simple rolling friction damping
+
+[33mcommit 6b5563252c61eaaa0c561b0771189b35fe44c1b4[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Aug 9 16:20:28 2016 +0200
+
+    Fixed friction, but probably rolling friction is missing
+
+[33mcommit ae72a77225096c152306238b71f2853ef4d1f7b0[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Aug 8 22:55:16 2016 +0200
+
+    Bug in friction
+
+[33mcommit 0588d59dad3fa49a546c974e7a2ce92da59aa3ae[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Aug 8 20:16:24 2016 +0200
+
+    Problems with friction
+
+[33mcommit 2759b37f156a5ed74548da44182521c962feaac7[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Aug 8 17:19:02 2016 +0200
+
+    Implemented but not tested friction
+
+[33mcommit a53b28f397dfe0b631935b875266ce12b8be29d9[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Aug 7 17:24:33 2016 +0200
+
+    Fixed resting contacts and fixed change scene
+
+[33mcommit b0ac6a539ccf244ec9bf2b10642d8c24a1c956c2[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Aug 7 13:20:42 2016 +0200
+
+    Fixed buggy penetration resting contact
+
+[33mcommit 0fe940729a7510876267fd1af82d2238fb1b7819[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Aug 6 17:24:48 2016 +0200
+
+    Spheres collision is fine, and also half_plane collision. However box/sphere is slightly wrong, and box-box is complete trash
+
+[33mcommit 9bebdde3c39d3ef167da3a37fb70baffa3962b01[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Aug 6 16:22:01 2016 +0200
+
+    Massive improvement to performances because I was adding two game objects at a time. Also I'm continuing to fixing bugs in the physics
+
+[33mcommit e9ce73f6b8ccc2a87e6e73deead1b1033017e79f[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Aug 5 21:54:15 2016 +0200
+
+    Authomatized the collision detector with a... templated switch
+
+[33mcommit 2d7278fbdd0c6e773391d9ad96ee3652fd026cc6[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Aug 5 13:35:50 2016 +0200
+
+    fix
+
+[33mcommit c6776a6ed63c37cb2a5cd2a74b7b7197ff132e1a[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Aug 5 13:34:42 2016 +0200
+
+    Added method to the collison detector to automatically calculate all contacts
+
+[33mcommit 1a7a7a561f07110906e355c5e77fbf84f1d06450[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Aug 5 12:53:34 2016 +0200
+
+    First step of integration: written a mock broad phase algorithm that just returns every contact, and authomatized the narrow phase: right now it automatically identifies the type of the primitives
+
+[33mcommit ed88060e5a5ffff650e8fea12a5f3bad731a92a2[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Aug 4 15:28:40 2016 +0200
+
+    Added algorithm to resolve all the velocities. Very similar to the previous one
+
+[33mcommit d02942456e6ef1408ed86272c73591bb1d36833e[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Aug 4 15:10:55 2016 +0200
+
+    Implemented the algoritm to iterate through contacts in order to resolve penetrations
+
+[33mcommit c6c0c5a69e612f41fa107b284235c55d8a1478eb[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Aug 4 12:54:15 2016 +0200
+
+    Skeleton of the ContactResolver class
+
+[33mcommit 1822beb8ca42037f6399df379f0b8aed51f7f9cf[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Aug 3 13:47:58 2016 +0200
+
+    Interpenetration
+
+[33mcommit 9296f66d4a85f387245eba598b8b2aa4a794f02c[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Aug 2 14:17:27 2016 +0200
+
+    Fix in required delta velocity
+
+[33mcommit 2b2ed79d70820dd22f2ea9fc125174e9e861100a[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Aug 2 13:10:16 2016 +0200
+
+    Resolution of velocity and rotation
+
+[33mcommit 6ae1471aaa920136f8a4c6b203aa0e2c06799832[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Aug 1 15:26:53 2016 +0200
+
+    Added Contact base matrix to contact class. It is needed to convert things in the local contact space and viceversa
+
+[33mcommit 15d4d104653bfccb75f78db2b4451c6733670a59[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jul 31 14:18:55 2016 +0200
+
+    Fixed bug with box-box collision
+
+[33mcommit 5396862268ccca9403360cbec063e3de06e0c667[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jul 31 13:10:06 2016 +0200
+
+    Added test for box and box, and there is a problem here|
+
+[33mcommit 0a29043b4129e32bd259814a8e77acefbcb9a3ee[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jul 31 12:35:25 2016 +0200
+
+    Tested collisions for sphere-sphere and box-sphere. I've not tested that the collision point is fine though
+
+[33mcommit 853618aa67a6bf69c2f53c80dd7c5ba9faae4082[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Jul 30 14:51:50 2016 +0200
+
+    Tested integration of rigidbodies successfully, both with spheres and boxes
+
+[33mcommit a16db393da9d69b8c3544a360147e910149ba94b[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Jul 30 14:10:30 2016 +0200
+
+    Tested rigidbody movement and implemented inertia tensor generator
+
+[33mcommit f10cc8bbfb6ffc63bbad1f95da41b354be63cc5a[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Jul 29 14:47:25 2016 +0200
+
+    Implemented box to box collision. The edge - edge case is copied, because the code is a nightmare
+
+[33mcommit ef4f9d679889696b8105abc646b16eb808a206d2[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Jul 29 12:27:21 2016 +0200
+
+    Functions to calculate interpenetration of projected boxes
+
+[33mcommit c6aae0e12c07cbb5153f9fdc02cbd9b8e0432740[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 28 23:01:48 2016 +0200
+
+    Box to sphere collision
+
+[33mcommit 0146c75214df3494248114ba1604115b096f819d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 28 18:38:07 2016 +0200
+
+    fix of overloading operator
+
+[33mcommit 802d4fc2eedca494dd06cf68887c08f3d14cb430[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 28 18:30:42 2016 +0200
+
+    box to plane implemented. Also refactoring of the collision data class. Now it overrides the ++ operator
+
+[33mcommit 6e0b4ef1997b810e6bb71782b28911eaab51ba0e[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 28 16:47:21 2016 +0200
+
+    added sphere/real plane collision detection
+
+[33mcommit 875054c1e21363552a2d938adb371a4d35d2a757[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 28 16:33:02 2016 +0200
+
+    Added collision detector for sphere/sphere and sphere/plane
+
+[33mcommit bcedc0bc35e76406044ea8210504d8a245011256[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 28 12:03:42 2016 +0200
+
+    Starting narrow phase
+
+[33mcommit 4f2f0feb49e07bdd99d77eae141e5fd56c27a346[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Jul 22 13:44:52 2016 +0200
+
+    Added the destructor of a BVH node. It automatically removes itself from the tree
+
+[33mcommit 6a164f4b2e05ecb99e92c2d757ae3994733a3384[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Jul 22 13:20:39 2016 +0200
+
+    Insert method in the BVH
+
+[33mcommit 5c2df799c615c6d846aed5daf813817762cf37e5[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 21 12:18:34 2016 +0200
+
+    Bounding Volume Hierarcy tree implemented, and also bounding sphere class
+
+[33mcommit 317bea95b2590505ce4bc1831278cbb0e856102d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Jul 18 12:25:26 2016 +0200
+
+    ForceGenerators updated for rigidbodies, and implemented the integration function for the rigidbody class
+
+[33mcommit f378707edc0077d7d68681a171b1f4d1dd811680[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Jul 18 11:19:55 2016 +0200
+
+    add_force methods, with also torque addition
+
+[33mcommit 31780a89da796a2c72f6fbee64e53a12c40fda9d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Jul 16 19:02:58 2016 +0200
+
+    Rigidbody and inertia tensor
+
+[33mcommit c704ddcc61787e41e8e4cb18cb1019c7a9ea8a3b[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Jul 16 12:09:24 2016 +0200
+
+    Skeleton of rigidbody class
+
+[33mcommit 3b410cb925056634e5ed78e266b6d8eb0dde431e[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 14 13:04:01 2016 +0200
+
+    Rod contact generator and collision speed treshold to reduce jittering
+
+[33mcommit 51a57accf403d88e019e0d580333fc4739d75654[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jul 13 17:28:11 2016 +0200
+
+    only two particles and high gravity to debug
+
+[33mcommit 345002775f6c47272a121be7a2077a73c510c5f1[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jul 13 17:10:52 2016 +0200
+
+    problm with jitter
+
+[33mcommit f6f37db0bce07bbd94fb74d4546a7dbb69bf9c3d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jul 13 13:01:58 2016 +0200
+
+    Cable implemented. Bug in interpenetration that needs to be fixed
+
+[33mcommit 3b608c6cfe60b2c3935e902ad6d172d30fb61ab3[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jul 13 00:16:37 2016 +0200
+
+    Resolver
+
+[33mcommit d123cb244f501fd7c0479ecc76026bc894ae6e3c[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Jul 12 12:49:43 2016 +0200
+
+    Implemented resting contact: if the only contact velocity is produced within the last frame, then the objects were resting, and thus it should not be added to the total velocity
+
+[33mcommit 67b49fa39de3751f37e596fcee31954d238cdaa8[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Jul 12 11:31:43 2016 +0200
+
+    Implemented function to resolve collisions (it requires the collision system to pass infos about the collision, but I've yet to implement that
+
+[33mcommit 62f7c2969b19cc04c50bd0cc79efd5dca1f3922e[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Jul 11 20:23:16 2016 +0200
+
+    Screen
+
+[33mcommit 020e69379544a669092f98c8b27a47f2c3e02a76[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Jul 11 19:04:08 2016 +0200
+
+    Particle contact resolver. It doesn't handle the collision point detection, but thwat is intended. It will be provided by future engine components
+
+[33mcommit 248d0aae57f7351912e68899c8b4e66b5cf9c9d3[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Jul 11 11:53:26 2016 +0200
+
+    Buoyancy approximation
+
+[33mcommit 10ffb38c5992d4989c4d23409046ee64ed8c9c34[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jul 10 22:11:02 2016 +0200
+
+    Tweaked a few params
+
+[33mcommit 9d7dc4c5e90ef009d7d60063b4df513705277ee3[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jul 10 19:19:02 2016 +0200
+
+    Spring force generators, and integration with rendering engine! Problem: spring force gains energy
+
+[33mcommit 82433b0fc0bfed1035b4ec918edd6f247b746cd5[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jul 10 13:03:21 2016 +0200
+
+    Drag force
+
+[33mcommit a81ec7418c2f6e762eba4b8240daebb450a19fc2[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jul 10 12:38:50 2016 +0200
+
+    fx
+
+[33mcommit c1ed23e9c398f3d33e108aaa42b54e11217ad872[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jul 10 12:36:00 2016 +0200
+
+    Gravity force generator
+
+[33mcommit 27e28d399c81c9bdb502f11b20c5d23898aa3267[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jul 10 12:20:20 2016 +0200
+
+    ForceGenerator and ForceRegister
+
+[33mcommit b8ad500189548dd5b43c3c31f801505afaa3f757[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Jul 9 21:21:39 2016 +0200
+
+    Integrator with the first two newton laws
+
+[33mcommit 089f17b7e20ccb80bd6df8a5d9aa6a6da3a83e14[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Jul 9 19:58:00 2016 +0200
+
+    Refactored the namespace, and skeleton of particle class
+
+[33mcommit df019557cfa4d2c497e0c819786ed83bf5694f11[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat Jul 9 11:25:20 2016 +0200
+
+    few things
+
+[33mcommit c4b1f1e692964390b490381d24295c853e75b4ee[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri Jul 8 20:08:25 2016 +0200
+
+    Disable sorting
+
+[33mcommit 803a501f55d7f6593eb3ddc4445f76881449d16d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 7 22:19:11 2016 +0200
+
+    Deferred rendering iterates to scripts in a very efficient way
+
+[33mcommit 8bf3e24527f4f391cfc511341de4bd8d98c7ad35[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 7 20:52:28 2016 +0200
+
+    Component system fully working! But the cost of getting multiple scripts is huge. need to fix
+
+[33mcommit ddfe8daa8175891b7001412548cee7cb4e5eaca7[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 7 15:43:25 2016 +0200
+
+    Emitter is a component!
+
+[33mcommit 5dd34f38ba8edc4b657a5e3d06c10f3f385c6bbc[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jul 7 11:32:27 2016 +0200
+
+    Model is now a component
+
+[33mcommit 2f9fb0f41d71016be78a209a73fc46b6fdab1fe8[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jul 6 19:46:27 2016 +0200
+
+    rollback
+
+[33mcommit 2f501920b7ed5307805dea8ba2d8b98f36c55464[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jul 6 16:07:22 2016 +0200
+
+    Colliders
+
+[33mcommit ac0122f60e7b0db728dd060b054ec880a1281cd9[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jul 6 11:57:45 2016 +0200
+
+    fix of light scene|
+
+[33mcommit cee8f430a4000dfa96c222393cc63e32c631ce8a[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jun 29 14:53:55 2016 +0200
+
+    Ready for presentation
+
+[33mcommit f207ef3f4dae86ef2ac348ece994d9d565be18ae[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jun 29 13:52:03 2016 +0200
+
+    1024 point lights
+
+[33mcommit 94cb6f8042ef29f7762ef25197ab8e92b3e46a01[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Jun 28 18:25:18 2016 +0200
+
+    Blur level in each light
+
+[33mcommit d08796480add5fe4d239e930031fd8491d51b189[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Jun 28 15:39:38 2016 +0200
+
+    spot soft shadows and optimizations
+
+[33mcommit 40c0a8baf15e1176f8beed8c26deda5e5256b477[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue Jun 28 15:20:09 2016 +0200
+
+    Soft shadows (dir)
+
+[33mcommit 4e911233fd028c15c038cfbca5fed6d24ada767e[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Jun 27 23:54:41 2016 +0200
+
+    Improved scene selection
+
+[33mcommit 1d91e3f7e5b9024698c233a0775ff0ccdac92fd4[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Jun 27 23:43:01 2016 +0200
+
+    Minecraft scene
+
+[33mcommit 2ceedd2ce9527ee165cb584eccc4e0657d93fc3d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon Jun 27 20:52:05 2016 +0200
+
+    FIxed skybox and ambient light
+
+[33mcommit df7ef40ebceea9745643172f00cdb0da30d700cf[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jun 23 16:35:05 2016 +0200
+
+    Fixed bug, new scene
+
+[33mcommit bb8b80073d300f05a310bb59fcaab73ec0eef951[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jun 23 13:23:57 2016 +0200
+
+    Bug fix. For real this time
+
+[33mcommit f23ee736aad7372b4f444eb5f2977bcab1ce0da8[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Jun 22 16:37:22 2016 +0200
+
+    Background color and fixed particle manager error
+
+[33mcommit 2b352aa6f73353fe2a2e101ac0a5d768ff81d998[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu Jun 16 15:38:14 2016 +0200
+
+    More lights and better scenes  overall|
+
+[33mcommit 0c72626df2e62cd2abbac529a7ade4e5c6789d1b[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sun Jun 12 12:19:11 2016 +0200
+
+    Fixed bug in shadow-disabling
+
+[33mcommit eaba2b511b8e311b2d294b530d763e8bd92566df[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat May 21 21:12:24 2016 +0200
+
+    wobbly sponza
+
+[33mcommit bcc92c683ac6239e70df0b6a128ebed09ef581d7[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat May 21 12:04:36 2016 +0200
+
+    Things
+
+[33mcommit af6053d8f022be0c4ce3964aa9c6eb219c37b3c3[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri May 20 18:43:38 2016 +0200
+
+    fixed terrible normal bug
+
+[33mcommit b113875671581c7fb3de60e5e803b3afad875467[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri May 20 15:20:07 2016 +0200
+
+    Introduced the specular maps in the sponza model. Work fine. Last problem is the color missing in back face of models
+
+[33mcommit 3a552b53391acbcd07d055c43a0e56b816600b83[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri May 20 11:05:28 2016 +0200
+
+    More ligths in sponza and disable shadws for abstract light
+
+[33mcommit c242cd921f91b66921b3be321979f8a02e4f7ead[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue May 17 16:23:36 2016 +0200
+
+    Tested
+    
+    Little fix to the material
+    
+    Loader of rungholt work in progress. Correctly fill materials and load textures, I need to write the correct shader. Also, I definitely need to cache textures in the texture manager class, because right now I'm loading dulicates
+    
+    Models are loaded, but problem with multiple materials and stuff
+    
+    Assimp model loader, but multiple materials are not loaded
+    
+    Solved the problem with shaders, normals, bumps and so on, awesome job. Now need just to rewrite the spot shader because it is wrong and ugly
+    
+    Fixed bug with sponza, but problems with shader refactoring. Fixing tomorrow
+    
+    Fixed problem with specular shader
+    
+    Fixed last problem with shader
+    
+    fix
+
+[33mcommit 616a8aafc0c6638a0a3163390b057e672c011396[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue May 17 16:11:35 2016 +0200
+
+    Added specular color buffer!
+
+[33mcommit 014612f5d3404eeda7e5d55a8bf95a5a06cebc9e[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue May 17 13:19:25 2016 +0200
+
+    Introduced multiple models
+
+[33mcommit 458ffc08114710f7b76df89b15f389cc4ced00a8[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri May 13 11:15:48 2016 +0200
+
+    Missing resources folder
+
+[33mcommit 93c51938ea9cdfc961ca8d35d78a8d2e5fb45b4d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu May 12 14:13:21 2016 +0200
+
+    Integrated new loader
+
+[33mcommit 94519d2a150e516883bf713a6d38135eb351f439[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed May 11 18:19:27 2016 +0200
+
+    Added a model loader class
+
+[33mcommit 0e509a2019c41ada7925cb2904f080ef0ad99ecf[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon May 9 11:56:37 2016 +0200
+
+    Few fixes to several things
+
+[33mcommit a78d3622dd4ac5df6885bdb1ffcc1ba5d8797d40[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat May 7 18:28:25 2016 +0200
+
+    Refactored scene
+
+[33mcommit a09f516ae8ad5f906c94eb3f89da0b9ef6ebadf9[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat May 7 17:41:11 2016 +0200
+
+    Refactored the scene system
+
+[33mcommit 4657af1c21e91c9c7e12297a11fada9ac882d567[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat May 7 13:04:11 2016 +0200
+
+    Every light fixed, and improved a few things and fixed a few bugs
+
+[33mcommit bde037e39a05fe00e0d1564d60560effeee22f80[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Sat May 7 12:36:14 2016 +0200
+
+    Directional light in hierarchy, but a few problems
+
+[33mcommit b1c3c6d062251dcc055218892ffac3b60674f072[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri May 6 19:35:16 2016 +0200
+
+    Completed spotlight fix of the hierarchy|
+
+[33mcommit e2e9caf5a2cdf6d109fba3f0e98325f6c2212ff3[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri May 6 19:07:36 2016 +0200
+
+    Fixed dir lights!
+
+[33mcommit 5547a122beed3cafe3437104abc8084a6b8fbbde[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Fri May 6 17:03:38 2016 +0200
+
+    Fixed point lights wrong shadows.
+
+[33mcommit d9a6b4dab01a5d1d023dd87b40e211e9600c4a97[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu May 5 17:47:03 2016 +0200
+
+    Scripting system fixed
+
+[33mcommit 5779284a193b0a6d54e559928c0fb983b61304bb[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu May 5 17:44:59 2016 +0200
+
+    Scripting system
+
+[33mcommit f3f802bab67f86a54a255f66cc259889d2c1dd63[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Thu May 5 13:16:58 2016 +0200
+
+    Scripting system NOT tested
+
+[33mcommit eff15cef1998f70769683494d69413331f60f31d[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed May 4 19:24:42 2016 +0200
+
+    Local coordinates with a little problem of scaling
+
+[33mcommit e108854db3ed86c96778069f87050f0b2e77e546[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed May 4 11:39:11 2016 +0200
+
+    Replaced euler with quaternions inside the transform
+
+[33mcommit 6dbc36e5063a3addf07d0929f6f96b9464d59ce8[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue May 3 19:03:06 2016 +0200
+
+    tested with rotation|
+
+[33mcommit 3b866e135b1d053ddbbe9b59799e2f9cf4ba7c4a[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Tue May 3 18:59:20 2016 +0200
+
+    Bad parent - son handling, but works for basic things
+
+[33mcommit 7f64a7239480517069c265067ab061daa6facd18[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon May 2 19:39:12 2016 +0200
+
+    New scene with lights
+
+[33mcommit b61389007c20a4db839e3c6f8551464441b1e5ab[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon May 2 18:49:06 2016 +0200
+
+    fix
+
+[33mcommit f2736919f868811024f238db7587c35e14991bfe[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon May 2 17:57:29 2016 +0200
+
+    fix
+
+[33mcommit 44e9e22209b48778e8d41d64fb503425769067e0[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Mon May 2 17:56:35 2016 +0200
+
+    Fixed old bug of light
+
+[33mcommit 6681966d29808c8d9beaef5eadfba074648714b6[m
+Author: Filippo Ceffa <ceffa93@gmail.com>
+Date:   Wed Apr 27 15:32:07 2016 +0200
+
+    Removed new pointers
+
+[33mcommit 516ac2e1ecdb2356c52a279ae01e50a3c612a012[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Tue Jan 5 12:09:35 2016 +0100
+
+    Refactored the function to send uniforms to the shaders and a few other problems. I think that the rendering refactoring is done
+
+[33mcommit 5355bee5ce5ab46d401fef1bac5c73930a1843ba[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Tue Jan 5 11:40:42 2016 +0100
+
+    All shaders inside the DeferredRenderer class has been refactored, except for the GUI one, because they use the old system, and I'll leave them like that
+
+[33mcommit cd15e495a88f0e2faa4a177e87ae00f1d0eef870[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Tue Jan 5 11:17:45 2016 +0100
+
+    rimossi i binding delle texture dagli fbo, e modificata la funzione is_sampler
+
+[33mcommit 792d54d43d99a736c79d9dc976e0b780062c5665[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Mon Jan 4 17:17:33 2016 +0100
+
+    Fixed the bug about bad NEW initialization: mallocator uses malloc, new() uses calloc, so a few variables weren't initialized. This was a fat bastard
+
+[33mcommit 40b284d9b48a167aa3aff86ea610afdde07ae132[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Mon Jan 4 13:19:14 2016 +0100
+
+    fixed bug that killed my day
+
+[33mcommit 0c35f429880cd5f592e3d724f4f3859784214d32[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sun Jan 3 22:28:14 2016 +0100
+
+    All three lights now are created ingame and handled automatically
+
+[33mcommit eef388666ddf617509ee935b8c51165bdf3fdcfd[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sun Jan 3 22:13:27 2016 +0100
+
+    spot finished, but bug in release mode
+
+[33mcommit dc3f7095f622a2bd807828921458a62e5cf682b7[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sun Jan 3 18:23:05 2016 +0100
+
+    point lights working with local shader
+
+[33mcommit e191aff6ef98745d941382436fb078e95e1ad707[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sun Jan 3 17:33:08 2016 +0100
+
+    Directional work with house scene
+
+[33mcommit fbc0e6ce5bc03cf45a86ce5ed21aecda203e03dc[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sun Jan 3 11:55:20 2016 +0100
+
+    Simple drawer automatized for directional light
+
+[33mcommit ffb3a89a1174f1c4ed222229875b2365d77d31f2[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sat Jan 2 14:47:52 2016 +0100
+
+    Ignore last commit: I tried to use the batch for light rendering but I
+    noticed that this is completely useless because everylight requires a new
+    draw call. So I rolled back to the previous commit, and refactored a
+    function in the shader class and the copy constructor of the light
+    classes.
+
+[33mcommit 4e9b4c9df5635ba945bb731b4d91892d5166ad11[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sat Jan 2 11:10:56 2016 +0100
+
+    Directional light shader moved inside the light component. However data
+    are still passed manually, and the simple drawer is used
+
+[33mcommit 8d4b56ea3589e3d7cb580467741b43152de2f2ec[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Thu Dec 31 11:41:34 2015 +0100
+
+    Few improvements to batch shadow
+
+[33mcommit 345bd364c982846249d01a8951b20fc63bd7de06[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Wed Dec 30 17:09:32 2015 +0100
+
+    Geometry shaders moved in the game folder. Material is now created immediatly when Model is intantiated. Shaders now are loaded also from game, and now it is no more necessary to manualy tell which of the three shaders are present (vert geom and frag)
+
+[33mcommit 2f2042989177e30715b2f6610d4392a977bbf2c9[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Wed Dec 30 10:45:30 2015 +0100
+
+    The house scene now is updated to the new multishader standard
+
+[33mcommit 01457da8bb4aa98094d5efe19f63b91ac8b10c41[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Tue Dec 29 17:05:35 2015 +0100
+
+    fixed normalmap and gui/log deletion
+
+[33mcommit b6e8ee2e287d180ed7af61e11e6fdc6c43e80bce[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Mon Dec 28 13:05:50 2015 +0100
+
+    vertex attributes abstracted
+
+[33mcommit facac5084c3ac40196f7fda0621e64843ae2f27b[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Mon Dec 28 11:48:06 2015 +0100
+
+    few fixes in the firework scene
+
+[33mcommit 9424e0a1790cf97b8afb1ac270d0940023567478[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sun Dec 27 20:48:12 2015 +0100
+
+    Multiple geometry shaders working, with different uniforms and attributes
+
+[33mcommit 6f162c9de0554a41198d57a2a33d4cf69b148159[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Thu Dec 24 16:28:33 2015 +0100
+
+    Batching automatizzato: una batch e' tale solo se la mesh e tutti gli uniform coincidono
+
+[33mcommit 8ba687dc09762f0c70b1540c1e3b1c8f24700dd9[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Thu Dec 24 14:14:59 2015 +0100
+
+    WIP: Uniforming...uniforms
+
+[33mcommit 19f24c0087f7cd2b3bf3a296d52827ff61b29af6[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Wed Dec 23 20:51:18 2015 +0100
+
+    Attributes and uniforms are now automatically downloaded from the shader,
+    and the stuff to send to the gpu is taken from the material. This makes
+    everything flexible. Now I need to refactor the system to make everything
+    working with this system, right now only a shader is.
+
+[33mcommit f57033f730e31674a6b2c0715dd9c2aa588a0ce5[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Tue Dec 22 14:27:24 2015 +0100
+
+    Removed the data-passing through names.
+    Now I pass 4 bytes as a float and unpack them on the gpu.
+
+[33mcommit 9eacc428e4617eb527dbc9bb90b1c350529165fe[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Mon Dec 21 21:49:43 2015 +0100
+
+    I started the long path to multiple materials and custom shaders.
+    I wrote the function to retrieve info from the shader.
+    To further optimize the bandwidth, the variables in the shader must follow
+    a convention, so that they can pass, through their names, additional infos
+    to the engine. Not very clean, but effective
+
+[33mcommit 69a695ed5f7a77cbdc337bdf99aac9deada421b9[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Wed Dec 16 16:35:57 2015 +0100
+
+    Set scenes by name.
+    Fixed bug when no model is rendered.
+    Shell command to change scene dynamically.
+
+[33mcommit be8eceb4bbdcf7444ce92beab958533b42c3526a[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Tue Dec 15 17:47:38 2015 +0100
+
+    Mallocator, Stack allocator and Pool allocator completed.
+    Added a few scenes to test the whole memory/scene management system.
+
+[33mcommit eb6f45cec0d077e671d1c622a42bc4716778f99d[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Mon Dec 14 11:37:42 2015 +0100
+
+    Stack allocator completed
+
+[33mcommit a9d6e6c5ab764a6cfe455291622890c9ea6bd0a1[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sun Dec 13 15:59:12 2015 +0100
+
+    Texture manager refined and one camera per scene
+
+[33mcommit 118fb0ce39183f0463679e65d91a526bfc89c116[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sun Dec 13 15:30:48 2015 +0100
+
+    Reference allocator completed
+
+[33mcommit b488904257f29013dcf60184c5c71f35366e74aa[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sat Dec 12 20:35:11 2015 +0100
+
+    Switching di scene completo, manca solo un check di qualche deallocator e del sano profiling
+
+[33mcommit 901764a99ed6dd77e320df3fee03f775ef7384d1[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sat Dec 12 12:43:30 2015 +0100
+
+    Scene switching works. But external managers, like texture manager, audio manager and mesh manager probably need to be checked as well because they leak memory (or at least keep track of unuseful stuff). I already wrote most of those deallocators, but I need to call them correctly
+
+[33mcommit 1b1c204a4211aa456cbd0742e98890e5db65c629[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Fri Dec 11 21:53:28 2015 +0100
+
+    WIP scene manager
+
+[33mcommit e6d2069fb5a21a7af0212529eef7f390af00b128[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Fri Dec 11 11:50:15 2015 +0100
+
+    Scenes working, but they overlap because deallocation is not working yet
+
+[33mcommit 6787f5220e76dff9d0444bf405b7d69d7ec32612[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Tue Dec 8 23:57:22 2015 +0100
+
+    Working on deallocating stack resources
+
+[33mcommit 8782698861eadd407ec66b619322b0518c601fbd[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Tue Dec 8 00:03:39 2015 +0100
+
+    Stack and reference memory manager are completed.
+    The classes now have custom constructors to get memory from them.
+    The pool constructor will be a little more problematic because its
+    interface is not the same.
+    I also need to think about the destructors.
+
+[33mcommit 6f8407e4ea10434e658806155b0006e2fcc730ef[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Mon Dec 7 17:19:10 2015 +0100
+
+    Added skeleton of the three constructors, and implemented the reference constructor. However this was not tested yet
+
+[33mcommit cfa4d9e5058776a8870e6895cbd3eb9370c47a16[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Sun Dec 6 12:12:36 2015 +0100
+
+    Few destructors here and there to prepare for scene management
+
+[33mcommit 8bc2891eaed19fafbee1b544f54eb83e0412db9c[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Thu Dec 3 15:47:17 2015 +0100
+
+    Procedural mesh generator
+
+[33mcommit 9856253c8212f26ffcb515b86351f5290e3bcc00[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Wed Dec 2 21:26:39 2015 +0100
+
+    Indexed meshes, both in loading and rendering. Now I can start mesh generation in the ryno!
+
+[33mcommit a76c28e9f8ebe7ccb96442b15f2b3f1d156ba1c9[m
+Author: Ceffa93 <ceffa93@gmail.com>
+Date:   Thu Nov 5 21:08:10 2015 +0100
+
+    MIGRATION FROM SVN TO GIT
+
+[33mcommit f8d969d3ebbc61a7ba15dd24092fcb30d251b3f9[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Oct 30 18:21:47 2015 +0000
+
+    Fix
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@115 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 449ae7ef95d3e7f97714fc5f6e04ca3d2ba5dddb[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Oct 30 18:12:49 2015 +0000
+
+    Emittoer of emitters
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@114 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 7130416bfd1bd4896975da9d2c0037d18146b16d[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Oct 29 20:19:40 2015 +0000
+
+    Generic Map, static colors
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@113 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 015384d8761abb711557310b30528e7299cb9e0b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Oct 28 11:58:54 2015 +0000
+
+    Screen
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@112 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit e0ca10d62598cbaf12336467bc942f1583ce9320[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Oct 28 11:38:45 2015 +0000
+
+    Pulviscolo
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@111 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit d9e0529dfe144379c4e0df73d507a4520b021b08[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Oct 28 11:11:16 2015 +0000
+
+    Math class
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@110 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 5fb25d13be992b7b442135afe2110d269743a42e[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Oct 27 09:20:29 2015 +0000
+
+    Second lambda working!
+    Perfect division between logic and data!
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@109 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 7be3533064efe4bbcba4ecfa130034d5cbc7378e[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Oct 26 17:44:09 2015 +0000
+
+    Added lerp class and a little refactoring.
+    Lambda emitter is an utopy
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@108 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 8e5f7272d6357e7149ede47324cf6083fc98ca32[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Oct 26 16:14:11 2015 +0000
+
+    new screens
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@107 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 70540904d13da7067b345bfc3d5a48ff96e62f1f[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Oct 26 16:13:37 2015 +0000
+
+    3D emitter
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@106 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 5138b20667b6ba692a4e5b345960c3bbf5b424c2[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Oct 4 11:44:11 2015 +0000
+
+    Added convex mesh loader and covexcollider. The fuckin bug persists.
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@105 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit d369915418e5b424e31b3e79e61337d5a1437d8b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Sep 27 10:36:02 2015 +0000
+
+    GJK completo per il 3D, piccole imprecisioni sui bordi pero'
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@104 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit a17968af31ac2b202e6d7ea991915dbbb637c49e[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Sep 24 09:11:48 2015 +0000
+
+    Added AABB colliders, but the edge have a few problems when colliding with spheres
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@103 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 118f1093e8e5b24deb04d858ec1609ae41f861e5[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Sep 21 12:26:40 2015 +0000
+
+    git-svn-id: https://subversion.assembla.com/svn/ryno@102 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit e7c2fd409b5cc1a8d19a12b0bac7ec938d108f46[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Sep 21 12:25:33 2015 +0000
+
+    git-svn-id: https://subversion.assembla.com/svn/ryno@101 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 1a7eb4176117c2af0574f3b61116c7104778bf0f[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Sep 20 19:15:43 2015 +0000
+
+    git-svn-id: https://subversion.assembla.com/svn/ryno@100 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 57112ad7c634ceecf5af4c23dbd99095d1ef669b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Sep 20 19:07:20 2015 +0000
+
+    setup
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@99 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit a8b77a548cd22aa65bcbf35e6a86d081d362ddbc[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Sep 17 19:19:29 2015 +0000
+
+    Few improvements to physics
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@98 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 4f776d2f2ac3c492871f09f8d07fd9c2b16d435e[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Sep 14 17:35:02 2015 +0000
+
+    Headers, Source and Shaders folders completly refactored, and removed a few old junk classes I forgot to remove from the engine
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@97 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 0e1c5dd0128290ea80065b46d0afba9d47e9fdb8[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Sep 13 14:39:06 2015 +0000
+
+    Other commands
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@96 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 88af53a0540a12394ed3d18b3c6051223d2d66ce[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Sep 12 22:44:39 2015 +0000
+
+    git-svn-id: https://subversion.assembla.com/svn/ryno@95 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 0fcee3d7c32ace85041e2d5b72f820320589b17f[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Sep 12 22:38:27 2015 +0000
+
+    Log funzionante
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@94 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 7ebfa171ba2432c6a1ded7bb3a5292fd3048c8e1[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Sep 11 16:27:58 2015 +0000
+
+    Screen and a better version of nolight command
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@93 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 9795b333e327c479c061c7e6ba52ccdeb8fee7d7[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Sep 11 12:13:29 2015 +0000
+
+    Added exit command
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@92 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit d2b33f4b6f592b58e322f9ba23877fa622fbc254[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Sep 11 12:05:43 2015 +0000
+
+    Shell commands to show/hide rendering phases are implemented and working
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@91 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit e3a86e276729701c9e996949f5a121db2452faeb[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Sep 10 23:27:55 2015 +0000
+
+    mini add
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@90 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 337a2fbb237bcc1220bff34d0b28d51d456a8471[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Sep 10 20:38:11 2015 +0000
+
+    fixed
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@89 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit abfb39c76bff68a9c7a4a4f57602e1fdc312d213[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Sep 10 20:32:01 2015 +0000
+
+    Working shell, just a few bugs
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@88 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit a82e77c2f797efcd876da5183678ff5f45e000d1[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Sep 9 17:48:16 2015 +0000
+
+    Preallocate memory for text glyphs, nice indeed!
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@87 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit cbde45b111386e1e9e70d0e0494c179d8379441a[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Sep 9 15:39:12 2015 +0000
+
+    Few things I forgot to add to the commit
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@86 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 542cecbbc42d27e7c09d91e88fad802b7c72d425[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Sep 9 15:12:05 2015 +0000
+
+    Completato testo: formattato ai lati e depth test con le sprite
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@85 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit a155462a3388989a6ed3b4b22e85ae1cfc4a2876[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Sep 9 13:41:08 2015 +0000
+
+    Other improvements to text
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@84 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit d4e108972051d181714afbb6613e1f285bada307[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Sep 9 11:17:42 2015 +0000
+
+    Working text, but needs a few tweaks
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@83 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 380f7e02ecf3afef93074d14380199ca2f5f2746[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Sep 7 18:22:25 2015 +0000
+
+    fix
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@82 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 1dbece5c9e2ebad6f5ef880d794a2b577726ff9b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Sep 7 15:05:48 2015 +0000
+
+    fix
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@81 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 73bb944b4503583526cd871fff413df10b79afca[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Sep 7 15:03:12 2015 +0000
+
+    GUI finita (la base)
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@80 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit a4345d5e3578e269e0c3e587c7e9a75407daad90[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Sep 7 14:29:14 2015 +0000
+
+    GUI with anchoring and ratio scaling
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@79 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit cf9449776234182b657eaf762d226abcff7c7c41[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Sep 6 23:06:45 2015 +0000
+
+    GUI funzionante, va migliorata ma funziona
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@78 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 1bcc4d1360c08e0be5ef19a452dd537914a1251e[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Sep 6 22:42:31 2015 +0000
+
+    2D gui seems to work!
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@77 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit c4a9cb2fade34ddf5063dace16a37e75dc997973[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Sep 5 22:26:44 2015 +0000
+
+    built a game show
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@76 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 372f02172c31d5aaf5837a0eaad19475da08eb28[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Sep 2 12:46:09 2015 +0000
+
+    Joystick input
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@75 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 43ad3866b4bb55d25430d931060c8930335b5d6c[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Sep 1 16:07:50 2015 +0000
+
+    Enormous refactoring
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@74 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 63ec23adf2ac1a7483351df2c831d5a7aaaa3c1b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Aug 31 13:32:16 2015 +0000
+
+    fix
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@73 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 0ef9380c0b0b554412d0286c47c75f9ce718983d[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Aug 31 13:29:24 2015 +0000
+
+    Fixed driver bug and rotation bug. Now hopefully lights are really finished
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@72 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit f32a626078261f041dadefc73253e64cb511fbf8[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Aug 29 15:51:10 2015 +0000
+
+    Refactoring, parte 1, divisi engine e game
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@71 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 7b26d755a04bf3e5452f937bd4463e4622d40e5a[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Aug 26 13:08:09 2015 +0000
+
+    Screens of the finally finished light system
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@70 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 1b76083d47fa9803005c830781f7483cfd4c7c64[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Aug 26 13:07:17 2015 +0000
+
+    ** LIGHTING SYSTEM OVER **
+    Rotating bounding boxes for spotlights are completed
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@69 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit aafd4728f73f756bfce44ad4482960753ab72b07[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Aug 25 22:57:11 2015 +0000
+
+    two screens
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@68 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 8c512e4fee6896621c235f2855415049daa5920b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Aug 25 22:56:05 2015 +0000
+
+    Trying to solve bad bounding boxes problem. No luck yet
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@67 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit d43fcf1080567eb65a66d4e8a08aee37714f5725[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Aug 25 21:35:55 2015 +0000
+
+    I gave up on bounding boxes, but i finally made a decent rotation system for lights
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@66 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 09be7ff3c12c9c7d779782aa18285d5e78666a19[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Aug 24 15:46:17 2015 +0000
+
+    Ora finito davvero, anche se un po sporca come soluzione.
+    Non mi e' chiaro il fov delle point light, ho risolto con un clamp marcissimo
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@65 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 167ce8ef31439d576da375200df3beb88308803d[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Aug 24 13:36:59 2015 +0000
+
+    Spot lights funzionanti! Manca solo il bounding box
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@64 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 8a03165a4248877edee941a8ad713ce99a2e2f2b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Aug 24 10:44:53 2015 +0000
+
+    Spot lights WIP
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@63 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 91a0481af0e99d27ff701b50b668dca8b9af71b0[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Aug 22 11:11:07 2015 +0000
+
+    Added screen
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@62 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 13aab5d74b3cde303190ae5a348ef43e932819f6[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Aug 22 11:02:12 2015 +0000
+
+    Removed the .meta files and the binding of attributes. Niiiice
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@61 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 20f66674de010438b8c32db1e654f484949e5d55[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Aug 22 10:56:20 2015 +0000
+
+    Nice day! Geometry shader working for cubemap shadows
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@60 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 4ef0f091a8b0eb035b4ec5c5c42bf7d7978f36f5[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 21 13:58:26 2015 +0000
+
+    Added screen
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@59 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit be84d19a202251c26fc2ef2078fc3b29c67d6cd4[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 21 13:43:46 2015 +0000
+
+    Depth buffer for cubemap shadows instead of color. Nice, big update
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@58 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit bb2239c73c9363fa90fcaccf9e0c07f0ef164a9e[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Aug 20 19:29:06 2015 +0000
+
+    IT'S FINALLY OVER! POINT LIGHTs SHADOWS ARE GOOOONE
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@57 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit b866ae99a30e5287f9f5f5b2133fd5d9b80b2e60[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Aug 19 20:21:06 2015 +0000
+
+    meh
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@56 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 2ecb4277abdb78b98507afdc742ddbade16cc3f6[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Aug 19 10:38:59 2015 +0000
+
+    The point_light pass can read and show shadows, but they are not correct. Why????
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@55 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit a1eb78d1117288c48d3efa1a49c391f242511d35[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Aug 18 22:06:14 2015 +0000
+
+    Never mind
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@54 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 937fd70ec6f8439a813fb727e66382ceaedabac3[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Aug 18 22:05:20 2015 +0000
+
+    Cube map correctly written!! Next, I need to read it
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@53 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 177ac12e1722d7d8ad356c67a4dd471783b81a26[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Aug 18 13:56:24 2015 +0000
+
+    NB: Not Working.
+    Multipass shadow mappin WIP, this commit is not working
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@52 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 992e78bb9ee1dd473cf3d1e3e4b2b0615930e92b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Aug 17 08:06:56 2015 +0000
+
+    Alcune modifiche propedeutiche al multipass
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@51 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 25792fdc2dda08461c5a7a920f8fce02c163668d[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Aug 16 12:19:18 2015 +0000
+
+    A little refactoring before trying the multipass shadowmapping
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@50 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 47303d03f7b0fe75aa66c72c954719a7292fd185[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 14 21:53:12 2015 +0000
+
+    Update textures
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@49 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 4687a76a9f959415a30f5260feb3d5b454682dd4[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 14 20:36:36 2015 +0000
+
+    prova
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@48 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 0b49755b5ef2e7b78ac0d4e3290fa516a1cff4e5[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 14 20:34:40 2015 +0000
+
+    PROVA
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@47 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 78de67facbe3677e100fbba73844c71b302f90a8[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 14 20:20:09 2015 +0000
+
+    git-svn-id: https://subversion.assembla.com/svn/ryno@46 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 5b0053fe0f44c4207da639e598354838c3b0bb7d[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 14 17:12:57 2015 +0000
+
+    Refactoring delle due batch completo
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@45 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit e1ef7d55d7165545f3c033e6d62a54e28d2560eb[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 14 16:22:59 2015 +0000
+
+    Refactoring delle batches. Niiiice
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@44 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit cde0641483d7bca862125885559aa01311d4e16e[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 14 15:24:56 2015 +0000
+
+    Depth texture working! Next step: create a batch just for shadows
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@43 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 3d0537429df5b95cb19d0ecb08c5bfb45ac6985b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Aug 14 09:55:35 2015 +0000
+
+    Two different fbo, one for deferred, the other for shadows. The fuckin depth is still not working
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@42 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 49dbc3896cd1af46a4c4d63b8e54bac440040d37[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Aug 12 10:24:18 2015 +0000
+
+    CPU Profiler
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@41 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 712025fd35c6380e59eef7adda7b6340fcd0a940[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Aug 12 09:45:04 2015 +0000
+
+    To see if the new versioning works
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@40 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 2e4fb35bd7cf4df0ba5cfbfb3fbb5f76b39ab420[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Aug 12 09:37:54 2015 +0000
+
+    few things
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@39 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 980cd9272b3cf8745c6e72f78cb3f900ba63322b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Jul 25 10:59:16 2015 +0000
+
+    Skybox and shadows working together. I can live now!
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@38 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 3cbcb980849051572c3523f9f735854f7a2d6f96[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Jul 24 12:53:37 2015 +0000
+
+    Ok shadows but no skybox, occasional crash, bad artifacts on spheres and peter panning. Goddammit
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@37 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 09dd74f0e8fa5a72e197bb756ba26bb0e1fb3989[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Jul 17 18:28:34 2015 +0000
+
+    nothing special
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@36 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit de6b45d1f368219476e1c9296e9ca297adcfb8cd[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Jul 17 15:16:22 2015 +0000
+
+    Flatness working
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@35 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 224e1cbb48df5fcb24151f7e3ea4856d5e5e0cdc[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Jul 16 17:49:16 2015 +0000
+
+    Nothing special
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@34 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit c063765a00738ccd24288080900d5def09259216[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Jul 16 10:02:50 2015 +0000
+
+    Position from depth in deferred -> Great optimization
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@33 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 96af8d9247dc14510c54bded2e83c90f2ad8df52[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Jul 11 10:24:48 2015 +0000
+
+    GPU profiler complete
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@32 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 929462f1b41aef4211c048abb8a61dcddc52a86b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Jul 7 18:02:41 2015 +0000
+
+    Normal mapping completo
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@31 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 8178bfe7ed482f9bea4999dd89beeb682215096c[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Jul 4 21:00:07 2015 +0000
+
+    Point and directional: specular complete
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@30 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit d7526b5749e07acbe2b2ddb1513de0943ba578e5[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Jul 3 20:24:34 2015 +0000
+
+    Finished light refactoring and implemented specular illumination.
+    But the light go outside the bounding box, this needs to be fixed
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@29 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 914c316069f04a425cb58b6bc62184308339a0bb[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Jul 2 17:39:43 2015 +0000
+
+    Refactored lights on C++ side.
+    Need to do the same in the shaders
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@28 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 8399ddf8201b41b69ad84c5697997250db2b67f5[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Jul 1 16:30:02 2015 +0000
+
+    Refactored Deferred Rendered. Needs a polishing tough
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@27 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 3db2df74e42aed4b1b92a8792b2353c0a05ec32d[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Jun 30 22:45:06 2015 +0000
+
+    Deferred Rendering Complete. To be refactored
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@26 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 7ea7a59c48fca170eac3a82996373fe7ab125f88[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Jun 29 19:00:31 2015 +0000
+
+    Cube bounding box working
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@25 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 6e3fc24e6adafd33b7c67992152d965637526fc2[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Jun 29 09:25:04 2015 +0000
+
+    Squared bounding box for point lights.
+    
+    Need to refactor model loading and model handling, and also need to finish lights in general
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@24 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 032b9ce34ed16694d40b6ebf7333e31517868c5f[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Jun 26 12:54:13 2015 +0000
+
+    Prima fase del Deferred rendering funzionante
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@23 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 029cae6f5e2d33f157e7d78f934dd65af442ded9[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Jun 22 17:00:57 2015 +0000
+
+    fix
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@22 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 4000dcf8ede306fa0263f650dd011663d9fe16bb[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Jun 22 16:59:02 2015 +0000
+
+    Quaternion and rotation of models.
+    Refactoring -> MainGameInterface.cpp
+    New jelly-curve, and system to switch them...game stuff, but funny
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@21 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit dbfa44130ca01f3395df4e808d911b97fb4ff7f4[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Jun 22 09:19:01 2015 +0000
+
+    Quaternions of the model should now be ok, goddammit
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@20 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 6e28ecb1616cf96f901ec23ff5c8863b6f95b90b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Jun 21 22:14:16 2015 +0000
+
+    Fuckin quaternions
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@19 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit c6f4229e2bcbf1c01939e0bf8db6fbcaae3ae0ea[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Jun 20 17:20:17 2015 +0000
+
+    fix
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@18 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 38670349055db33f27897d503f28fb74a753ec9d[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Jun 20 17:16:39 2015 +0000
+
+    Camera completa eccetto il problemino a testa in giu'.
+    
+    Ondee! Waves!!
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@17 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit d95c920b0926d8f532eb593ff5d626a0cfedb97b[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Jun 20 11:47:33 2015 +0000
+
+    Completata la spettacolare classe di gestione della telecamera.
+    Ora va da dio
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@16 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 8882694619d8cb26ab07592e654101fa1b529a14[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Jun 19 18:01:50 2015 +0000
+
+    FPS, input and camera working. Bad bug on Z axis, fix tomorrow
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@15 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 119eb2aab67737b2b00a70532dd315769c11e00d[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Fri Jun 19 14:15:29 2015 +0000
+
+    Refactoring of the TextureManager and MeshManager classes
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@14 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 92cd1a874a41e438ada5e3c19467e582c9b7805e[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Thu Jun 18 17:45:25 2015 +0000
+
+    Completato instancing e MeshLoader
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@13 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit fb2c2f3670154c9472341800e4ace65551a3602e[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Jun 17 22:27:21 2015 +0000
+
+    Sistemate coordinate, ma la Z continua a farmi incazzare.
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@12 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit a3e04d3056337774245817fbd12097774085550f[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Jun 17 20:32:08 2015 +0000
+
+    Instancing is working but:
+    1) Coordinates systems are fucked up
+    2) Need to refactor
+    3) I have no idea how to unuse instancing
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@11 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 2c6265fda6d0eb78982c360c5c8c464a450edc76[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Wed Jun 17 17:17:13 2015 +0000
+
+    Built the batch...it works but i'm not able to pass the MVP matrix yet.
+    And of course instancing and stuff are far away
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@10 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 9fc9f463e4fa338519c7e42b9e7a1a7f917e89c0[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Jun 16 21:33:57 2015 +0000
+
+    WVP Matrix & Antialiasing
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@9 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit a93045f5d36d60820df972bc827becae30b127ee[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Jun 15 15:51:01 2015 +0000
+
+    Refactored Model, now it uses less informations, and store directly the vertext struct
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@8 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit c615491aecd4de198c5f0e1dac9510acd7be7ed8[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Mon Jun 15 15:11:54 2015 +0000
+
+    Classe Model e rendering di un cubo (ma in model coordinates).
+    Inoltre aggiunto loading di textures e il cubo viene stampato uvmappato con la texture
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@7 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 65614dd11cc0c44a5a9a076804ed61e91c11051f[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Jun 14 17:31:34 2015 +0000
+
+    Little fix
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@6 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit acf31be07051fda1fcaa8efca90501853d20f16c[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Jun 14 17:15:35 2015 +0000
+
+    Big update:
+    GLSLProgram and MainGame refactored, and added opengl code to draw stuff on screen.
+    I need to figure out where to place the code, too much shit in the draw method.
+    
+    
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@5 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 0d567bf6f95b193ea5b2d0ff67b35aa16da3b615[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sun Jun 14 12:14:23 2015 +0000
+
+    Refactoring:
+    The MainGame class handles the game cycle, and calling run on it execute the whole game
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@4 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 8ef89789f2da4c88ef88e92be1838e291ea4de54[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Jun 13 16:11:56 2015 +0000
+
+    Inizializzazione finestra con opengl e glew.
+    Prossimo passo e' fattorizzare la creazione e il loop di gioco
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@3 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit bd2523dc819e87ea64775a54ccd516ea19f993ea[m
+Author: Kapo <Kapo@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Sat Jun 13 15:07:06 2015 +0000
+
+    Setup completo: Visual studio 2013, SDL e glew.
+    ErrorManager e Types funzionanti
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@2 b5d08889-fd9f-4148-b882-45fe21c36c0c
+
+[33mcommit 23d734118301c1fb4513e43a4b34011fd97cfe5a[m
+Author: www-data <www-data@b5d08889-fd9f-4148-b882-45fe21c36c0c>
+Date:   Tue Aug 26 20:22:14 2014 +0000
+
+    Automatically created readme.textile and /trunk, /branches, /tags directories. We recommend you to put all your code there.
+    
+    git-svn-id: https://subversion.assembla.com/svn/ryno@1 b5d08889-fd9f-4148-b882-45fe21c36c0c

@@ -34,8 +34,8 @@ namespace Ryno{
 		U32 m_depth_texture;
 		U32 m_final_textures[2];				//two final textures to ping-pong post processing effects
 		U32 m_current_scene_texture;
-	private:
 		void bind_fbo();
+	private:
 
 	};
 }

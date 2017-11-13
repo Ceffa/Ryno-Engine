@@ -142,7 +142,7 @@ namespace Ryno{
 
 
 		//Check if a uniform is a sampler
-		static bool is_sampler(GLenum type, I32* type_of_texture);
+		static bool is_sampler(GLenum type, I32* type_of_texture, bool* computeTexture);
 
 		//send uniform to shader. Depending on its type (matrix, int etc)
 		//the template function send_uniform_to_shader is called with a different argument
@@ -155,9 +155,9 @@ namespace Ryno{
 	private:
 
 		//local enum to differentiate the shader type
-		enum  ShadersIndex{ VERT, GEOM, FRAG };
+		enum  ShadersIndex{ VERT, GEOM, FRAG, COMP };
 
-		bool is_shader_present[3];
+		bool is_shader_present[4];
 
 		//local enum to identify the different operations on a shader
 		enum  OperationIndex{ CREATE, COMPILE, LINK };
@@ -167,7 +167,7 @@ namespace Ryno{
 		//id of the glsl program
 		U32 m_program_id;
 		//the ids of the shaders
-		U32 m_shader_ids[3];
+		U32 m_shader_ids[4];
 		
 		std::string shader_name;
 
@@ -224,14 +224,19 @@ namespace Ryno{
 				exit(-1);
 			}
 			I32 type_of_texture;
-			if (Shader::is_sampler(map[name].type, &type_of_texture)){
-				
+			bool isComputeTex;
+			if (Shader::is_sampler(map[name].type, &type_of_texture, &isComputeTex)){
 				glActiveTexture(GL_TEXTURE0 + *sampler_index);
 				
 				glBindTexture(type_of_texture, *(U32*)value);
-		
-				glUniform1i(map[name].index, *sampler_index);
-				*sampler_index = *sampler_index + 1;
+				
+				if (isComputeTex) {
+					glBindImageTexture(0, *(U32*)value, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
+				}
+				else {
+					glUniform1i(map[name].index, *sampler_index);
+					*sampler_index = *sampler_index + 1;
+				}
 				return;
 			}
 

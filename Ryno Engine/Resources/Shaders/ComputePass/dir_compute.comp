@@ -1,0 +1,10 @@
+﻿#version 430
+
+layout(local_size_x=32,local_size_y=32,local_size_z=1) in;
+layout(rgba8, binding = 0) uniform image2D main_tex;
+
+void main(){
+    ivec2 coords = ivec2((gl_WorkGroupID * gl_WorkGroupSize + gl_LocalInvocationID).xy);
+
+	imageStore(main_tex, coords, vec4(float(gl_WorkGroupID.x)/50.0,float(gl_WorkGroupID.y)/50.0,0,1));
+}

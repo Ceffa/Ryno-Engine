@@ -71,6 +71,7 @@ namespace Ryno{
 
 		//Pass for directional lights
 		void directional_light_pass();
+		void directional_light_tiled_pass();
 
 
 		//Post processing effects, GUI not influenced
@@ -137,6 +138,7 @@ namespace Ryno{
 		void directional_lighting_subpass(DirectionalLight* go);
 
 	
+	
 		Camera3D* m_camera;
 		FBO_Deferred m_fbo_deferred;
 		FBO_Shadow m_fbo_shadow;
@@ -146,6 +148,7 @@ namespace Ryno{
 		//PROGRAMS
 		Shader m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_flat_program,m_sprite_program,m_font_program;
 		Shader m_blit_depth, m_blit_color;
+		Shader m_compute_dir;
 	
 
 		MeshManager* m_mesh_manager;

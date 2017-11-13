@@ -95,6 +95,7 @@ namespace Ryno {
 			d->set_rotation(-50, 0, 0);
 			d->absolute_movement = false;
 			d->blur = 1;
+			d->shadows = false;
 			auto* pl = center.add_component<PointLight>();
 			pl->model.material.set_shader(&point_light_shader);
 			pl->set_diffuse_color(255, 80, 0);

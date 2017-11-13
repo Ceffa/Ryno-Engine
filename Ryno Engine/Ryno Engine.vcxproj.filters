@@ -183,6 +183,7 @@
     <None Include="Resources\Shaders\Others\blit2color.vert" />
     <None Include="Resources\Shaders\Others\blit2depth.frag" />
     <None Include="Resources\Shaders\Others\blit2depth.vert" />
+    <None Include="Resources\Shaders\ComputePass\dir_compute.comp" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">

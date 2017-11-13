@@ -92,6 +92,9 @@ namespace Ryno{
 		m_blit_color.create("Others/blit2color", ENGINE);
 		m_blit_model_color.material.set_shader(&m_blit_color);
 
+		m_compute_dir.create("ComputePass/dir_compute", ENGINE);
+
+
 		//Sprite program
 		m_sprite_program.create("GUIPass/sprite", ENGINE);
 		m_sprite_program.use();
@@ -235,9 +238,13 @@ namespace Ryno{
 		for (auto* l : DirectionalLight::dir_lights){
 			if (!l->active || !l->game_object->active)
 				continue;
-			directional_shadow_subpass(l);
-			directional_lighting_subpass(l);
+			//if (l->shadows) {
+				directional_shadow_subpass(l);
+				directional_lighting_subpass(l);
+			//}
 		}
+
+		directional_light_tiled_pass();
 	}	
 
 	void DeferredRenderer::point_shadow_subpass(PointLight* p)
@@ -517,8 +524,7 @@ namespace Ryno{
 
 	void DeferredRenderer::directional_shadow_subpass(DirectionalLight* d){
 
-		if (!directional_shadow_enabled || !d->shadows)
-			return;
+		
 		GameObject* go = d->game_object;
 		m_fbo_shadow.bind_for_directional_shadow_pass();
 		glEnable(GL_DEPTH_TEST);
@@ -615,6 +621,23 @@ namespace Ryno{
 		glDisable(GL_BLEND);
 	}
 
+
+	void DeferredRenderer::directional_light_tiled_pass() {
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		m_compute_dir.use();
+		m_fbo_deferred.bind_fbo();
+		U8 samplerIndex = 0;
+		m_compute_dir.send_material_uniform_to_shader("main_tex", &m_fbo_deferred.m_textures[0],&samplerIndex);
+		
+		
+		glDispatchCompute(std::ceil(WindowSize::w/32.0f), std::ceil(WindowSize::h / 32.0f), 1);
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		m_compute_dir.unuse();
+
+		
+		
+
+	}
 
 	void DeferredRenderer::skybox_pass(){
 		if (!skybox_enabled)
@@ -738,7 +761,7 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[m_fbo_deferred.m_current_scene_texture]);
+		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_textures[m_fbo_deferred.m_current_scene_texture]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_simple_drawer->draw(&m_blit_model_color, false);

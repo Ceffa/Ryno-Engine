@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Music\cthulhu.ogg" />
+    <None Include="Resources\Shaders\ComputePass\dir_compute.comp" />
     <None Include="Resources\Shaders\GUIPass\font.frag" />
     <None Include="Resources\Shaders\GUIPass\font.vert" />
     <None Include="Resources\Shaders\GUIPass\sprite.frag" />
