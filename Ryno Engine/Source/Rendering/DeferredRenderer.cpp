@@ -661,7 +661,6 @@ namespace Ryno{
 		glUniformBlockBinding(m_compute_dir.get_id(), block_index, binding_point_index);
 
 
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		m_compute_dir.use();
 		m_fbo_deferred.bind_fbo();
 		U8 samplerIndex = 0;
@@ -673,7 +672,7 @@ namespace Ryno{
 		m_compute_dir.send_material_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
 		m_compute_dir.send_material_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
 		bind_global_ubo(m_compute_dir);
-		
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		glDispatchCompute(std::ceil(WindowSize::w/32.0f), std::ceil(WindowSize::h / 32.0f), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		m_compute_dir.unuse();
