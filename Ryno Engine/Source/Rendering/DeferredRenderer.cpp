@@ -268,16 +268,16 @@ namespace Ryno{
 			if (!l->active || !l->game_object->active)
 				continue;
 			DirLightStruct dlc = fillDirLightStruct(l);
-			if (true) {
+			if (l->shadows) {
 				directional_shadow_subpass(l);
 				directional_lighting_subpass(l, dlc);
 			}
 			else {
-				
+				computeLights.emplace_back(dlc);
 			}
 		}
 
-		//directional_light_tiled_pass();
+		directional_light_tiled_pass(computeLights);
 	}	
 
 	void DeferredRenderer::point_shadow_subpass(PointLight* p)
@@ -642,20 +642,36 @@ namespace Ryno{
 	}
 
 
-	void DeferredRenderer::directional_light_tiled_pass() {
+	void DeferredRenderer::directional_light_tiled_pass(std::vector<DirLightStruct>& dlcs) {
 
-		//GLuint ssbo;
-		//glGenBuffers(1, &ssbo);
-		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-		//glBufferData(GL_SHADER_STORAGE_BUFFER, GLsizeiptr size​, data​, GLenum usage);
-		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
-		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
+		U32 nrOfLights = dlcs.size();
+		std::cout << nrOfLights;
+
+		GLuint lightUBO = 0;
+		glGenBuffers(1, &lightUBO);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightUBO);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DirLightStruct) * nrOfLights, dlcs.data(), GL_DYNAMIC_READ);
+		GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+		memcpy(p, dlcs.data(), sizeof(DirLightStruct) * nrOfLights);
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+		unsigned int block_index = glGetUniformBlockIndex(m_compute_dir.get_id(), "lightsUBO");
+		GLuint binding_point_index = 1;
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding_point_index, lightUBO);
+		glUniformBlockBinding(m_compute_dir.get_id(), block_index, binding_point_index);
+
 
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		m_compute_dir.use();
 		m_fbo_deferred.bind_fbo();
 		U8 samplerIndex = 0;
-		m_compute_dir.send_material_uniform_to_shader("main_tex", &m_fbo_deferred.m_textures[0],&samplerIndex);
+
+		m_compute_dir.send_material_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0],&samplerIndex);
+		m_compute_dir.send_material_uniform_to_shader("nrOfLights", &nrOfLights, &samplerIndex);
+		m_compute_dir.send_material_uniform_to_shader("diffuse_tex", &m_fbo_deferred.m_textures[0], &samplerIndex);
+		m_compute_dir.send_material_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
+		m_compute_dir.send_material_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
+		m_compute_dir.send_material_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
 		bind_global_ubo(m_compute_dir);
 		
 		glDispatchCompute(std::ceil(WindowSize::w/32.0f), std::ceil(WindowSize::h / 32.0f), 1);
@@ -789,7 +805,8 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[m_fbo_deferred.m_current_scene_texture]);
+		//m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[m_fbo_deferred.m_current_scene_texture]);
+		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[0]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		m_simple_drawer->draw(&m_blit_model_color, false);

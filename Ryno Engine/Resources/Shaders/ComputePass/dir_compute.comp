@@ -12,12 +12,92 @@ layout(std140) uniform glob {
 	int screen_width;
 	int screen_height;
 };
+struct DirectionalLight{
+	uint diffuse;	
+	uint specular;	
+	uint ambient;	
+	float diffuse_intensity;
+	float specular_intensity;
+	float ambient_intensity;
+	vec3 direction;
+	uint blur;
+	float shadow_strength;
+	mat4 light_VP_matrix;
+	mat4 light_V_matrix;
+};
+layout (std430, binding=1) buffer lightsUBO
+{ 
+	DirectionalLight lights[];
+};
+
+uniform uint nrOfLights;
+uniform sampler2D diffuse_tex;
+uniform sampler2D specular_tex;
+uniform sampler2D normal_tex;
+uniform sampler2D depth_tex;
 
 layout(local_size_x=32,local_size_y=32,local_size_z=1) in;
 layout(rgba8, binding = 0) uniform image2D main_tex;
 
-void main(){
-    ivec2 coords = ivec2((gl_WorkGroupID * gl_WorkGroupSize + gl_LocalInvocationID).xy);
+float split(uint color, int n);
+vec3 get_shaded_fragment(vec2 coords, int i);
 
-	imageStore(main_tex, coords, vec4(0,0,0,0));
+void main(){
+    vec2 coords = vec2((gl_WorkGroupID * gl_WorkGroupSize + gl_LocalInvocationID).xy);
+	vec3 color = imageLoad(main_tex, ivec2(coords)).xyz;
+	for (int i = 0; i < nrOfLights; i++){
+		color+=get_shaded_fragment(coords,i);
+	}
+
+	
+	imageStore(main_tex, ivec2(coords),  vec4(color,1));
+}
+
+vec3 get_shaded_fragment(vec2 coords, int i){
+	DirectionalLight dir_light = lights[i];
+	vec2 uv_coords = coords / vec2(screen_width,screen_height);
+	float depth = texture(depth_tex, uv_coords).r *2.0 - 1.0;
+	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
+
+	vec4 position_view_space = iP * position_screen_space;
+	vec3 position = position_view_space.xyz / position_view_space.w;
+	
+	vec4 position_world_space = iVP * position_screen_space;
+	vec4 position_light_ortho_matrix = dir_light.light_VP_matrix * position_world_space;
+	vec3 position_light_ortho_matrix_norm = position_light_ortho_matrix.xyz / position_light_ortho_matrix.w;
+	vec3 view_dir_light = normalize(vec3(dir_light.light_V_matrix * vec4(dir_light.direction,0)));
+
+	//Get color and flatness from g buffer
+	vec4 sample_diff = texture(diffuse_tex, uv_coords);
+	vec3 mat_diff = sample_diff.rgb;
+	float flatness = sample_diff.w;
+	vec4 sample_spec = texture(specular_tex, uv_coords);
+	vec3 mat_spec = sample_spec.rgb;
+	float mat_spec_pow = sample_spec.w;
+
+	//Get normal (and rebuilt it's z axis) from g buffer
+	vec2 n = texture(normal_tex, uv_coords).xy;
+	vec3 normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
+
+	//Important vectors
+	vec3 view_dir = normalize(-position);
+	vec3 half_dir = normalize(view_dir_light + view_dir);
+
+	//Calculate base colors
+	vec3 diff_color = vec3(split(dir_light.diffuse, 0), split(dir_light.diffuse, 1), split(dir_light.diffuse, 2)) * dir_light.diffuse_intensity;
+	vec3 spec_color = vec3(split(dir_light.specular, 0), split(dir_light.specular, 1), split(dir_light.specular, 2)) * mat_spec_pow;
+	vec3 amb_final = vec3(split(dir_light.ambient, 0), split(dir_light.ambient, 1), split(dir_light.ambient, 2)) * dir_light.ambient_intensity;
+
+	//final colors for diffuse, specular and ambient
+	float dotNL = max(0, dot(normal, view_dir_light));
+	vec3 diffuse_final =  dotNL * diff_color;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.specular_intensity) ;
+
+
+	return amb_final * mat_diff  + flatness * mat_diff + (1.0 - flatness) *(mat_diff * diffuse_final + mat_spec * specular_final);
+}
+
+float split(uint color, int n){
+	int index = n * 8;
+	return bitfieldExtract(color, index, 8) / 255.0f;
 }

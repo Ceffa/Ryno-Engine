@@ -90,7 +90,7 @@ namespace Ryno {
 
 			auto* d = center.add_component<DirectionalLight>();
 			d->model.material.set_shader(&dir_light_shader);
-			d->set_diffuse_color(255, 255, 255);
+			d->set_diffuse_color(255, 255, 0);
 			d->diffuse_intensity = .35f;
 			d->set_rotation(-50, 0, 0);
 			d->absolute_movement = false;

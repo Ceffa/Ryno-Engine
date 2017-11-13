@@ -85,7 +85,7 @@ namespace Ryno{
 
 		//Pass for directional lights
 		void directional_light_pass();
-		void directional_light_tiled_pass();
+		void directional_light_tiled_pass(std::vector<DirLightStruct>& dlcs);
 		DirLightStruct fillDirLightStruct(DirectionalLight* d);
 
 

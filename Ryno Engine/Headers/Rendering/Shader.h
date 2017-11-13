@@ -221,7 +221,7 @@ namespace Ryno{
 		{
 			if (value == nullptr){
 				std::cout << "Shader: value required by shader not found in local map: " << name << std::endl;
-				exit(-1);
+				//exit(-1);
 			}
 			I32 type_of_texture;
 			bool isComputeTex;
@@ -231,7 +231,7 @@ namespace Ryno{
 				glBindTexture(type_of_texture, *(U32*)value);
 				
 				if (isComputeTex) {
-					glBindImageTexture(0, *(U32*)value, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
+					glBindImageTexture(0, *(U32*)value, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8);
 				}
 				else {
 					glUniform1i(map[name].index, *sampler_index);
@@ -277,7 +277,7 @@ namespace Ryno{
 			default:
 				std::cout << "Shader " << name << ": uniform type not found. ";
 				std::cout << "If possible add it to the switch in the \"send_uniform_to_shader\" function in the shader class" << std::endl;
-				exit(-1);
+				//exit(-1);
 			}
 		}
 
