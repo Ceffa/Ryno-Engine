@@ -126,6 +126,9 @@ namespace Ryno{
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(UBO_Global_Data), &ubo_global_data, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+		glGenBuffers(1, &lightUBO);
+
+
 	}
 	
 	void DeferredRenderer::init_frame(){
@@ -647,8 +650,7 @@ namespace Ryno{
 		U32 nrOfLights = dlcs.size();
 		std::cout << nrOfLights;
 
-		GLuint lightUBO = 0;
-		glGenBuffers(1, &lightUBO);
+		
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightUBO);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DirLightStruct) * nrOfLights, dlcs.data(), GL_DYNAMIC_READ);
 		GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);

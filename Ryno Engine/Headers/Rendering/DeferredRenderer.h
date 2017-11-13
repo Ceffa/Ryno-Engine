@@ -130,6 +130,8 @@ namespace Ryno{
 		void bind_global_ubo(const Shader& s);
 
 
+		GLuint lightUBO = 0;
+
 	private:
 
 		DeferredRenderer() {}
