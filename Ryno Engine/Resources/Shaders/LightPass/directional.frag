@@ -1,17 +1,17 @@
 #version 430
 
 struct DirectionalLight{
+	mat4 light_VP_matrix;
+	mat4 light_V_matrix;
 	uint diffuse;	
 	uint specular;	
 	uint ambient;	
+	uint blur;
 	float diffuse_intensity;
 	float specular_intensity;
 	float ambient_intensity;
-	vec3 direction;
-	uint blur;
 	float shadow_strength;
-	mat4 light_VP_matrix;
-	mat4 light_V_matrix;
+	vec3 direction;	float _pad;
 };
 
 uniform sampler2D diffuse_tex;

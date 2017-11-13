@@ -653,7 +653,6 @@ namespace Ryno{
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DirLightStruct) * nrOfLights, dlcs.data(), GL_DYNAMIC_READ);
 		GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 		memcpy(p, dlcs.data(), sizeof(DirLightStruct) * nrOfLights);
-		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
 		unsigned int block_index = glGetUniformBlockIndex(m_compute_dir.get_id(), "lightsUBO");
 		GLuint binding_point_index = 1;

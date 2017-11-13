@@ -102,7 +102,7 @@ namespace Ryno {
 			pl->diffuse_intensity = 1;
 			pl->attenuation = .0001;
 			pl->specular_intensity = 20;
-			pl->set_specular_color(255, 80, 0);
+			pl->set_specular_color(0, 0, 0);
 			color_lights();
 
 		}

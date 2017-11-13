@@ -29,17 +29,17 @@ namespace Ryno{
 	};
 
 	struct DirLightStruct {
+		glm::mat4 light_VP_matrix;
+		glm::mat4 light_V_matrix;
 		ColorRGBA diffuse;
 		ColorRGBA specular;
 		ColorRGBA ambient;
+		U32 blur;
 		float diffuse_intensity;
 		float specular_intensity;
 		float ambient_intensity;
-		glm::vec3 direction;
-		U32 blur;
 		float shadow_strength;
-		glm::mat4 light_VP_matrix;
-		glm::mat4 light_V_matrix;
+		glm::vec3 direction;float _pad;
 	};
 
 	class Game;
