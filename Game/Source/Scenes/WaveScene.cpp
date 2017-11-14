@@ -22,10 +22,6 @@ namespace Ryno {
 		sphere = game->mesh_manager->load_mesh("sphere", GAME);
 
 		shader.create("Geometry/geometry", GAME);
-		dir_light_shader.create("LightPass/directional", ENGINE);
-		point_light_shader.create("LightPass/point", ENGINE);
-
-
 
 		t.transform.set_scale(size/2,size/2,size/2);
 		auto& m = t.add_component<Model>()->add_sub_model();
@@ -54,7 +50,6 @@ namespace Ryno {
 
 		//dir light
 		auto* l = t.add_component<DirectionalLight>();
-		l->model.material.set_shader(&dir_light_shader);
 		l->set_rotation(-50, 10, 0);
 		l->diffuse_intensity = 1.5f;
 		l->set_diffuse_color(255, 235, 200);

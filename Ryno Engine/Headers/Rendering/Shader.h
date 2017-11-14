@@ -6,6 +6,7 @@
 #include "Global.h"
 #include <array>
 #include <map>
+#include <vector>
 
 namespace Ryno{
 
@@ -57,7 +58,9 @@ namespace Ryno{
 		Use init, load_shaders, compile_shaders and link_shaders to
 		separate these steps.
 		@Param name of the shader
+		The last vector provides optional include libraries
 		*/
+		static std::vector<std::pair<std::string, Owner>> empty_list;
 		void create(const std::string& name, Owner location);
 
 
@@ -187,7 +190,7 @@ namespace Ryno{
 		/**
 		Function to load a shader inside a buffer
 		*/
-		void read_file_inside_string(const std::string& path, const char** c);
+		std::string read_file_inside_string(const std::string& path);
 
 		/**
 		Check for error during shader creation

@@ -184,6 +184,8 @@
     <None Include="Resources\Shaders\Others\blit2depth.frag" />
     <None Include="Resources\Shaders\Others\blit2depth.vert" />
     <None Include="Resources\Shaders\ComputePass\dir_compute.comp" />
+    <None Include="Resources\Shaders\Includes\dir.glinc" />
+    <None Include="Resources\Shaders\Includes\global.glinc" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">

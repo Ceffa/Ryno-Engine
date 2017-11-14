@@ -65,25 +65,33 @@ namespace Ryno{
 	
 		//MODEL LOADING
 
-		m_bounding_sphere.mesh = m_mesh_manager->load_mesh("bound_sphere", ENGINE);
-
-		m_bounding_pyramid.mesh = m_mesh_manager->load_mesh("bound_pyramid", ENGINE);
-
+		m_skybox_model.mesh = m_mesh_manager->load_mesh("cubemap_cube", ENGINE);
 		m_blit_model_depth.mesh = m_mesh_manager->load_mesh("square", ENGINE);
-
 		m_blit_model_color.mesh = m_blit_model_depth.mesh;
 		m_post_proc_model.mesh = m_blit_model_depth.mesh;
 
-		m_skybox_model.mesh = m_mesh_manager->load_mesh("cubemap_cube", ENGINE);
+		//bounding boxes
+		m_dir_bounding.mesh = m_blit_model_depth.mesh;
+		m_point_bounding.mesh = m_mesh_manager->load_mesh("bound_sphere", ENGINE);
+		m_spot_bounding.mesh = m_mesh_manager->load_mesh("bound_pyramid", ENGINE);
+
+
 
 
 		//SHADER PROGRAMS LOADING
 
-		m_point_shadow_program.create("ShadowPass/point", ENGINE);
-	
-		m_spot_shadow_program.create("ShadowPass/spot", ENGINE);
+		m_point_shadow_pass.create("ShadowPass/point", ENGINE);
+		m_point_light_pass.create("LightPass/point", ENGINE);
+		m_point_bounding.material.set_shader(&m_point_light_pass);
 
-		m_directional_shadow_program.create("ShadowPass/directional", ENGINE);
+	
+		m_spot_shadow_pass.create("ShadowPass/spot", ENGINE);
+		m_spot_light_pass.create("LightPass/spot", ENGINE);
+		m_spot_bounding.material.set_shader(&m_spot_light_pass);
+
+		m_compute_dir.create("ComputePass/dir_compute", ENGINE);
+		m_dir_light_pass.create("LightPass/directional", ENGINE);
+		m_dir_bounding.material.set_shader(&m_dir_light_pass);
 	
 		m_skybox_program.create("SkyboxPass/skybox",ENGINE);
 		m_skybox_model.material.set_shader(&m_skybox_program);
@@ -95,7 +103,8 @@ namespace Ryno{
 		m_blit_color.create("Others/blit2color", ENGINE);
 		m_blit_model_color.material.set_shader(&m_blit_color);
 
-		m_compute_dir.create("ComputePass/dir_compute", ENGINE);
+		m_dir_shadow_pass.create("ShadowPass/directional", ENGINE);
+		
 
 
 		//Sprite program
@@ -330,12 +339,12 @@ namespace Ryno{
 		}
 
 		//Send Vp matrix and world light position to shader, then render
-		m_point_shadow_program.use();
+		m_point_shadow_pass.use();
 
-		glUniformMatrix4fv(m_point_shadow_program.getUniformLocation("projection_matrices"),6,GL_FALSE,&light_VP_matrices[0][0][0]);
+		glUniformMatrix4fv(m_point_shadow_pass.getUniformLocation("projection_matrices"),6,GL_FALSE,&light_VP_matrices[0][0][0]);
 
 		m_shadow_batch3d.render_batch();
-		m_point_shadow_program.unuse();
+		m_point_shadow_pass.unuse();
 
 		
 
@@ -347,10 +356,6 @@ namespace Ryno{
 	
 
 	void DeferredRenderer::point_lighting_subpass(PointLight* p){
-
-		auto* mod = &p->model;
-		mod->mesh = m_bounding_sphere.mesh;
-		auto& mat = mod->material;
 
 		m_fbo_deferred.bind_for_light_pass();
 
@@ -390,7 +395,7 @@ namespace Ryno{
 		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
 
 
-
+		auto& mat = m_point_bounding.material;
 		//SEND POINT LIGHT UNIFORMS (each for light)
 		mat.set_uniform("point_light.position", trans);
 		mat.set_uniform("point_light.attenuation", p->attenuation);
@@ -416,7 +421,7 @@ namespace Ryno{
 
 		mat.set_uniform("MVP", MVP_camera);
 		mat.set_uniform("shadows_enabled", (point_shadow_enabled && p->shadows) ? 1 : 0);
-		m_simple_drawer->draw(mod,true);
+		m_simple_drawer->draw(&m_point_bounding,true);
 
 		glDisable(GL_BLEND);
 
@@ -463,12 +468,12 @@ namespace Ryno{
 		
 
 		//Send Vp matrix and world light position to shader, then render
-		m_spot_shadow_program.use();
+		m_spot_shadow_pass.use();
 
-		glUniformMatrix4fv(m_spot_shadow_program.getUniformLocation("light_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
+		glUniformMatrix4fv(m_spot_shadow_pass.getUniformLocation("light_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
 
 		m_shadow_batch3d.render_batch();
-		m_spot_shadow_program.unuse();
+		m_spot_shadow_pass.unuse();
 
 
 
@@ -479,11 +484,7 @@ namespace Ryno{
 
 	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
 	{
-		GameObject* go = s->game_object;
-		auto* mod = &s->model;
-		mod->mesh = m_bounding_pyramid.mesh;
-		auto& mat = mod->material;
-
+		
 		m_fbo_deferred.bind_for_light_pass();
 
 
@@ -502,6 +503,7 @@ namespace Ryno{
 		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
 		//we just need to orient the bounding box
 
+		auto go = s->game_object;
 		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
 		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
 		glm::vec3 scale = glm::vec3(width, s->max_radius, width);
@@ -524,6 +526,7 @@ namespace Ryno{
 
 		F32 cutoff_value = cos(s->cutoff * DEG_TO_RAD);
 
+		auto& mat = m_spot_bounding.material;
 		//SEND SPOT LIGHT UNIFORMS
 		mat.set_uniform("spot_light.position", trans);
 		mat.set_uniform("spot_light.attenuation", s->attenuation);
@@ -552,7 +555,7 @@ namespace Ryno{
 		mat.set_uniform("MVP",MVP_camera);
 		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && s->shadows) ? 1 : 0);
 
-		m_simple_drawer->draw(mod,true);
+		m_simple_drawer->draw(&m_spot_bounding,true);
 
 		glDisable(GL_BLEND);
 	}
@@ -579,10 +582,10 @@ namespace Ryno{
 
 		glViewport(0, 0, m_fbo_shadow.directional_resolution, m_fbo_shadow.directional_resolution);
 
-		m_directional_shadow_program.use();
-		glUniformMatrix4fv(m_directional_shadow_program.getUniformLocation("light_VP"), 1, GL_FALSE, &directional_light_VP[0][0]);
+		m_dir_shadow_pass.use();
+		glUniformMatrix4fv(m_dir_shadow_pass.getUniformLocation("light_VP"), 1, GL_FALSE, &directional_light_VP[0][0]);
 		m_shadow_batch3d.render_batch();
-		m_directional_shadow_program.unuse();
+		m_dir_shadow_pass.unuse();
 
 
 		glViewport(0, 0, WindowSize::w, WindowSize::h);
@@ -595,11 +598,8 @@ namespace Ryno{
 	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* d, DirLightStruct& dlc)
 	{
 
-		GameObject* go = d->game_object;
-		auto* mod = &d->model;
-		mod->mesh = m_blit_model_depth.mesh;
-		auto& mat = mod->material;
-		auto* s =mat.shader;
+		auto go = d->game_object;
+		
 		m_fbo_deferred.bind_for_light_pass();
 
 		glEnable(GL_BLEND);
@@ -613,7 +613,8 @@ namespace Ryno{
 		glDepthMask(GL_FALSE);
 		
 		
-		
+		auto& mat = m_dir_bounding.material;
+
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
@@ -638,7 +639,7 @@ namespace Ryno{
 		mat.set_uniform("dir_light.light_V_matrix", dlc.light_V_matrix);
 		mat.set_uniform("shadows_enabled", (directional_shadow_enabled && d->shadows) ? 1:0);
 
-		m_simple_drawer->draw(mod,true);
+		m_simple_drawer->draw(&m_dir_bounding,true);
 
 		
 		glDisable(GL_BLEND);
@@ -648,8 +649,6 @@ namespace Ryno{
 	void DeferredRenderer::directional_light_tiled_pass(std::vector<DirLightStruct>& dlcs) {
 
 		U32 nrOfLights = dlcs.size();
-		std::cout << nrOfLights;
-
 		
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightUBO);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DirLightStruct) * nrOfLights, dlcs.data(), GL_DYNAMIC_READ);

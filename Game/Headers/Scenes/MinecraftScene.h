@@ -32,7 +32,7 @@ namespace Ryno {
 
 		Texture white, white_normal;
 
-		Shader dir_light_shader, material;
+		Shader material;
 		int light_index = 0;
 
 	};

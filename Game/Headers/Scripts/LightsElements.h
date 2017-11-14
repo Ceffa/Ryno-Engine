@@ -11,7 +11,6 @@ namespace Ryno {
 		Game* game;
 		F32 speed;
 		std::vector<GameObject> balls;
-		Shader spot_light_shader, dir_light_shader, point_light_shader;
 		Texture white, white_normal;
 		I32  cube_mesh;
 		Shader shader;
@@ -51,12 +50,7 @@ namespace Ryno {
 			center.transform.set_position(0, 35, 0);
 
 
-			spot_light_shader.create("LightPass/spot", ENGINE);
-			point_light_shader.create("LightPass/point", ENGINE);
-
-
 			auto* p = center.add_component<SpotLight>();
-			p->model.material.set_shader(&spot_light_shader);
 			p->set_diffuse_color(255, 80, 0);
 			p->diffuse_intensity = 3;
 			p->attenuation = .0005;
@@ -86,10 +80,7 @@ namespace Ryno {
 			
 			center.delete_component<SpotLight>();
 
-			dir_light_shader.create("LightPass/directional", ENGINE);
-
 			auto* d = center.add_component<DirectionalLight>();
-			d->model.material.set_shader(&dir_light_shader);
 			d->set_diffuse_color(255, 255, 0);
 			d->diffuse_intensity = .35f;
 			d->set_rotation(-50, 0, 0);
@@ -97,7 +88,6 @@ namespace Ryno {
 			d->blur = 1;
 			d->shadows = false;
 			auto* pl = center.add_component<PointLight>();
-			pl->model.material.set_shader(&point_light_shader);
 			pl->set_diffuse_color(255, 80, 0);
 			pl->diffuse_intensity = 1;
 			pl->attenuation = .0001;

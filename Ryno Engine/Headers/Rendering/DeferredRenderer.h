@@ -163,14 +163,17 @@ namespace Ryno{
 		Game* game;
 
 		//PROGRAMS
-		Shader m_skybox_program,m_directional_shadow_program,m_spot_shadow_program,m_point_shadow_program,m_flat_program,m_sprite_program,m_font_program;
+		Shader m_skybox_program,m_flat_program,m_sprite_program,m_font_program;
 		Shader m_blit_depth, m_blit_color;
-		Shader m_compute_dir;
+		Shader m_compute_dir;													//compute lights
+		Shader m_dir_light_pass, m_point_light_pass, m_spot_light_pass;			//lights
+		Shader m_dir_shadow_pass, m_point_shadow_pass, m_spot_shadow_pass;	//Shadows
 	
 
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
-		SubModel m_bounding_sphere, m_blit_model_depth, m_blit_model_color, m_skybox_model, m_bounding_pyramid, m_post_proc_model;
+		SubModel m_point_bounding,  m_spot_bounding, m_dir_bounding;			//Bounding models
+		SubModel m_blit_model_depth, m_blit_model_color, m_skybox_model, m_post_proc_model;
 		glm::mat4 MVP_camera;
 		glm::mat4 spot_VP_matrix;
 		glm::mat4 directional_light_VP;

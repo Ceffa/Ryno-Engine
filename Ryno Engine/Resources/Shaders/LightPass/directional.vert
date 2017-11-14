@@ -1,5 +1,3 @@
-#version 430
-
 in vec3 in_Position;
 
 

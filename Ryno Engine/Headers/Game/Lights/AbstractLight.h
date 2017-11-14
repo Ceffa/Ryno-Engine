@@ -30,8 +30,6 @@ namespace Ryno{
 		bool shadows = true;
 		F32 shadow_strength;
 
-
-		SubModel model;
 	};
 
 }

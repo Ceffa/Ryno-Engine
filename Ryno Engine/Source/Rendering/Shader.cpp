@@ -8,13 +8,16 @@
 #include <string>
 
 
-namespace Ryno{
+namespace Ryno {
 
 	bool file_exists(const std::string& fileName)
 	{
 		std::ifstream infile(fileName);
 		return infile.good();
 	}
+
+	std::vector<std::pair<std::string, Owner>> Shader::empty_list;
+
 
 	//Holds info about the vertex 3D data
 	std::map<std::string, static_vertex_attr> Shader::vertex_3d_map{
@@ -34,32 +37,33 @@ namespace Ryno{
 		return false;
 	}
 
-	void Shader::create(const std::string& name, Owner location){
-	
+
+	void Shader::create(const std::string & name, Owner location)
+	{
 		init();
-		load_shaders(name,location);
+		load_shaders(name, location);
 		compile_shaders();
 		link_shaders();
 		get_attributes();
 		get_uniforms();
 	}
-	void Shader::init(){
+	void Shader::init() {
 		m_program_id = 0;
 		m_attr_no = 0;
-	
+
 		m_shader_ids[VERT] = 0;
 		m_shader_ids[GEOM] = 0;
 		m_shader_ids[FRAG] = 0;
 		m_shader_ids[COMP] = 0;
 
 		m_program_id = glCreateProgram();
-	
+
 	}
 
-	void Shader::destroy(){
+	void Shader::destroy() {
 
-		for (U8 i = VERT; i < VERT + 4; i++){
-			if (is_shader_present[i]){
+		for (U8 i = VERT; i < VERT + 4; i++) {
+			if (is_shader_present[i]) {
 				glDetachShader(m_program_id, m_shader_ids[i]);
 				glDeleteShader(m_shader_ids[i]);
 			}
@@ -67,24 +71,25 @@ namespace Ryno{
 		glDeleteProgram(m_program_id);
 	}
 
-	
 
-	
 
-	void Shader::load_shaders(const std::string& name, Owner loc){
+
+
+	void Shader::load_shaders(const std::string& name, Owner loc) {
 		shader_name = name;
-		static std::string extensions[4]{".vert", ".geom", ".frag", ".comp"};
+		static std::string extensions[4]{ ".vert", ".geom", ".frag", ".comp" };
 		static const std::string middle_path = "Resources/Shaders/";
 
-
+			
 		for (U8 i = VERT; i < VERT + 4; i++){
 			std::string path_and_name = BASE_PATHS[loc] + middle_path + name + extensions[i - VERT];
 			is_shader_present[i] = file_exists(path_and_name);
 			if (is_shader_present[i])
-				load_shader((ShadersIndex)i , path_and_name );
+				load_shader((ShadersIndex)i , path_and_name);
 		}
 		
 	}
+
 
 	void Shader::load_shader(ShadersIndex index, const std::string& path){
 
@@ -100,11 +105,63 @@ namespace Ryno{
 			return;
 		}
 
-		const C* content;
-		read_file_inside_string(path, &content);
+		//Read file
+		std::string content = read_file_inside_string(path);
+		U32 size = content.size();
 
+		//Parser of preprocessor includes
+		static std::string include_extension = ".glinc";
+		static const std::string middle_path = "Resources/Shaders/";
+		enum States{SEARCHING, READING, BREAK};
+		States state = SEARCHING;
+		std::vector<std::string> includes;
+		int startPath = 0;
+		int startFile = 0;
+		Owner owner;
+		
+
+		for (int i = 0; i < size; ++i) {
+			if (state == BREAK)
+				break;
+			char cc = content.at(i);
+			switch (state) {
+			case SEARCHING:
+				if (i + 2 >= size) {
+					state = BREAK;
+					break;
+				}
+				if ((cc == 'E' || cc == 'G') && content.at(i+1) == '(')
+				{
+					owner = cc == 'E' ? ENGINE : GAME;
+					startPath = i + 2;
+					state = READING;
+				}
+				else if (cc != ' ' && cc != '\n' && cc!= '\t' && cc != '\r') {
+					state = BREAK;
+				}
+				break;
+		
+			case READING:
+				if (content.at(i) == ')') {
+					includes.push_back(BASE_PATHS[owner] + middle_path + content.substr(startPath,i-startPath) + include_extension);
+					state = SEARCHING;
+					startFile = i + 1;
+				}
+				break;
+			}
+		}
+
+		std::string finalProgram;
+		for (int i = 0; i < includes.size(); i++) {
+			finalProgram += read_file_inside_string(includes[i]) + "\n";
+		};
+
+		finalProgram += content.substr(startFile);
+		const char* cstr = finalProgram.c_str();
+		
+	
 		//send to GL the shader and keep track of id
-		glShaderSource(m_shader_ids[index], 1, &content, NULL);
+		glShaderSource(m_shader_ids[index], 1, &cstr, NULL);
 
 	}
 
@@ -163,7 +220,7 @@ namespace Ryno{
 		
 	}
 
-	void Shader::read_file_inside_string(const std::string&  path, const char** c){
+	std::string Shader::read_file_inside_string(const std::string&  path){
 
 		std::ifstream file(path, std::ios::in);
 		file.seekg(0, std::ios::end);
@@ -175,7 +232,12 @@ namespace Ryno{
 		buffer[size] = '\0';
 		if (!buffer)
 			std::cout << "Failed to load from file: " + path << std::endl;
-		*c = buffer;
+
+		//Detect and fix BOM
+		if (buffer[0] == '\xEF' && buffer[1] == '\xBB' && buffer[2] == '\xBF') {
+			buffer[0] = ' '; buffer[1] = ' '; buffer[2] = ' ';
+		}
+		return std::string(buffer);
 
 
 	}

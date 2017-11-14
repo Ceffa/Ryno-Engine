@@ -29,15 +29,11 @@ namespace Ryno{
 		sphere_mesh= game->mesh_manager->load_mesh("sphere", GAME);
 		cone_mesh= game->mesh_manager->load_mesh("cone", GAME);
 
-
-		light_shader.create("LightPass/directional", ENGINE);
-
 		go[0].transform.set_scale(100, 100, 100);
 		go[0].transform.set_position(0, 55, 50);
 
 		auto* dl = go[0].add_component<DirectionalLight>();
 
-		dl->model.material.set_shader(&light_shader);
 		dl->set_rotation(-65, 150,0);
 		dl->diffuse_intensity = 1.7;
 		dl->set_diffuse_color(255, 255, 200);

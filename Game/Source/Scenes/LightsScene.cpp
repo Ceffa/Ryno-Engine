@@ -21,8 +21,6 @@ namespace Ryno {
 		sphere = game->mesh_manager->load_mesh("sphere", GAME);
 
 		shader.create("Geometry/geometry", GAME);
-		point_light_shader.create("LightPass/point", ENGINE);
-
 
 
 		base.transform.set_scale(2500, 5, 2500);
@@ -42,7 +40,6 @@ namespace Ryno {
 		lights[0] = base;
 	
 		auto* p = lights[0].add_component<PointLight>();
-		p->model.material.set_shader(&point_light_shader);
 		p->diffuse_intensity = 1.75f;
 		p->specular_intensity = 0;
 		p->set_specular_color(0, 0, 0);

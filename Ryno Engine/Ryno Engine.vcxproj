@@ -25,6 +25,8 @@
     <None Include="Resources\Shaders\GUIPass\font.vert" />
     <None Include="Resources\Shaders\GUIPass\sprite.frag" />
     <None Include="Resources\Shaders\GUIPass\sprite.vert" />
+    <None Include="Resources\Shaders\Includes\dir.glinc" />
+    <None Include="Resources\Shaders\Includes\global.glinc" />
     <None Include="Resources\Shaders\LightPass\directional.frag" />
     <None Include="Resources\Shaders\LightPass\directional.vert" />
     <None Include="Resources\Shaders\LightPass\point.frag" />

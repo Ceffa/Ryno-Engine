@@ -25,7 +25,6 @@ namespace Ryno {
 
 		//dir light
 		auto* l = cube.add_component<DirectionalLight>();
-		l->model.material.set_shader(&dir_light_shader);
 		l->set_rotation(-50, 10, 0);
 		l->diffuse_intensity = 1.5f;
 		l->set_diffuse_color(255, 235, 200);

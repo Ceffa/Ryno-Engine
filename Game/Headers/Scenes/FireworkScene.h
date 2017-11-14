@@ -26,7 +26,6 @@ namespace Ryno{
 		GameObject go[4];
 		Texture white, white_normal, brick, brick_normal;
 		Shader shader,shader2;
-		Shader light_shader;
 		I32 star_mesh, cube_mesh, sphere_mesh, cone_mesh;
 		I32 idx = 0;
 	};

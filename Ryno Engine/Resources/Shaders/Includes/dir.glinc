@@ -1,0 +1,62 @@
+struct DirectionalLight {
+	mat4 light_VP_matrix;
+	mat4 light_V_matrix;
+	uint diffuse;
+	uint specular;
+	uint ambient;
+	uint blur;
+	float diffuse_intensity;
+	float specular_intensity;
+	float ambient_intensity;
+	float shadow_strength;
+	vec3 direction;	float _pad;
+};
+
+uniform sampler2D diffuse_tex;
+uniform sampler2D specular_tex;
+uniform sampler2D normal_tex;
+uniform sampler2D depth_tex;
+
+float get_shadow(vec4 position_world_space, float dotNL);
+
+vec3 get_shaded_fragment(DirectionalLight dir_light, vec2 coords) {
+	vec2 uv_coords = coords / vec2(screen_width, screen_height);
+	float depth = texture(depth_tex, uv_coords).r *2.0 - 1.0;
+	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
+
+	vec4 position_view_space = iP * position_screen_space;
+	vec3 position = position_view_space.xyz / position_view_space.w;
+
+	vec4 position_world_space = iVP * position_screen_space;
+	vec3 view_dir_light = normalize(vec3(dir_light.light_V_matrix * vec4(dir_light.direction, 0)));
+
+	//Get color and flatness from g buffer
+	vec4 sample_diff = texture(diffuse_tex, uv_coords);
+	vec3 mat_diff = sample_diff.rgb;
+	float flatness = sample_diff.w;
+	vec4 sample_spec = texture(specular_tex, uv_coords);
+	vec3 mat_spec = sample_spec.rgb;
+	float mat_spec_pow = sample_spec.w;
+
+	//Get normal (and rebuilt it's z axis) from g buffer
+	vec2 n = texture(normal_tex, uv_coords).xy;
+	vec3 normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
+
+	//Important vectors
+	vec3 view_dir = normalize(-position);
+	vec3 half_dir = normalize(view_dir_light + view_dir);
+
+	//Calculate base colors
+	vec3 diff_color = split3(dir_light.diffuse) * dir_light.diffuse_intensity;
+	vec3 spec_color = split3(dir_light.specular) * mat_spec_pow;
+	vec3 amb_final = split3(dir_light.ambient) * dir_light.ambient_intensity;
+
+	//final colors for diffuse, specular and ambient
+	float dotNL = max(0, dot(normal, view_dir_light));
+	vec3 diffuse_final = dotNL * diff_color;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.specular_intensity);
+
+
+	return amb_final * mat_diff + flatness * mat_diff + (1.0 - flatness) *get_shadow(position_world_space, dotNL)*(mat_diff * diffuse_final + mat_spec * specular_final);
+}
+

@@ -18,7 +18,7 @@ namespace Ryno {
 		void update() override;
 
 		I32 mesh,sphere;
-		Shader shader,dir_light_shader, point_light_shader;
+		Shader shader;
 		Texture white, white_normal;
 		F32 lato = 100;
 		F32 size = 3;

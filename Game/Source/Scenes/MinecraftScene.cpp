@@ -25,9 +25,6 @@ namespace Ryno{
 		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
 		
 
-		//Directional light
-		dir_light_shader.create("LightPass/directional", ENGINE);
-
 	
 		material.create("Geometry/material", GAME);
 
@@ -38,7 +35,6 @@ namespace Ryno{
 
 		sponza.transform.set_scale(2,2,2);
 		auto* l = sponza.add_component<DirectionalLight>();
-		l->model.material.set_shader(&dir_light_shader);
 		l->set_rotation(-70, 10, 0);
 		l->diffuse_intensity = 3;
 		l->set_diffuse_color(255, 255, 255);
