@@ -102,7 +102,7 @@ float get_shadow(vec4 position_world_space, float dotNL) {
 			}
 		}
 
-		return 1+min(1, (1 - dir_light.shadow_strength) + shadow);
+		return min(1, (1 - dir_light.shadow_strength) + shadow);
 	}
 	return shadow;
 }

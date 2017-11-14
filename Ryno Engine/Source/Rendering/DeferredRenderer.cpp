@@ -246,10 +246,11 @@ namespace Ryno{
 	}
 
 	DirLightStruct DeferredRenderer::fillDirLightStruct(DirectionalLight* d) {
-		glm::mat4 dir_light_VPB = bias * directional_light_VP;
 
-		glm::quat rot = d->absolute_movement ? d->rotation : d->game_object->transform.get_rotation() * d->rotation;
-		Transform* parent = d->game_object->transform.get_parent();
+		auto go = d->game_object;
+
+		glm::quat rot = d->absolute_movement ? d->rotation : go->transform.get_rotation() * d->rotation;
+		Transform* parent = go->transform.get_parent();
 		while (parent != nullptr) {
 			rot = parent->get_rotation() * rot;
 			parent = parent->get_parent();
@@ -260,12 +261,20 @@ namespace Ryno{
 		dlc.specular = d->specular_color;
 		dlc.ambient = d->ambient_color;
 		dlc.diffuse_intensity = d->diffuse_intensity;
-		dlc.specular_intensity= d->specular_intensity;
+		dlc.specular_intensity = d->specular_intensity;
 		dlc.ambient_intensity = d->ambient_intensity;
 		dlc.blur = d->blur;
 		dlc.shadow_strength = d->shadow_strength;
-		dlc.light_VP_matrix = dir_light_VPB;
 		dlc.light_V_matrix = m_camera->get_light_V_matrix();
+		if (d->shadows){
+			//generate light_VP matrix
+			glm::mat4 ortho_mat = m_camera->get_O_matrix();
+			glm::vec3 dir = glm::vec3(glm::transpose(glm::inverse(d->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (d->rotation * glm::vec4(0, 0, 1, 0)));
+			glm::vec3 up_vect = glm::vec3(dir.y, -dir.x, 0);
+			glm::mat4 view_mat = glm::lookAt(dir, glm::vec3(0, 0, 0), up_vect);
+			directional_light_VP = ortho_mat * view_mat;
+			dlc.light_VP_matrix = bias * directional_light_VP;
+		}
 
 		return dlc;
 	}
@@ -280,8 +289,8 @@ namespace Ryno{
 			if (!l->active || !l->game_object->active)
 				continue;
 			DirLightStruct dlc = fillDirLightStruct(l);
-			if (l->shadows) {
-				directional_shadow_subpass(l);
+			if (l->shadows && directional_shadow_enabled) {
+				directional_shadow_subpass();
 				directional_lighting_subpass(l, dlc);
 			}
 			else {
@@ -561,24 +570,16 @@ namespace Ryno{
 	}
 	
 
-	void DeferredRenderer::directional_shadow_subpass(DirectionalLight* d){
+	void DeferredRenderer::directional_shadow_subpass(){
 
 		
-		GameObject* go = d->game_object;
 		m_fbo_shadow.bind_for_directional_shadow_pass();
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-
-
-		//generate light_VP matrix
-		glm::mat4 ortho_mat = m_camera->get_O_matrix();
-		glm::vec3 dir = glm::vec3(glm::transpose(glm::inverse(d->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (d->rotation * glm::vec4(0, 0, 1, 0)));
-		glm::vec3 up_vect = glm::vec3(dir.y, -dir.x, 0);
-		glm::mat4 view_mat = glm::lookAt(dir, glm::vec3(0, 0, 0), up_vect);
-		directional_light_VP = ortho_mat * view_mat;
+		
 
 		glViewport(0, 0, m_fbo_shadow.directional_resolution, m_fbo_shadow.directional_resolution);
 

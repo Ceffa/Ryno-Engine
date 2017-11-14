@@ -149,7 +149,7 @@ namespace Ryno{
 		void spot_lighting_subpass(SpotLight* go);
 
 		//Shadow subpass for directional light 
-		void directional_shadow_subpass(DirectionalLight* go);
+		void directional_shadow_subpass();
 
 		//Lighting subpass for directional light
 		void directional_lighting_subpass(DirectionalLight* go, DirLightStruct& dlc);
