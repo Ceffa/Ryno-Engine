@@ -233,6 +233,7 @@ namespace Ryno{
 	void Game::update()
 	{
 		particle_manager->update(TimeManager::delta_time);
+
 		scene->update();
 		scene->update_scripts();
 	}

@@ -73,6 +73,11 @@ namespace Ryno {
 
 	void LightsScene::update() {
 		
+		
+	}
+
+	void LightsScene::input() {
+
 		static F32 speed = 100;
 
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
@@ -88,14 +93,11 @@ namespace Ryno {
 			parent.transform.add_position(TimeManager::delta_time * speed * glm::vec3(0, 0, -1));
 		}
 		if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
-			parent.transform.set_rotation(3*sin(TimeManager::time ) * glm::vec3 (0,0,1));
+			parent.transform.set_rotation(3 * sin(TimeManager::time) * glm::vec3(0, 0, 1));
 		}
 		if (game->input_manager->is_key_down(SDLK_m, KEYBOARD)) {
 			parent.transform.add_rotation(TimeManager::delta_time / 100.0f * glm::vec3(0, 1, 0));
 		}
-	
-	}
 
-	void LightsScene::input() {
 	}
 }
