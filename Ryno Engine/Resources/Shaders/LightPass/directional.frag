@@ -4,10 +4,11 @@ E(Includes/dir)
 uniform sampler3D jitter;
 
 uniform sampler2DShadow shadow_tex;
-uniform int shadows_enabled;
 
 //Inverse projection matrix to get position from depth
-uniform DirectionalLight dir_light;
+layout(std140, binding = 1) uniform dir_ubo {
+	DirectionalLight dir_light;
+};
 
 out vec3 fracolor;
 
@@ -25,8 +26,6 @@ float get_shadow(vec4 position_world_space, float dotNL) {
 	//SHADOWS
 	float blur_width = .0012;
 	float shadow = 1;
-
-	if (shadows_enabled > 0.5) {
 
 		vec4 position_light_ortho_matrix = dir_light.light_VP_matrix * position_world_space;
 		vec3 position_light_ortho_matrix_norm = position_light_ortho_matrix.xyz / position_light_ortho_matrix.w;
@@ -103,7 +102,5 @@ float get_shadow(vec4 position_world_space, float dotNL) {
 		}
 
 		return min(1, (1 - dir_light.shadow_strength) + shadow);
-	}
-	return shadow;
 }
 

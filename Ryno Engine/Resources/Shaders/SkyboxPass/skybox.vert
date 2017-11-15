@@ -7,7 +7,7 @@ out vec3 coords_3d;
 out vec3 color;
 
 
-layout(std140) uniform glob {
+layout(std140) uniform glob_ubo {
 	mat4 V;
 	mat4 iV;
 	mat4 P;

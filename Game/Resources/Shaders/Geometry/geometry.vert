@@ -15,7 +15,7 @@ out  vec4 middle_specular_color;
 out  mat3 TBN;
 out  vec2 middle_uv;
 
-layout(std140) uniform glob {
+layout(std140) uniform glob_ubo {
 	mat4 V;
 	mat4 iV;
 	mat4 P;

@@ -11,7 +11,7 @@ uniform int mask;
 
 out vec3 fracolor;
 
-layout(std140) uniform glob {
+layout(std140) uniform glob_ubo {
 	mat4 V;
 	mat4 iV;
 	mat4 P;

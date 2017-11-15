@@ -129,14 +129,22 @@ namespace Ryno{
 			0.5, 0.5, 0.5, 1.0
 			);
 
-		ubo = 0;
-		glGenBuffers(1, &ubo);
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+		//Generat UBOs and SSBOs
+		glGenBuffers(1, &global_ubo);
+		glBindBuffer(GL_UNIFORM_BUFFER, global_ubo);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(UBO_Global_Data), &ubo_global_data, GL_DYNAMIC_DRAW);
+		glGenBuffers(1, &dir_light_ubo);
+		glBindBuffer(GL_UNIFORM_BUFFER, dir_light_ubo);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(DirLightStruct), &dir_light_ubo, GL_DYNAMIC_DRAW);
+		glGenBuffers(1, &point_light_ubo);
+		glBindBuffer(GL_UNIFORM_BUFFER, point_light_ubo);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(PointLightStruct), &point_light_ubo, GL_DYNAMIC_DRAW);
+		glGenBuffers(1, &spot_light_ubo);
+		glBindBuffer(GL_UNIFORM_BUFFER, spot_light_ubo);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(SpotLightStruct), &spot_light_ubo, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glGenBuffers(1, &lightUBO);
-
+		glGenBuffers(1, &lightSSBO);
 
 	}
 	
@@ -155,7 +163,7 @@ namespace Ryno{
 		ubo_global_data.screen_height = WindowSize::h;
 
 
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+		glBindBuffer(GL_UNIFORM_BUFFER, global_ubo);
 		GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
 		memcpy(p, &ubo_global_data, sizeof(UBO_Global_Data));
 		glUnmapBuffer(GL_UNIFORM_BUFFER);
@@ -293,7 +301,7 @@ namespace Ryno{
 			DirLightStruct dlc = fillDirLightStruct(l);
 			if (l->shadows && directional_shadow_enabled) {
 				directional_shadow_subpass();
-				directional_lighting_subpass(l, dlc);
+				directional_lighting_subpass(dlc);
 			}
 			else {
 				computeLights.emplace_back(dlc);
@@ -432,7 +440,12 @@ namespace Ryno{
 
 		mat.set_uniform("MVP", MVP_camera);
 		mat.set_uniform("shadows_enabled", (point_shadow_enabled && p->shadows) ? 1 : 0);
-		m_simple_drawer->draw(&m_point_bounding,true);
+		
+		mat.shader->use();
+		bind_global_ubo(*mat.shader);
+		m_simple_drawer->draw(&m_point_bounding);
+		mat.shader->unuse();
+
 
 		glDisable(GL_BLEND);
 
@@ -566,7 +579,10 @@ namespace Ryno{
 		mat.set_uniform("MVP",MVP_camera);
 		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && s->shadows) ? 1 : 0);
 
-		m_simple_drawer->draw(&m_spot_bounding,true);
+		mat.shader->use();
+		bind_global_ubo(*mat.shader);
+		m_simple_drawer->draw(&m_spot_bounding);
+		mat.shader->unuse();
 
 		glDisable(GL_BLEND);
 	}
@@ -593,16 +609,11 @@ namespace Ryno{
 
 		glViewport(0, 0, WindowSize::w, WindowSize::h);
 
-
-
 	}
 
 
-	void DeferredRenderer::directional_lighting_subpass(DirectionalLight* d, DirLightStruct& dlc)
-	{
-
-		auto go = d->game_object;
-		
+	void DeferredRenderer::directional_lighting_subpass(DirLightStruct& dlc)
+	{		
 		m_fbo_deferred.bind_for_light_pass();
 
 		glEnable(GL_BLEND);
@@ -623,26 +634,20 @@ namespace Ryno{
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_directional_texture);
-		mat.set_uniform("jitter", d->blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[d->blur-1]);
+		mat.set_uniform("jitter", dlc.blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[dlc.blur-1]);
 
-	
 
 		//SEND DIR LIGHT UNIFORMS
-		mat.set_uniform("dir_light.direction", dlc.direction);
-		mat.set_uniform("dir_light.diffuse", dlc.diffuse);
-		mat.set_uniform("dir_light.specular", dlc.specular);
-		mat.set_uniform("dir_light.ambient", dlc.ambient);
-		mat.set_uniform("dir_light.diffuse_intensity", dlc.diffuse_intensity);
-		mat.set_uniform("dir_light.specular_intensity", dlc.specular_intensity);
-		mat.set_uniform("dir_light.ambient_intensity", dlc.ambient_intensity);
-		mat.set_uniform("dir_light.blur", dlc.blur);
-		mat.set_uniform("dir_light.shadow_strength", d->shadow_strength);
+		glBindBuffer(GL_UNIFORM_BUFFER, dir_light_ubo);
+		GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+		memcpy(p, &dlc, sizeof(DirLightStruct));
+		glUnmapBuffer(GL_UNIFORM_BUFFER);
 
-		mat.set_uniform("dir_light.light_VP_matrix", dlc.light_VP_matrix);
-		mat.set_uniform("dir_light.light_V_matrix", dlc.light_V_matrix);
-		mat.set_uniform("shadows_enabled", (directional_shadow_enabled && d->shadows) ? 1:0);
-
-		m_simple_drawer->draw(&m_dir_bounding,true);
+		mat.shader->use();
+		bind_global_ubo(*mat.shader);
+		bind_dir_ubo(*mat.shader);
+		m_simple_drawer->draw(&m_dir_bounding);
+		mat.shader->unuse();
 
 		
 		glDisable(GL_BLEND);
@@ -653,14 +658,14 @@ namespace Ryno{
 
 		U32 nrOfLights = dlcs.size();
 		
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightUBO);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightSSBO);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DirLightStruct) * nrOfLights, dlcs.data(), GL_DYNAMIC_READ);
 		GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 		memcpy(p, dlcs.data(), sizeof(DirLightStruct) * nrOfLights);
 
-		unsigned int block_index = glGetUniformBlockIndex(m_compute_dir.get_id(), "lightsUBO");
+		unsigned int block_index = glGetUniformBlockIndex(m_compute_dir.get_id(), "dirSSBO");
 		GLuint binding_point_index = 1;
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding_point_index, lightUBO);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding_point_index, lightSSBO);
 		glUniformBlockBinding(m_compute_dir.get_id(), block_index, binding_point_index);
 
 
@@ -693,11 +698,14 @@ namespace Ryno{
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
-
-		m_blit_model_depth.material.set_uniform("source_buffer", m_fbo_deferred.m_textures[3]);
+		auto& mat = m_blit_model_depth.material;
+		mat.set_uniform("source_buffer", m_fbo_deferred.m_textures[3]);
 	
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
-		m_simple_drawer->draw(&m_blit_model_depth,false);
+		
+		mat.shader->use();
+		m_simple_drawer->draw(&m_blit_model_depth);
+		mat.shader->use();
 
 		glDepthMask(GL_FALSE);
 		
@@ -709,14 +717,15 @@ namespace Ryno{
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
 
 
-			
-		m_skybox_model.material.set_uniform("cube_map", m_camera->skybox.id);
-		m_skybox_model.material.set_uniform("background", m_camera->background);
-		m_skybox_model.material.set_uniform("have_skybox", m_camera->have_skybox ? 1 : 0);
+		auto& mat2 = m_skybox_model.material;
+		mat2.set_uniform("cube_map", m_camera->skybox.id);
+		mat2.set_uniform("background", m_camera->background);
+		mat2.set_uniform("have_skybox", m_camera->have_skybox ? 1 : 0);
 
-		
-		m_simple_drawer->draw(&m_skybox_model,true);
-
+		mat2.shader->use();
+		bind_global_ubo(*mat2.shader);
+		m_simple_drawer->draw(&m_skybox_model);
+		mat2.shader->unuse();
 		//Restore depth
 		glDepthRange(0.0, 1.0);
 
@@ -746,7 +755,12 @@ namespace Ryno{
 			m.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 			m.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 			m.set_uniform("scene_tex", m_fbo_deferred.m_final_textures[1 - m_fbo_deferred.m_current_scene_texture]);
-			m_simple_drawer->draw(&m_post_proc_model, true);
+			
+			m.shader->use();
+			bind_global_ubo(*m.shader);
+			m_simple_drawer->draw(&m_post_proc_model);
+			m.shader->unuse();
+
 		}
 	}
 
@@ -811,8 +825,10 @@ namespace Ryno{
 		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[0]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
-		m_simple_drawer->draw(&m_blit_model_color, false);
-	
+		auto& m = m_blit_model_color.material;
+		m.shader->use();
+		m_simple_drawer->draw(&m_blit_model_color);
+		m.shader->unuse();
 	}
 
 
@@ -820,12 +836,11 @@ namespace Ryno{
 	}
 
 
-	void DeferredRenderer::bind_global_ubo(const Shader& s)
+	void DeferredRenderer::bind_ubo(const std::string& name, U32 block, U32 bind_point, const Shader& s)
 	{
-		unsigned int block_index = glGetUniformBlockIndex(s.get_id(), "glob");
-		GLuint binding_point_index = 0;
-		glBindBufferBase(GL_UNIFORM_BUFFER, binding_point_index, ubo);
-		glUniformBlockBinding(s.get_id(), block_index, binding_point_index);
+		unsigned int block_index = glGetUniformBlockIndex(s.get_id(), name.c_str());
+		glBindBufferBase(GL_UNIFORM_BUFFER, bind_point, block);
+		glUniformBlockBinding(s.get_id(), block_index, bind_point);
 	}
 
 

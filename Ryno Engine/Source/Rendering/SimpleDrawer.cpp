@@ -20,12 +20,13 @@ namespace Ryno {
 		return &instance;
 	}
 	
-	void SimpleDrawer::draw(Model* model, bool enable_global_ubo) {
+	void SimpleDrawer::draw(Model* model) {
 		for (SubModel& s : model->sub_models)
-			draw(&s,enable_global_ubo);
+			draw(&s);
 	}
 
-	void SimpleDrawer::draw(SubModel* model, bool enable_global_ubo) {
+	//call shader->use before, and unuse after
+	void SimpleDrawer::draw(SubModel* model) {
 
 		auto m = m_mesh_manager->get_mesh(model->mesh);
 		auto s = model->material.shader;
@@ -42,9 +43,6 @@ namespace Ryno {
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m->indices_number * sizeof(U32), &m->indices[0], GL_STATIC_DRAW);
-
-		if (enable_global_ubo)
-			DeferredRenderer::get_instance()->bind_global_ubo(*s);
 
 		glDrawElements(GL_TRIANGLES, m->indices_number, GL_UNSIGNED_INT, (void*)0);
 		s->unuse();
