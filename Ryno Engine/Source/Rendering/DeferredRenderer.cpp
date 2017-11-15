@@ -196,6 +196,7 @@ namespace Ryno{
 
 		m_shadow_batch3d.end();
 		m_geometry_batch3d.end();
+
 	}
 
 
@@ -211,6 +212,7 @@ namespace Ryno{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_geometry_batch3d.render_batch();
+
 	}
 	
 
@@ -666,12 +668,12 @@ namespace Ryno{
 		m_fbo_deferred.bind_fbo();
 		U8 samplerIndex = 0;
 
-		m_compute_dir.send_material_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0],&samplerIndex);
-		m_compute_dir.send_material_uniform_to_shader("nrOfLights", &nrOfLights, &samplerIndex);
-		m_compute_dir.send_material_uniform_to_shader("diffuse_tex", &m_fbo_deferred.m_textures[0], &samplerIndex);
-		m_compute_dir.send_material_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
-		m_compute_dir.send_material_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
-		m_compute_dir.send_material_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
+		m_compute_dir.send_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0],&samplerIndex);
+		m_compute_dir.send_uniform_to_shader("nrOfLights", &nrOfLights, &samplerIndex);
+		m_compute_dir.send_uniform_to_shader("diffuse_tex", &m_fbo_deferred.m_textures[0], &samplerIndex);
+		m_compute_dir.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
+		m_compute_dir.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
+		m_compute_dir.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
 		bind_global_ubo(m_compute_dir);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		glDispatchCompute(std::ceil(WindowSize::w/32.0f), std::ceil(WindowSize::h / 32.0f), 1);

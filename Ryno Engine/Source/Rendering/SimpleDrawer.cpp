@@ -64,11 +64,7 @@ namespace Ryno {
 		}
 		
 		//SENDS MATERIAL UNIFORMS
-		U8 curr_samp = 0;
-		for (const auto& cnt : m.uniform_map)
-		{
-			s->send_material_uniform_to_shader(cnt.first, cnt.second, &curr_samp);
-		}
+		m.send_uniforms_to_shader();
 	}
 
 	void SimpleDrawer::create_vertex_array(){

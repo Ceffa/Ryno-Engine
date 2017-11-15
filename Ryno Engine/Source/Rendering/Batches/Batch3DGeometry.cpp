@@ -4,11 +4,9 @@
 #include <SDL/SDL.h>
 #include <GLM/gtx/string_cast.hpp>
 #include "Log.h"
+#include "CPUProfiler.h"
 
 namespace Ryno {
-
-	bool Batch3DGeometry::sorting = true;
-
 
 	void Batch3DGeometry::init(Camera3D* cam) {
 		set_camera(cam);
@@ -34,10 +32,11 @@ namespace Ryno {
 	void Batch3DGeometry::end() {
 
 
+		CPUProfiler::start_time();
 
 		//Sort with provided compare function
-		if (sorting)
-			std::stable_sort(m_models.begin(), m_models.end(), compare_models);
+		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
+		CPUProfiler::cout_time();
 
 		//Create batches
 		create_render_batches();
@@ -93,16 +92,10 @@ namespace Ryno {
 				equals_uniform = false;
 				shaders.push_back(new_mod->material.shader);
 			}
-			else if ( new_mod->mesh != last_mod->mesh)
-				equals_uniform = false;
 			else {
-
-				for (const auto& cnt : new_mod->material.shader->uniforms_data){
-					if (0 != memcmp(new_mod->material.uniform_map[cnt.first], last_mod->material.uniform_map[cnt.first], cnt.second.size)){
-						equals_uniform = false;
-						break;
-					}
-				}
+				auto& a = new_mod->material;
+				auto& b = last_mod->material;
+				equals_uniform = new_mod->mesh == last_mod->mesh && 0 == memcmp(a.uniform_memory, b.uniform_memory, a.shader->uniforms_map_size);
 			}
 
 			last_mod = new_mod;
@@ -223,12 +216,10 @@ namespace Ryno {
 				U8 curr_samp = 0;
 			}
 
-			U8 current_sampler = 0;
+		
 			
-			for (const auto& cnt : rb.model->material.uniform_map)
-			{
-				curr_shader->send_material_uniform_to_shader(cnt.first, cnt.second, &current_sampler);
-			}
+			rb.model->material.send_uniforms_to_shader();
+			
 		
 			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * curr_shader->attributes_struct_size, (void*)((U64)input_instances + buffer_data_offset ), GL_STATIC_DRAW);
@@ -244,29 +235,15 @@ namespace Ryno {
 		}
 	}
 
-	const U8 Batch3DGeometry::compare_models(SubModel* a, SubModel* b){
+	const U8 Batch3DGeometry::compare_models(SubModel* a, SubModel* b) {
 		const auto& ma = a->material;
 		const auto& mb = b->material;
 
-		if (ma.shader != mb.shader)
-			return ma.shader < mb.shader;
-
-		if (a->mesh != b->mesh)
-			return a->mesh < b->mesh;
-
-		auto ita = ma.uniform_map.begin();
-		auto itb = mb.uniform_map.begin();
-
-		while (ita != ma.uniform_map.end()){
-			I8 res = memcmp(ita->second, itb->second, ma.shader->uniforms_data[ita->first].size);
-			if (res == 0){
-				ita++; itb++;
-				continue;
-			}
-			return res < 0 ? true: false;
-		}
-		return false;
+		return (ma.shader != mb.shader) ? ma.shader < mb.shader : (
+			(a->mesh != b->mesh) ? a->mesh < b->mesh :
+			memcmp(ma.uniform_memory, mb.uniform_memory, ma.shader->uniforms_map_size) < 0);
 	}
+	
 
 
 }

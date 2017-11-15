@@ -38,7 +38,8 @@ namespace Ryno{
 	//These are used to build the struct in the material class.
 	//Basically each material creates it based on these parameters.
 	struct uniforms{
-		U32 index;		//Index of the attribute
+		U32 index;
+		U32 offset;		
 		U32 type;
 		U32 size;
 	};
@@ -132,7 +133,8 @@ namespace Ryno{
 		std::map<std::string, attributes> attributes_map;
 
 		//Uniforms data: (each model has its own)
-		std::map<std::string, uniforms> uniforms_data;
+		std::map<std::string, uniforms> uniforms_map;
+		U32 uniforms_map_size;
 		
 		
 		//This holds info about the vertex 3d struct.
@@ -149,8 +151,8 @@ namespace Ryno{
 
 		//send uniform to shader. Depending on its type (matrix, int etc)
 		//the template function send_uniform_to_shader is called with a different argument
-		void send_material_uniform_to_shader(const std::string& name, void* value, U8* sampler_index);
-		
+		void send_uniform_to_shader(const std::string& name, void* value, U8* sampler_index);
+
 
 		U8 get_size_from_type(const GLenum type);
 
@@ -217,72 +219,6 @@ namespace Ryno{
 			U32 index, offset, size;
 			C* name;
 		};
-
-
-		template <class T>
-		void send_uniform_to_shader(const std::string& name, void* value, U8* sampler_index, T& map)
-		{
-			if (value == nullptr){
-				std::cout << "Shader: value required by shader not found in local map: " << name << std::endl;
-				//exit(-1);
-			}
-			I32 type_of_texture;
-			bool isComputeTex;
-			if (Shader::is_sampler(map[name].type, &type_of_texture, &isComputeTex)){
-				glActiveTexture(GL_TEXTURE0 + *sampler_index);
-				
-				glBindTexture(type_of_texture, *(U32*)value);
-				
-				if (isComputeTex) {
-					glBindImageTexture(0, *(U32*)value, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8);
-				}
-				else {
-					glUniform1i(map[name].index, *sampler_index);
-					*sampler_index = *sampler_index + 1;
-				}
-				return;
-			}
-
-			switch (map[name].type){
-			case GL_INT:
-				glUniform1i(map[name].index, *(I32*)value);
-				break;
-			case GL_UNSIGNED_INT:
-				glUniform1ui(map[name].index, *(U32*)value);
-				break;
-			case GL_FLOAT:
-				glUniform1f(map[name].index, *(F32*)value);
-				break;
-			//NEEDS A REFACTORING, USE glUniform3iv 
-			case GL_INT_VEC3:
-				glUniform3iv(map[name].index, 1, (I32*)value);
-				break;
-			case GL_UNSIGNED_INT_VEC3:
-				glUniform3uiv(map[name].index, 1, (U32*)value);
-				break;
-			case GL_FLOAT_VEC3:
-				glUniform3fv(map[name].index, 1, (F32*)value);
-				break;
-
-			case GL_INT_VEC4:
-				glUniform4iv(map[name].index, 1, (I32*)value);
-				break;
-			case GL_UNSIGNED_INT_VEC4:
-				glUniform4uiv(map[name].index, 1, (U32*)value);
-				break;
-			case GL_FLOAT_VEC4:
-				glUniform4fv(map[name].index, 1, (F32*)value);
-				break;
-
-			case GL_FLOAT_MAT4:
-				glUniformMatrix4fv(map[name].index, 1, GL_FALSE, (F32*)value);
-				break;
-			default:
-				std::cout << "Shader " << name << ": uniform type not found. ";
-				std::cout << "If possible add it to the switch in the \"send_uniform_to_shader\" function in the shader class" << std::endl;
-				//exit(-1);
-			}
-		}
 
 	};
 }

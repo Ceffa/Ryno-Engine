@@ -47,8 +47,6 @@ namespace Ryno{
 		std::vector<Shader*> shaders;
 		std::vector<SubModel*> m_models;
 
-		static bool sorting;
-
 	protected:
 		U32 m_vbo = 0;
 		U32 m_i_vbo = 0;//instancing vbo
@@ -65,7 +63,7 @@ namespace Ryno{
 		void* input_instances = nullptr;
 		std::vector<RenderBatchStruct> m_render_batches;
 		
-		const static U8 compare_models(SubModel* a, SubModel* b) ;
+		const static U8 compare_models(SubModel* a, SubModel* b);
 
 		void create_render_batches();
 		void enable_attributes(Shader* s);

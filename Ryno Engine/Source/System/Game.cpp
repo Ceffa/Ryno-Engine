@@ -119,8 +119,6 @@ namespace Ryno{
 
 	void Game::reset() {
 		physics_world->reset();
-		Batch3DGeometry::sorting = true;
-		Batch3DShadow::sorting = true;
 	}
 	void Game::set_scene(const std::string& scene_name)
 	{

@@ -37,26 +37,26 @@ namespace Ryno{
 	
 		template <class T>
 		bool set_uniform(const std::string& attr, const T& val){
-			auto res = uniform_map.find(attr);
-			if (res == uniform_map.end()){
+			auto res = shader->uniforms_map.find(attr);
+			if (res == shader->uniforms_map.end()){
 				return false;
 			}
-			*(T*)uniform_map[attr] = val;
+			memcpy((void*)((U64)uniform_memory + res->second.offset), &val, res->second.size);
 			return true;
 		}
+
+		void send_uniforms_to_shader() const;
+
 	
 		~Material(){ 
 			free(attribute_memory);
-			for (auto& entry : uniform_map){
-				delete entry.second;
-			}
-			uniform_map.clear();
+			free(uniform_memory);
 		}
 		Material(const Material& copy);
 		void copy(const Material& copy);
 		Material(){ attribute_memory = nullptr; }
 		void* attribute_memory = nullptr;
-		std::map<std::string, void*> uniform_map;
+		void* uniform_memory = nullptr;
 		Shader* shader = nullptr;
 
 

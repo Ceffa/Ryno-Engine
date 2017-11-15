@@ -359,6 +359,7 @@ namespace Ryno {
 		glGetProgramiv(m_program_id, GL_ACTIVE_UNIFORMS, &unif_num);
 		//Temp arrays. They contain only instances attributes, not the vertex ones
 		const U8 max_name_char = 50;
+		U32 offset = 0;
 		for (GLuint i = 0; i < unif_num; i++){
 			//Temp return values
 			GLint temp_size, temp_name_size;
@@ -369,13 +370,14 @@ namespace Ryno {
 			int loc = glGetUniformLocation(m_program_id, temp_name);
 			if (loc < 0)
 				continue;
-			
-			uniforms_data[temp_name].index = loc;
-			uniforms_data[temp_name].type = temp_type;
-			uniforms_data[temp_name].size = sizeof(U32) * get_size_from_type(temp_type) * temp_size;
-
-	
+			uniforms_map[temp_name].index = loc;
+			uniforms_map[temp_name].offset = offset;
+			uniforms_map[temp_name].type = temp_type;
+			auto actualSize = sizeof(U32) * get_size_from_type(temp_type) * temp_size;
+			uniforms_map[temp_name].size = actualSize;
+			offset += actualSize;	
 		}
+		uniforms_map_size = offset;
 
 	}
 
@@ -435,9 +437,71 @@ namespace Ryno {
 		return false;
 	}
 
-	void Shader::send_material_uniform_to_shader(const std::string& name, void* value, U8* sampler_index)
+	
+
+	void Shader::send_uniform_to_shader(const std::string& name, void* value,U8* sampler_index)
 	{
-		send_uniform_to_shader(name,value,sampler_index,uniforms_data);
+		if (value == nullptr) {
+			std::cout << "Shader: value required by shader not found in local map: " << name << std::endl;
+			//exit(-1);
+		}
+		I32 type_of_texture;
+		bool isComputeTex;
+		auto& map = uniforms_map[name];
+		if (Shader::is_sampler(map.type, &type_of_texture, &isComputeTex)) {
+			glActiveTexture(GL_TEXTURE0 + *sampler_index);
+
+			glBindTexture(type_of_texture, *(U32*)value);
+
+			if (isComputeTex) {
+				glBindImageTexture(0, *(U32*)value, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8);
+			}
+			else {
+				glUniform1i(map.index, *sampler_index);
+				*sampler_index = *sampler_index + 1;
+			}
+			return;
+		}
+
+		switch (map.type) {
+		case GL_INT:
+			glUniform1i(map.index, *(I32*)value);
+			break;
+		case GL_UNSIGNED_INT:
+			glUniform1ui(map.index, *(U32*)value);
+			break;
+		case GL_FLOAT:
+			glUniform1f(map.index, *(F32*)value);
+			break;
+			//NEEDS A REFACTORING, USE glUniform3iv 
+		case GL_INT_VEC3:
+			glUniform3iv(map.index, 1, (I32*)value);
+			break;
+		case GL_UNSIGNED_INT_VEC3:
+			glUniform3uiv(map.index, 1, (U32*)value);
+			break;
+		case GL_FLOAT_VEC3:
+			glUniform3fv(map.index, 1, (F32*)value);
+			break;
+
+		case GL_INT_VEC4:
+			glUniform4iv(map.index, 1, (I32*)value);
+			break;
+		case GL_UNSIGNED_INT_VEC4:
+			glUniform4uiv(map.index, 1, (U32*)value);
+			break;
+		case GL_FLOAT_VEC4:
+			glUniform4fv(map.index, 1, (F32*)value);
+			break;
+
+		case GL_FLOAT_MAT4:
+			glUniformMatrix4fv(map.index, 1, GL_FALSE, (F32*)value);
+			break;
+		default:
+			std::cout << "Shader " << name << ": uniform type not found. ";
+			std::cout << "If possible add it to the switch in the \"send_uniform_to_shader\" function in the shader class" << std::endl;
+			//exit(-1);
+		}
 	}
 
 	U8 Shader::get_size_from_type(const GLenum type)

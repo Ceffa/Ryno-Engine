@@ -13,13 +13,21 @@ namespace Ryno {
 			std::cout << "Failed to allocate material struct" << std::endl;
 			return false;
 		}
-		for (auto& cnt : shader->uniforms_data){
-			uniform_map[cnt.first] = calloc (cnt.second.size,1);
-		}
+		uniform_memory = calloc (shader->uniforms_map_size,1);
+		
 		return true;
 	}
 
 	
+
+	void Material::send_uniforms_to_shader() const
+	{
+		U8 sampler_index = 0;
+		for (auto& entry : shader->uniforms_map) {
+			auto& x = entry.second;
+			shader->send_uniform_to_shader(entry.first, (void*)((U64)uniform_memory + x.offset), &sampler_index);
+		}
+	}
 
 	Material::Material(const Material& cp)
 	{
@@ -33,17 +41,17 @@ namespace Ryno {
 			free(attribute_memory);
 			attribute_memory = nullptr;
 		}
-		uniform_map.clear();
+		if (uniform_memory) {
+			free(uniform_memory);
+			uniform_memory = nullptr;
+		}
+		
 		//Set same shader
 		set_shader(cp.shader);
-		//Copy entry of uniform map
-		for (const auto& entry : cp.uniform_map) {
-			if (entry.second == nullptr) continue;
-			uniform_map[entry.first] = malloc(shader->uniforms_data[entry.first].size);
-			std::memcpy(uniform_map[entry.first], entry.second, shader->uniforms_data[entry.first].size);
-		}
+
 		//Copy attributes memory
 		std::memcpy(attribute_memory, cp.attribute_memory, shader->attributes_struct_size);
+		std::memcpy(uniform_memory, cp.uniform_memory, shader->uniforms_map_size);
 
 	}
 

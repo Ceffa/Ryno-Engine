@@ -1,5 +1,6 @@
 #include "GPUProfiler.h"
 #include <gl\glew.h>
+#include <iostream>
 
 
 namespace Ryno{
@@ -24,6 +25,10 @@ namespace Ryno{
 		glGetQueryObjectui64v(queries[0], GL_QUERY_RESULT, &start);
 		glGetQueryObjectui64v(queries[1], GL_QUERY_RESULT, &end);
 		return ((float)(end - start)) / 1000000.0;
+	}
+
+	void GPUProfiler::cout_time() {
+		std::cout << get_time() << std::endl;
 	}
 
 

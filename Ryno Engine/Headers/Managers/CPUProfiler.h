@@ -9,6 +9,7 @@ namespace Ryno {
 	public:
 		static void start_time();
 		static float get_time();
+		static void cout_time();
 
 	};
 }
