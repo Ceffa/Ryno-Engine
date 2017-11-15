@@ -441,8 +441,7 @@ namespace Ryno{
 		mat.set_uniform("MVP", MVP_camera);
 		mat.set_uniform("shadows_enabled", (point_shadow_enabled && p->shadows) ? 1 : 0);
 		
-		bind_ubo("glob_ubo", global_ubo, 0, *mat.shader);
-		bind_ubo("glob_ubo", global_ubo, 0, *mat.shader);
+		bind_global_ubo(*mat.shader);
 		m_simple_drawer->draw(&m_point_bounding);
 
 
@@ -578,7 +577,7 @@ namespace Ryno{
 		mat.set_uniform("MVP",MVP_camera);
 		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && s->shadows) ? 1 : 0);
 
-		bind_ubo("glob_ubo", global_ubo, 0, *mat.shader);
+		bind_global_ubo(*mat.shader);
 		m_simple_drawer->draw(&m_spot_bounding);
 
 		glDisable(GL_BLEND);
@@ -640,7 +639,7 @@ namespace Ryno{
 		memcpy(p, &dlc, sizeof(DirLightStruct));
 		glUnmapBuffer(GL_UNIFORM_BUFFER);
 
-		bind_ubo("glob_ubo", global_ubo, 0, *mat.shader);
+		bind_global_ubo(*mat.shader);
 		bind_ubo("dir_ubo", dir_light_ubo, 1, *mat.shader);
 		m_simple_drawer->draw(&m_dir_bounding);
 
@@ -658,7 +657,7 @@ namespace Ryno{
 		GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 		memcpy(p, dlcs.data(), sizeof(DirLightStruct) * nrOfLights);
 
-		bind_ubo("glob_ubo", global_ubo, 0, m_compute_dir);
+		bind_global_ubo(m_compute_dir);
 		bind_ssbo("dir_ssbo", dir_lights_SSBO, 1, m_compute_dir);
 
 		m_compute_dir.use();
@@ -713,7 +712,7 @@ namespace Ryno{
 		mat2.set_uniform("background", m_camera->background);
 		mat2.set_uniform("have_skybox", m_camera->have_skybox ? 1 : 0);
 
-		bind_ubo("glob_ubo", global_ubo, 0, *mat2.shader);
+		bind_global_ubo(*mat2.shader);
 		m_simple_drawer->draw(&m_skybox_model);
 
 		//Restore depth
@@ -746,7 +745,7 @@ namespace Ryno{
 			m.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 			m.set_uniform("scene_tex", m_fbo_deferred.m_final_textures[1 - m_fbo_deferred.m_current_scene_texture]);
 			
-			bind_ubo("glob_ubo", global_ubo, 0, *m.shader);
+			bind_global_ubo(*m.shader);
 			m_simple_drawer->draw(&m_post_proc_model);
 
 		}

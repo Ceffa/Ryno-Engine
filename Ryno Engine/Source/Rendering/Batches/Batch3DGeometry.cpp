@@ -200,6 +200,7 @@ namespace Ryno {
 		for (const auto& rb : m_render_batches){
 
 			auto curr_shader = rb.model->material.shader;
+			DeferredRenderer::bind_global_ubo(*curr_shader);
 			curr_shader->use();
 
 			U32 old_shader_size = 0;//keep track of the size of the last used shader

@@ -142,6 +142,7 @@ namespace Ryno{
 		GLuint point_lights_SSBO = 0;
 		GLuint spot_lights_SSBO = 0;
 
+		static void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", get_instance()->global_ubo, 0,s); }
 	private:
 
 		DeferredRenderer() {}

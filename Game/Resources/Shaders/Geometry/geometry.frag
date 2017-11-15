@@ -1,6 +1,5 @@
 #version 430
 
-
 in  vec4 middle_diffuse_color;
 in  vec4 middle_specular_color;
 in  mat3 TBN;
