@@ -224,8 +224,6 @@ namespace Ryno {
 			buffer_data_offset += rb.num_instances* curr_shader->attributes_struct_size;
 			U32 offset = rb.indices_offset * sizeof(U32);
 
-			DeferredRenderer::get_instance()->bind_global_ubo(*curr_shader);
-
 			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_INT, (void*)offset, rb.num_instances, rb.vertex_offset);
 
 			curr_shader->unuse();

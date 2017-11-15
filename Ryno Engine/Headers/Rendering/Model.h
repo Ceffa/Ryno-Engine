@@ -13,12 +13,12 @@ namespace Ryno{
 	class SubModel {
 	public:
 		SubModel() {}
-		I32 mesh;
+		I32 mesh =0;
 		Material material;
 		bool cast_shadows;
 		SubModel(const SubModel& cp);
 		void copy(const SubModel& cp);
-		Model* parent;
+		Model* parent = nullptr;
 	};
 	class Model : public Component{
 	public:

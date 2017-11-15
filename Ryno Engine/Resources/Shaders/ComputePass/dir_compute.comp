@@ -1,7 +1,7 @@
 ﻿E(Includes/global)
 E(Includes/dir)
 
-layout (std430, binding=1) buffer dirSSBO
+layout (std430, binding=1) buffer dir_ssbo
 { 
 	DirectionalLight lights[];
 };

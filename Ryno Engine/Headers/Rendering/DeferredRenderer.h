@@ -133,16 +133,14 @@ namespace Ryno{
 
 
 		U32 global_ubo = 0;
+
 		U32 dir_light_ubo = 0;
 		U32 point_light_ubo = 0;
 		U32 spot_light_ubo = 0;
 
-		void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", global_ubo, 0, s); }
-		void bind_dir_ubo(const Shader& s) { bind_ubo("dir_ubo", dir_light_ubo, 1, s); }
-		void bind_point_ubo(const Shader& s) { bind_ubo("point_ubo", point_light_ubo, 1, s); }
-		void bind_spot_ubo(const Shader& s) { bind_ubo("spot_ubo", spot_light_ubo, 1, s); }
-
-		GLuint lightSSBO = 0;
+		GLuint dir_lights_SSBO = 0;
+		GLuint point_lights_SSBO = 0;
+		GLuint spot_lights_SSBO = 0;
 
 	private:
 
@@ -168,7 +166,8 @@ namespace Ryno{
 
 	
 		static void bind_ubo(const std::string& name, U32 block, U32 bind_point, const Shader& s);
-	
+		static void bind_ssbo(const std::string& name, U32 block, U32 bind_point, const Shader& s);
+
 		Camera3D* m_camera;
 		FBO_Deferred m_fbo_deferred;
 		FBO_Shadow m_fbo_shadow;

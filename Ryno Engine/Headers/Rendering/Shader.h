@@ -134,7 +134,7 @@ namespace Ryno{
 
 		//Uniforms data: (each model has its own)
 		std::map<std::string, uniforms> uniforms_map;
-		U32 uniforms_map_size;
+		U32 uniforms_map_size = 0;
 		
 		
 		//This holds info about the vertex 3d struct.
@@ -168,9 +168,9 @@ namespace Ryno{
 		enum  OperationIndex{ CREATE, COMPILE, LINK };
 
 		//number of attributes input to vert shader
-		U32 m_attr_no;
+		U32 m_attr_no = 0;
 		//id of the glsl program
-		U32 m_program_id;
+		U32 m_program_id = 0;
 		//the ids of the shaders
 		U32 m_shader_ids[4];
 		

@@ -87,15 +87,14 @@ namespace Ryno{
 	{
 		static const std::string middle_path = "Resources/Models/";
 
-		const std::string& obj_path = BASE_PATHS[loc] + middle_path + name + ".obj";
-		const std::string& mtl_path = BASE_PATHS[loc] + middle_path;
+		const std::string obj_path = BASE_PATHS[loc] + middle_path + name + ".obj";
+		const std::string mtl_path = BASE_PATHS[loc] + middle_path;
 
 
 
-		std::string err;
-		Assimp::Importer importer;
+		std::string err{};
+		Assimp::Importer importer{};
 		const aiScene* scene = importer.ReadFile(obj_path, aiProcess_Triangulate | aiProcess_FlipUVs);
-
 
 		if (!err.empty()) {
 			std::cerr << err << std::endl;
