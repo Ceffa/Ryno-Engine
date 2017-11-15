@@ -31,12 +31,8 @@ namespace Ryno {
 	}
 	void Batch3DGeometry::end() {
 
-
-		CPUProfiler::start_time();
-
 		//Sort with provided compare function
 		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
-		CPUProfiler::cout_time();
 
 		//Create batches
 		create_render_batches();
@@ -87,14 +83,15 @@ namespace Ryno {
 			//thus requiring a new draw call (and a new render abtch)
 
 			bool equals_uniform = true;
-			
-			if (first_iter || new_mod->material.shader != last_mod->material.shader){
+			auto& a = new_mod->material;
+			auto& b = last_mod->material;
+
+			if (first_iter || a.shader != b.shader){
 				equals_uniform = false;
-				shaders.push_back(new_mod->material.shader);
+				shaders.push_back(a.shader);
 			}
 			else {
-				auto& a = new_mod->material;
-				auto& b = last_mod->material;
+				
 				equals_uniform = new_mod->mesh == last_mod->mesh && 0 == memcmp(a.uniform_memory, b.uniform_memory, a.shader->uniforms_map_size);
 			}
 
