@@ -42,7 +42,7 @@ namespace Ryno{
 		l->set_specular_color(255, 255, 255);
 		l->ambient_intensity = 0;
 		l->set_ambient_color(255, 255, 255);
-		l->shadows = false;
+		l->shadows = true;
 
 		for (auto& m : sponza.get_component<Model>()->sub_models) {
 			m.cast_shadows = false;

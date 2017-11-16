@@ -47,6 +47,7 @@ namespace Ryno{
 		m_geometry_batch3d.init(m_camera);
 		m_shadow_batch3d.init(m_camera);
 	}
+	
 	void DeferredRenderer::init(){
 
 		game = Game::get_instance();
@@ -134,18 +135,8 @@ namespace Ryno{
 		glGenBuffers(1, &global_ubo);
 		glBindBuffer(GL_UNIFORM_BUFFER, global_ubo);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(UBO_Global_Data), &ubo_global_data, GL_DYNAMIC_DRAW);
-		glGenBuffers(1, &dir_light_ubo);
-		glBindBuffer(GL_UNIFORM_BUFFER, dir_light_ubo);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(DirLightStruct), &dir_light_ubo, GL_DYNAMIC_DRAW);
-		glGenBuffers(1, &point_light_ubo);
-		glBindBuffer(GL_UNIFORM_BUFFER, point_light_ubo);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(PointLightStruct), &point_light_ubo, GL_DYNAMIC_DRAW);
-		glGenBuffers(1, &spot_light_ubo);
-		glBindBuffer(GL_UNIFORM_BUFFER, spot_light_ubo);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(SpotLightStruct), &spot_light_ubo, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-		glGenBuffers(1, &dir_lights_SSBO);
+		glGenBuffers(3, compute_light_ssbos);
+		glGenBuffers(3, light_ssbos);
 
 	}
 	
@@ -208,7 +199,6 @@ namespace Ryno{
 
 	}
 
-
 	void DeferredRenderer::geometry_pass()
 	{
 		
@@ -231,20 +221,36 @@ namespace Ryno{
 		if (!directional_light_enabled)
 			return;
 
-		std::vector<DirLightStruct> computeLights;
-		for (auto* l : DirectionalLight::dir_lights){
+		//Creates two arrays of lights
+		std::vector<DirLightStruct> lights{};
+		std::vector<DirectionalLight*> lights_ptr{};
+		std::vector<DirLightStruct> computeLights{};
+
+		for (auto l : DirectionalLight::dir_lights){
 			if (!l->active || !l->game_object->active)
 				continue;
-			DirLightStruct dlc = fillDirLightStruct(l);
 			if (l->shadows && directional_shadow_enabled) {
-				dir_shadow_subpass();
-				dir_lighting_subpass(dlc);
+				lights.emplace_back(fillDirLightStruct(l));
+				lights_ptr.push_back(l);
 			}
 			else {
-				computeLights.emplace_back(dlc);
+				computeLights.emplace_back(fillDirLightStruct(l));
 			}
 		}
 
+		//Fill SSBOs
+		fill_ssbo(light_ssbos[DIR], lights);
+		fill_ssbo(compute_light_ssbos[DIR], computeLights);
+
+		//Process regular ligths
+		bind_global_ubo(light_shaders[DIR]);
+		bind_ssbo("dir_ssbo", light_ssbos[DIR], 1, light_shaders[DIR]);
+		for (U32 i = 0; i < lights.size(); ++i) {
+			dir_shadow_subpass(lights[i],lights_ptr[i]);
+			dir_lighting_subpass(lights[i],lights_ptr[i], i);
+		}
+		
+		//Process compute lights
 		dir_light_tiled_pass(computeLights);
 	}	
 
@@ -252,15 +258,41 @@ namespace Ryno{
 
 		if (!point_light_enabled)
 			return;
-		int i = 0;
-		for (auto* l : PointLight::point_lights){
+
+		//Creates two arrays of lights
+		std::vector<PointLightStruct> lights;
+		std::vector<PointLight*> lights_ptr;
+		std::vector<PointLightStruct> computeLights;
+
+		for (auto l : PointLight::point_lights) {
 			if (!l->active || !l->game_object->active)
 				continue;
-			point_shadow_subpass(l);
-			point_lighting_subpass(l);
+			if (true){//l->shadows && point_shadow_enabled) {
+				lights.emplace_back(fillPointLightStruct(l));
+				lights_ptr.push_back(l);
+			}
+			else {
+				computeLights.emplace_back(fillPointLightStruct(l));
+			}
 		}
 
+		//Fill SSBOs
+		fill_ssbo(light_ssbos[POINT], lights);
+		fill_ssbo(compute_light_ssbos[POINT], computeLights);
 
+		//Process regular ligths
+		bind_global_ubo(light_shaders[POINT]);
+		bind_ssbo("point_ssbo", light_ssbos[POINT], 1, light_shaders[POINT]);
+
+		CPUProfiler::start_time();
+		for (U32 i = 0; i < lights.size(); ++i) {
+			//point_shadow_subpass(lights[i],lights_ptr[i]);
+			point_lighting_subpass(lights[i],lights_ptr[i], i);
+		}
+		CPUProfiler::cout_time();
+
+		//Process compute lights
+		point_light_tiled_pass(computeLights);
 
 	}
 
@@ -272,7 +304,7 @@ namespace Ryno{
 			if (!l->active || !l->game_object->active)
 				continue;
 			spot_shadow_subpass(l);
-			spot_lighting_subpass(l);
+			spot_lighting_subpass(l,1);
 
 		}
 
@@ -280,47 +312,47 @@ namespace Ryno{
 
 
 
-	DirLightStruct DeferredRenderer::fillDirLightStruct(DirectionalLight* d) {
+	DirLightStruct DeferredRenderer::fillDirLightStruct(const DirectionalLight* l) const {
 
-		auto go = d->game_object;
+		auto go = l->game_object;
 
-		glm::quat rot = d->absolute_movement ? d->rotation : go->transform.get_rotation() * d->rotation;
+		glm::quat rot = l->absolute_movement ? l->rotation : go->transform.get_rotation() * l->rotation;
 		Transform* parent = go->transform.get_parent();
 		while (parent != nullptr) {
 			rot = parent->get_rotation() * rot;
 			parent = parent->get_parent();
 		}
-		DirLightStruct dlc;
-		dlc.direction = rot * glm::vec3(0, 0, 1);
-		dlc.diffuse = d->diffuse_color;
-		dlc.specular = d->specular_color;
-		dlc.ambient = d->ambient_color;
-		dlc.diffuse_intensity = d->diffuse_intensity;
-		dlc.specular_intensity = d->specular_intensity;
-		dlc.ambient_intensity = d->ambient_intensity;
-		dlc.blur = d->blur;
-		dlc.shadow_strength = d->shadow_strength;
-		dlc.light_V_matrix = m_camera->get_light_V_matrix();
-		if (d->shadows){
-			//generate light_VP matrix
-			glm::mat4 ortho_mat = m_camera->get_O_matrix();
-			glm::vec3 dir = glm::vec3(glm::transpose(glm::inverse(d->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (d->rotation * glm::vec4(0, 0, 1, 0)));
-			glm::vec3 up_vect = glm::vec3(dir.y, -dir.x, 0);
-			glm::mat4 view_mat = glm::lookAt(dir, glm::vec3(0, 0, 0), up_vect);
-			directional_light_VP = ortho_mat * view_mat;
-			dlc.light_VP_matrix = bias * directional_light_VP;
-		}
-
-		return dlc;
+		DirLightStruct ls;
+		ls.direction = glm::vec4(rot * glm::vec3(0, 0, 1),0);
+		ls.diffuse = l->diffuse_color;
+		ls.specular = l->specular_color;
+		ls.ambient = l->ambient_color;
+		ls.diffuse_intensity = l->diffuse_intensity;
+		ls.specular_intensity = l->specular_intensity;
+		ls.ambient_intensity = l->ambient_intensity;
+		ls.blur = l->blur;
+		ls.light_V_matrix = m_camera->get_light_V_matrix();
+	
+		return ls;
 	}
 
-	PointLightStruct DeferredRenderer::fillPointLightStruct(PointLight* p) {
+	PointLightStruct DeferredRenderer::fillPointLightStruct(const PointLight* l) const{
+		
+		glm::vec4 trans = l->game_object->transform.hinerited_matrix * l->game_object->transform.model_matrix * glm::vec4(0, 0, 0, 1);
 
-		PointLightStruct plc;
-		return plc;
+		PointLightStruct ls;
+		ls.position = trans;
+		ls.attenuation = l->attenuation;
+		ls.diffuse = l->diffuse_color;
+		ls.specular = l->specular_color;
+		ls.diffuse_intensity = l->diffuse_intensity;
+		ls.specular_intensity = l->specular_intensity;
+		ls.max_fov = l->max_radius;
+		ls.light_V_matrix = m_camera->get_light_V_matrix();
+		return ls;
 	}
 
-	SpotLightStruct DeferredRenderer::fillSpotLightStruct(SpotLight* s) {
+	SpotLightStruct DeferredRenderer::fillSpotLightStruct(const SpotLight* l) const {
 
 		SpotLightStruct slc;
 		return slc;
@@ -328,7 +360,7 @@ namespace Ryno{
 
 
 
-	void DeferredRenderer::dir_lighting_subpass(DirLightStruct& dlc)
+	void DeferredRenderer::dir_lighting_subpass(DirLightStruct& ls, DirectionalLight* l, U32 index)
 	{		
 		m_fbo_deferred.bind_for_light_pass();
 
@@ -345,29 +377,24 @@ namespace Ryno{
 		
 		auto& mat = light_models[DIR].material;
 
+		mat.set_uniform("index", index);
+
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_directional_texture);
-		mat.set_uniform("jitter", dlc.blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[dlc.blur-1]);
+		mat.set_uniform("jitter", ls.blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[ls.blur-1]);
+		mat.set_uniform("shadow_strength", l->shadow_strength);
+		mat.set_uniform("light_VP_matrix", light_VP_matrix);
 
-
-		//SEND DIR LIGHT UNIFORMS
-		glBindBuffer(GL_UNIFORM_BUFFER, dir_light_ubo);
-		GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
-		memcpy(p, &dlc, sizeof(DirLightStruct));
-		glUnmapBuffer(GL_UNIFORM_BUFFER);
-
-		bind_global_ubo(*mat.shader);
-		bind_ubo("dir_ubo", dir_light_ubo, 1, *mat.shader);
 		m_simple_drawer->draw(&light_models[DIR]);
-
 		
 		glDisable(GL_BLEND);
 	}
 	
-	void DeferredRenderer::point_lighting_subpass(PointLight* p){
+	void DeferredRenderer::point_lighting_subpass(PointLightStruct& ls,PointLight* l, U32 index){
 
 		m_fbo_deferred.bind_for_light_pass();
 
@@ -380,61 +407,38 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-
-		//Generate a special model matrix with the following differences:
-		//1) scale is not considered, we use the light one
-		//2) translation is precalculated from the hinerited and model matrices, we don't care HOW we get there
-		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
-		//we just need to orient the bounding box
-
-		glm::vec3 trans = glm::vec3(p->game_object->transform.hinerited_matrix * p->game_object->transform.model_matrix * glm::vec4(0, 0, 0, 1));
-
-		glm::vec3 scale = glm::vec3(p->max_radius);
-		glm::quat rot = p->game_object->transform.get_rotation();
-		Transform* parent = p->game_object->transform.get_parent();
+		l->calculate_max_radius();
+		glm::vec3 scale = glm::vec3(l->max_radius);
+		glm::quat rot = l->game_object->transform.get_rotation();
+		auto parent = l->game_object->transform.get_parent();
 		while (parent != nullptr) {
 			rot = parent->get_rotation() * rot;
 			parent = parent->get_parent();
 		}
 		glm::mat4 model_matrix = glm::scale(
 			//Translate matrix
-			glm::translate(glm::mat4(1.0f), glm::vec3(trans)) *
+			glm::translate(glm::mat4(1.0f), glm::vec3(ls.position)) *
 			//Rotation matrix built from three quaternions
 			glm::toMat4(rot),
 			//Scaling the rot-trans matrix
 			scale);
 
-		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
-
-
+		
 		auto& mat = light_models[POINT].material;
-		//SEND POINT LIGHT UNIFORMS (each for light)
-		mat.set_uniform("point_light.position", trans);
-		mat.set_uniform("point_light.attenuation", p->attenuation);
-		mat.set_uniform("point_light.diffuse", p->diffuse_color);
-		mat.set_uniform("point_light.specular", p->specular_color);
-		mat.set_uniform("point_light.specular_intensity", p->specular_intensity);
-		mat.set_uniform("point_light.diffuse_intensity", p->diffuse_intensity);
-		mat.set_uniform("point_light.shadow_strength", p->shadow_strength);
+	
 
-
-		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM glob
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_cube", m_fbo_shadow.m_point_cube);
 	
-		//SEND OTHER UNIFORMS
-		mat.set_uniform("max_fov", p->max_radius);
-		mat.set_uniform("light_V_matrix",m_camera->get_light_V_matrix());
-		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
+		mat.set_uniform("MVP", m_camera->get_VP_matrix() * model_matrix);
 
+		mat.set_uniform("shadow_strength", l->shadow_strength);
+		mat.set_uniform("shadows_enabled", 0);
+		mat.set_uniform("index", index);
 
-		mat.set_uniform("MVP", MVP_camera);
-		mat.set_uniform("shadows_enabled", (point_shadow_enabled && p->shadows) ? 1 : 0);
-		
-		bind_global_ubo(*mat.shader);
 		m_simple_drawer->draw(&light_models[POINT]);
 
 
@@ -442,7 +446,7 @@ namespace Ryno{
 
 	}
 
-	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
+	void DeferredRenderer::spot_lighting_subpass(SpotLight* l, U32 index)
 	{
 		
 		m_fbo_deferred.bind_for_light_pass();
@@ -463,11 +467,11 @@ namespace Ryno{
 		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
 		//we just need to orient the bounding box
 
-		auto go = s->game_object;
+		auto go = l->game_object;
 		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
-		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
-		glm::vec3 scale = glm::vec3(width, s->max_radius, width);
-		glm::quat rot = s->absolute_movement ?  s-> rotation : go->transform.get_rotation() * s->rotation;
+		float width = l->max_radius *  sin(l->cutoff * DEG_TO_RAD);
+		glm::vec3 scale = glm::vec3(width, l->max_radius, width);
+		glm::quat rot = l->absolute_movement ?  l-> rotation : go->transform.get_rotation() * l->rotation;
 		Transform* parent = go->transform.get_parent();
 		while (parent != nullptr) {
 			rot = parent->get_rotation() * rot;
@@ -481,39 +485,36 @@ namespace Ryno{
 			//Scaling the rot-trans matrix
 			scale);
 
-		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
-		glm::mat4 biased_light_VP_matrix = bias * spot_VP_matrix;
-
-		F32 cutoff_value = cos(s->cutoff * DEG_TO_RAD);
+		F32 cutoff_value = cos(l->cutoff * DEG_TO_RAD);
 
 		auto& mat = light_models[SPOT].material;
 		//SEND SPOT LIGHT UNIFORMS
 		mat.set_uniform("spot_light.position", trans);
-		mat.set_uniform("spot_light.attenuation", s->attenuation);
+		mat.set_uniform("spot_light.attenuation", l->attenuation);
 		mat.set_uniform("spot_light.direction", rot * glm::vec3(0,0,-1));
 		mat.set_uniform("spot_light.cutoff", cutoff_value);
-		mat.set_uniform("spot_light.diffuse", s->diffuse_color);
-		mat.set_uniform("spot_light.specular",s->specular_color);
-		mat.set_uniform("spot_light.diffuse_intensity", s->diffuse_intensity);
-		mat.set_uniform("spot_light.specular_intensity", s->specular_intensity);
-		mat.set_uniform("spot_light.blur", s->blur);
-		mat.set_uniform("spot_light.shadow_strength", s->shadow_strength);
+		mat.set_uniform("spot_light.diffuse", l->diffuse_color);
+		mat.set_uniform("spot_light.specular",l->specular_color);
+		mat.set_uniform("spot_light.diffuse_intensity", l->diffuse_intensity);
+		mat.set_uniform("spot_light.specular_intensity", l->specular_intensity);
+		mat.set_uniform("spot_light.blur", l->blur);
+		mat.set_uniform("spot_light.shadow_strength", l->shadow_strength);
 
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_spot_texture);
-		mat.set_uniform("jitter", s->blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[s->blur - 1]);
+		mat.set_uniform("jitter", l->blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[l->blur - 1]);
 
 
 		
-		mat.set_uniform("light_VP_matrix", biased_light_VP_matrix);
+		//mat.set_uniform("light_VP_matrix", bias * spot_VP_matrix);
 		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
 		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
 		
-		mat.set_uniform("MVP",MVP_camera);
-		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && s->shadows) ? 1 : 0);
+		mat.set_uniform("MVP", m_camera->get_VP_matrix() * model_matrix);
+		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && l->shadows) ? 1 : 0);
 
 		bind_global_ubo(*mat.shader);
 		m_simple_drawer->draw(&light_models[SPOT]);
@@ -523,18 +524,13 @@ namespace Ryno{
 
 
 
-	void DeferredRenderer::dir_light_tiled_pass(std::vector<DirLightStruct>& dlcs) {
+	void DeferredRenderer::dir_light_tiled_pass(std::vector<DirLightStruct>& lss) {
 
-		U32 nrOfLights = dlcs.size();
+		U32 nrOfLights = lss.size();
 		
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, dir_lights_SSBO);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DirLightStruct) * nrOfLights, dlcs.data(), GL_DYNAMIC_READ);
-		GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-		memcpy(p, dlcs.data(), sizeof(DirLightStruct) * nrOfLights);
-
 		auto& s = compute_shaders[DIR];
 		bind_global_ubo(s);
-		bind_ssbo("dir_ssbo", dir_lights_SSBO, 1, s);
+		bind_ssbo("dir_compute_ssbo", light_ssbos[DIR], 2, s);
 
 		compute_shaders[DIR].use();
 		m_fbo_deferred.bind_fbo();
@@ -558,15 +554,15 @@ namespace Ryno{
 
 	}
 
-	void DeferredRenderer::point_light_tiled_pass(std::vector<PointLightStruct>& plcs) {
+	void DeferredRenderer::point_light_tiled_pass(std::vector<PointLightStruct>& lss) {
 	}
 
-	void DeferredRenderer::spot_light_tiled_pass(std::vector<SpotLightStruct>& slcs) {
+	void DeferredRenderer::spot_light_tiled_pass(std::vector<SpotLightStruct>& lss) {
 	}
 	
 
 
-	void DeferredRenderer::dir_shadow_subpass(){
+	void DeferredRenderer::dir_shadow_subpass(DirLightStruct& ls, DirectionalLight* l){
 
 		
 		m_fbo_shadow.bind_for_directional_shadow_pass();
@@ -575,12 +571,18 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		
+		//generate light_VP matrix
+		auto go = l->game_object;
+		glm::mat4 ortho_mat = m_camera->get_O_matrix();
+		glm::vec3 dir = glm::vec3(glm::transpose(glm::inverse(l->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (l->rotation * glm::vec4(0, 0, 1, 0)));
+		glm::vec3 up_vect = glm::vec3(dir.y, -dir.x, 0);
+		glm::mat4 light_VP = ortho_mat * glm::lookAt(dir, glm::vec3(0, 0, 0), up_vect);
+		light_VP_matrix = bias * light_VP;
 
 		glViewport(0, 0, m_fbo_shadow.directional_resolution, m_fbo_shadow.directional_resolution);
 
 		shadow_shaders[DIR].use();
-		glUniformMatrix4fv(shadow_shaders[DIR].getUniformLocation("light_VP"), 1, GL_FALSE, &directional_light_VP[0][0]);
+		glUniformMatrix4fv(shadow_shaders[DIR].getUniformLocation("light_VP"), 1, GL_FALSE, &light_VP[0][0]);
 		m_shadow_batch3d.render_batch();
 		shadow_shaders[DIR].unuse();
 
@@ -589,16 +591,9 @@ namespace Ryno{
 
 	}
 
-	void DeferredRenderer::point_shadow_subpass(PointLight* p)
+	void DeferredRenderer::point_shadow_subpass(PointLightStruct& ls, PointLight* l)
 	{
-		
-	
-		p->calculate_max_radius();
-
-		if (!point_shadow_enabled || !p->shadows)
-			return;
-
-
+				
 		//Enable depth testing and writing
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -614,7 +609,7 @@ namespace Ryno{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//Get light position, with correct z axis
-		glm::vec3 correct_position = glm::vec3(p->game_object->transform.hinerited_matrix * p->game_object->transform.model_matrix * glm::vec4(0,0,0,1));
+		glm::vec3 correct_position = glm::vec3(l->game_object->transform.hinerited_matrix * l->game_object->transform.model_matrix * glm::vec4(0,0,0,1));
 		
 
 		glm::mat4 light_VP_matrices[NUM_OF_LAYERS];
@@ -622,7 +617,7 @@ namespace Ryno{
 
 
 
-		glm::mat4 point_shadow_projection_matrix = glm::perspective(HALF_PI, 1.0, 1.0, (F64)p->max_radius);
+		glm::mat4 point_shadow_projection_matrix = glm::perspective(HALF_PI, 1.0, 1.0, (F64)l->max_radius);
 
 		
 		for (U8 i = 0; i < NUM_OF_LAYERS; i++){
@@ -668,7 +663,7 @@ namespace Ryno{
 
 
 		//Multiply view by a perspective matrix large as the light radius
-		spot_VP_matrix = projection_matrix * view_matrix;
+		//spot_VP_matrix = projection_matrix * view_matrix;
 
 
 		if (!spot_shadow_enabled || !s->shadows)
@@ -693,7 +688,7 @@ namespace Ryno{
 		//Send Vp matrix and world light position to shader, then render
 		shadow_shaders[SPOT].use();
 
-		glUniformMatrix4fv(shadow_shaders[SPOT].getUniformLocation("light_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
+		//glUniformMatrix4fv(shadow_shaders[SPOT].getUniformLocation("light_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
 
 		m_shadow_batch3d.render_batch();
 		shadow_shaders[SPOT].unuse();
@@ -704,14 +699,6 @@ namespace Ryno{
 		glViewport(0, 0, WindowSize::w, WindowSize::h);
 	}
 	
-
-
-
-
-
-
-
-
 
 
 

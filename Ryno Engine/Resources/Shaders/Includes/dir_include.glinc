@@ -1,5 +1,4 @@
 struct DirectionalLight {
-	mat4 light_VP_matrix;
 	mat4 light_V_matrix;
 	uint diffuse;
 	uint specular;
@@ -8,8 +7,8 @@ struct DirectionalLight {
 	float diffuse_intensity;
 	float specular_intensity;
 	float ambient_intensity;
-	float shadow_strength;
-	vec3 direction;	float _pad;
+	float _pad0;
+	vec4 direction;	
 };
 
 uniform sampler2D diffuse_tex;
@@ -28,7 +27,7 @@ vec3 get_shaded_fragment(DirectionalLight dir_light, vec2 coords) {
 	vec3 position = position_view_space.xyz / position_view_space.w;
 
 	vec4 position_world_space = iVP * position_screen_space;
-	vec3 view_dir_light = normalize(vec3(dir_light.light_V_matrix * vec4(dir_light.direction, 0)));
+	vec3 view_dir_light = normalize(vec3(dir_light.light_V_matrix * dir_light.direction));
 
 	//Get color and flatness from g buffer
 	vec4 sample_diff = texture(diffuse_tex, uv_coords);
@@ -57,6 +56,6 @@ vec3 get_shaded_fragment(DirectionalLight dir_light, vec2 coords) {
 	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.specular_intensity);
 
 
-	return amb_final * mat_diff + flatness * mat_diff + (1.0 - flatness) *get_shadow(position_world_space, dotNL)*(mat_diff * diffuse_final + mat_spec * specular_final);
+	return amb_final * mat_diff  + flatness * mat_diff + (1.0 - flatness) *get_shadow(position_world_space, dotNL)*(mat_diff * diffuse_final + mat_spec * specular_final);
 }
 

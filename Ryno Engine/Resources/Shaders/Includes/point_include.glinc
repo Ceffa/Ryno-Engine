@@ -1,0 +1,14 @@
+struct PointLight {
+	mat4 light_V_matrix;
+	uint diffuse;
+	uint specular;
+	float diffuse_intensity;
+	float specular_intensity;
+	vec4 position; 
+	float max_fov; float attenuation; float _pad0; float _pad1;
+};
+
+uniform sampler2D diffuse_tex;
+uniform sampler2D specular_tex;
+uniform sampler2D normal_tex;
+uniform sampler2D depth_tex;

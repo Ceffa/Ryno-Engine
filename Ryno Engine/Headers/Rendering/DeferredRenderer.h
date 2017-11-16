@@ -21,7 +21,7 @@
 #define NUM_OF_LAYERS 6
 namespace Ryno{
 
-	enum {DIR,POINT,SPOT};
+	enum LightType{DIR,POINT,SPOT};
 
 	struct CameraDirection
 	{
@@ -31,7 +31,6 @@ namespace Ryno{
 	};
 
 	struct DirLightStruct {
-		glm::mat4 light_VP_matrix;
 		glm::mat4 light_V_matrix;
 		ColorRGBA diffuse;
 		ColorRGBA specular;
@@ -40,11 +39,17 @@ namespace Ryno{
 		float diffuse_intensity;
 		float specular_intensity;
 		float ambient_intensity;
-		float shadow_strength;
-		glm::vec3 direction;float _pad;
+		float _pad0;
+		glm::vec4 direction;
 	};
 	struct PointLightStruct {
-		
+		glm::mat4 light_V_matrix;
+		ColorRGBA diffuse;
+		ColorRGBA specular;
+		float diffuse_intensity;
+		float specular_intensity;
+		glm::vec4 position; 
+		float max_fov; float attenuation; float _pad[2];
 	};
 	struct SpotLightStruct {
 
@@ -135,13 +140,8 @@ namespace Ryno{
 
 		U32 global_ubo = 0;
 
-		U32 dir_light_ubo = 0;
-		U32 point_light_ubo = 0;
-		U32 spot_light_ubo = 0;
-
-		GLuint dir_lights_SSBO = 0;
-		GLuint point_lights_SSBO = 0;
-		GLuint spot_lights_SSBO = 0;
+		U32 compute_light_ssbos[3]{ 0 };
+		U32 light_ssbos[3]{ 3 };
 
 		static void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", get_instance()->global_ubo, 0,s); }
 	private:
@@ -149,29 +149,29 @@ namespace Ryno{
 		DeferredRenderer() {}
 
 		//Extra dir light passes
-		void dir_lighting_subpass(DirLightStruct& dlc);
-		void dir_light_tiled_pass(std::vector<DirLightStruct>& dlcs);
-		void dir_shadow_subpass();
-		DirLightStruct fillDirLightStruct(DirectionalLight* d);
+		void dir_lighting_subpass(DirLightStruct& ls, DirectionalLight* l, U32 index);
+		void dir_light_tiled_pass(std::vector<DirLightStruct>& lss);
+		void dir_shadow_subpass(DirLightStruct& ls, DirectionalLight* l);
+		DirLightStruct fillDirLightStruct(const DirectionalLight* l) const;
 
 		//Extra point light passes
-		void point_lighting_subpass(PointLight* go);
-		void point_light_tiled_pass(std::vector<PointLightStruct>& plcs);
-		void point_shadow_subpass(PointLight* go);
-		PointLightStruct fillPointLightStruct(PointLight* p);
+		void point_lighting_subpass(PointLightStruct& ls, PointLight* l, U32 index);
+		void point_light_tiled_pass(std::vector<PointLightStruct>& lss);
+		void point_shadow_subpass(PointLightStruct& ls, PointLight* l);
+		PointLightStruct fillPointLightStruct(const PointLight* l) const;
 
 		//Extra spot light passes
-		void spot_lighting_subpass(SpotLight* go);
-		void spot_light_tiled_pass(std::vector<SpotLightStruct>& slcs);
+		void spot_lighting_subpass(SpotLight* go, U32 index);
+		void spot_light_tiled_pass(std::vector<SpotLightStruct>& lss);
 		void spot_shadow_subpass(SpotLight* go);
-		SpotLightStruct fillSpotLightStruct(SpotLight* s);
+		SpotLightStruct fillSpotLightStruct(const SpotLight* l) const;
 
 
 		
-
 	
 		static void bind_ubo(const std::string& name, U32 block, U32 bind_point, const Shader& s);
 		static void bind_ssbo(const std::string& name, U32 block, U32 bind_point, const Shader& s);
+		
 
 		Camera3D* m_camera;
 		FBO_Deferred m_fbo_deferred;
@@ -191,12 +191,18 @@ namespace Ryno{
 
 		SubModel light_models[3];			
 		SubModel m_blit_model_depth, m_blit_model_color, m_skybox_model, m_post_proc_model;
-		glm::mat4 MVP_camera;
-		glm::mat4 spot_VP_matrix;
-		glm::mat4 directional_light_VP;
 		glm::mat4 bias;
+		mutable glm::mat4 light_VP_matrix;
 		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 
 
+		template <class T>
+		void fill_ssbo(U32 ssbo, std::vector<T>& vec) {
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(T) * vec.size(), vec.data(), GL_DYNAMIC_READ);
+			GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+			memcpy(p, vec.data(), sizeof(T) * vec.size());
+			glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+		}
 	};
 	
 }

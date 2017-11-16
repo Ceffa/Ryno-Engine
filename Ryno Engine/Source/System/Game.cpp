@@ -173,7 +173,7 @@ namespace Ryno{
 		deferred_renderer->init_frame();
 		deferred_renderer->fill_batches();
 		deferred_renderer->geometry_pass();
-		deferred_renderer->spot_light_pass();
+		//deferred_renderer->spot_light_pass();
 		deferred_renderer->point_light_pass();
 		deferred_renderer->directional_light_pass();
 		deferred_renderer->skybox_pass();
