@@ -267,7 +267,7 @@ namespace Ryno{
 		for (auto l : PointLight::point_lights) {
 			if (!l->active || !l->game_object->active)
 				continue;
-			if (true){//l->shadows && point_shadow_enabled) {
+			if (l->shadows && point_shadow_enabled) {
 				lights.emplace_back(fillPointLightStruct(l));
 				lights_ptr.push_back(l);
 			}
@@ -284,12 +284,10 @@ namespace Ryno{
 		bind_global_ubo(light_shaders[POINT]);
 		bind_ssbo("point_ssbo", light_ssbos[POINT], 1, light_shaders[POINT]);
 
-		CPUProfiler::start_time();
 		for (U32 i = 0; i < lights.size(); ++i) {
-			//point_shadow_subpass(lights[i],lights_ptr[i]);
+			point_shadow_subpass(lights[i],lights_ptr[i]);
 			point_lighting_subpass(lights[i],lights_ptr[i], i);
 		}
-		CPUProfiler::cout_time();
 
 		//Process compute lights
 		point_light_tiled_pass(computeLights);
@@ -435,8 +433,7 @@ namespace Ryno{
 	
 		mat.set_uniform("MVP", m_camera->get_VP_matrix() * model_matrix);
 
-		mat.set_uniform("shadow_strength", l->shadow_strength);
-		mat.set_uniform("shadows_enabled", 0);
+		mat.set_uniform("shadow_strength", 0);
 		mat.set_uniform("index", index);
 
 		m_simple_drawer->draw(&light_models[POINT]);
@@ -527,34 +524,53 @@ namespace Ryno{
 	void DeferredRenderer::dir_light_tiled_pass(std::vector<DirLightStruct>& lss) {
 
 		U32 nrOfLights = lss.size();
-		
+
 		auto& s = compute_shaders[DIR];
 		bind_global_ubo(s);
 		bind_ssbo("dir_compute_ssbo", light_ssbos[DIR], 2, s);
 
-		compute_shaders[DIR].use();
+		s.use();
 		m_fbo_deferred.bind_fbo();
 		U8 samplerIndex = 0;
 
-		s.send_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0],&samplerIndex);
+		s.send_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0], &samplerIndex);
 		s.send_uniform_to_shader("nrOfLights", &nrOfLights, &samplerIndex);
 		s.send_uniform_to_shader("diffuse_tex", &m_fbo_deferred.m_textures[0], &samplerIndex);
 		s.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
 		s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
 		s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
-		
+
 
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-		glDispatchCompute(std::ceil(WindowSize::w/32.0f), std::ceil(WindowSize::h / 32.0f), 1);
+		glDispatchCompute(std::ceil(WindowSize::w / 32.0f), std::ceil(WindowSize::h / 32.0f), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		s.unuse();
-
-		
-		
-
 	}
 
 	void DeferredRenderer::point_light_tiled_pass(std::vector<PointLightStruct>& lss) {
+	
+		U32 nrOfLights = lss.size();
+
+		auto& s = compute_shaders[POINT];
+		bind_global_ubo(s);
+		bind_ssbo("point_compute_ssbo", compute_light_ssbos[POINT], 2, s);
+
+		s.use();
+		m_fbo_deferred.bind_fbo();
+		U8 samplerIndex = 0;
+
+		s.send_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0], &samplerIndex);
+		s.send_uniform_to_shader("nrOfLights", &nrOfLights, &samplerIndex);
+		s.send_uniform_to_shader("diffuse_tex", &m_fbo_deferred.m_textures[0], &samplerIndex);
+		s.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
+		s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
+		s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
+
+
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		glDispatchCompute(std::ceil(WindowSize::w / 32.0f), std::ceil(WindowSize::h / 32.0f), 1);
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		s.unuse();
 	}
 
 	void DeferredRenderer::spot_light_tiled_pass(std::vector<SpotLightStruct>& lss) {
