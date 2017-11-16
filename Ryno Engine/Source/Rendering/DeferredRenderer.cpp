@@ -527,7 +527,7 @@ namespace Ryno{
 
 		auto& s = compute_shaders[DIR];
 		bind_global_ubo(s);
-		bind_ssbo("dir_compute_ssbo", light_ssbos[DIR], 2, s);
+		bind_ssbo("dir_compute_ssbo", compute_light_ssbos[DIR], 2, s);
 
 		s.use();
 		m_fbo_deferred.bind_fbo();
