@@ -129,36 +129,6 @@
     <None Include="Resources\Music\cthulhu.ogg">
       <Filter>Header Files\Resource Files\Music</Filter>
     </None>
-    <None Include="Resources\Shaders\LightPass\directional.frag">
-      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\LightPass\directional.vert">
-      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\LightPass\point.frag">
-      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\LightPass\point.vert">
-      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\LightPass\spot.frag">
-      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\LightPass\spot.vert">
-      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\ShadowPass\directional.vert">
-      <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\ShadowPass\point.geom">
-      <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\ShadowPass\point.vert">
-      <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
-    </None>
-    <None Include="Resources\Shaders\ShadowPass\spot.vert">
-      <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
-    </None>
     <None Include="Resources\Shaders\SkyboxPass\skybox.frag">
       <Filter>Header Files\Resource Files\Shaders\SkyboxPass</Filter>
     </None>
@@ -184,8 +154,42 @@
     <None Include="Resources\Shaders\Others\blit2depth.frag" />
     <None Include="Resources\Shaders\Others\blit2depth.vert" />
     <None Include="Resources\Shaders\ComputePass\dir_compute.comp" />
-    <None Include="Resources\Shaders\Includes\dir.glinc" />
     <None Include="Resources\Shaders\Includes\global.glinc" />
+    <None Include="Resources\Shaders\ComputePass\point_compute.comp" />
+    <None Include="Resources\Shaders\ComputePass\spot_compute.comp" />
+    <None Include="Resources\Shaders\LightPass\dir_light.frag">
+      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\dir_light.vert">
+      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\point_light.frag">
+      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\point_light.vert">
+      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\spot_light.frag">
+      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightPass\spot_light.vert">
+      <Filter>Header Files\Resource Files\Shaders\LightPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\Includes\dir_include.glinc" />
+    <None Include="Resources\Shaders\Includes\point_include.glinc" />
+    <None Include="Resources\Shaders\Includes\spot_include.glinc" />
+    <None Include="Resources\Shaders\ShadowPass\dir_shadow.vert">
+      <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\point_shadow.geom">
+      <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\point_shadow.vert">
+      <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowPass\spot_shadow.vert">
+      <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">

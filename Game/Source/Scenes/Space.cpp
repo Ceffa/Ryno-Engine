@@ -19,8 +19,6 @@ namespace Ryno {
 		sphere_mesh = game->mesh_manager->load_mesh("sphere", GAME);
 
 		shader.create("Geometry/geometry", GAME);
-		dir_light_shader.create("LightPass/directional", ENGINE);
-
 
 
 		//dir light

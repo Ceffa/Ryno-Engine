@@ -21,6 +21,8 @@
 #define NUM_OF_LAYERS 6
 namespace Ryno{
 
+	enum {DIR,POINT,SPOT};
+
 	struct CameraDirection
 	{
 		GLenum CubemapFace;
@@ -92,8 +94,7 @@ namespace Ryno{
 
 		//Pass for directional lights
 		void directional_light_pass();
-		void directional_light_tiled_pass(std::vector<DirLightStruct>& dlcs);
-		DirLightStruct fillDirLightStruct(DirectionalLight* d);
+	
 
 
 		//Post processing effects, GUI not influenced
@@ -147,23 +148,26 @@ namespace Ryno{
 
 		DeferredRenderer() {}
 
-		//Shadow subpass for point light
-		void point_shadow_subpass(PointLight* go);
+		//Extra dir light passes
+		void dir_lighting_subpass(DirLightStruct& dlc);
+		void dir_light_tiled_pass(std::vector<DirLightStruct>& dlcs);
+		void dir_shadow_subpass();
+		DirLightStruct fillDirLightStruct(DirectionalLight* d);
 
-		//Lighting subpass for point light
+		//Extra point light passes
 		void point_lighting_subpass(PointLight* go);
+		void point_light_tiled_pass(std::vector<PointLightStruct>& plcs);
+		void point_shadow_subpass(PointLight* go);
+		PointLightStruct fillPointLightStruct(PointLight* p);
 
-		//Shadow subpass for spot light
-		void spot_shadow_subpass(SpotLight* go);
-
-		//Lighting subpass for spot light
+		//Extra spot light passes
 		void spot_lighting_subpass(SpotLight* go);
+		void spot_light_tiled_pass(std::vector<SpotLightStruct>& slcs);
+		void spot_shadow_subpass(SpotLight* go);
+		SpotLightStruct fillSpotLightStruct(SpotLight* s);
 
-		//Shadow subpass for directional light 
-		void directional_shadow_subpass();
 
-		//Lighting subpass for directional light
-		void directional_lighting_subpass(DirLightStruct& dlc);
+		
 
 	
 		static void bind_ubo(const std::string& name, U32 block, U32 bind_point, const Shader& s);
@@ -174,18 +178,18 @@ namespace Ryno{
 		FBO_Shadow m_fbo_shadow;
 		SimpleDrawer* m_simple_drawer;
 		Game* game;
+		MeshManager* m_mesh_manager;
+		TextureManager* m_texture_manager;
 
 		//PROGRAMS
 		Shader m_skybox_program,m_flat_program,m_sprite_program,m_font_program;
 		Shader m_blit_depth, m_blit_color;
-		Shader m_compute_dir;													//compute lights
-		Shader m_dir_light_pass, m_point_light_pass, m_spot_light_pass;			//lights
-		Shader m_dir_shadow_pass, m_point_shadow_pass, m_spot_shadow_pass;	//Shadows
+		Shader compute_shaders[3];														
+		Shader light_shaders[3];			
+		Shader shadow_shaders[3];	
 	
 
-		MeshManager* m_mesh_manager;
-		TextureManager* m_texture_manager;
-		SubModel m_point_bounding,  m_spot_bounding, m_dir_bounding;			//Bounding models
+		SubModel light_models[3];			
 		SubModel m_blit_model_depth, m_blit_model_color, m_skybox_model, m_post_proc_model;
 		glm::mat4 MVP_camera;
 		glm::mat4 spot_VP_matrix;

@@ -71,27 +71,29 @@ namespace Ryno{
 		m_post_proc_model.mesh = m_blit_model_depth.mesh;
 
 		//bounding boxes
-		m_dir_bounding.mesh = m_blit_model_depth.mesh;
-		m_point_bounding.mesh = m_mesh_manager->load_mesh("bound_sphere", ENGINE);
-		m_spot_bounding.mesh = m_mesh_manager->load_mesh("bound_pyramid", ENGINE);
+		light_models[DIR].mesh = m_blit_model_depth.mesh;
+		light_models[POINT].mesh = m_mesh_manager->load_mesh("bound_sphere", ENGINE);
+		light_models[SPOT].mesh = m_mesh_manager->load_mesh("bound_pyramid", ENGINE);
 
 
 
 
 		//SHADER PROGRAMS LOADING
+		shadow_shaders[DIR].create("ShadowPass/dir_shadow", ENGINE);
+		light_shaders[DIR].create("LightPass/dir_light", ENGINE);
+		compute_shaders[DIR].create("ComputePass/dir_compute", ENGINE);
+		light_models[DIR].material.set_shader(&light_shaders[DIR]);
 
-		m_point_shadow_pass.create("ShadowPass/point", ENGINE);
-		m_point_light_pass.create("LightPass/point", ENGINE);
-		m_point_bounding.material.set_shader(&m_point_light_pass);
+		shadow_shaders[POINT].create("ShadowPass/point_shadow", ENGINE);
+		light_shaders[POINT].create("LightPass/point_light", ENGINE);
+		compute_shaders[POINT].create("ComputePass/point_compute", ENGINE);
+		light_models[POINT].material.set_shader(&light_shaders[POINT]);
 
-	
-		m_spot_shadow_pass.create("ShadowPass/spot", ENGINE);
-		m_spot_light_pass.create("LightPass/spot", ENGINE);
-		m_spot_bounding.material.set_shader(&m_spot_light_pass);
+		shadow_shaders[SPOT].create("ShadowPass/spot_shadow", ENGINE);
+		light_shaders[SPOT].create("LightPass/spot_light", ENGINE);
+		compute_shaders[SPOT].create("ComputePass/dir_compute", ENGINE);
+		light_models[SPOT].material.set_shader(&light_shaders[SPOT]);
 
-		m_compute_dir.create("ComputePass/dir_compute", ENGINE);
-		m_dir_light_pass.create("LightPass/directional", ENGINE);
-		m_dir_bounding.material.set_shader(&m_dir_light_pass);
 	
 		m_skybox_program.create("SkyboxPass/skybox",ENGINE);
 		m_skybox_model.material.set_shader(&m_skybox_program);
@@ -103,7 +105,6 @@ namespace Ryno{
 		m_blit_color.create("Others/blit2color", ENGINE);
 		m_blit_model_color.material.set_shader(&m_blit_color);
 
-		m_dir_shadow_pass.create("ShadowPass/directional", ENGINE);
 		
 
 
@@ -224,6 +225,29 @@ namespace Ryno{
 	}
 	
 
+
+	void DeferredRenderer::directional_light_pass()
+	{
+		if (!directional_light_enabled)
+			return;
+
+		std::vector<DirLightStruct> computeLights;
+		for (auto* l : DirectionalLight::dir_lights){
+			if (!l->active || !l->game_object->active)
+				continue;
+			DirLightStruct dlc = fillDirLightStruct(l);
+			if (l->shadows && directional_shadow_enabled) {
+				dir_shadow_subpass();
+				dir_lighting_subpass(dlc);
+			}
+			else {
+				computeLights.emplace_back(dlc);
+			}
+		}
+
+		dir_light_tiled_pass(computeLights);
+	}	
+
 	void DeferredRenderer::point_light_pass(){		
 
 		if (!point_light_enabled)
@@ -240,7 +264,6 @@ namespace Ryno{
 
 	}
 
-
 	void DeferredRenderer::spot_light_pass()
 	{
 		if (!spot_light_enabled)
@@ -254,6 +277,8 @@ namespace Ryno{
 		}
 
 	}
+
+
 
 	DirLightStruct DeferredRenderer::fillDirLightStruct(DirectionalLight* d) {
 
@@ -289,27 +314,280 @@ namespace Ryno{
 		return dlc;
 	}
 
-	void DeferredRenderer::directional_light_pass()
-	{
-		if (!directional_light_enabled)
-			return;
+	PointLightStruct DeferredRenderer::fillPointLightStruct(PointLight* p) {
 
-		std::vector<DirLightStruct> computeLights;
-		for (auto* l : DirectionalLight::dir_lights){
-			if (!l->active || !l->game_object->active)
-				continue;
-			DirLightStruct dlc = fillDirLightStruct(l);
-			if (l->shadows && directional_shadow_enabled) {
-				directional_shadow_subpass();
-				directional_lighting_subpass(dlc);
-			}
-			else {
-				computeLights.emplace_back(dlc);
-			}
+		PointLightStruct plc;
+		return plc;
+	}
+
+	SpotLightStruct DeferredRenderer::fillSpotLightStruct(SpotLight* s) {
+
+		SpotLightStruct slc;
+		return slc;
+	}
+
+
+
+	void DeferredRenderer::dir_lighting_subpass(DirLightStruct& dlc)
+	{		
+		m_fbo_deferred.bind_for_light_pass();
+
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+		
+		
+		auto& mat = light_models[DIR].material;
+
+		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+		mat.set_uniform("shadow_tex", m_fbo_shadow.m_directional_texture);
+		mat.set_uniform("jitter", dlc.blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[dlc.blur-1]);
+
+
+		//SEND DIR LIGHT UNIFORMS
+		glBindBuffer(GL_UNIFORM_BUFFER, dir_light_ubo);
+		GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+		memcpy(p, &dlc, sizeof(DirLightStruct));
+		glUnmapBuffer(GL_UNIFORM_BUFFER);
+
+		bind_global_ubo(*mat.shader);
+		bind_ubo("dir_ubo", dir_light_ubo, 1, *mat.shader);
+		m_simple_drawer->draw(&light_models[DIR]);
+
+		
+		glDisable(GL_BLEND);
+	}
+	
+	void DeferredRenderer::point_lighting_subpass(PointLight* p){
+
+		m_fbo_deferred.bind_for_light_pass();
+
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+
+		//Generate a special model matrix with the following differences:
+		//1) scale is not considered, we use the light one
+		//2) translation is precalculated from the hinerited and model matrices, we don't care HOW we get there
+		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
+		//we just need to orient the bounding box
+
+		glm::vec3 trans = glm::vec3(p->game_object->transform.hinerited_matrix * p->game_object->transform.model_matrix * glm::vec4(0, 0, 0, 1));
+
+		glm::vec3 scale = glm::vec3(p->max_radius);
+		glm::quat rot = p->game_object->transform.get_rotation();
+		Transform* parent = p->game_object->transform.get_parent();
+		while (parent != nullptr) {
+			rot = parent->get_rotation() * rot;
+			parent = parent->get_parent();
 		}
+		glm::mat4 model_matrix = glm::scale(
+			//Translate matrix
+			glm::translate(glm::mat4(1.0f), glm::vec3(trans)) *
+			//Rotation matrix built from three quaternions
+			glm::toMat4(rot),
+			//Scaling the rot-trans matrix
+			scale);
 
-		directional_light_tiled_pass(computeLights);
-	}	
+		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
+
+
+		auto& mat = light_models[POINT].material;
+		//SEND POINT LIGHT UNIFORMS (each for light)
+		mat.set_uniform("point_light.position", trans);
+		mat.set_uniform("point_light.attenuation", p->attenuation);
+		mat.set_uniform("point_light.diffuse", p->diffuse_color);
+		mat.set_uniform("point_light.specular", p->specular_color);
+		mat.set_uniform("point_light.specular_intensity", p->specular_intensity);
+		mat.set_uniform("point_light.diffuse_intensity", p->diffuse_intensity);
+		mat.set_uniform("point_light.shadow_strength", p->shadow_strength);
+
+
+		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM glob
+		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+		mat.set_uniform("shadow_cube", m_fbo_shadow.m_point_cube);
+	
+		//SEND OTHER UNIFORMS
+		mat.set_uniform("max_fov", p->max_radius);
+		mat.set_uniform("light_V_matrix",m_camera->get_light_V_matrix());
+		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
+
+
+		mat.set_uniform("MVP", MVP_camera);
+		mat.set_uniform("shadows_enabled", (point_shadow_enabled && p->shadows) ? 1 : 0);
+		
+		bind_global_ubo(*mat.shader);
+		m_simple_drawer->draw(&light_models[POINT]);
+
+
+		glDisable(GL_BLEND);
+
+	}
+
+	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
+	{
+		
+		m_fbo_deferred.bind_for_light_pass();
+
+
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+	
+		//Generate a special model matrix with the following differences:
+		//1) scale is not considered, we use the light one
+		//2) translation is precalculated from the hinerited and model matrices, we don't care HOW we get there
+		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
+		//we just need to orient the bounding box
+
+		auto go = s->game_object;
+		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
+		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
+		glm::vec3 scale = glm::vec3(width, s->max_radius, width);
+		glm::quat rot = s->absolute_movement ?  s-> rotation : go->transform.get_rotation() * s->rotation;
+		Transform* parent = go->transform.get_parent();
+		while (parent != nullptr) {
+			rot = parent->get_rotation() * rot;
+			parent = parent->get_parent();
+		}
+		glm::mat4 model_matrix = glm::scale(
+			//Translate matrix
+			glm::translate(glm::mat4(1.0f), glm::vec3(trans)) *
+			//Rotation matrix built from three quaternions
+			glm::toMat4(rot),
+			//Scaling the rot-trans matrix
+			scale);
+
+		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
+		glm::mat4 biased_light_VP_matrix = bias * spot_VP_matrix;
+
+		F32 cutoff_value = cos(s->cutoff * DEG_TO_RAD);
+
+		auto& mat = light_models[SPOT].material;
+		//SEND SPOT LIGHT UNIFORMS
+		mat.set_uniform("spot_light.position", trans);
+		mat.set_uniform("spot_light.attenuation", s->attenuation);
+		mat.set_uniform("spot_light.direction", rot * glm::vec3(0,0,-1));
+		mat.set_uniform("spot_light.cutoff", cutoff_value);
+		mat.set_uniform("spot_light.diffuse", s->diffuse_color);
+		mat.set_uniform("spot_light.specular",s->specular_color);
+		mat.set_uniform("spot_light.diffuse_intensity", s->diffuse_intensity);
+		mat.set_uniform("spot_light.specular_intensity", s->specular_intensity);
+		mat.set_uniform("spot_light.blur", s->blur);
+		mat.set_uniform("spot_light.shadow_strength", s->shadow_strength);
+
+		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
+		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
+		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
+		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+		mat.set_uniform("shadow_tex", m_fbo_shadow.m_spot_texture);
+		mat.set_uniform("jitter", s->blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[s->blur - 1]);
+
+
+		
+		mat.set_uniform("light_VP_matrix", biased_light_VP_matrix);
+		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
+		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
+		
+		mat.set_uniform("MVP",MVP_camera);
+		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && s->shadows) ? 1 : 0);
+
+		bind_global_ubo(*mat.shader);
+		m_simple_drawer->draw(&light_models[SPOT]);
+
+		glDisable(GL_BLEND);
+	}
+
+
+
+	void DeferredRenderer::dir_light_tiled_pass(std::vector<DirLightStruct>& dlcs) {
+
+		U32 nrOfLights = dlcs.size();
+		
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, dir_lights_SSBO);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DirLightStruct) * nrOfLights, dlcs.data(), GL_DYNAMIC_READ);
+		GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+		memcpy(p, dlcs.data(), sizeof(DirLightStruct) * nrOfLights);
+
+		auto& s = compute_shaders[DIR];
+		bind_global_ubo(s);
+		bind_ssbo("dir_ssbo", dir_lights_SSBO, 1, s);
+
+		compute_shaders[DIR].use();
+		m_fbo_deferred.bind_fbo();
+		U8 samplerIndex = 0;
+
+		s.send_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0],&samplerIndex);
+		s.send_uniform_to_shader("nrOfLights", &nrOfLights, &samplerIndex);
+		s.send_uniform_to_shader("diffuse_tex", &m_fbo_deferred.m_textures[0], &samplerIndex);
+		s.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
+		s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
+		s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
+		
+
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		glDispatchCompute(std::ceil(WindowSize::w/32.0f), std::ceil(WindowSize::h / 32.0f), 1);
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		s.unuse();
+
+		
+		
+
+	}
+
+	void DeferredRenderer::point_light_tiled_pass(std::vector<PointLightStruct>& plcs) {
+	}
+
+	void DeferredRenderer::spot_light_tiled_pass(std::vector<SpotLightStruct>& slcs) {
+	}
+	
+
+
+	void DeferredRenderer::dir_shadow_subpass(){
+
+		
+		m_fbo_shadow.bind_for_directional_shadow_pass();
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+		
+
+		glViewport(0, 0, m_fbo_shadow.directional_resolution, m_fbo_shadow.directional_resolution);
+
+		shadow_shaders[DIR].use();
+		glUniformMatrix4fv(shadow_shaders[DIR].getUniformLocation("light_VP"), 1, GL_FALSE, &directional_light_VP[0][0]);
+		m_shadow_batch3d.render_batch();
+		shadow_shaders[DIR].unuse();
+
+
+		glViewport(0, 0, WindowSize::w, WindowSize::h);
+
+	}
 
 	void DeferredRenderer::point_shadow_subpass(PointLight* p)
 	{
@@ -358,12 +636,12 @@ namespace Ryno{
 		}
 
 		//Send Vp matrix and world light position to shader, then render
-		m_point_shadow_pass.use();
+		shadow_shaders[POINT].use();
 
-		glUniformMatrix4fv(m_point_shadow_pass.getUniformLocation("projection_matrices"),6,GL_FALSE,&light_VP_matrices[0][0][0]);
+		glUniformMatrix4fv(shadow_shaders[POINT].getUniformLocation("projection_matrices"),6,GL_FALSE,&light_VP_matrices[0][0][0]);
 
 		m_shadow_batch3d.render_batch();
-		m_point_shadow_pass.unuse();
+		shadow_shaders[POINT].unuse();
 
 		
 
@@ -372,84 +650,7 @@ namespace Ryno{
 
 
 	}
-	
 
-	void DeferredRenderer::point_lighting_subpass(PointLight* p){
-
-		m_fbo_deferred.bind_for_light_pass();
-
-		glDisable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_ONE, GL_ONE);
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-
-
-		//Generate a special model matrix with the following differences:
-		//1) scale is not considered, we use the light one
-		//2) translation is precalculated from the hinerited and model matrices, we don't care HOW we get there
-		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
-		//we just need to orient the bounding box
-
-		glm::vec3 trans = glm::vec3(p->game_object->transform.hinerited_matrix * p->game_object->transform.model_matrix * glm::vec4(0, 0, 0, 1));
-
-		glm::vec3 scale = glm::vec3(p->max_radius);
-		glm::quat rot = p->game_object->transform.get_rotation();
-		Transform* parent = p->game_object->transform.get_parent();
-		while (parent != nullptr) {
-			rot = parent->get_rotation() * rot;
-			parent = parent->get_parent();
-		}
-		glm::mat4 model_matrix = glm::scale(
-			//Translate matrix
-			glm::translate(glm::mat4(1.0f), glm::vec3(trans)) *
-			//Rotation matrix built from three quaternions
-			glm::toMat4(rot),
-			//Scaling the rot-trans matrix
-			scale);
-
-		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
-
-
-		auto& mat = m_point_bounding.material;
-		//SEND POINT LIGHT UNIFORMS (each for light)
-		mat.set_uniform("point_light.position", trans);
-		mat.set_uniform("point_light.attenuation", p->attenuation);
-		mat.set_uniform("point_light.diffuse", p->diffuse_color);
-		mat.set_uniform("point_light.specular", p->specular_color);
-		mat.set_uniform("point_light.specular_intensity", p->specular_intensity);
-		mat.set_uniform("point_light.diffuse_intensity", p->diffuse_intensity);
-		mat.set_uniform("point_light.shadow_strength", p->shadow_strength);
-
-
-		//CONSTANT UNIFORMS, IN THE FUTURE MAKE THEM glob
-		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
-		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
-		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
-		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
-		mat.set_uniform("shadow_cube", m_fbo_shadow.m_point_cube);
-	
-		//SEND OTHER UNIFORMS
-		mat.set_uniform("max_fov", p->max_radius);
-		mat.set_uniform("light_V_matrix",m_camera->get_light_V_matrix());
-		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
-
-
-		mat.set_uniform("MVP", MVP_camera);
-		mat.set_uniform("shadows_enabled", (point_shadow_enabled && p->shadows) ? 1 : 0);
-		
-		bind_global_ubo(*mat.shader);
-		m_simple_drawer->draw(&m_point_bounding);
-
-
-		glDisable(GL_BLEND);
-
-	}
-
-	
 	void DeferredRenderer::spot_shadow_subpass(SpotLight* s)
 	{
 		GameObject* go = s->game_object;
@@ -490,197 +691,29 @@ namespace Ryno{
 		
 
 		//Send Vp matrix and world light position to shader, then render
-		m_spot_shadow_pass.use();
+		shadow_shaders[SPOT].use();
 
-		glUniformMatrix4fv(m_spot_shadow_pass.getUniformLocation("light_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
+		glUniformMatrix4fv(shadow_shaders[SPOT].getUniformLocation("light_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
 
 		m_shadow_batch3d.render_batch();
-		m_spot_shadow_pass.unuse();
+		shadow_shaders[SPOT].unuse();
 
 
 
 		//Restore clear color and viewport
 		glViewport(0, 0, WindowSize::w, WindowSize::h);
 	}
-
-
-	void DeferredRenderer::spot_lighting_subpass(SpotLight* s)
-	{
-		
-		m_fbo_deferred.bind_for_light_pass();
-
-
-		glDisable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_ONE, GL_ONE);
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-	
-		//Generate a special model matrix with the following differences:
-		//1) scale is not considered, we use the light one
-		//2) translation is precalculated from the hinerited and model matrices, we don't care HOW we get there
-		//3) rotation is calculated recursively. This loses info about the axis around which it rotates, bu we don't care,
-		//we just need to orient the bounding box
-
-		auto go = s->game_object;
-		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
-		float width = s->max_radius *  sin(s->cutoff * DEG_TO_RAD);
-		glm::vec3 scale = glm::vec3(width, s->max_radius, width);
-		glm::quat rot = s->absolute_movement ?  s-> rotation : go->transform.get_rotation() * s->rotation;
-		Transform* parent = go->transform.get_parent();
-		while (parent != nullptr) {
-			rot = parent->get_rotation() * rot;
-			parent = parent->get_parent();
-		}
-		glm::mat4 model_matrix = glm::scale(
-			//Translate matrix
-			glm::translate(glm::mat4(1.0f), glm::vec3(trans)) *
-			//Rotation matrix built from three quaternions
-			glm::toMat4(rot),
-			//Scaling the rot-trans matrix
-			scale);
-
-		MVP_camera = m_camera->get_VP_matrix() * model_matrix;
-		glm::mat4 biased_light_VP_matrix = bias * spot_VP_matrix;
-
-		F32 cutoff_value = cos(s->cutoff * DEG_TO_RAD);
-
-		auto& mat = m_spot_bounding.material;
-		//SEND SPOT LIGHT UNIFORMS
-		mat.set_uniform("spot_light.position", trans);
-		mat.set_uniform("spot_light.attenuation", s->attenuation);
-		mat.set_uniform("spot_light.direction", rot * glm::vec3(0,0,-1));
-		mat.set_uniform("spot_light.cutoff", cutoff_value);
-		mat.set_uniform("spot_light.diffuse", s->diffuse_color);
-		mat.set_uniform("spot_light.specular",s->specular_color);
-		mat.set_uniform("spot_light.diffuse_intensity", s->diffuse_intensity);
-		mat.set_uniform("spot_light.specular_intensity", s->specular_intensity);
-		mat.set_uniform("spot_light.blur", s->blur);
-		mat.set_uniform("spot_light.shadow_strength", s->shadow_strength);
-
-		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
-		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
-		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
-		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
-		mat.set_uniform("shadow_tex", m_fbo_shadow.m_spot_texture);
-		mat.set_uniform("jitter", s->blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[s->blur - 1]);
-
-
-		
-		mat.set_uniform("light_VP_matrix", biased_light_VP_matrix);
-		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
-		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
-		
-		mat.set_uniform("MVP",MVP_camera);
-		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && s->shadows) ? 1 : 0);
-
-		bind_global_ubo(*mat.shader);
-		m_simple_drawer->draw(&m_spot_bounding);
-
-		glDisable(GL_BLEND);
-	}
 	
 
-	void DeferredRenderer::directional_shadow_subpass(){
-
-		
-		m_fbo_shadow.bind_for_directional_shadow_pass();
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(GL_TRUE);
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-
-		
-
-		glViewport(0, 0, m_fbo_shadow.directional_resolution, m_fbo_shadow.directional_resolution);
-
-		m_dir_shadow_pass.use();
-		glUniformMatrix4fv(m_dir_shadow_pass.getUniformLocation("light_VP"), 1, GL_FALSE, &directional_light_VP[0][0]);
-		m_shadow_batch3d.render_batch();
-		m_dir_shadow_pass.unuse();
 
 
-		glViewport(0, 0, WindowSize::w, WindowSize::h);
-
-	}
 
 
-	void DeferredRenderer::directional_lighting_subpass(DirLightStruct& dlc)
-	{		
-		m_fbo_deferred.bind_for_light_pass();
-
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_ONE, GL_ONE);
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-
-		glDisable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
-		
-		
-		auto& mat = m_dir_bounding.material;
-
-		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
-		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
-		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
-		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
-		mat.set_uniform("shadow_tex", m_fbo_shadow.m_directional_texture);
-		mat.set_uniform("jitter", dlc.blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[dlc.blur-1]);
 
 
-		//SEND DIR LIGHT UNIFORMS
-		glBindBuffer(GL_UNIFORM_BUFFER, dir_light_ubo);
-		GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
-		memcpy(p, &dlc, sizeof(DirLightStruct));
-		glUnmapBuffer(GL_UNIFORM_BUFFER);
-
-		bind_global_ubo(*mat.shader);
-		bind_ubo("dir_ubo", dir_light_ubo, 1, *mat.shader);
-		m_simple_drawer->draw(&m_dir_bounding);
-
-		
-		glDisable(GL_BLEND);
-	}
 
 
-	void DeferredRenderer::directional_light_tiled_pass(std::vector<DirLightStruct>& dlcs) {
 
-		U32 nrOfLights = dlcs.size();
-		
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, dir_lights_SSBO);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DirLightStruct) * nrOfLights, dlcs.data(), GL_DYNAMIC_READ);
-		GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-		memcpy(p, dlcs.data(), sizeof(DirLightStruct) * nrOfLights);
-
-		bind_global_ubo(m_compute_dir);
-		bind_ssbo("dir_ssbo", dir_lights_SSBO, 1, m_compute_dir);
-
-		m_compute_dir.use();
-		m_fbo_deferred.bind_fbo();
-		U8 samplerIndex = 0;
-
-		m_compute_dir.send_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0],&samplerIndex);
-		m_compute_dir.send_uniform_to_shader("nrOfLights", &nrOfLights, &samplerIndex);
-		m_compute_dir.send_uniform_to_shader("diffuse_tex", &m_fbo_deferred.m_textures[0], &samplerIndex);
-		m_compute_dir.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
-		m_compute_dir.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
-		m_compute_dir.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
-		
-
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-		glDispatchCompute(std::ceil(WindowSize::w/32.0f), std::ceil(WindowSize::h / 32.0f), 1);
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-		m_compute_dir.unuse();
-
-		
-		
-
-	}
 
 	void DeferredRenderer::skybox_pass(){
 		if (!skybox_enabled)
