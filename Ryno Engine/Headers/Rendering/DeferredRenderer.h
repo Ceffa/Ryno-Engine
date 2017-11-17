@@ -50,7 +50,13 @@ namespace Ryno{
 		float max_fov; float attenuation; float _pad[2];
 	};
 	struct SpotLightStruct {
-
+		ColorRGBA diffuse;
+		ColorRGBA specular;
+		float diffuse_intensity;
+		float specular_intensity;
+		glm::vec4 position;
+		glm::vec4 direction;
+		float cutoff; float attenuation; float blur; float _pad;
 	};
 
 
@@ -160,9 +166,9 @@ namespace Ryno{
 		PointLightStruct fillPointLightStruct(PointLight* l) const;
 
 		//Extra spot light passes
-		void spot_lighting_subpass(SpotLight* go, U32 index);
+		void spot_lighting_subpass(SpotLightStruct& ls, SpotLight* go, U32 index);
 		void spot_light_tiled_pass(std::vector<SpotLightStruct>& lss);
-		void spot_shadow_subpass(SpotLight* go);
+		void spot_shadow_subpass(SpotLightStruct& ls, SpotLight* go);
 		SpotLightStruct fillSpotLightStruct(SpotLight* l) const;
 
 

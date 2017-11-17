@@ -6,7 +6,7 @@ struct SpotLight {
 	float specular_intensity;
 	vec4 position; 
 	vec4 direction;
-	float attenuation; float cutoff;	uint blur; float _pad;
+	float cutoff; float attenuation; uint blur; float _pad;
 };
 
 uniform sampler2D diffuse_tex;
@@ -14,11 +14,10 @@ uniform sampler2D specular_tex;
 uniform sampler2D normal_tex;
 uniform sampler2D depth_tex;
 
-/*
-float get_shadow(vec3 light_world_dir, float fov);
 
+float get_shadow(vec3 position_world_space, float dotNL);
 
-vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
+vec3 get_shaded_fragment(SpotLight spot_light, ivec2 coords) {
 
 	//Rebuild position from depth
 	float depth = texelFetch(depth_tex, coords, 0).r *2.0 - 1.0;
@@ -26,8 +25,10 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 	vec4 position_screen_space = vec4(ndc_coords, depth, 1);
 	vec4 position_view_space_not_normalized = iP * position_screen_space;
 	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
-	vec4 position_world_space = iV * vec4(position_view_space, 1.0);
-	vec4 light_view_space = V * point_light.position;
+	vec4 position_world_space_not_normalized = iVP * position_screen_space;
+	vec3 position_world_space = position_world_space_not_normalized.xyz / position_world_space_not_normalized.w;
+
+
 
 	//Color directly from g buffer
 	vec4 sample_diff = texelFetch(diffuse_tex, coords, 0);
@@ -39,11 +40,10 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 
 	//Normal z-axis built back from the other two
 	vec2 n = texelFetch(normal_tex, coords, 0).xy;
-	vec3 normal_view_space = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
-
+	vec3 normal_view_space = vec3(n.x, n.y, sqrt(1 - abs(dot(n.xy, n.xy))));
 
 	//Important vectors
-	vec4 light_dir_world_space_not_normalized = point_light.position - position_world_space;
+	vec4 light_dir_world_space_not_normalized = spot_light.position - vec4(position_world_space, 1);
 	vec4 light_dir_world_space = normalize(light_dir_world_space_not_normalized);
 	vec4 light_dir_view_space = itV * light_dir_world_space;
 	vec4 view_dir_view_space = vec4(normalize(-position_view_space), 0);
@@ -51,21 +51,23 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 
 	//Calculate attenuation
 	float distance2 = length2(light_dir_world_space_not_normalized.xyz);
-	float attenuation = point_light.attenuation * max(distance2, .00001);
+	float attenuation = spot_light.attenuation * max(distance2, .00001);
 
 	//Calculate base colors
-	vec3 diff_color = split3(point_light.diffuse) * point_light.diffuse_intensity;
-	vec3 spec_color = split3(point_light.specular) * mat_spec_pow;
+	vec3 diff_color = split3(spot_light.diffuse) * spot_light.diffuse_intensity;
+	vec3 spec_color = split3(spot_light.specular) * mat_spec_pow;
 
 
 	//final colors for diffuse and specular
-	vec3 diffuse_final = max(0, dot(normal_view_space, light_dir_view_space.xyz)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001), point_light.specular_intensity);
+	float dotNL = dot(normal_view_space, light_dir_view_space.xyz);
+	vec3 diffuse_final = max(0, dotNL) * diff_color;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001), spot_light.specular_intensity);
 
-	vec3 final_color = flatness * mat_diff + get_shadow(-light_dir_world_space_not_normalized.xyz, point_light.max_fov) *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
+
+
+	//fragment color
+	vec3 final_color = flatness * mat_diff + get_shadow(position_world_space, dotNL) *  (1.0 - flatness) * (mat_spec * specular_final + mat_diff * diffuse_final) / attenuation;
 	return clean_color(final_color);
 }
 
 
-
-*/

@@ -89,6 +89,7 @@ namespace Ryno {
 			d->absolute_movement = false;
 			d->blur = 1;
 			d->shadows = true;
+			d->shadow_strength = 1;
 			auto* pl = center.add_component<PointLight>();
 			pl->set_diffuse_color(255, 80, 0);
 			pl->diffuse_intensity = 1;
