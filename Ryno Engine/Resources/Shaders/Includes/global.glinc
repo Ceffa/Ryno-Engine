@@ -23,3 +23,7 @@ vec3 split3(uint color) {
 vec4 split4(uint color) {
 	return vec4(split(color, 0), split(color, 1), split(color, 2), split(color,3));
 }
+
+float length2(vec3 l) {
+	return l.x*l.x + l.y * l.y + l.z * l.z;
+}

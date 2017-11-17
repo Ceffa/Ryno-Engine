@@ -156,7 +156,7 @@ namespace Ryno{
 
 
 		glBindBuffer(GL_UNIFORM_BUFFER, global_ubo);
-		GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+		GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_READ_ONLY);
 		memcpy(p, &ubo_global_data, sizeof(UBO_Global_Data));
 		glUnmapBuffer(GL_UNIFORM_BUFFER);
 	
@@ -336,7 +336,7 @@ namespace Ryno{
 
 	PointLightStruct DeferredRenderer::fillPointLightStruct(const PointLight* l) const{
 		
-		glm::vec4 trans = l->game_object->transform.hinerited_matrix * l->game_object->transform.model_matrix * glm::vec4(0, 0, 0, 1);
+		glm::vec4 trans = l->game_object->transform.hinerited_matrix * glm::vec4(l->game_object->transform.get_position(),1);
 
 		PointLightStruct ls;
 		ls.position = trans;
@@ -540,9 +540,9 @@ namespace Ryno{
 		s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
 		s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
 
-
+		const float grid_size = 32;
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-		glDispatchCompute(std::ceil(WindowSize::w / 32.0f), std::ceil(WindowSize::h / 32.0f), 1);
+		glDispatchCompute(std::ceil(WindowSize::w / grid_size), std::ceil(WindowSize::h / grid_size), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		s.unuse();
 	}
@@ -566,9 +566,9 @@ namespace Ryno{
 		s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
 		s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
 
-
+		const int grid_size = 16;
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-		glDispatchCompute(std::ceil(WindowSize::w / 32.0f), std::ceil(WindowSize::h / 32.0f), 1);
+		glDispatchCompute(std::ceil(WindowSize::w / grid_size), std::ceil(WindowSize::h / grid_size), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		s.unuse();
 	}

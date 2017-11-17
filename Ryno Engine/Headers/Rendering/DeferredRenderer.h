@@ -167,6 +167,8 @@ namespace Ryno{
 		SpotLightStruct fillSpotLightStruct(const SpotLight* l) const;
 
 
+
+
 		
 	
 		static void bind_ubo(const std::string& name, U32 block, U32 bind_point, const Shader& s);

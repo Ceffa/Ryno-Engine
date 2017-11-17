@@ -13,7 +13,7 @@ layout(rgba8, binding = 0) uniform image2D main_tex;
 
 
 void main(){
-    vec2 coords = vec2((gl_WorkGroupID * gl_WorkGroupSize + gl_LocalInvocationID).xy);
+	vec2 coords = vec2(gl_GlobalInvocationID.xy) + vec2(.5, .5);
 	vec3 color = imageLoad(main_tex, ivec2(coords)).xyz;
 	for (int i = 0; i < nrOfLights; i++){
 		color+=get_shaded_fragment(lights[i],coords);
