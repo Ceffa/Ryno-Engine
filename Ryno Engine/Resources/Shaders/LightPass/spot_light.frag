@@ -1,25 +1,7 @@
 E(Includes/global)
+E(Includes/spot_include)
 
-//4-byte aligned
-struct SpotLight{
-	vec3 position; //Needs to be divided
-	float attenuation;
-	vec3 direction;
-	float cutoff;
-	uint diffuse;
-	uint specular;
-	float diffuse_intensity;
-	float specular_intensity;
-	uint blur;
-	float shadow_strength;
-};
 
-//Unifroms taken by the buffers
-//uniform sampler2D position_tex;
-uniform sampler2D diffuse_tex;
-uniform sampler2D specular_tex;
-uniform sampler2D normal_tex;
-uniform sampler2D depth_tex;
 uniform sampler3D jitter;
 uniform sampler2DShadow shadow_tex;
 uniform int shadows_enabled;
@@ -31,10 +13,7 @@ uniform mat4 light_VP_matrix;
 
 //All the spot light uniforms
 uniform SpotLight spot_light;
-
-
-//Max fov of the light, to reconstruct depth correctly
-uniform float max_fov;
+uniform float shadow_strength;
 
 out vec3 fracolor;
 
@@ -64,7 +43,7 @@ void main(){
 	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
 	vec4 position_world_space_not_normalized = iVP * position_screen_space;
 	vec3 position_world_space = position_world_space_not_normalized.xyz / position_world_space_not_normalized.w;
-	vec4 light_world_space = vec4(spot_light.position, 1);
+	vec4 light_world_space = spot_light.position;
 	vec4 light_view_space = V * light_world_space;
 
 	vec4 position_light_MVP_matrix = light_VP_matrix * vec4(position_world_space,1);
@@ -91,12 +70,12 @@ void main(){
 	vec4 half_dir_view_space = vec4(normalize(light_dir_view_space.xyz + view_dir_view_space.xyz),0);
 
 	//Calculate attenuation
-	float distance = length(light_dir_world_space_not_normalized);
-	float attenuation = max(spot_light.attenuation * distance * distance,1.0f);
+	float distance2 = length2(light_dir_world_space_not_normalized.xyz);
+	float attenuation = spot_light.attenuation * max(distance2, .00001);
 
 	//Calculate base colors
-	vec3 diff_color = vec3(split(spot_light.diffuse, 0), split(spot_light.diffuse, 1), split(spot_light.diffuse, 2)) * spot_light.diffuse_intensity;
-	vec3 spec_color = vec3(split(spot_light.specular, 0), split(spot_light.specular, 1), split(spot_light.specular, 2)) * mat_spec_pow;
+	vec3 diff_color =split3(spot_light.diffuse) * spot_light.diffuse_intensity;
+	vec3 spec_color = split3(spot_light.specular) * mat_spec_pow;
 
 	
 	//final colors for diffuse and specular
@@ -178,27 +157,23 @@ void main(){
 			}
 		}	
 
-		shadow = min(1,(1-spot_light.shadow_strength) + shadow);
+		shadow = lerp(1, shadow, shadow_strength);
 	}
 
 	
-	//CONE CUTOFF (with smoothing to the edges, because I CAN
+	//CONE CUTOFF (with smoothing to the edges)
 
-	float actual_cutoff = dot(normalize(position_world_space - light_world_space.xyz), spot_light.direction);
+	float actual_cutoff = dot(normalize(position_world_space - light_world_space.xyz), spot_light.direction.rgb);
 
 
 	
 	
-	if (actual_cutoff < spot_light.cutoff)
-		shadow = 0;
-	else if (actual_cutoff < spot_light.cutoff * 1.1)
-		shadow *= mix(0, 1, (actual_cutoff - spot_light.cutoff) / (spot_light.cutoff * 0.1));
+	shadow *= clamp(mix(0, 1, (actual_cutoff - spot_light.cutoff) / (spot_light.cutoff * 0.1)),0.0,1.1);
 
 		
 
     //fragment color
 	fracolor =  flatness * mat_diff + shadow *  (1.0 - flatness) * (mat_spec * specular_final + mat_diff * diffuse_final) / attenuation;
-	//fracolor = clean_color(fracolor);
 }
 
 

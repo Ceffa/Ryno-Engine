@@ -59,6 +59,8 @@ namespace Ryno {
 			p->set_rotation(-90, 0, 0);
 			p->cutoff =40;
 			p->absolute_movement = false;
+			p->shadows = true;
+			p->shadow_strength = 1;
 
 			
 

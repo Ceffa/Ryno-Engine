@@ -276,7 +276,7 @@ namespace Ryno{
 				computeLights.emplace_back(fillPointLightStruct(l));
 			}
 		}
-
+		
 		//Fill SSBOs
 		fill_ssbo(light_ssbos[POINT], lights);
 		fill_ssbo(compute_light_ssbos[POINT], computeLights);
@@ -363,6 +363,7 @@ namespace Ryno{
 	{		
 		m_fbo_deferred.bind_for_light_pass();
 
+		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_ONE, GL_ONE);
@@ -370,10 +371,9 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
-		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
-		
-		
+
+
 		auto& mat = light_models[DIR].material;
 
 		mat.set_uniform("index", index);
@@ -382,15 +382,13 @@ namespace Ryno{
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
-
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_directional_texture);
-		mat.set_uniform("jitter", ls.blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[ls.blur-1]);
+
+		mat.set_uniform("jitter", ls.blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[ls.blur - 1]);
 		mat.set_uniform("shadow_strength", l->shadow_strength);
-		mat.set_uniform("light_VP_matrix", light_VP_matrix);
+		mat.set_uniform("light_VP_matrix", bias * light_VP_matrix);
 
 		m_simple_drawer->draw(&light_models[DIR]);
-		
-		glDisable(GL_BLEND);
 	}
 	
 	void DeferredRenderer::point_lighting_subpass(PointLightStruct& ls,PointLight* l, U32 index){
@@ -437,10 +435,6 @@ namespace Ryno{
 		mat.set_uniform("index", index);
 
 		m_simple_drawer->draw(&light_models[POINT]);
-
-
-		glDisable(GL_BLEND);
-
 	}
 
 	void DeferredRenderer::spot_lighting_subpass(SpotLight* l, U32 index)
@@ -465,7 +459,8 @@ namespace Ryno{
 		//we just need to orient the bounding box
 
 		auto go = l->game_object;
-		glm::vec3 trans = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
+		l->calculate_max_radius();
+		glm::vec4 trans = go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1);
 		float width = l->max_radius *  sin(l->cutoff * DEG_TO_RAD);
 		glm::vec3 scale = glm::vec3(width, l->max_radius, width);
 		glm::quat rot = l->absolute_movement ?  l-> rotation : go->transform.get_rotation() * l->rotation;
@@ -481,21 +476,19 @@ namespace Ryno{
 			glm::toMat4(rot),
 			//Scaling the rot-trans matrix
 			scale);
-
 		F32 cutoff_value = cos(l->cutoff * DEG_TO_RAD);
 
 		auto& mat = light_models[SPOT].material;
 		//SEND SPOT LIGHT UNIFORMS
 		mat.set_uniform("spot_light.position", trans);
 		mat.set_uniform("spot_light.attenuation", l->attenuation);
-		mat.set_uniform("spot_light.direction", rot * glm::vec3(0,0,-1));
+		mat.set_uniform("spot_light.direction", glm::vec4(rot * glm::vec3(0,0,-1),0));
 		mat.set_uniform("spot_light.cutoff", cutoff_value);
 		mat.set_uniform("spot_light.diffuse", l->diffuse_color);
 		mat.set_uniform("spot_light.specular",l->specular_color);
 		mat.set_uniform("spot_light.diffuse_intensity", l->diffuse_intensity);
 		mat.set_uniform("spot_light.specular_intensity", l->specular_intensity);
 		mat.set_uniform("spot_light.blur", l->blur);
-		mat.set_uniform("spot_light.shadow_strength", l->shadow_strength);
 
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
@@ -503,19 +496,18 @@ namespace Ryno{
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_spot_texture);
 		mat.set_uniform("jitter", l->blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[l->blur - 1]);
+		mat.set_uniform("shadow_strength", l->shadow_strength);
 
 
 		
-		//mat.set_uniform("light_VP_matrix", bias * spot_VP_matrix);
-		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
+		mat.set_uniform("light_VP_matrix", bias * light_VP_matrix);
+		
 		
 		mat.set_uniform("MVP", m_camera->get_VP_matrix() * model_matrix);
 		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && l->shadows) ? 1 : 0);
 
 		bind_global_ubo(*mat.shader);
 		m_simple_drawer->draw(&light_models[SPOT]);
-
-		glDisable(GL_BLEND);
 	}
 
 
@@ -580,24 +572,26 @@ namespace Ryno{
 	void DeferredRenderer::dir_shadow_subpass(DirLightStruct& ls, DirectionalLight* l){
 
 		
-		m_fbo_shadow.bind_for_directional_shadow_pass();
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
+
+		m_fbo_shadow.bind_for_directional_shadow_pass();
+
+		glClear(GL_DEPTH_BUFFER_BIT);
 
 		//generate light_VP matrix
 		auto go = l->game_object;
 		glm::mat4 ortho_mat = m_camera->get_O_matrix();
 		glm::vec3 dir = glm::vec3(glm::transpose(glm::inverse(l->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (l->rotation * glm::vec4(0, 0, 1, 0)));
 		glm::vec3 up_vect = glm::vec3(dir.y, -dir.x, 0);
-		glm::mat4 light_VP = ortho_mat * glm::lookAt(dir, glm::vec3(0, 0, 0), up_vect);
-		light_VP_matrix = bias * light_VP;
+		light_VP_matrix = ortho_mat * glm::lookAt(dir, glm::vec3(0, 0, 0), up_vect);
 
 		glViewport(0, 0, m_fbo_shadow.directional_resolution, m_fbo_shadow.directional_resolution);
 
 		shadow_shaders[DIR].use();
-		glUniformMatrix4fv(shadow_shaders[DIR].getUniformLocation("light_VP"), 1, GL_FALSE, &light_VP[0][0]);
+		glUniformMatrix4fv(shadow_shaders[DIR].getUniformLocation("light_VP"), 1, GL_FALSE, &light_VP_matrix[0][0]);
 		m_shadow_batch3d.render_batch();
 		shadow_shaders[DIR].unuse();
 
@@ -672,7 +666,7 @@ namespace Ryno{
 
 
 		//Multiply view by a perspective matrix large as the light radius
-		//spot_VP_matrix = projection_matrix * view_matrix;
+		light_VP_matrix = projection_matrix * view_matrix;
 
 
 		if (!spot_shadow_enabled || !s->shadows)
@@ -697,7 +691,7 @@ namespace Ryno{
 		//Send Vp matrix and world light position to shader, then render
 		shadow_shaders[SPOT].use();
 
-		//glUniformMatrix4fv(shadow_shaders[SPOT].getUniformLocation("light_VP"), 1, GL_FALSE, &spot_VP_matrix[0][0]);
+		glUniformMatrix4fv(shadow_shaders[SPOT].getUniformLocation("light_VP"), 1, GL_FALSE, &light_VP_matrix[0][0]);
 
 		m_shadow_batch3d.render_batch();
 		shadow_shaders[SPOT].unuse();
