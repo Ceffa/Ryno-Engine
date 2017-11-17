@@ -112,20 +112,7 @@ float get_shadow(vec3 position_world_space, float dotNL) {
 		}
 	}
 
-	shadow = lerp(1, shadow, shadow_strength);
-
-
-
-	//CONE CUTOFF (with smoothing to the edges)
-
-	float actual_cutoff = dot(normalize(position_world_space - spot_light.position.xyz), spot_light.direction.rgb);
-
-
-
-
-	return shadow * clamp(mix(0, 1, (actual_cutoff - spot_light.cutoff) / (spot_light.cutoff * 0.1)), 0.0, 1.1);
-
-
+	return lerp(1, shadow, shadow_strength);
 }
 
 

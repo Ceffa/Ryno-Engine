@@ -64,9 +64,14 @@ vec3 get_shaded_fragment(SpotLight spot_light, ivec2 coords) {
 	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001), spot_light.specular_intensity);
 
 
+	//CONE CUTOFF (with smoothing to the edges)
+	float actual_cutoff = dot(normalize(position_world_space - spot_light.position.xyz), spot_light.direction.rgb);
+
+	actual_cutoff = clamp(mix(0, 1, (actual_cutoff - spot_light.cutoff) / (spot_light.cutoff * 0.1)), 0.0, 1.1);
+
 
 	//fragment color
-	vec3 final_color = flatness * mat_diff + get_shadow(position_world_space, dotNL) *  (1.0 - flatness) * (mat_spec * specular_final + mat_diff * diffuse_final) / attenuation;
+	vec3 final_color = flatness * mat_diff + actual_cutoff * get_shadow(position_world_space, dotNL) *  (1.0 - flatness) * (mat_spec * specular_final + mat_diff * diffuse_final) / attenuation;
 	return clean_color(final_color);
 }
 

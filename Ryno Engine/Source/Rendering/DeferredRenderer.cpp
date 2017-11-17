@@ -92,7 +92,7 @@ namespace Ryno{
 
 		shadow_shaders[SPOT].create("ShadowPass/spot_shadow", ENGINE);
 		light_shaders[SPOT].create("LightPass/spot_light", ENGINE);
-		compute_shaders[SPOT].create("ComputePass/dir_compute", ENGINE);
+		compute_shaders[SPOT].create("ComputePass/spot_compute", ENGINE);
 		light_models[SPOT].material.set_shader(&light_shaders[SPOT]);
 
 	
