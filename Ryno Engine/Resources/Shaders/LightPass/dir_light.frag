@@ -19,7 +19,7 @@ out vec3 fracolor;
 void main(){
 	
 	//fragment color
-	fracolor = get_shaded_fragment(lights[index], gl_FragCoord.xy);
+	fracolor = get_shaded_fragment(lights[index], ivec2(gl_FragCoord.xy));
 
 }
 
@@ -105,6 +105,6 @@ float get_shadow(vec4 position_world_space, float dotNL) {
 		}
 	}
 
-	return min(1, (1 - shadow_strength) + shadow);
+	return  lerp (1,shadow,shadow_strength) ;
 }
 

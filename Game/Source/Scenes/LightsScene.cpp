@@ -46,6 +46,7 @@ namespace Ryno {
 		p->set_specular_color(0, 0, 0);
 		p->attenuation = .04f;
 		p->shadows = true;
+		p->shadow_strength = 1;
 
 		
 		lights[0].delete_component<Model>();

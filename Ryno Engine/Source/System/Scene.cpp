@@ -66,7 +66,6 @@ namespace Ryno{
 			camera->move_right(TimeManager::delta_time * 1.0f * direction.x);
 		}
 		camera->generate_matrices();
-		camera->get_light_V_matrix();
 		
 		/*Log::println("X: ");
 		Log::print(camera->position.x);

@@ -149,6 +149,7 @@ namespace Ryno{
 		ubo_global_data.iP = glm::inverse(ubo_global_data.P);
 		ubo_global_data.VP = m_camera->get_VP_matrix();
 		ubo_global_data.iVP = glm::inverse(ubo_global_data.VP);
+		ubo_global_data.itV = m_camera->get_itV_matrix();
 		ubo_global_data.cameraPos = m_camera->position;
 		ubo_global_data.time = TimeManager::time;
 		ubo_global_data.screen_width = WindowSize::w;
@@ -310,7 +311,7 @@ namespace Ryno{
 
 
 
-	DirLightStruct DeferredRenderer::fillDirLightStruct(const DirectionalLight* l) const {
+	DirLightStruct DeferredRenderer::fillDirLightStruct(DirectionalLight* l) const {
 
 		auto go = l->game_object;
 
@@ -329,15 +330,14 @@ namespace Ryno{
 		ls.specular_intensity = l->specular_intensity;
 		ls.ambient_intensity = l->ambient_intensity;
 		ls.blur = l->blur;
-		ls.light_V_matrix = m_camera->get_light_V_matrix();
 	
 		return ls;
 	}
 
-	PointLightStruct DeferredRenderer::fillPointLightStruct(const PointLight* l) const{
+	PointLightStruct DeferredRenderer::fillPointLightStruct(PointLight* l) const{
 		
-		glm::vec4 trans = l->game_object->transform.hinerited_matrix * glm::vec4(l->game_object->transform.get_position(),1);
-
+		glm::vec4 trans = l->game_object->transform.hinerited_matrix * l->game_object->transform.model_matrix * glm::vec4(0,0,0,1);
+		l->calculate_max_radius();
 		PointLightStruct ls;
 		ls.position = trans;
 		ls.attenuation = l->attenuation;
@@ -346,11 +346,12 @@ namespace Ryno{
 		ls.diffuse_intensity = l->diffuse_intensity;
 		ls.specular_intensity = l->specular_intensity;
 		ls.max_fov = l->max_radius;
-		ls.light_V_matrix = m_camera->get_light_V_matrix();
 		return ls;
 	}
 
-	SpotLightStruct DeferredRenderer::fillSpotLightStruct(const SpotLight* l) const {
+	SpotLightStruct DeferredRenderer::fillSpotLightStruct(SpotLight* l) const {
+
+		l->calculate_max_radius();
 
 		SpotLightStruct slc;
 		return slc;
@@ -405,7 +406,6 @@ namespace Ryno{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		l->calculate_max_radius();
 		glm::vec3 scale = glm::vec3(l->max_radius);
 		glm::quat rot = l->game_object->transform.get_rotation();
 		auto parent = l->game_object->transform.get_parent();
@@ -433,7 +433,7 @@ namespace Ryno{
 	
 		mat.set_uniform("MVP", m_camera->get_VP_matrix() * model_matrix);
 
-		mat.set_uniform("shadow_strength", 0);
+		mat.set_uniform("shadow_strength", l->shadow_strength);
 		mat.set_uniform("index", index);
 
 		m_simple_drawer->draw(&light_models[POINT]);
@@ -508,7 +508,6 @@ namespace Ryno{
 		
 		//mat.set_uniform("light_VP_matrix", bias * spot_VP_matrix);
 		mat.set_uniform("V_matrix", m_camera->get_V_matrix());
-		mat.set_uniform("light_V_matrix", m_camera->get_light_V_matrix());
 		
 		mat.set_uniform("MVP", m_camera->get_VP_matrix() * model_matrix);
 		mat.set_uniform("shadows_enabled", (spot_shadow_enabled && l->shadows) ? 1 : 0);
@@ -624,22 +623,18 @@ namespace Ryno{
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		//Get light position, with correct z axis
-		glm::vec3 correct_position = glm::vec3(l->game_object->transform.hinerited_matrix * l->game_object->transform.model_matrix * glm::vec4(0,0,0,1));
 		
-
 		glm::mat4 light_VP_matrices[NUM_OF_LAYERS];
 
 
-
-
-		glm::mat4 point_shadow_projection_matrix = glm::perspective(HALF_PI, 1.0, 1.0, (F64)l->max_radius);
+		glm::mat4 point_shadow_projection_matrix = glm::perspective(HALF_PI, 1.0, 1.0, (F64)ls.max_fov);
 
 		
 		for (U8 i = 0; i < NUM_OF_LAYERS; i++){
 		
+			auto pos = glm::vec3(ls.position);
 			//Get view matrix of the light. This is both translate and rotate matrix
-			glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + camera_directions[i].Target, camera_directions[i].Up);
+			glm::mat4 view_matrix = glm::lookAt(pos,pos + camera_directions[i].Target, camera_directions[i].Up);
 
 
 			//Multiply view by a perspective matrix large as the light radius
@@ -669,9 +664,7 @@ namespace Ryno{
 		//Get light position, with correct z axis
 		glm::vec3 correct_position = glm::vec3(go->transform.hinerited_matrix * go->transform.model_matrix * glm::vec4(0, 0, 0, 1));
 		glm::vec4 dir = glm::transpose(glm::inverse(s->absolute_movement ? go->transform.hinerited_matrix : go->transform.hinerited_matrix* go->transform.model_matrix)) * (s->rotation * glm::vec4(0,0,-1,0));
-		
-		s->calculate_max_radius();
-	
+			
 		glm::vec3 up_vector = glm::vec3(dir.y, -dir.x, 0);//One of the perpendicular vectors to the direction
 		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + glm::vec3(dir), up_vector);
 	

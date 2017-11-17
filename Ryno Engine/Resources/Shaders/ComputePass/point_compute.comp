@@ -13,13 +13,13 @@ layout(rgba8, binding = 0) uniform image2D main_tex;
 
 
 void main() {
-	vec2 coords = vec2(gl_GlobalInvocationID.xy) + vec2(.5,.5);
-	vec3 color = imageLoad(main_tex, ivec2(coords)).xyz;
+	ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
+	vec3 color = imageLoad(main_tex, coords).xyz;
 	for (int i = 0; i < nrOfLights; i++) {
 		color += get_shaded_fragment(lights[i], coords);
 	}
 
-	imageStore(main_tex, ivec2(coords), vec4(color, 1));
+	imageStore(main_tex, coords, vec4(color, 1));
 }
 
 float get_shadow(vec3 light_world_dir, float fov) {

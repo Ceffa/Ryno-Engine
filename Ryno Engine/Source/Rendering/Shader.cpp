@@ -227,17 +227,14 @@ namespace Ryno {
 		I32 size = (I32)file.tellg();
 		
 		file.seekg(0, std::ios::beg);
-		C* buffer = (C*)calloc(size, 1);
-		file.read(buffer, size + 1);
-		buffer[size] = '\0';
-		if (!buffer)
-			std::cout << "Failed to load from file: " + path << std::endl;
-
+		std::vector<C> buffer(size);
+		file.read(buffer.data(), size);
+		
 		//Detect and fix BOM
-		if (buffer[0] == '\xEF' && buffer[1] == '\xBB' && buffer[2] == '\xBF') {
+		if (size > 3 && buffer[0] == '\xEF' && buffer[1] == '\xBB' && buffer[2] == '\xBF') {
 			buffer[0] = ' '; buffer[1] = ' '; buffer[2] = ' ';
 		}
-		return std::string(buffer);
+		return std::string(buffer.data());
 
 
 	}

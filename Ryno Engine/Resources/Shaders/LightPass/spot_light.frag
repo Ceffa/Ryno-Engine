@@ -1,7 +1,4 @@
-#version 430
-
-
-//Structures
+E(Includes/global)
 
 //4-byte aligned
 struct SpotLight{
@@ -29,7 +26,6 @@ uniform int shadows_enabled;
 
 //Inverse matrix to rebuild position from depth
 uniform mat4 light_VP_matrix;
-uniform mat4 light_V_matrix;
 
 
 
@@ -41,22 +37,6 @@ uniform SpotLight spot_light;
 uniform float max_fov;
 
 out vec3 fracolor;
-
-
-float split(uint color, int n);
-
-layout(std140) uniform glob_ubo {
-	mat4 V;
-	mat4 iV;
-	mat4 P;
-	mat4 iP;
-	mat4 VP;
-	mat4 iVP;
-	vec4 cameraPos;
-	float time;
-	int screen_width;
-	int screen_height;
-};
 
 //This function generate a depth value from the direction vector, so that it can be compared 
 //with the depth value in the shadow cube
@@ -74,11 +54,12 @@ float vector_to_depth(vec3 light_vec, float n, float f)
 
 void main(){
 	//Get uvs of the current fragment
-	vec2 uv_coords = gl_FragCoord.xy / vec2(screen_width, screen_height);
-	
+	ivec2 coords = ivec2(gl_FragCoord.xy);
+	vec2 ndc_coords = (vec2(coords) / vec2(screen_width, screen_height))* 2.0 - 1.0;
+
 	//Rebuild position from depth
-	float depth = texture(depth_tex, uv_coords).r *2.0-1.0;
-	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
+	float depth = texelFetch(depth_tex, coords,0).r *2.0-1.0;
+	vec4 position_screen_space = vec4(ndc_coords, depth, 1);
 	vec4 position_view_space_not_normalized = iP * position_screen_space;
 	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
 	vec4 position_world_space_not_normalized = iVP * position_screen_space;
@@ -91,21 +72,21 @@ void main(){
 	
 
 	//Color directly from g buffer
-	vec4 sample_diff = texture(diffuse_tex, uv_coords);
+	vec4 sample_diff = texelFetch(diffuse_tex, coords,0);
 	vec3 mat_diff = sample_diff.rgb;
 	float flatness = sample_diff.w;
-	vec4 sample_spec = texture(specular_tex, uv_coords);
+	vec4 sample_spec = texelFetch(specular_tex, coords,0);
 	vec3 mat_spec = sample_spec.rgb;
 	float mat_spec_pow = sample_spec.w;
 	
 	//Normal z-axis built back from the other two
-	vec2 n = texture(normal_tex, uv_coords).xy;
+	vec2 n = texelFetch(normal_tex, coords,0).xy;
 	vec3 normal_view_space = vec3(n.x, n.y, sqrt(1 - abs(dot(n.xy, n.xy))));
 
 	//Important vectors
 	vec4 light_dir_world_space_not_normalized = light_world_space - vec4(position_world_space,1);
 	vec4 light_dir_world_space = normalize(light_dir_world_space_not_normalized);
-	vec4 light_dir_view_space = light_V_matrix * light_dir_world_space;
+	vec4 light_dir_view_space = itV * light_dir_world_space;
 	vec4 view_dir_view_space = vec4(normalize(-position_view_space),0);
 	vec4 half_dir_view_space = vec4(normalize(light_dir_view_space.xyz + view_dir_view_space.xyz),0);
 
@@ -217,12 +198,7 @@ void main(){
 
     //fragment color
 	fracolor =  flatness * mat_diff + shadow *  (1.0 - flatness) * (mat_spec * specular_final + mat_diff * diffuse_final) / attenuation;
-}
-
-
-float split(uint color, int n){
-	int index = n * 8;
-	return bitfieldExtract(color, index, 8) / 255.0f;
+	//fracolor = clean_color(fracolor);
 }
 
 

@@ -31,7 +31,6 @@ namespace Ryno{
 	};
 
 	struct DirLightStruct {
-		glm::mat4 light_V_matrix;
 		ColorRGBA diffuse;
 		ColorRGBA specular;
 		ColorRGBA ambient;
@@ -43,7 +42,6 @@ namespace Ryno{
 		glm::vec4 direction;
 	};
 	struct PointLightStruct {
-		glm::mat4 light_V_matrix;
 		ColorRGBA diffuse;
 		ColorRGBA specular;
 		float diffuse_intensity;
@@ -131,6 +129,7 @@ namespace Ryno{
 			glm::mat4 iP;
 			glm::mat4 VP;
 			glm::mat4 iVP;
+			glm::mat4 itV;
 			glm::vec4 cameraPos;
 			float time;
 			U32 screen_width;
@@ -152,19 +151,19 @@ namespace Ryno{
 		void dir_lighting_subpass(DirLightStruct& ls, DirectionalLight* l, U32 index);
 		void dir_light_tiled_pass(std::vector<DirLightStruct>& lss);
 		void dir_shadow_subpass(DirLightStruct& ls, DirectionalLight* l);
-		DirLightStruct fillDirLightStruct(const DirectionalLight* l) const;
+		DirLightStruct fillDirLightStruct(DirectionalLight* l) const;
 
 		//Extra point light passes
 		void point_lighting_subpass(PointLightStruct& ls, PointLight* l, U32 index);
 		void point_light_tiled_pass(std::vector<PointLightStruct>& lss);
 		void point_shadow_subpass(PointLightStruct& ls, PointLight* l);
-		PointLightStruct fillPointLightStruct(const PointLight* l) const;
+		PointLightStruct fillPointLightStruct(PointLight* l) const;
 
 		//Extra spot light passes
 		void spot_lighting_subpass(SpotLight* go, U32 index);
 		void spot_light_tiled_pass(std::vector<SpotLightStruct>& lss);
 		void spot_shadow_subpass(SpotLight* go);
-		SpotLightStruct fillSpotLightStruct(const SpotLight* l) const;
+		SpotLightStruct fillSpotLightStruct(SpotLight* l) const;
 
 
 

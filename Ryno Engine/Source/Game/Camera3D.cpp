@@ -36,7 +36,7 @@ namespace Ryno{
 			glm::vec3(-position.x, -position.y, position.z)
 			); 
 		VP_matrix = P_matrix * V_matrix;
-		light_V_matrix = glm::transpose(glm::inverse(V_matrix));
+		itV = glm::transpose(glm::inverse(V_matrix));
 	}
 	
 

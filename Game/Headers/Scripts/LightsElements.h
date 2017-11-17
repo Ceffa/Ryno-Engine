@@ -93,6 +93,9 @@ namespace Ryno {
 			pl->attenuation = .0001;
 			pl->specular_intensity = 20;
 			pl->set_specular_color(0, 0, 0);
+			pl->shadows = true;
+			pl->shadow_strength = 1;
+
 			color_lights();
 
 		}

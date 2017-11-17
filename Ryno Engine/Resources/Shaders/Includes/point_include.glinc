@@ -1,5 +1,4 @@
 struct PointLight {
-	mat4 light_V_matrix;
 	uint diffuse;
 	uint specular;
 	float diffuse_intensity;
@@ -14,45 +13,43 @@ uniform sampler2D normal_tex;
 uniform sampler2D depth_tex;
 
 
-
 float get_shadow(vec3 light_world_dir, float fov);
 
 
-vec3 get_shaded_fragment(PointLight point_light, vec2 coords) {
-
-	vec2 uv_coords = coords / vec2(screen_width, screen_height);
+vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 
 	//Rebuild position from depth
-	float depth = texture(depth_tex, uv_coords).r *2.0 - 1.0;
-	vec4 position_screen_space = vec4(uv_coords * 2.0 - 1.0, depth, 1);
+	float depth = texelFetch(depth_tex, coords, 0).r *2.0 - 1.0;
+	vec2 ndc_coords = (vec2(coords) / vec2(screen_width, screen_height))* 2.0 - 1.0;
+	vec4 position_screen_space = vec4(ndc_coords, depth, 1);
 	vec4 position_view_space_not_normalized = iP * position_screen_space;
 	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
-	vec4 position_world_space = iV * vec4(position_view_space,1.0);
+	vec4 position_world_space = iV * vec4(position_view_space, 1.0);
 	vec4 light_view_space = V * point_light.position;
 
 	//Color directly from g buffer
-	vec4 sample_diff = texture(diffuse_tex, uv_coords);
+	vec4 sample_diff = texelFetch(diffuse_tex, coords, 0);
 	vec3 mat_diff = sample_diff.rgb;
 	float flatness = sample_diff.w;
-	vec4 sample_spec = texture(specular_tex, uv_coords);
+	vec4 sample_spec = texelFetch(specular_tex, coords, 0);
 	vec3 mat_spec = sample_spec.rgb;
 	float mat_spec_pow = sample_spec.w;
 
 	//Normal z-axis built back from the other two
-	vec2 n = texture(normal_tex, uv_coords).xy;
+	vec2 n = texelFetch(normal_tex, coords, 0).xy;
 	vec3 normal_view_space = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
 
 
 	//Important vectors
 	vec4 light_dir_world_space_not_normalized = point_light.position - position_world_space;
 	vec4 light_dir_world_space = normalize(light_dir_world_space_not_normalized);
-	vec4 light_dir_view_space = point_light.light_V_matrix * light_dir_world_space;
+	vec4 light_dir_view_space = itV * light_dir_world_space;
 	vec4 view_dir_view_space = vec4(normalize(-position_view_space), 0);
 	vec4 half_dir_view_space = vec4(normalize(light_dir_view_space.xyz + view_dir_view_space.xyz), 0);
 
 	//Calculate attenuation
 	float distance2 = length2(light_dir_world_space_not_normalized.xyz);
-	float attenuation = point_light.attenuation * max(distance2,.00001);
+	float attenuation = point_light.attenuation * max(distance2, .00001);
 
 	//Calculate base colors
 	vec3 diff_color = split3(point_light.diffuse) * point_light.diffuse_intensity;
@@ -63,9 +60,6 @@ vec3 get_shaded_fragment(PointLight point_light, vec2 coords) {
 	vec3 diffuse_final = max(0, dot(normal_view_space, light_dir_view_space.xyz)) * diff_color;
 	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001), point_light.specular_intensity);
 
-	vec3 final_color =  flatness * mat_diff + get_shadow(-light_dir_world_space_not_normalized.xyz, point_light.max_fov) *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
-	
-	//Clean dirty colors (<.5 intensity)
-	float thresh = 0.5 / 255;
-	return vec3(thresh > final_color.x ? 0 : final_color.x, thresh > final_color.y ? 0 : final_color.y, thresh > final_color.z ? 0 : final_color.z);
+	vec3 final_color = flatness * mat_diff + get_shadow(-light_dir_world_space_not_normalized.xyz, point_light.max_fov) *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
+	return clean_color(final_color);
 }

@@ -30,7 +30,7 @@ float get_shadow(vec3 light_world_dir, float fov) {
 	
 	float current_depth = vector_to_depth(light_world_dir, 1.0, fov);
 	float bias = 0.0005;
-	return min(1, (1 - shadow_strength) + texture(shadow_cube, vec4(light_world_dir, current_depth - bias)));
+	return lerp (1, texture(shadow_cube, vec4(light_world_dir, current_depth - bias)),shadow_strength);
 }
 
 
@@ -38,7 +38,7 @@ float get_shadow(vec3 light_world_dir, float fov) {
 
 void main(){
 
-	fracolor = get_shaded_fragment(lights[index], gl_FragCoord.xy);
+	fracolor = get_shaded_fragment(lights[index], ivec2(gl_FragCoord.xy));
 }
 
 
