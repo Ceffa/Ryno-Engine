@@ -52,12 +52,13 @@ namespace Ryno {
 
 			auto* p = center.add_component<SpotLight>();
 			p->set_diffuse_color(255, 80, 0);
-			p->diffuse_intensity = 3;
-			p->attenuation = .0005;
-			p->specular_intensity = 1;
+			p->diffuse_intensity = 500;
+			p->attenuation = 2;
+			p->specular_intensity = 0;
 			p->set_specular_color(255, 80, 0);
 			p->set_rotation(-90, 0, 0);
-			p->cutoff =40;
+			p->cutoff =30;
+			p->blur = 1;
 			p->absolute_movement = false;
 			p->shadows = true;
 			p->shadow_strength = 1;
@@ -92,9 +93,9 @@ namespace Ryno {
 			d->shadow_strength = 1;
 			auto* pl = center.add_component<PointLight>();
 			pl->set_diffuse_color(255, 80, 0);
-			pl->diffuse_intensity = 1;
-			pl->attenuation = .0001;
-			pl->specular_intensity = 20;
+			pl->diffuse_intensity = 500;
+			pl->attenuation = 2;
+			pl->specular_intensity = 0;
 			pl->set_specular_color(0, 0, 0);
 			pl->shadows = true;
 			pl->shadow_strength = 1;
@@ -110,10 +111,10 @@ namespace Ryno {
 				center.transform.add_position(TimeManager::delta_time * speed* glm::vec3(-1, 0, 0));
 			}
 			if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
-				center.transform.add_position(TimeManager::delta_time * speed* glm::vec3(0, 0, 1));
+				center.transform.add_position(TimeManager::delta_time * speed* glm::vec3(0, 1,0));
 			}
 			if (game->input_manager->is_key_down(SDLK_DOWN, KEYBOARD)) {
-				center.transform.add_position(TimeManager::delta_time * speed* glm::vec3(0, 0, -1));
+				center.transform.add_position(TimeManager::delta_time * speed* glm::vec3(0, -1,0));
 			}
 			if (game->input_manager->is_key_down(SDLK_n, KEYBOARD)) {
 				center.transform.add_rotation(glm::quat(TimeManager::delta_time * speed* glm::vec3(0, +.02f, 0)));

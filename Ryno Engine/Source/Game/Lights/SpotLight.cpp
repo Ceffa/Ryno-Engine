@@ -37,12 +37,12 @@ namespace Ryno{
 		F32 max_diffuse = fmax(fmax(diffuse_color.r, diffuse_color.g), diffuse_color.b);
 		F32 max_specular = fmax(fmax(specular_color.r, specular_color.g), specular_color.b);
 
-		
 
 		//Compare before the sqrt, because it's expensive
-		F32 max_value = fmax(diffuse_intensity* max_diffuse / attenuation, specular_intensity*max_specular / attenuation);
+		F32 max_value = fmax(diffuse_intensity* max_diffuse, specular_intensity*max_specular);
 
 
-		max_radius = sqrt(max_value);
+		max_radius = std::pow(max_value-1, 1.0f / attenuation);
+
 	}
 }

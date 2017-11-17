@@ -56,7 +56,7 @@ namespace Ryno{
 		float specular_intensity;
 		glm::vec4 position;
 		glm::vec4 direction;
-		float cutoff; float attenuation; float blur; float _pad;
+		float cutoff; float attenuation; U32 blur; float _pad;
 	};
 
 

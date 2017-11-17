@@ -50,8 +50,6 @@ float get_shadow(vec4 position_world_space, float dotNL) {
 		uint SAMPLES_COUNT_DIV_2 = SAMPLES_COUNT / 2;
 		float INV_SAMPLES_COUNT = (1.0f / SAMPLES_COUNT);
 
-
-
 		shadow = 0;
 		vec4 shadowMapPos = position_light_ortho_matrix;
 		vec4 smCoord = shadowMapPos;

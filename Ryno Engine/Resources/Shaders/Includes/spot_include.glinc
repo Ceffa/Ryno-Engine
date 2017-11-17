@@ -50,8 +50,8 @@ vec3 get_shaded_fragment(SpotLight spot_light, ivec2 coords) {
 	vec4 half_dir_view_space = vec4(normalize(light_dir_view_space.xyz + view_dir_view_space.xyz), 0);
 
 	//Calculate attenuation
-	float distance2 = length2(light_dir_world_space_not_normalized.xyz);
-	float attenuation = spot_light.attenuation * max(distance2, .00001);
+	float distance = length(light_dir_world_space_not_normalized.xyz);
+	float attenuation = 1+pow(distance, spot_light.attenuation);
 
 	//Calculate base colors
 	vec3 diff_color = split3(spot_light.diffuse) * spot_light.diffuse_intensity;
@@ -67,7 +67,7 @@ vec3 get_shaded_fragment(SpotLight spot_light, ivec2 coords) {
 	//CONE CUTOFF (with smoothing to the edges)
 	float actual_cutoff = dot(normalize(position_world_space - spot_light.position.xyz), spot_light.direction.rgb);
 
-	actual_cutoff = clamp(mix(0, 1, (actual_cutoff - spot_light.cutoff) / (spot_light.cutoff * 0.1)), 0.0, 1.1);
+	actual_cutoff = clamp(mix(0, 1, (actual_cutoff - spot_light.cutoff) / (spot_light.cutoff * 0.1)), 0.0, 1.0);
 
 
 	//fragment color

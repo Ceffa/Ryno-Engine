@@ -48,8 +48,8 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 	vec4 half_dir_view_space = vec4(normalize(light_dir_view_space.xyz + view_dir_view_space.xyz), 0);
 
 	//Calculate attenuation
-	float distance2 = length2(light_dir_world_space_not_normalized.xyz);
-	float attenuation = point_light.attenuation * max(distance2, .00001);
+	float distance = length(light_dir_world_space_not_normalized.xyz);
+	float attenuation = 1 + pow(distance, point_light.attenuation);
 
 	//Calculate base colors
 	vec3 diff_color = split3(point_light.diffuse) * point_light.diffuse_intensity;
@@ -61,5 +61,5 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001), point_light.specular_intensity);
 
 	vec3 final_color = flatness * mat_diff + get_shadow(-light_dir_world_space_not_normalized.xyz, point_light.max_fov) *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
-	return clean_color(final_color);
+	return  clean_color(final_color);
 }

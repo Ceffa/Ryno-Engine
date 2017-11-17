@@ -19,7 +19,7 @@ namespace Ryno{
 	void Transform::generate_model_matrix() {
 
 		generate_physics_matrix();
-		model_matrix = pos_rot_matrix * glm::scale(glm::mat4(1), scale);
+		model_matrix = glm::scale(pos_rot_matrix, scale);
 	}
 
 	void Transform::generate_physics_matrix() {

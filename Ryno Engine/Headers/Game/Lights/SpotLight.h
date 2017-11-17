@@ -23,7 +23,7 @@ namespace Ryno{
 		
 		//Light data
 		F32 max_radius;
-		F32 attenuation; //exp
+		F32 attenuation = 2; //exp
 		glm::quat rotation;
 
 		F32 cutoff; //Angle of the cone

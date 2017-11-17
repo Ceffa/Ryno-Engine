@@ -466,7 +466,6 @@ namespace Ryno{
 			glm::toMat4(rot),
 			//Scaling the rot-trans matrix
 			scale);
-
 		mat.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 		mat.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
@@ -474,7 +473,6 @@ namespace Ryno{
 		mat.set_uniform("shadow_cube", m_fbo_shadow.m_point_cube);
 	
 		mat.set_uniform("MVP", m_camera->get_VP_matrix() * model_matrix);
-
 		mat.set_uniform("shadow_strength", l->shadow_strength);
 		mat.set_uniform("index", index);
 
@@ -504,8 +502,10 @@ namespace Ryno{
 
 		auto go = l->game_object;
 
-		float width = l->max_radius *  sin(l->cutoff * DEG_TO_RAD);
-		glm::vec3 scale = glm::vec3(width, l->max_radius, width);
+		float angle = l->cutoff * DEG_TO_RAD;
+		float edge = l->max_radius / cos(angle);
+		float width = sin(angle) * edge;
+		glm::vec3 scale = glm::vec3(width, width, l->max_radius);
 
 		glm::quat rot = l->absolute_movement ? l->rotation : go->transform.get_rotation() * l->rotation;
 		Transform* parent = go->transform.get_parent();

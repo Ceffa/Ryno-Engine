@@ -20,7 +20,7 @@ namespace Ryno{
 		
 		//Light data
 		F32 max_radius;
-		F32 attenuation; //exp
+		F32 attenuation = 2; //exp
 
 		//Light uniform locations
 		struct location{
