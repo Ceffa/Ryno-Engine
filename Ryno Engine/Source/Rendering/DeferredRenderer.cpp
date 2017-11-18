@@ -379,6 +379,7 @@ namespace Ryno{
 		ls.position = trans;
 		ls.attenuation = l->attenuation;
 		ls.max_fov = l->max_radius;
+		ls.shininess = l->shininess;
 		return ls;
 	}
 

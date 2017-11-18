@@ -47,7 +47,7 @@ namespace Ryno{
 		float diffuse_intensity;
 		float specular_intensity;
 		glm::vec4 position; 
-		float max_fov; float attenuation; float _pad[2];
+		float max_fov; float attenuation; float shininess; float _pad;
 	};
 	struct SpotLightStruct {
 		ColorRGBA diffuse;

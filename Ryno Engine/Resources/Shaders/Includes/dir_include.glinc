@@ -6,7 +6,7 @@ struct DirectionalLight {
 	float diffuse_intensity;
 	float specular_intensity;
 	float ambient_intensity;
-	float _pad0;
+	float shininess;
 	vec4 direction;	
 };
 
@@ -48,13 +48,13 @@ vec3 get_shaded_fragment(DirectionalLight dir_light, ivec2 coords) {
 
 	//Calculate base colors
 	vec3 diff_color = split3(dir_light.diffuse) * dir_light.diffuse_intensity;
-	vec3 spec_color = split3(dir_light.specular) * mat_spec_pow;
+	vec3 spec_color = split3(dir_light.specular) * mat_spec_pow * dir_light.specular_intensity;
 	vec3 amb_final = split3(dir_light.ambient) * dir_light.ambient_intensity;
 
 	//final colors for diffuse, specular and ambient
 	float dotNL = max(0, dot(normal, view_dir_light));
 	vec3 diffuse_final = dotNL * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.specular_intensity);
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.shininess);
 
 
 	vec3 final_color =  amb_final * mat_diff  + flatness * mat_diff + (1.0 - flatness) *get_shadow(position_world_space, dotNL)*(mat_diff * diffuse_final + mat_spec * specular_final);

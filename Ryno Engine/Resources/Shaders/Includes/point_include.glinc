@@ -4,7 +4,7 @@ struct PointLight {
 	float diffuse_intensity;
 	float specular_intensity;
 	vec4 position; 
-	float max_fov; float attenuation; float _pad0; float _pad1;
+	float max_fov; float attenuation; float shininess; float _pad1;
 };
 
 uniform sampler2D diffuse_tex;
@@ -53,12 +53,12 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 
 	//Calculate base colors
 	vec3 diff_color = split3(point_light.diffuse) * point_light.diffuse_intensity;
-	vec3 spec_color = split3(point_light.specular) * mat_spec_pow;
+	vec3 spec_color = split3(point_light.specular) * mat_spec_pow * point_light.specular_intensity;
 
 
 	//final colors for diffuse and specular
 	vec3 diffuse_final = max(0, dot(normal_view_space, light_dir_view_space.xyz)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001), point_light.specular_intensity);
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001), point_light.shininess);
 
 	float shadow = get_shadow(-light_dir_world_space_not_normalized.xyz, point_light.max_fov);
 	vec3 final_color = flatness * mat_diff + shadow *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;

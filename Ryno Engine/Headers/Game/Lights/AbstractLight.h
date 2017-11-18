@@ -26,7 +26,7 @@ namespace Ryno{
 		
 
 		ColorRGBA diffuse_color, specular_color;
-		F32 diffuse_intensity, specular_intensity;
+		F32 diffuse_intensity = 0, specular_intensity = 0, shininess = 1;
 		bool shadows = true;
 		F32 shadow_strength = 1;
 

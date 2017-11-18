@@ -52,9 +52,10 @@ namespace Ryno {
 
 			auto* p = center.add_component<SpotLight>();
 			p->set_diffuse_color(255, 80, 0);
-			p->diffuse_intensity = 5000;
+			p->diffuse_intensity = 0;
 			p->attenuation = 2;
-			p->specular_intensity = 0;
+			p->shininess = 10;
+			p->specular_intensity = 5000;
 			p->set_specular_color(255, 80, 0);
 			p->set_rotation(-90, 0, 0);
 			p->cutoff =30;
@@ -93,10 +94,11 @@ namespace Ryno {
 			d->shadow_strength = 1;
 			auto* pl = center.add_component<PointLight>();
 			pl->set_diffuse_color(255, 80, 0);
-			pl->diffuse_intensity = 5000;
+			pl->diffuse_intensity = 0;
 			pl->attenuation = 2;
-			pl->specular_intensity = 0;
-			pl->set_specular_color(0, 0, 0);
+			pl->specular_intensity = 500;
+			pl->shininess = 5;
+			pl->set_specular_color(255, 80, 0);
 			pl->shadows = true;
 			pl->shadow_strength = 1;
 

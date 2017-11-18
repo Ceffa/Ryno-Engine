@@ -22,14 +22,6 @@ namespace Ryno{
 		F32 max_radius;
 		F32 attenuation = 2; //exp
 
-		//Light uniform locations
-		struct location{
-			I32 position;
-			I32 diffuse;
-			I32 specular;
-		} locations;
-
-	
 	};
 
 }
