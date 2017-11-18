@@ -222,6 +222,7 @@ namespace Ryno{
 		if (!directional_light_enabled)
 			return;
 
+		LightType t = DIR;
 		//Creates two arrays of lights
 		std::vector<DirLightStruct> lights{};
 		std::vector<DirectionalLight*> lights_ptr{};
@@ -240,25 +241,27 @@ namespace Ryno{
 		}
 
 		//Fill SSBOs
-		fill_ssbo(light_ssbos[DIR], lights);
-		fill_ssbo(compute_light_ssbos[DIR], computeLights);
+		fill_ssbo(light_ssbos[t], lights);
+		fill_ssbo(compute_light_ssbos[t], computeLights);
 
 		//Process regular ligths
-		bind_global_ubo(light_shaders[DIR]);
-		bind_ssbo(light_ssbos_names[DIR], light_ssbos[DIR], 1, light_shaders[DIR]);
+		bind_global_ubo(light_shaders[t]);
+		bind_ssbo(light_ssbos_names[t], light_ssbos[t], 1, light_shaders[t]);
 		for (U32 i = 0; i < lights.size(); ++i) {
 			dir_shadow_subpass(lights[i],lights_ptr[i]);
 			dir_lighting_subpass(lights[i],lights_ptr[i], i);
 		}
 		
 		//Process compute lights
-		tiled_pass(computeLights,DIR);
+		tiled_pass(computeLights,t);
 	}	
 
 	void DeferredRenderer::point_light_pass(){		
 
 		if (!point_light_enabled)
 			return;
+
+		LightType t = POINT;
 
 		//Creates two arrays of lights
 		std::vector<PointLightStruct> lights;
@@ -278,12 +281,12 @@ namespace Ryno{
 		}
 		
 		//Fill SSBOs
-		fill_ssbo(light_ssbos[POINT], lights);
-		fill_ssbo(compute_light_ssbos[POINT], computeLights);
+		fill_ssbo(light_ssbos[t], lights);
+		fill_ssbo(compute_light_ssbos[t], computeLights);
 
 		//Process regular ligths
-		bind_global_ubo(light_shaders[POINT]);
-		bind_ssbo(light_ssbos_names[POINT], light_ssbos[POINT], 1, light_shaders[POINT]);
+		bind_global_ubo(light_shaders[t]);
+		bind_ssbo(light_ssbos_names[t], light_ssbos[t], 1, light_shaders[t]);
 
 		for (U32 i = 0; i < lights.size(); ++i) {
 			point_shadow_subpass(lights[i],lights_ptr[i]);
@@ -291,7 +294,7 @@ namespace Ryno{
 		}
 
 		//Process compute lights
-		tiled_pass(computeLights,POINT);
+		tiled_pass(computeLights,t);
 
 	}
 
@@ -299,6 +302,8 @@ namespace Ryno{
 	{
 		if (!spot_light_enabled)
 			return;
+
+		LightType t = SPOT;
 
 		//Creates two arrays of lights
 		std::vector<SpotLightStruct> lights;
@@ -318,12 +323,12 @@ namespace Ryno{
 		}
 
 		//Fill SSBOs
-		fill_ssbo(light_ssbos[SPOT], lights);
-		fill_ssbo(compute_light_ssbos[SPOT], computeLights);
+		fill_ssbo(light_ssbos[t], lights);
+		fill_ssbo(compute_light_ssbos[t], computeLights);
 
 		//Process regular ligths
-		bind_global_ubo(light_shaders[SPOT]);
-		bind_ssbo(light_ssbos_names[SPOT], light_ssbos[SPOT], 1, light_shaders[SPOT]);
+		bind_global_ubo(light_shaders[t]);
+		bind_ssbo(light_ssbos_names[t], light_ssbos[t], 1, light_shaders[t]);
 
 		for (U32 i = 0; i < lights.size(); ++i) {
 			spot_shadow_subpass(lights[i], lights_ptr[i]);
@@ -331,7 +336,7 @@ namespace Ryno{
 		}
 
 		//Process compute lights
-		tiled_pass(computeLights,SPOT);
+		tiled_pass(computeLights,t);
 
 	}
 
