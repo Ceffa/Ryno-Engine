@@ -885,8 +885,7 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		//m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[m_fbo_deferred.m_current_scene_texture]);
-		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[0]);
+		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[m_fbo_deferred.m_current_scene_texture]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		auto& m = m_blit_model_color.material;
