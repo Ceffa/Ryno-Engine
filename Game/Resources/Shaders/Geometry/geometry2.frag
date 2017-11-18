@@ -17,7 +17,7 @@ uniform sampler2D normal_map_sampler;
 void main() {
 	out_diffuse = vec4(middle_color.rgb *  texture(texture_sampler, middle_uv).rgb, middle_color.w);
 	
-	out_normal = (TBN * normalize(texture(normal_map_sampler, middle_uv).rgb*2.0 - 1.0)).xy;
+	out_normal = (TBN * normalize(texture(normal_map_sampler, middle_uv).rgb*2.0 - 1.0)).xy*.5 + 0.5;
 
 	
 	out_depth = gl_FragCoord.z;

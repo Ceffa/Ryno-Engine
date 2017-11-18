@@ -30,7 +30,7 @@ void main() {
 	out_specular = vec4(spec_color.rgb * text_specular, spec_color.w);
 
 	//Normalize normal
-	out_normal = (TBN * normalize(text_normal*2.0 - 1.0)).xy;
+	out_normal = (TBN * normalize(text_normal*2.0 - 1.0)).xy*.5 + 0.5;
 
 	//Set depth
 	out_depth = gl_FragCoord.z;

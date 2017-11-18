@@ -54,8 +54,8 @@ namespace Ryno {
 			p->set_diffuse_color(255, 80, 0);
 			p->diffuse_intensity = 0;
 			p->attenuation = 2;
-			p->shininess = 10;
-			p->specular_intensity = 5000;
+			p->shininess = 8;
+			p->specular_intensity = 10000;
 			p->set_specular_color(255, 80, 0);
 			p->set_rotation(-90, 0, 0);
 			p->cutoff =30;
@@ -85,8 +85,9 @@ namespace Ryno {
 			center.delete_component<SpotLight>();
 
 			auto* d = center.add_component<DirectionalLight>();
-			d->set_diffuse_color(255, 255, 0);
-			d->diffuse_intensity = .35f;
+			d->set_diffuse_color(255, 255,255);
+			d->specular_intensity =0;
+			d->diffuse_intensity = .3f;
 			d->set_rotation(-50, 0, 0);
 			d->absolute_movement = false;
 			d->blur = 1;
@@ -96,8 +97,8 @@ namespace Ryno {
 			pl->set_diffuse_color(255, 80, 0);
 			pl->diffuse_intensity = 0;
 			pl->attenuation = 2;
-			pl->specular_intensity = 500;
-			pl->shininess = 5;
+			pl->specular_intensity = 5000;
+			pl->shininess = 10;
 			pl->set_specular_color(255, 80, 0);
 			pl->shadows = true;
 			pl->shadow_strength = 1;
@@ -147,7 +148,7 @@ namespace Ryno {
 		void color_lights() {
 			for (auto* a : center.transform.children) {
 				ColorRGBA c = ryno_math::rand_color_range(ColorRGBA::black, ColorRGBA::white);
-				a->game_object->get_component<SpotLight>()->diffuse_color = c;
+				a->game_object->get_component<SpotLight>()->specular_color = c;
 			
 			}
 		}

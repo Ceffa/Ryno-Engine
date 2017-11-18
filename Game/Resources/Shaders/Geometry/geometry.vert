@@ -31,7 +31,7 @@ void main(){
 	middle_uv = in_Uv * in_Tiling;
 	
 	mat4 MV = V * in_M;
-	vec3 tangent = vec3(normalize(MV * vec4(in_Tangent,0)));
+	vec3 tangent = vec3(normalize(MV *vec4(in_Tangent,0)));
 	vec3 normal = vec3(normalize(MV*vec4(in_Normal,0)));
 	TBN = mat3(tangent, cross(normal, tangent), normal);
 }

@@ -28,8 +28,8 @@ namespace Ryno {
 		
 
 			game = Game::get_instance();
-			bt = game->texture_manager->load_png("pack/161.png", GAME);
-			bn = game->texture_manager->load_png("pack/161_norm.png", GAME);
+			bt = game->texture_manager->load_png("brick.png", GAME);
+			bn = game->texture_manager->load_png("brick_normal.png", GAME);
 
 			cube_mesh = game->mesh_manager->load_mesh("cube", GAME);
 			shader.create("Geometry/geometry", GAME);
@@ -42,7 +42,7 @@ namespace Ryno {
 			sm.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
 			sm.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
 
-			sm.material.set_attribute("in_Tiling", glm::vec2(10, 10));
+			sm.material.set_attribute("in_Tiling", glm::vec2(2, 2));
 			sm.material.set_uniform("texture_sampler", bt.id);
 			sm.material.set_uniform("normal_map_sampler", bn.id);
 
@@ -72,7 +72,7 @@ namespace Ryno {
 				{
 					if (i == j && i == 0)continue;
 					poles[i*s + j] = poles[0];
-					poles[i*s + j].transform.set_position((i - s / 2) * 20, 10, (j - s / 2) * 20);
+					poles[i*s + j].transform.set_position((i - s / 2) * 20, 1000, (j - s / 2) * 20);
 				}
 			}
 		
