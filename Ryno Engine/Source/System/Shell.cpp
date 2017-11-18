@@ -448,41 +448,41 @@ namespace Ryno {
 			
 			request_exit = true;
 		}
-		else if (command.compare("nopl") == 0){
-			deferred_renderer->point_light_enabled = false;
-		}
-		else if (command.compare("pl") == 0){
-			deferred_renderer->point_light_enabled = true;
-		}
-		else if (command.compare("nosl") == 0){
-			deferred_renderer->spot_light_enabled = false;
-		}
-		else if (command.compare("sl") == 0){
-			deferred_renderer->spot_light_enabled = true;
-		}
 		else if (command.compare("nodl") == 0){
-			deferred_renderer->directional_light_enabled = false;
+			deferred_renderer->lights_enabled[DIR] = false;
 		}
 		else if (command.compare("dl") == 0){
-			deferred_renderer->directional_light_enabled = true;
+			deferred_renderer->lights_enabled[DIR] = true;
 		}
-		else if (command.compare("nops") == 0){
-			deferred_renderer->point_shadow_enabled = false;
+		else if (command.compare("nopl") == 0){
+			deferred_renderer->lights_enabled[POINT] = false;
 		}
-		else if (command.compare("ps") == 0){
-			deferred_renderer->point_shadow_enabled = true;
+		else if (command.compare("pl") == 0){
+			deferred_renderer->lights_enabled[POINT] = true;
 		}
-		else if (command.compare("noss") == 0){
-			deferred_renderer->spot_shadow_enabled = false;
+		else if (command.compare("nosl") == 0){
+			deferred_renderer->lights_enabled[SPOT] = false;
 		}
-		else if (command.compare("ss") == 0){
-			deferred_renderer->spot_shadow_enabled = true;
+		else if (command.compare("sl") == 0){
+			deferred_renderer->lights_enabled[SPOT] = true;
 		}
 		else if (command.compare("nods") == 0){
-			deferred_renderer->directional_shadow_enabled = false;
+			deferred_renderer->shadows_enabled[DIR] = false;
 		}
 		else if (command.compare("ds") == 0){
-			deferred_renderer->directional_shadow_enabled = true;
+			deferred_renderer->shadows_enabled[DIR] = true;
+		}
+		else if (command.compare("nops") == 0){
+			deferred_renderer->shadows_enabled[POINT] = false;
+		}
+		else if (command.compare("ps") == 0){
+			deferred_renderer->shadows_enabled[POINT] = true;
+		}
+		else if (command.compare("noss") == 0){
+			deferred_renderer->shadows_enabled[SPOT] = false;
+		}
+		else if (command.compare("ss") == 0){
+			deferred_renderer->shadows_enabled[SPOT] = true;
 		}
 		else if (command.compare("nosb") == 0){
 			deferred_renderer->skybox_enabled = false;
@@ -513,17 +513,6 @@ namespace Ryno {
 		}
 		else if (command.compare("pp") == 0) {
 			deferred_renderer->postprocessor_enabled = true;
-		}
-		else if (command.compare("nolights") == 0){
-			deferred_renderer->point_light_enabled = false;
-			deferred_renderer->spot_light_enabled = false;
-			deferred_renderer->directional_light_enabled = false;
-
-		}
-		else if (command.compare("lights") == 0){
-			deferred_renderer->point_light_enabled = true;
-			deferred_renderer->spot_light_enabled = true;
-			deferred_renderer->directional_light_enabled = true;
 		}
 		else if (command.compare("nogui") == 0){
 			deferred_renderer->gui_sprites_enabled = false;

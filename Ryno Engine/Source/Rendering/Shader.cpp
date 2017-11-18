@@ -534,7 +534,7 @@ namespace Ryno {
 		case GL_FLOAT_MAT4:
 			return 16;
 		}
-		std::cout << "Careful: requested type not supported by my shader: " << type << std::endl;
+		std::cout << "Careful: requested type not supported by shader introspection: " << type << std::endl;
 		return 0;
 
 

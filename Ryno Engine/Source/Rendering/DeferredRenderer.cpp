@@ -191,7 +191,7 @@ namespace Ryno{
 				s.material.set_attribute("in_M", model->game_object->transform.hinerited_matrix * model->game_object->transform.model_matrix);
 			m_geometry_batch3d.draw(model);
 
-			if (point_shadow_enabled || spot_shadow_enabled || directional_shadow_enabled)
+			if (shadows_enabled[DIR] || shadows_enabled[POINT] || shadows_enabled[SPOT])
 				m_shadow_batch3d.draw(model);
 		}
 
@@ -219,10 +219,9 @@ namespace Ryno{
 
 	void DeferredRenderer::directional_light_pass()
 	{
-		if (!directional_light_enabled)
-			return;
-
 		LightType t = DIR;
+		if (!lights_enabled[t])
+			return;
 		//Creates two arrays of lights
 		std::vector<DirLightStruct> lights{};
 		std::vector<DirectionalLight*> lights_ptr{};
@@ -231,7 +230,7 @@ namespace Ryno{
 		for (auto l : DirectionalLight::dir_lights){
 			if (!l->active || !l->game_object->active)
 				continue;
-			if (l->shadows && directional_shadow_enabled) {
+			if (l->shadows && shadows_enabled[t]) {
 				lights.emplace_back(fillDirLightStruct(l));
 				lights_ptr.push_back(l);
 			}
@@ -258,10 +257,10 @@ namespace Ryno{
 
 	void DeferredRenderer::point_light_pass(){		
 
-		if (!point_light_enabled)
-			return;
 
 		LightType t = POINT;
+		if (!lights_enabled[t])
+			return;
 
 		//Creates two arrays of lights
 		std::vector<PointLightStruct> lights;
@@ -271,7 +270,7 @@ namespace Ryno{
 		for (auto l : PointLight::point_lights) {
 			if (!l->active || !l->game_object->active)
 				continue;
-			if (l->shadows && point_shadow_enabled) {
+			if (l->shadows && shadows_enabled[t]) {
 				lights.emplace_back(fillPointLightStruct(l));
 				lights_ptr.push_back(l);
 			}
@@ -300,10 +299,10 @@ namespace Ryno{
 
 	void DeferredRenderer::spot_light_pass()
 	{
-		if (!spot_light_enabled)
-			return;
 
 		LightType t = SPOT;
+		if (!lights_enabled[t])
+			return;
 
 		//Creates two arrays of lights
 		std::vector<SpotLightStruct> lights;
@@ -313,7 +312,7 @@ namespace Ryno{
 		for (auto l : SpotLight::spot_lights) {
 			if (!l->active || !l->game_object->active)
 				continue;
-			if (l->shadows && spot_shadow_enabled) {
+			if (l->shadows && shadows_enabled[t]) {
 				lights.emplace_back(fillSpotLightStruct(l));
 				lights_ptr.push_back(l);
 			}
@@ -648,10 +647,6 @@ namespace Ryno{
 
 		//Multiply view by a perspective matrix large as the light radius
 		light_VP_matrix = projection_matrix * view_matrix;
-
-
-		if (!spot_shadow_enabled || !l->shadows)
-			return;
 
 
 		//Enable depth testing and writing

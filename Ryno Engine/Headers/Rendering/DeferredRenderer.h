@@ -70,12 +70,8 @@ namespace Ryno{
 		static DeferredRenderer* get_instance();
 
 		bool geometry_enabled = true;
-		bool directional_light_enabled = true;
-		bool directional_shadow_enabled = true;
-		bool point_light_enabled = true;
-		bool point_shadow_enabled = true;
-		bool spot_light_enabled = true;
-		bool spot_shadow_enabled = true;
+		bool lights_enabled[3]{ true,true,true };
+		bool shadows_enabled[3]{ true,true,true };
 		bool skybox_enabled = true;
 		bool postprocessor_enabled = true;
 		bool gui_sprites_enabled = true;
@@ -236,6 +232,7 @@ namespace Ryno{
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 			s.unuse();
 		}
-	};
+	
+};
 	
 }
