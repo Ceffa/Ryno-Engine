@@ -24,7 +24,7 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 	vec4 position_screen_space = vec4(ndc_coords, depth, 1);
 	vec4 position_view_space_not_normalized = iP * position_screen_space;
 	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
-	vec4 position_world_space = iV * vec4(position_view_space, 1.0);
+	vec4 position_world_space = iV * vec4(position_view_space,1);
 	vec4 light_view_space = V * point_light.position;
 
 	//Color directly from g buffer
@@ -60,6 +60,7 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 	vec3 diffuse_final = max(0, dot(normal_view_space, light_dir_view_space.xyz)) * diff_color;
 	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001), point_light.specular_intensity);
 
-	vec3 final_color = flatness * mat_diff + get_shadow(-light_dir_world_space_not_normalized.xyz, point_light.max_fov) *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
-	return  clean_color(final_color);
+	float shadow = get_shadow(-light_dir_world_space_not_normalized.xyz, point_light.max_fov);
+	vec3 final_color = flatness * mat_diff + shadow *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
+	return clean_color(final_color);
 }

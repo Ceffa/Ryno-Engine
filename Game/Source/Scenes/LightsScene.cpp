@@ -41,10 +41,10 @@ namespace Ryno {
 		lights[0] = base;
 	
 		auto* p = lights[0].add_component<PointLight>();
-		p->diffuse_intensity = 1.75f;
+		p->diffuse_intensity = 300;
 		p->specular_intensity = 0;
 		p->set_specular_color(0, 0, 0);
-		p->attenuation = .04f;
+		p->attenuation = 3;
 		p->shadows = true;
 		p->shadow_strength = 1;
 

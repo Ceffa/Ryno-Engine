@@ -454,7 +454,7 @@ namespace Ryno{
 		auto& mat = light_models[POINT].material;
 		glm::vec3 scale = glm::vec3(l->max_radius);
 		glm::quat rot = l->game_object->transform.get_rotation();
-		auto parent = l->game_object->transform.get_parent();
+		Transform* parent = l->game_object->transform.get_parent();
 		while (parent != nullptr) {
 			rot = parent->get_rotation() * rot;
 			parent = parent->get_parent();
@@ -477,6 +477,7 @@ namespace Ryno{
 		mat.set_uniform("index", index);
 
 		m_simple_drawer->draw(&light_models[POINT]);
+
 	}
 
 	void DeferredRenderer::spot_lighting_subpass(SpotLightStruct& ls, SpotLight* l, U32 index)
