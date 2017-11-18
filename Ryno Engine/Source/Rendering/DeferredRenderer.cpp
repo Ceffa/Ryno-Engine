@@ -360,7 +360,8 @@ namespace Ryno{
 		ls.specular_intensity = l->specular_intensity;
 		ls.ambient_intensity = l->ambient_intensity;
 		ls.blur = l->blur;
-	
+		ls.shininess = l->shininess;
+
 		return ls;
 	}
 
@@ -406,6 +407,8 @@ namespace Ryno{
 		ls.attenuation = l->attenuation;
 		ls.direction = glm::vec4(rot * glm::vec3(0, 0, -1), 0);
 		ls.blur = l->blur;
+		ls.shininess = l->shininess;
+
 		return ls;
 	}
 

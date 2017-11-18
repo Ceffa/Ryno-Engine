@@ -38,7 +38,7 @@ namespace Ryno{
 		float diffuse_intensity;
 		float specular_intensity;
 		float ambient_intensity;
-		float _pad0;
+		float shininess;
 		glm::vec4 direction;
 	};
 	struct PointLightStruct {
@@ -56,7 +56,7 @@ namespace Ryno{
 		float specular_intensity;
 		glm::vec4 position;
 		glm::vec4 direction;
-		float cutoff; float attenuation; U32 blur; float _pad;
+		float cutoff; float attenuation; U32 blur; float shininess;
 	};
 
 
