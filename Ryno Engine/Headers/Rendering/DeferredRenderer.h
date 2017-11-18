@@ -146,7 +146,9 @@ namespace Ryno{
 		U32 global_ubo = 0;
 
 		U32 compute_light_ssbos[3]{ 0 };
+		std::string compute_light_ssbos_names[3]{ "compute_dir_ssbo", "compute_point_ssbo", "compute_spot_ssbo" };
 		U32 light_ssbos[3]{ 3 };
+		std::string light_ssbos_names[3]{ "dir_ssbo", "point_ssbo", "spot_ssbo" };
 
 		static void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", get_instance()->global_ubo, 0,s); }
 	private:
@@ -155,19 +157,16 @@ namespace Ryno{
 
 		//Extra dir light passes
 		void dir_lighting_subpass(DirLightStruct& ls, DirectionalLight* l, U32 index);
-		void dir_light_tiled_pass(std::vector<DirLightStruct>& lss);
 		void dir_shadow_subpass(DirLightStruct& ls, DirectionalLight* l);
 		DirLightStruct fillDirLightStruct(DirectionalLight* l) const;
 
 		//Extra point light passes
 		void point_lighting_subpass(PointLightStruct& ls, PointLight* l, U32 index);
-		void point_light_tiled_pass(std::vector<PointLightStruct>& lss);
 		void point_shadow_subpass(PointLightStruct& ls, PointLight* l);
 		PointLightStruct fillPointLightStruct(PointLight* l) const;
 
 		//Extra spot light passes
 		void spot_lighting_subpass(SpotLightStruct& ls, SpotLight* go, U32 index);
-		void spot_light_tiled_pass(std::vector<SpotLightStruct>& lss);
 		void spot_shadow_subpass(SpotLightStruct& ls, SpotLight* go);
 		SpotLightStruct fillSpotLightStruct(SpotLight* l) const;
 
@@ -209,6 +208,33 @@ namespace Ryno{
 			GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 			memcpy(p, vec.data(), sizeof(T) * vec.size());
 			glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+		}
+
+		template<class T>
+		void tiled_pass(std::vector<T>& lss, LightType type) {
+
+			U32 nrOfLights = lss.size();
+
+			auto& s = compute_shaders[type];
+			bind_global_ubo(s);
+			bind_ssbo(compute_light_ssbos_names[type], compute_light_ssbos[type], 2, s);
+
+			s.use();
+			m_fbo_deferred.bind_fbo();
+			U8 samplerIndex = 0;
+
+			s.send_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0], &samplerIndex);
+			s.send_uniform_to_shader("nrOfLights", &nrOfLights, &samplerIndex);
+			s.send_uniform_to_shader("diffuse_tex", &m_fbo_deferred.m_textures[0], &samplerIndex);
+			s.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
+			s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
+			s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
+
+			const int grid_size = 16;
+			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+			glDispatchCompute(std::ceil(WindowSize::w / grid_size), std::ceil(WindowSize::h / grid_size), 1);
+			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+			s.unuse();
 		}
 	};
 	
