@@ -448,12 +448,13 @@ namespace Ryno {
 		if (Shader::is_sampler(map.type, &type_of_texture, &isComputeTex)) {
 			glActiveTexture(GL_TEXTURE0 + *sampler_index);
 
-			glBindTexture(type_of_texture, *(U32*)value);
 
 			if (isComputeTex) {
 				glBindImageTexture(0, *(U32*)value, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8);
 			}
 			else {
+				glBindTexture(type_of_texture, *(U32*)value);
+		
 				glUniform1i(map.index, *sampler_index);
 				*sampler_index = *sampler_index + 1;
 			}
@@ -512,6 +513,7 @@ namespace Ryno {
 		case GL_SAMPLER_2D:
 		case GL_SAMPLER_3D:
 		case GL_SAMPLER_CUBE:
+		case GL_SAMPLER_CUBE_SHADOW:
 		case GL_SAMPLER_2D_SHADOW:
 		case GL_IMAGE_2D:
 			return 1;
@@ -527,9 +529,12 @@ namespace Ryno {
 		case GL_INT_VEC4:
 		case GL_UNSIGNED_INT_VEC4:
 			return 4;
+		case GL_FLOAT_MAT3:
+			return 9;
 		case GL_FLOAT_MAT4:
 			return 16;
 		}
+		std::cout << "Careful: requested type not supported by my shader: " << type << std::endl;
 		return 0;
 
 
