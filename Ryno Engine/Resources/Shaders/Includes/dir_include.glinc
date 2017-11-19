@@ -40,7 +40,7 @@ vec3 get_shaded_fragment(DirectionalLight dir_light, ivec2 coords) {
 
 	//Get normal (and rebuilt it's z axis) from g buffer
 	vec2 n = texelFetch(normal_tex, coords,0).xy * 2.0 -1;
-	vec3 normal = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
+	vec3 normal = vec3(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)));
 
 	//Important vectors
 	vec3 view_dir = normalize(-position);

@@ -37,7 +37,7 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 
 	//Normal z-axis built back from the other two
 	vec2 n = texelFetch(normal_tex, coords, 0).xy * 2.0-1;
-	vec3 normal_view_space = vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
+	vec3 normal_view_space = vec3(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)));
 
 
 	//Important vectors

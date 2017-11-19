@@ -26,10 +26,11 @@ namespace Ryno{
 		light[0].transform.set_position(0, 100, 200);
 		auto* p = light[0].add_component<PointLight>();
 		p->set_diffuse_color(255, 150, 120);
-		p->diffuse_intensity = 3;
-		p->attenuation = .0005;
-		p->specular_intensity =25;
-		p->set_specular_color(255, 150,120);
+		p->diffuse_intensity = 3000;
+		p->attenuation = 2;
+		p->specular_intensity = 5000;
+		p->shininess =10;
+		p->set_specular_color(255, 255,60);
 
 		material.create("Geometry/material", GAME);
 
@@ -44,8 +45,6 @@ namespace Ryno{
 		l->set_rotation(-70, 10, 0);
 		l->diffuse_intensity = 2;
 		l->set_diffuse_color(255, 235, 200);
-		l->specular_intensity = 30.0;
-		l->set_specular_color(255, 235, 200);
 		l->ambient_intensity = .25f;
 		l->set_ambient_color(255, 235, 200);
 		l->blur = 2;
