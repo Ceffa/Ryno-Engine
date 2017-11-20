@@ -6,17 +6,107 @@ layout(std430, binding = 2) buffer point_compute_ssbo
 	PointLight lights[];
 };
 
+
+#define MAX_LIGHTS 1024
+#define GROUP_SIZE 16
+
+
 uniform uint nrOfLights;
 
-layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+layout(local_size_x = GROUP_SIZE, local_size_y = GROUP_SIZE, local_size_z = 1) in;
 layout(rgba8, binding = 0) uniform image2D main_tex;
 
+shared uint minDepth;
+shared uint maxDepth;
+shared int finalLightsIndices[MAX_LIGHTS];	//Keeps track of the indices of lights to be rendered
+shared int finalLightsNr = 0;				//Counter for lights that are not culled
+
+void sync();
+void getMinMaxDepth(sampler2D t, ivec2 coords);
+bool intersectPlane(vec3 origin, vec3 normal, PointLight pl);
+bool planeSide(vec3 pos, vec4 plane);
+bool planeIntersect(vec3 pos, float rad, vec4 plane);
+bool edgeIntersect(vec3 pos, float rad, vec3 edge);
 
 void main() {
+
+	if (gl_LocalInvocationID.x + gl_LocalInvocationID.y == 0) {
+		atomicExchange(maxDepth, 0);
+		atomicExchange(minDepth, 0xffffffff);
+		atomicExchange(finalLightsNr, 0);
+	}
+	sync();
+
 	ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
-	vec3 color = imageLoad(main_tex, coords).xyz;
+	vec3 color = vec3(0, 0, 0);
+	
+	getMinMaxDepth(depth_tex, coords);
+	sync();
+
+	float left = float(gl_WorkGroupID.x * GROUP_SIZE);
+	float right = float(gl_WorkGroupID.x * (GROUP_SIZE+1));
+	float bottom = float(gl_WorkGroupID.y * GROUP_SIZE);
+	float top = float(gl_WorkGroupID.y * (GROUP_SIZE + 1));
+
+	left = (left / screen_width) * 2 - 1;
+	right = (right / screen_width) * 2 - 1;
+	bottom = (bottom / screen_height) * 2 - 1;
+	top = (top / screen_height) * 2 - 1;
+
+	
+	vec3 LB = (iP * vec4(left, bottom, 1,1)).xyz;
+	vec3 LT = (iP * vec4(left, top, 1,1)).xyz;
+	vec3 RB = (iP * vec4(right, bottom, 1,1)).xyz;
+	vec3 RT = (iP * vec4(right, top, 1,1)).xyz;
+
+	vec4 planeL = vec4(normalize(cross(LT, LB)),0);
+	vec4 planeT = vec4(normalize(cross(RT, LT)),0);
+	vec4 planeR = vec4(normalize(cross(RB, RT)),0);
+	vec4 planeB = vec4(normalize(cross(LB, RB)),0);
+	
+	planeL = vec4(planeL.xyz, -dot(LB, planeL.xyz));
+	planeT = vec4(planeT.xyz, -dot(LT, planeT.xyz));
+	planeR = vec4(planeR.xyz, -dot(RT, planeR.xyz));
+	planeB = vec4(planeB.xyz, -dot(RB, planeB.xyz));
+
 	for (int i = 0; i < nrOfLights; i++) {
-		color += get_shaded_fragment(lights[i], coords);
+
+		vec3 pos = (V * lights[i].position).xyz;
+		float rad = lights[i].radius;
+
+		bool centerL = planeSide(pos, planeL);
+		bool centerR = planeSide(pos, planeR);
+		bool centerT = planeSide(pos, planeT);
+		bool centerB = planeSide(pos, planeB);
+
+		bool faceL = planeIntersect(pos, rad, planeL);
+		bool faceR = planeIntersect(pos, rad, planeR);
+		bool faceT = planeIntersect(pos, rad, planeT);
+		bool faceB = planeIntersect(pos, rad, planeB);
+
+		bool edgeLB = edgeIntersect(pos, rad, LB);
+		bool edgeLT = edgeIntersect(pos, rad, LT);
+		bool edgeRB = edgeIntersect(pos, rad, RB);
+		bool edgeRT = edgeIntersect(pos, rad, RT);
+
+		bool touchEdge = edgeLB || edgeLT || edgeRB || edgeRT;
+		bool T = centerT || (faceT && centerL && centerR);
+		bool B = centerB || (faceB && centerL && centerR);
+		bool L = centerL || (faceL && centerT && centerB);
+		bool R = centerR || (faceR && centerT && centerB);
+
+		bool inside = touchEdge || (T&&B&&L&&R);
+
+
+
+		color += vec3(1, 1, 1) * (inside ? .1 : 0);	//0.1 * get_shaded_fragment(lights[i], coords);
+	}
+
+
+
+
+	for (int i = 0; i < nrOfLights; i++) {
+		color +=  get_shaded_fragment(lights[i], coords);
 	}
 
 	imageStore(main_tex, coords, vec4(color, 1));
@@ -25,3 +115,35 @@ void main() {
 float get_shadow(vec3 light_world_dir, float fov) {
 	return 1;
 }
+
+void sync() {
+	groupMemoryBarrier();
+	barrier();
+}
+
+void getMinMaxDepth(sampler2D t, ivec2 coords) {
+	float fdepth = texelFetch(t, coords, 0).r;
+	uint depth = uint(fdepth * 0xFFFFFFFFu);
+	atomicMin(minDepth, depth);
+	atomicMax(maxDepth, depth);
+}
+
+bool intersectPlane(vec3 origin, vec3 normal, PointLight pl) {
+	vec3 dist = (V * pl.position).xyz - origin;
+	return abs(dot(dist, normal)) < pl.radius;
+}
+
+bool planeSide(vec3 pos, vec4 plane) {
+	return dot(pos, plane.xyz) < -plane.w;
+}
+
+bool planeIntersect(vec3 pos, float rad, vec4 plane) {
+	return dot(pos, plane.xyz) + plane.w < rad;
+}
+
+bool edgeIntersect(vec3 pos, float rad, vec3 edge) {
+	vec3 nEdge = normalize(edge);
+	return rad*rad > length2(pos - dot(pos, nEdge) * nEdge);
+}
+
+

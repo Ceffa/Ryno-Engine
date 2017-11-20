@@ -449,40 +449,40 @@ namespace Ryno {
 			request_exit = true;
 		}
 		else if (command.compare("nodl") == 0){
-			deferred_renderer->lights_enabled[DIR] = false;
+			deferred_renderer->lightInfo[DIR].lights_enabled = false;
 		}
 		else if (command.compare("dl") == 0){
-			deferred_renderer->lights_enabled[DIR] = true;
+			deferred_renderer->lightInfo[DIR].lights_enabled = true;
 		}
 		else if (command.compare("nopl") == 0){
-			deferred_renderer->lights_enabled[POINT] = false;
+			deferred_renderer->lightInfo[POINT].lights_enabled = false;
 		}
 		else if (command.compare("pl") == 0){
-			deferred_renderer->lights_enabled[POINT] = true;
+			deferred_renderer->lightInfo[POINT].lights_enabled = true;
 		}
 		else if (command.compare("nosl") == 0){
-			deferred_renderer->lights_enabled[SPOT] = false;
+			deferred_renderer->lightInfo[SPOT].lights_enabled = false;
 		}
 		else if (command.compare("sl") == 0){
-			deferred_renderer->lights_enabled[SPOT] = true;
+			deferred_renderer->lightInfo[SPOT].lights_enabled = true;
 		}
 		else if (command.compare("nods") == 0){
-			deferred_renderer->shadows_enabled[DIR] = false;
+			deferred_renderer->lightInfo[DIR].shadows_enabled = false;
 		}
 		else if (command.compare("ds") == 0){
-			deferred_renderer->shadows_enabled[DIR] = true;
+			deferred_renderer->lightInfo[DIR].shadows_enabled = true;
 		}
 		else if (command.compare("nops") == 0){
-			deferred_renderer->shadows_enabled[POINT] = false;
+			deferred_renderer->lightInfo[POINT].shadows_enabled = false;
 		}
 		else if (command.compare("ps") == 0){
-			deferred_renderer->shadows_enabled[POINT] = true;
+			deferred_renderer->lightInfo[POINT].shadows_enabled = true;
 		}
 		else if (command.compare("noss") == 0){
-			deferred_renderer->shadows_enabled[SPOT] = false;
+			deferred_renderer->lightInfo[SPOT].shadows_enabled = false;
 		}
 		else if (command.compare("ss") == 0){
-			deferred_renderer->shadows_enabled[SPOT] = true;
+			deferred_renderer->lightInfo[SPOT].shadows_enabled = true;
 		}
 		else if (command.compare("nosb") == 0){
 			deferred_renderer->skybox_enabled = false;

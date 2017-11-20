@@ -12,6 +12,7 @@ namespace Ryno {
 		camera->movement_speed = 100;
 		camera->have_skybox = false;
 		camera->background = ColorRGB(0, 0, 0);
+		DeferredRenderer::get_instance()->lightInfo[POINT].shadows_enabled = false;
 
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);

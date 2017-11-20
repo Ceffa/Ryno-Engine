@@ -47,7 +47,7 @@ namespace Ryno{
 		float diffuse_intensity;
 		float specular_intensity;
 		glm::vec4 position; 
-		float max_fov; float attenuation; float shininess; float _pad;
+		float radius; float attenuation; float shininess; float _pad;
 	};
 	struct SpotLightStruct {
 		ColorRGBA diffuse;
@@ -70,8 +70,6 @@ namespace Ryno{
 		static DeferredRenderer* get_instance();
 
 		bool geometry_enabled = true;
-		bool lights_enabled[3]{ true,true,true };
-		bool shadows_enabled[3]{ true,true,true };
 		bool skybox_enabled = true;
 		bool postprocessor_enabled = true;
 		bool gui_sprites_enabled = true;
@@ -141,10 +139,21 @@ namespace Ryno{
 
 		U32 global_ubo = 0;
 
-		U32 compute_light_ssbos[3]{ 0 };
-		std::string compute_light_ssbos_names[3]{ "compute_dir_ssbo", "compute_point_ssbo", "compute_spot_ssbo" };
-		U32 light_ssbos[3]{ 3 };
-		std::string light_ssbos_names[3]{ "dir_ssbo", "point_ssbo", "spot_ssbo" };
+		//Holds info that are common to all lights
+		struct LightInfo {
+			LightInfo(const std::string& prefix, U32 _tile_size);
+			U32 compute_ssbo = 0;
+			U32 normal_ssbo = 0;
+			std::string compute_ssbo_name;
+			std::string normal_ssbo_name;
+			U32 tile_size;
+			bool lights_enabled = true;
+			bool shadows_enabled = true;
+			Shader compute_shader, shadow_shader, light_shader;
+			SubModel model;
+		};
+
+		LightInfo lightInfo[3]{ {"dir",32},{ "point",16 } ,{ "spot",16 } };
 
 		static void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", get_instance()->global_ubo, 0,s); }
 	private:
@@ -186,12 +195,8 @@ namespace Ryno{
 		//PROGRAMS
 		Shader m_skybox_program,m_flat_program,m_sprite_program,m_font_program;
 		Shader m_blit_depth, m_blit_color;
-		Shader compute_shaders[3];														
-		Shader light_shaders[3];			
-		Shader shadow_shaders[3];	
-	
+			
 
-		SubModel light_models[3];			
 		SubModel m_blit_model_depth, m_blit_model_color, m_skybox_model, m_post_proc_model;
 		glm::mat4 bias;
 		mutable glm::mat4 light_VP_matrix;
@@ -207,13 +212,15 @@ namespace Ryno{
 		}
 
 		template<class T>
-		void tiled_pass(std::vector<T>& lss, LightType type) {
+		void tiled_pass(std::vector<T>& lss, LightType t) {
 
 			U32 nrOfLights = lss.size();
+			if (nrOfLights == 0)
+				return;
 
-			auto& s = compute_shaders[type];
+			auto& s = lightInfo[t].compute_shader;
 			bind_global_ubo(s);
-			bind_ssbo(compute_light_ssbos_names[type], compute_light_ssbos[type], 2, s);
+			bind_ssbo(lightInfo[t].compute_ssbo_name, lightInfo[t].compute_ssbo, 2, s);
 
 			s.use();
 			m_fbo_deferred.bind_fbo();
@@ -226,9 +233,8 @@ namespace Ryno{
 			s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
 			s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
 
-			const int grid_size = 16;
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-			glDispatchCompute(std::ceil(WindowSize::w / grid_size), std::ceil(WindowSize::h / grid_size), 1);
+			glDispatchCompute(std::ceil(WindowSize::w / lightInfo[t].tile_size), std::ceil(WindowSize::h / lightInfo[t].tile_size), 1);
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 			s.unuse();
 		}
