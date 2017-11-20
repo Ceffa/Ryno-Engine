@@ -24,9 +24,9 @@ namespace Ryno {
 		shader.create("Geometry/geometry", GAME);
 
 
-		base.transform.set_scale(10000, 5, 10000);
-		base.transform.set_position(0, 0, 500);
-		base.transform.set_rotation(90, 0, 0);
+		base.transform.set_scale(2500, 5, 2500);
+		base.transform.set_position(0, 0, 0);
+		base.transform.set_rotation(0, 0, 0);
 		SubModel& m = base.add_component<Model>()->add_sub_model();
 
 		m.material.set_shader(&shader);

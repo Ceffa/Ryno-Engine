@@ -278,9 +278,8 @@ namespace Ryno{
 		//Process regular ligths
 		bind_global_ubo(lightInfo[t].light_shader);
 		bind_ssbo(lightInfo[t].normal_ssbo_name, lightInfo[t].normal_ssbo, 1, lightInfo[t].light_shader);
-
 		for (U32 i = 0; i < lights.size(); ++i) {
-			point_shadow_subpass(lights[i],lights_ptr[i]);
+			//point_shadow_subpass(lights[i],lights_ptr[i]);
 			point_lighting_subpass(lights[i],lights_ptr[i], i);
 		}
 
