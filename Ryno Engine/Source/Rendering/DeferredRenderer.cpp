@@ -473,6 +473,7 @@ namespace Ryno{
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_cube", m_fbo_shadow.m_point_cube);
 	
+		mat.set_uniform("MVP", m_camera->get_VP_matrix() * model_matrix);
 		mat.set_uniform("shadow_strength", l->shadow_strength);
 		mat.set_uniform("index", index);
 

@@ -218,6 +218,10 @@ namespace Ryno{
 			if (nrOfLights == 0)
 				return;
 
+			glEnable(GL_BLEND);
+			glBlendEquation(GL_FUNC_ADD);
+			glBlendFunc(GL_ONE, GL_ONE);
+
 			auto& s = lightInfo[t].compute_shader;
 			bind_global_ubo(s);
 			bind_ssbo(lightInfo[t].compute_ssbo_name, lightInfo[t].compute_ssbo, 2, s);
