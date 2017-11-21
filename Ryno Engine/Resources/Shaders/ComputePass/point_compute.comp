@@ -23,8 +23,8 @@ shared uint finalLightsNr = 0;				//Counter for lights that are not culled
 
 void sync();
 void getMinMaxDepth(sampler2D t, ivec2 coords);
-bool planeSide(vec3 pos, vec4 plane);
-bool planeIntersect(vec3 pos, float rad, vec4 plane);
+bool insidePlanes(vec3 pos, float rad, vec4 planeA, vec4 planeB);
+bool insideDepth(float z, float rad, float n, float f);
 
 void main() {
 
@@ -35,86 +35,70 @@ void main() {
 	}
 	sync();
 
-	ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
+	const ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
 	vec3 color = vec3(0, 0, 0);
 	
 	getMinMaxDepth(depth_tex, coords);
 	sync();
 
-	float left = float(gl_WorkGroupID.x * GROUP_SIZE);
-	float right = float((gl_WorkGroupID.x+1) * GROUP_SIZE+1);
-	float bottom = float(gl_WorkGroupID.y * GROUP_SIZE);
-	float top = float((gl_WorkGroupID.y+1) * GROUP_SIZE + 1);
+	const float left = (float(gl_WorkGroupID.x * GROUP_SIZE) / screen_width) * 2 - 1;
+	const float right = (float((gl_WorkGroupID.x+1) * GROUP_SIZE) / screen_width) * 2 - 1;
+	const float bottom = (float(gl_WorkGroupID.y * GROUP_SIZE) / screen_height) * 2 - 1;
+	const float top = (float((gl_WorkGroupID.y+1) * GROUP_SIZE) / screen_height) * 2 - 1;
 
-	left = (left / screen_width) * 2 - 1;
-	right = (right / screen_width) * 2 - 1;
-	bottom = (bottom / screen_height) * 2 - 1;
-	top = (top / screen_height) * 2 - 1;
+	const float depth_near = (float(minDepth) / 0xFFFFFFFFu) * 2 - 1;
+	const float depth_far = (float(maxDepth) / 0xFFFFFFFFu) * 2 -1;
 
-	float depth_near = (float(minDepth) / 0xFFFFFFFFu) * 2 - 1;
-	float depth_far = (float(maxDepth) / 0xFFFFFFFFu) * 2 -1;
-
-	vec3 LB = (iP * vec4(left, bottom, 1,1)).xyz;
-	vec3 LT = (iP * vec4(left, top, 1,1)).xyz;
-	vec3 RB = (iP * vec4(right, bottom, 1,1)).xyz;
-	vec3 RT = (iP * vec4(right, top, 1,1)).xyz;
-	vec4 _DepthN = iP * vec4(0, 0, depth_near, 1);
-	vec4 _DepthF = iP * vec4(0, 0, depth_far, 1);
-	vec3 DepthN = _DepthN.xyz / _DepthN.w;
-	vec3 DepthF = _DepthF.xyz / _DepthF.w;
+	const vec3 LB = (iP * vec4(left, bottom, 1,1)).xyz;
+	const vec3 LT = (iP * vec4(left, top, 1,1)).xyz;
+	const vec3 RB = (iP * vec4(right, bottom, 1,1)).xyz;
+	const vec3 RT = (iP * vec4(right, top, 1,1)).xyz;
+	const vec4 _DepthN = iP * vec4(0, 0, depth_near, 1);
+	const vec4 _DepthF = iP * vec4(0, 0, depth_far, 1);
+	const vec3 DepthN = _DepthN.xyz / _DepthN.w;
+	const vec3 DepthF = _DepthF.xyz / _DepthF.w;
 
 	vec4 planeL = vec4(normalize(cross(LT, LB)),0);
 	vec4 planeT = vec4(normalize(cross(RT, LT)),0);
 	vec4 planeR = vec4(normalize(cross(RB, RT)),0);
 	vec4 planeB = vec4(normalize(cross(LB, RB)),0);
-	vec4 planeDepthN = vec4(0, 0, 1, 0);
-	vec4 planeDepthF = vec4(0, 0, -1, 0);
+	vec4 planeN = vec4(0, 0, 1, 0);
+	vec4 planeF = vec4(0, 0, -1, 0);
 
 	planeL = vec4(planeL.xyz, -dot(LB, planeL.xyz));
 	planeT = vec4(planeT.xyz, -dot(LT, planeT.xyz));
 	planeR = vec4(planeR.xyz, -dot(RT, planeR.xyz));
 	planeB = vec4(planeB.xyz, -dot(RB, planeB.xyz));
-	planeDepthN = vec4(planeDepthN.xyz, -dot(DepthN, planeDepthN.xyz));
-	planeDepthF = vec4(planeDepthF.xyz, -dot(DepthF, planeDepthF.xyz));
+	planeN = vec4(planeN.xyz, -dot(DepthN, planeN.xyz));
+	planeF = vec4(planeF.xyz, -dot(DepthF, planeF.xyz));
 
-	uint local_offset = GROUP_SIZE * gl_LocalInvocationID.x + gl_LocalInvocationID.y;
-	for (uint i = local_offset; i < nrOfLights; i+= GROUP_SIZE*GROUP_SIZE) {
+	const uint local_offset = GROUP_SIZE * gl_LocalInvocationID.x + gl_LocalInvocationID.y;
+	const uint sqr_size = GROUP_SIZE*GROUP_SIZE;
 
-		vec3 pos = (V * lights[i].position).xyz;
-		float rad = lights[i].radius;
+	for (uint i = local_offset; i < nrOfLights; i+= sqr_size) {
 		
-		bool centerL = planeSide(pos, planeL);
-		bool centerR = planeSide(pos, planeR);
-		bool centerT = planeSide(pos, planeT);
-		bool centerB = planeSide(pos, planeB);
-		bool centerDN = planeSide(pos, planeDepthN);
-		bool centerDF = planeSide(pos, planeDepthF);
-
-		bool faceL = planeIntersect(pos, rad, planeL);
-		bool faceR = planeIntersect(pos, rad, planeR);
-		bool faceT = planeIntersect(pos, rad, planeT);
-		bool faceB = planeIntersect(pos, rad, planeB);
-		bool faceDN = planeIntersect(pos, rad, planeDepthN);
-		bool faceDF = planeIntersect(pos, rad, planeDepthF);
+		const PointLight p = lights[i];
+		const vec3 pos = (V * p.position).xyz;
+		const float rad = p.radius;
+	
+		const bool insideX = insidePlanes(pos, rad, planeL, planeR);
+		const bool insideY = insidePlanes(pos, rad, planeT, planeB);
+		const bool insideZ = insideDepth(pos.z, rad, DepthN.z, DepthF.z);
 
 
-		bool insideW = centerL && centerR;
-		bool insideH = centerT && centerB;
-		bool insideD = centerDN && centerDF;
-
-		bool inside = insideW || faceL || faceR;			//Inside horizontal planes
-		inside = inside && (insideH || faceT || faceB);		//Inside vertical planes
-		inside = inside && (insideD || faceDF || faceDN);	//Inside depth planes
-
+		const bool inside = insideX && insideY && insideZ;			//Inside horizontal planes
 		if (inside) {
-			uint idx = atomicAdd(finalLightsNr, 1);
+			const uint idx = atomicAdd(finalLightsNr, 1);
 			finalLightsIndices[idx] = i;
+			color = maxDepth * vec3(1, 1, 1);
 		}
+		
 	}
 
 	sync();
 
-	MatInfo info = extract_info_from_gbuffer(coords);
+	const MatInfo info = extract_info_from_gbuffer(coords);
+
 	for (int i = 0; i < finalLightsNr; i++) {
 		color += get_shaded_fragment(lights[finalLightsIndices[i]], info);
 	}
@@ -139,13 +123,18 @@ void getMinMaxDepth(sampler2D t, ivec2 coords) {
 }
 
 
-bool planeSide(vec3 pos, vec4 plane) {
-	return dot(pos, plane.xyz) < -plane.w;
+bool insidePlanes(vec3 pos, float rad, vec4 planeA, vec4 planeB) {
+	float dotA = dot(pos, planeA.xyz) + planeA.w;
+	float dotB = dot(pos, planeB.xyz) + planeB.w;
+	float sqrRad = rad*rad;
+	return (dotA<0 && dotB <0) || (dotA*dotA < sqrRad) || (dotB*dotB < sqrRad);
 }
 
-bool planeIntersect(vec3 pos, float rad, vec4 plane) {
-	return abs(dot(pos, plane.xyz) +plane.w) < + rad;
+bool insideDepth(float z, float rad, float n, float f) {
+	return (z > n - rad && z < f + rad);
 }
+
+
 
 
 

@@ -39,7 +39,7 @@ MatInfo extract_info_from_gbuffer(ivec2 coords) {
 	return info;
 }
 
-vec3 get_shaded_fragment(PointLight point_light, MatInfo info) {
+vec3 get_shaded_fragment(PointLight point_light, const MatInfo info) {
 
 	//Important vectors
 	vec4 light_view_space = V * point_light.position;
