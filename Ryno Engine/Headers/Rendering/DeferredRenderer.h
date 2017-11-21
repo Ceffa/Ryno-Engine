@@ -134,6 +134,7 @@ namespace Ryno{
 			float time;
 			U32 screen_width;
 			U32 screen_height;
+			float _pad;
 		} ubo_global_data;
 
 
@@ -224,7 +225,7 @@ namespace Ryno{
 
 			auto& s = lightInfo[t].compute_shader;
 			bind_global_ubo(s);
-			bind_ssbo(lightInfo[t].compute_ssbo_name, lightInfo[t].compute_ssbo, 2, s);
+			bind_ssbo(lightInfo[t].compute_ssbo_name, lightInfo[t].compute_ssbo, 1, s);
 
 			s.use();
 			m_fbo_deferred.bind_fbo();

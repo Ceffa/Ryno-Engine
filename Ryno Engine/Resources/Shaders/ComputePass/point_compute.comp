@@ -1,7 +1,7 @@
 ﻿E(Includes/global)
 E(Includes/point_include)
 
-layout(std430, binding = 2) readonly buffer point_compute_ssbo
+layout(std430, binding = 1) readonly buffer point_compute_ssbo
 {
 	PointLight lights[];
 };
@@ -19,7 +19,7 @@ layout(rgba8, binding = 0) uniform image2D main_tex;
 shared uint minDepth;
 shared uint maxDepth;
 shared uint finalLightsIndices[MAX_LIGHTS];	//Keeps track of the indices of lights to be rendered
-shared uint finalLightsNr = 0;				//Counter for lights that are not culled
+shared uint finalLightsNr;					//Counter for lights that are not culled
 
 void sync();
 void getMinMaxDepth(sampler2D t, ivec2 coords);
@@ -86,7 +86,7 @@ void main() {
 		if (inside) {
 			const uint idx = atomicAdd(finalLightsNr, 1);
 			finalLightsIndices[idx] = i;
-			color = maxDepth * vec3(1, 1, 1);
+			//color = maxDepth * vec3(1, 1, 1);
 		}
 		
 	}

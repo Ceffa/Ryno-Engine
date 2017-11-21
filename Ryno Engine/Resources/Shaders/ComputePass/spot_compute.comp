@@ -1,7 +1,7 @@
 ﻿E(Includes/global)
 E(Includes/spot_include)
 
-layout(std430, binding = 2) buffer spot_compute_ssbo
+layout(std430, binding = 1) buffer spot_compute_ssbo
 {
 	SpotLight lights[];
 };

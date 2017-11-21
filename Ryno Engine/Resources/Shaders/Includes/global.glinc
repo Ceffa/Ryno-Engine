@@ -12,6 +12,7 @@ layout(std140, binding = 0) uniform glob_ubo {
 	float time;
 	int screen_width;
 	int screen_height;
+	float _pad;
 };
 
 float split(uint color, int n) {
