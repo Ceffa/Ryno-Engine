@@ -37,8 +37,8 @@ float get_shadow(vec3 light_world_dir, float fov) {
 
 
 void main(){
-
-	fracolor = get_shaded_fragment(lights[index], ivec2(gl_FragCoord.xy));
+	
+	fracolor = get_shaded_fragment(lights[index], extract_info_from_gbuffer(ivec2(gl_FragCoord.xy)));
 }
 
 

@@ -37,3 +37,7 @@ vec3 clean_color(vec3 c) {
 float lerp(float a, float b, float t) {
 	return a * (1-t) + t * b;
 }
+
+vec3 lerp(vec3 a, vec3 b, float f) {
+	return vec3(lerp(a.x, b.x, f), lerp(a.y, b.y, f), lerp(a.z, b.z, f));
+}

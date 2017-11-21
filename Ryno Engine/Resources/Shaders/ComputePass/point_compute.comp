@@ -7,7 +7,7 @@ layout(std430, binding = 2) buffer point_compute_ssbo
 };
 
 
-#define MAX_LIGHTS 1024
+#define MAX_LIGHTS 512
 #define GROUP_SIZE 32
 
 
@@ -114,12 +114,12 @@ void main() {
 
 	sync();
 
-
+	MatInfo info = extract_info_from_gbuffer(coords);
 	for (int i = 0; i < finalLightsNr; i++) {
-		color += .02 * vec3(1,1,1) + get_shaded_fragment(lights[finalLightsIndices[i]], coords);
+		color += get_shaded_fragment(lights[finalLightsIndices[i]], info);
 	}
 
-	imageStore(main_tex, coords, vec4(color, 1));
+	imageStore(main_tex, coords, vec4(clean_color(color), 1));
 }
 
 float get_shadow(vec3 light_world_dir, float fov) {

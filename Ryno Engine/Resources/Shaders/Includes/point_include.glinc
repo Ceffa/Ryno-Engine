@@ -7,6 +7,13 @@ struct PointLight {
 	float radius; float attenuation; float shininess; float _pad1;
 };
 
+struct MatInfo {
+	vec4 position_world_space;
+	vec4 view_dir_view_space;
+	vec4 mat_diff_and_flat;
+	vec4 mat_spec_and_pow;
+	vec4 normal_view_space;
+};
 uniform sampler2D diffuse_tex;
 uniform sampler2D specular_tex;
 uniform sampler2D normal_tex;
@@ -15,37 +22,31 @@ uniform sampler2D depth_tex;
 
 float get_shadow(vec3 light_world_dir, float fov);
 
-
-vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
-
-	//Rebuild position from depth
+MatInfo extract_info_from_gbuffer(ivec2 coords) {
 	float depth = texelFetch(depth_tex, coords, 0).r *2.0 - 1.0;
 	vec2 ndc_coords = (vec2(coords) / vec2(screen_width, screen_height))* 2.0 - 1.0;
 	vec4 position_screen_space = vec4(ndc_coords, depth, 1);
 	vec4 position_view_space_not_normalized = iP * position_screen_space;
 	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
-	vec4 position_world_space = iV * vec4(position_view_space,1);
-	vec4 light_view_space = V * point_light.position;
+	vec2 n = texelFetch(normal_tex, coords, 0).xy * 2.0 - 1;
+	
+	MatInfo info;
+	info.position_world_space = iV * vec4(position_view_space, 1);
+	info.view_dir_view_space = vec4(normalize(-position_view_space), 0);
+	info.mat_diff_and_flat = texelFetch(diffuse_tex, coords, 0);
+	info.mat_spec_and_pow = texelFetch(specular_tex, coords, 0);
+	info.normal_view_space = vec4(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)),0);
+	return info;
+}
 
-	//Color directly from g buffer
-	vec4 sample_diff = texelFetch(diffuse_tex, coords, 0);
-	vec3 mat_diff = sample_diff.rgb;
-	float flatness = sample_diff.w;
-	vec4 sample_spec = texelFetch(specular_tex, coords, 0);
-	vec3 mat_spec = sample_spec.rgb;
-	float mat_spec_pow = sample_spec.w;
-
-	//Normal z-axis built back from the other two
-	vec2 n = texelFetch(normal_tex, coords, 0).xy * 2.0-1;
-	vec3 normal_view_space = vec3(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)));
-
+vec3 get_shaded_fragment(PointLight point_light, MatInfo info) {
 
 	//Important vectors
-	vec4 light_dir_world_space_not_normalized = point_light.position - position_world_space;
+	vec4 light_view_space = V * point_light.position;
+	vec4 light_dir_world_space_not_normalized = point_light.position - info.position_world_space;
 	vec4 light_dir_world_space = normalize(light_dir_world_space_not_normalized);
 	vec4 light_dir_view_space = itV * light_dir_world_space;
-	vec4 view_dir_view_space = vec4(normalize(-position_view_space), 0);
-	vec4 half_dir_view_space = vec4(normalize(light_dir_view_space.xyz + view_dir_view_space.xyz), 0);
+	vec4 half_dir_view_space = vec4(normalize(light_dir_view_space.xyz + info.view_dir_view_space.xyz), 0);
 
 	//Calculate attenuation
 	float distance = length(light_dir_world_space_not_normalized.xyz);
@@ -53,14 +54,14 @@ vec3 get_shaded_fragment(PointLight point_light, ivec2 coords) {
 
 	//Calculate base colors
 	vec3 diff_color = split3(point_light.diffuse) * point_light.diffuse_intensity;
-	vec3 spec_color = split3(point_light.specular) * mat_spec_pow * point_light.specular_intensity;
+	vec3 spec_color = split3(point_light.specular) * info.mat_spec_and_pow.w * point_light.specular_intensity;
 
 
 	//final colors for diffuse and specular
-	vec3 diffuse_final = max(0, dot(normal_view_space, light_dir_view_space.xyz)) * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal_view_space), 0.000001), point_light.shininess);
+	vec3 diffuse_final = max(0, dot(info.normal_view_space.xyz, light_dir_view_space.xyz)) * diff_color *  info.mat_spec_and_pow.xyz;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, info.normal_view_space.xyz), 0.000001), point_light.shininess)* info.mat_diff_and_flat.xyz;
 
 	float shadow = get_shadow(-light_dir_world_space_not_normalized.xyz, point_light.radius);
-	vec3 final_color = flatness * mat_diff + shadow *  (1.0 - flatness) * (specular_final * mat_spec + diffuse_final * mat_diff) / attenuation;
-	return clean_color(final_color);
+	vec3 final_color = lerp (shadow * (specular_final  + diffuse_final ) / attenuation, info.mat_diff_and_flat.xyz, info.mat_diff_and_flat.w);
+	return final_color;
 }

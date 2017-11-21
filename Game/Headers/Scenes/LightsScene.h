@@ -21,7 +21,7 @@ namespace Ryno {
 		I32 mesh,sphere;
 		Shader shader,dir_light_shader, point_light_shader;
 		Texture white, white_normal, brick, brick_normal;
-		I32 lato = 32;
+		I32 lato = 50;
 		std::vector<GameObject> lights;
 		GameObject base,parent;
 	};
