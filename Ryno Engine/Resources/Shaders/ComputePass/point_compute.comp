@@ -62,15 +62,11 @@ void main() {
 	vec4 planeT = vec4(normalize(cross(RT, LT)),0);
 	vec4 planeR = vec4(normalize(cross(RB, RT)),0);
 	vec4 planeB = vec4(normalize(cross(LB, RB)),0);
-	vec4 planeN = vec4(0, 0, 1, 0);
-	vec4 planeF = vec4(0, 0, -1, 0);
-
+	
 	planeL = vec4(planeL.xyz, -dot(LB, planeL.xyz));
 	planeT = vec4(planeT.xyz, -dot(LT, planeT.xyz));
 	planeR = vec4(planeR.xyz, -dot(RT, planeR.xyz));
 	planeB = vec4(planeB.xyz, -dot(RB, planeB.xyz));
-	planeN = vec4(planeN.xyz, -dot(DepthN, planeN.xyz));
-	planeF = vec4(planeF.xyz, -dot(DepthF, planeF.xyz));
 
 	const uint local_offset = GROUP_SIZE * gl_LocalInvocationID.x + gl_LocalInvocationID.y;
 	const uint sqr_size = GROUP_SIZE*GROUP_SIZE;
@@ -130,8 +126,9 @@ bool insidePlanes(vec3 pos, float rad, vec4 planeA, vec4 planeB) {
 	return (dotA<0 && dotB <0) || (dotA*dotA < sqrRad) || (dotB*dotB < sqrRad);
 }
 
-bool insideDepth(float z, float rad, float f, float n) {
-	return (z > n - rad && z < f + rad);
+bool insideDepth(float z, float rad, float n, float f) {
+	//Near has a greater Z, so they are swapped
+	return (z < n + rad && z > f - rad);
 }
 
 
