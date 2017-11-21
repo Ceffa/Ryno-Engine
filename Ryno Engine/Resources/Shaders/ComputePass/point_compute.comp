@@ -1,14 +1,14 @@
 ﻿E(Includes/global)
 E(Includes/point_include)
 
-layout(std430, binding = 2) buffer point_compute_ssbo
+layout(std430, binding = 2) readonly buffer point_compute_ssbo
 {
 	PointLight lights[];
 };
 
 
 #define MAX_LIGHTS 512
-#define GROUP_SIZE 32
+#define GROUP_SIZE 16
 
 
 uniform uint nrOfLights;
@@ -130,7 +130,7 @@ bool insidePlanes(vec3 pos, float rad, vec4 planeA, vec4 planeB) {
 	return (dotA<0 && dotB <0) || (dotA*dotA < sqrRad) || (dotB*dotB < sqrRad);
 }
 
-bool insideDepth(float z, float rad, float n, float f) {
+bool insideDepth(float z, float rad, float f, float n) {
 	return (z > n - rad && z < f + rad);
 }
 

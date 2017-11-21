@@ -153,7 +153,7 @@ namespace Ryno{
 			SubModel model;
 		};
 
-		LightInfo lightInfo[3]{ {"dir",32},{ "point",32 } ,{ "spot",16 } };
+		LightInfo lightInfo[3]{ {"dir",32},{ "point",16 } ,{ "spot",16 } };
 
 		static void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", get_instance()->global_ubo, 0,s); }
 	private:
