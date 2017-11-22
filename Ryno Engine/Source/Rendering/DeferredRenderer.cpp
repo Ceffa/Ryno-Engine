@@ -198,11 +198,6 @@ namespace Ryno{
 
 		m_fbo_deferred.bind_for_geometry_pass();
 
-		glDisable(GL_CULL_FACE);
-		glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		m_geometry_batch3d.render_batch();
 
 	}

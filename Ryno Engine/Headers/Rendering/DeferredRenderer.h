@@ -154,7 +154,7 @@ namespace Ryno{
 			SubModel model;
 		};
 
-		LightInfo lightInfo[3]{ {"dir",32},{ "point",16 } ,{ "spot",16 } };
+		LightInfo lightInfo[3]{ {"dir",32},{ "point",32 } ,{ "spot",16 } };
 
 		static void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", get_instance()->global_ubo, 0,s); }
 	private:
@@ -218,17 +218,14 @@ namespace Ryno{
 			U32 nrOfLights = lss.size();
 			if (nrOfLights == 0)
 				return;
-
-			glEnable(GL_BLEND);
-			glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_ONE, GL_ONE);
-
+	
 			auto& s = lightInfo[t].compute_shader;
 			bind_global_ubo(s);
 			bind_ssbo(lightInfo[t].compute_ssbo_name, lightInfo[t].compute_ssbo, 1, s);
 
 			s.use();
 			m_fbo_deferred.bind_fbo();
+	
 			U8 samplerIndex = 0;
 
 			s.send_uniform_to_shader("main_tex", &m_fbo_deferred.m_final_textures[0], &samplerIndex);
@@ -239,7 +236,7 @@ namespace Ryno{
 			s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
 
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-			glDispatchCompute(std::ceil(WindowSize::w / lightInfo[t].tile_size), std::ceil(WindowSize::h / lightInfo[t].tile_size), 1);
+			glDispatchCompute(std::ceil(WindowSize::w / (float)lightInfo[t].tile_size), std::ceil(WindowSize::h / (float)lightInfo[t].tile_size), 1);
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 			s.unuse();
 		}

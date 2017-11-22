@@ -42,3 +42,11 @@ float lerp(float a, float b, float t) {
 vec3 lerp(vec3 a, vec3 b, float f) {
 	return vec3(lerp(a.x, b.x, f), lerp(a.y, b.y, f), lerp(a.z, b.z, f));
 }
+
+vec3 maxVec(float f, vec3 v) {
+	return vec3(max(f, v.x), max(f, v.y), max(f, v.z));
+}
+
+vec3 absVec(vec3 v) {
+	return vec3(abs(v.x), abs(v.y), abs(v.z));
+}

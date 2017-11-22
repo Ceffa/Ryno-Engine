@@ -20,7 +20,7 @@ float get_shadow(vec4 position_world_space, float dotNL);
 
 vec3 get_shaded_fragment(DirectionalLight dir_light, ivec2 coords) {
 
-	float depth = texelFetch(depth_tex, coords,0).r *2.0 - 1.0;
+	float depth = (1-texelFetch(depth_tex, coords,0).r) *2.0 - 1.0;
 	vec2 ndc_coords = (vec2(coords) / vec2(screen_width, screen_height))* 2.0 - 1.0;
 	vec4 position_screen_space = vec4(ndc_coords , depth, 1);
 

@@ -20,5 +20,5 @@ void main() {
 	out_normal = (TBN * normalize(texture(normal_map_sampler, middle_uv).rgb*2.0 - 1.0)).xy*.5 + 0.5;
 
 	
-	out_depth = gl_FragCoord.z;
+	out_depth = 1-gl_FragCoord.z;
 }

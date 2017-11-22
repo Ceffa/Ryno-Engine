@@ -450,7 +450,7 @@ namespace Ryno {
 
 
 			if (isComputeTex) {
-				glBindImageTexture(0, *(U32*)value, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
+				glBindImageTexture(0, *(U32*)value, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8);
 			}
 			else {
 				glBindTexture(type_of_texture, *(U32*)value);

@@ -123,8 +123,14 @@ namespace Ryno {
 			GL_COLOR_ATTACHMENT2,
 			GL_COLOR_ATTACHMENT3
 		};
+	
 
 		glDrawBuffers(FRAME_NUM_TEXTURES, DrawBuffers);
+
+		glDisable(GL_CULL_FACE);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void FBO_Deferred::bind_for_stencil_pass()
