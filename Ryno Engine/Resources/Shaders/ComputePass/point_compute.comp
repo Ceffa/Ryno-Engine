@@ -26,96 +26,101 @@ shared uint finalLightsIndices[MAX_LIGHTS];	//Keeps track of the indices of ligh
 shared uint finalLightsNr;					//Counter for lights that are not culled
 
 void sync();
-void getMinMaxDepth(sampler2D t, ivec2 coords);
-bool testAABB(vec3 lightPos, float rad, vec3 centerAABB, vec3 halfSizeAABB);
-bool insidePlanes(vec3 pos, float rad, vec4 planeA, vec4 planeB);
-bool insideDepth(float z, float rad, float n, float f);
+bool testAABB(vec4 ls, vec3 centerAABB, vec3 halfSizeAABB);
+bool insidePlanes(vec4 ls, vec4 planeA, vec4 planeB);
 
 void main() {
 		
+	//First fragment initialize shared variables
 	if (gl_LocalInvocationID.x + gl_LocalInvocationID.y == 0) {
 		atomicExchange(maxDepth, 0);
 		atomicExchange(minDepth, 0xFFFFFFFFu);
 		atomicExchange(finalLightsNr, 0);
 	}
+
 	sync();
 
-	
+	//Each fragment records its min and max depth
 	const ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
+
+	uint fragDepth = uint((1 - texelFetch(depth_tex, coords, 0).r) * 0xFFFFFFFFu);
+	atomicMin(minDepth, fragDepth);
+	atomicMax(maxDepth, fragDepth);
+	
+	sync();
+
+	//Read initial image color
 	vec3 color = imageLoad(main_tex, coords).rgb;
 
-	
-	getMinMaxDepth(depth_tex, coords);
-	sync();
+	//Get bounds of tile in NDC space
+	const float adj = float(GROUP_SIZE * 2);
+	const float adjW = adj / screen_width;
+	const float adjH = adj / screen_height;
 
-	const float left = (float(gl_WorkGroupID.x * GROUP_SIZE) / screen_width) * 2 - 1;
-	const float right = (float((gl_WorkGroupID.x+1) * GROUP_SIZE) / screen_width) * 2 - 1;
-	const float bottom = (float(gl_WorkGroupID.y * GROUP_SIZE) / screen_height) * 2 - 1;
-	const float top = (float((gl_WorkGroupID.y+1) * GROUP_SIZE) / screen_height) * 2 - 1;
+	const float left = gl_WorkGroupID.x * adjW - 1;
+	const float right = (gl_WorkGroupID.x + 1) * adjW - 1;
+	const float bottom = gl_WorkGroupID.y * adjH - 1;
+	const float top = (gl_WorkGroupID.y + 1) * adjH - 1;
 
+	//Gets depth in NDC space
 	const float depth_near_NDC = (float(minDepth) / 0xFFFFFFFFu) * 2 - 1;
 	const float depth_far_NDC = (float(maxDepth) / 0xFFFFFFFFu) * 2 -1;
+	
+	//Gets 4 corners of the frustum (two near and two far, they'll be useful).
+	const vec3 LBN = w_div(iP * vec4(left, bottom, depth_near_NDC, 1));
+	const vec3 LTF = w_div(iP * vec4(left, top, depth_far_NDC, 1));
+	const vec3 RBN = w_div(iP * vec4(right, bottom, depth_near_NDC, 1));
+	const vec3 RTF = w_div(iP * vec4(right, top, depth_far_NDC, 1));
+	
+	//Get the 4 normals of the planes
+	vec4 planeL = vec4(normalize(cross(LTF, LBN)), 0);
+	vec4 planeT = vec4(normalize(cross(RTF, LTF)), 0);
+	vec4 planeR = vec4(normalize(cross(RBN, RTF)), 0);
+	vec4 planeB = vec4(normalize(cross(LBN, RBN)), 0);
 
-	const vec3 LB = (iP * vec4(left, bottom, 1, 1)).xyz;
-	const vec3 LT = (iP * vec4(left, top, 1, 1)).xyz;
-	const vec3 RB = (iP * vec4(right, bottom, 1, 1)).xyz;
-	const vec3 RT = (iP * vec4(right, top, 1, 1)).xyz;
-	const vec4 _DepthN = iP * vec4(0, 0, depth_near_NDC, 1);
-	const vec4 _DepthF = iP * vec4(0, 0, depth_far_NDC, 1);
-	const float DepthN = _DepthN.z / _DepthN.w;
-	const float DepthF = _DepthF.z / _DepthF.w;
+	//Calculate the D component of the planes
+	planeL = vec4(planeL.xyz, -dot(LBN, planeL.xyz));
+	planeT = vec4(planeT.xyz, -dot(LTF, planeT.xyz));
+	planeR = vec4(planeR.xyz, -dot(RTF, planeR.xyz));
+	planeB = vec4(planeB.xyz, -dot(RBN, planeB.xyz));
 
-	vec4 planeL = vec4(normalize(cross(LT, LB)), 0);
-	vec4 planeT = vec4(normalize(cross(RT, LT)), 0);
-	vec4 planeR = vec4(normalize(cross(RB, RT)), 0);
-	vec4 planeB = vec4(normalize(cross(LB, RB)), 0);
-
-	planeL = vec4(planeL.xyz, -dot(LB, planeL.xyz));
-	planeT = vec4(planeT.xyz, -dot(LT, planeT.xyz));
-	planeR = vec4(planeR.xyz, -dot(RT, planeR.xyz));
-	planeB = vec4(planeB.xyz, -dot(RB, planeB.xyz));
-
-	const vec3 LTF = LT * (DepthF / LT.z);
-	const vec3 RBF = RB * (DepthF / RB.z);
-	const vec3 LTN = LT * (DepthN / LT.z);
-	const vec3 RBN = RB * (DepthN / RB.z);
-
-	const vec3 minAABB = vec3(min(LTF.x, LTN.x), min(RBF.y, RBN.y), DepthF);
-	const vec3 maxAABB = vec3(max(RBF.x, RBN.x), max(LTF.y, LTN.y), DepthN);
+	//Build AABB
+	const vec3 minAABB = vec3(min(LTF.x, LBN.x), min(RBN.y, LBN.y), LTF.z);
+	const vec3 maxAABB = vec3(max(RBN.x, RTF.x), max(LTF.y, RTF.y), LBN.z);
 	const vec3 halfSizeAABB = (maxAABB - minAABB) / 2;
 	const vec3 centerAABB = minAABB + halfSizeAABB;
 
 
-	const uint local_offset = GROUP_SIZE * gl_LocalInvocationID.x + gl_LocalInvocationID.y;
-	const uint sqr_size = GROUP_SIZE*GROUP_SIZE;
+	//Each fragment loops through a subset of the lights, 
+	//and tests culling with Frustum and AABB method
+	const uint localOffset = GROUP_SIZE * gl_LocalInvocationID.x + gl_LocalInvocationID.y;
+	const uint sqSize = GROUP_SIZE*GROUP_SIZE;
 
-	for (uint i = local_offset; i < nrOfLights; i += sqr_size) {
+	for (uint i = localOffset; i < nrOfLights; i += sqSize) {
 
 		vec4 ls = texelFetchBuffer(tboSampler, int(i));
-		const vec3 pos = (V * vec4(ls.xyz,1)).xyz;
-		const float rad = ls.w;
 
-		const bool insideX = insidePlanes(pos, rad, planeL, planeR);
-		const bool insideY = insidePlanes(pos, rad, planeT, planeB);
-		const bool insideZ = insideDepth(pos.z, rad, DepthN, DepthF);
-		const bool inside = testAABB(pos, rad, centerAABB, halfSizeAABB);
+		const bool insideX = insidePlanes(ls, planeL, planeR);
+		const bool insideY = insidePlanes(ls, planeT, planeB);
+		const bool insideAABB = testAABB(ls, centerAABB, halfSizeAABB);
 
-		if (inside) {
+		//Adds light to the list if culling is negative
+		if (insideAABB && insideX && insideY) {
 			const uint idx = atomicAdd(finalLightsNr, 1);
 			finalLightsIndices[idx] = i;
-
 		}
-		
 	}
 
 	sync();
 
+	//Estract info from G-buffer only once
 	const MatInfo info = extract_info_from_gbuffer(coords);
 
+	//Each fragments shades all lights
 	for (int i = 0; i < finalLightsNr; i++) {
 		color += get_shaded_fragment(lights[finalLightsIndices[i]], info);
 	}
-
+	//Store the result
 	imageStore(main_tex, coords, vec4(clean_color(color), 1));
 }
 
@@ -128,30 +133,18 @@ void sync() {
 	barrier();
 }
 
-void getMinMaxDepth(sampler2D t, ivec2 coords) {
-	float fdepth = 1-texelFetch(t, coords, 0).r;
-	uint depth = uint(fdepth * 0xFFFFFFFFu);
-	atomicMin(minDepth, depth);
-	atomicMax(maxDepth, depth);
+bool testAABB(vec4 ls, vec3 centerAABB, vec3 halfSizeAABB ) {
+	vec3 dist = maxVec(0, absVec(ls.xyz - centerAABB) - halfSizeAABB);
+	return dot(dist,dist) <= ls.w;
 }
 
 
-bool testAABB(vec3 lightPos, float rad, vec3 centerAABB, vec3 halfSizeAABB ) {
-	vec3 dist = maxVec(0, absVec(lightPos - centerAABB) - halfSizeAABB);
-	return dot(dist,dist) <= rad*rad;
+bool insidePlanes(vec4 ls, vec4 planeA, vec4 planeB) {
+	float dotA = dot(ls.xyz, planeA.xyz) + planeA.w;
+	float dotB = dot(ls.xyz, planeB.xyz) + planeB.w;
+	return (dotA<0 && dotB <0) || (dotA*dotA < ls.w) || (dotB*dotB < ls.w);
 }
 
-
-bool insidePlanes(vec3 pos, float rad, vec4 planeA, vec4 planeB) {
-	float dotA = dot(pos, planeA.xyz) + planeA.w;
-	float dotB = dot(pos, planeB.xyz) + planeB.w;
-	float sqrRad = rad*rad;
-	return (dotA<0 && dotB <0) || (dotA*dotA < sqrRad) || (dotB*dotB < sqrRad);
-}
-
-bool insideDepth(float z, float rad, float n, float f) {
-	return (z < n + rad && z > f - rad);
-}
 
 
 

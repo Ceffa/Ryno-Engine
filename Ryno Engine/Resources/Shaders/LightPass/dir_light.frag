@@ -34,7 +34,6 @@ float get_shadow(vec4 position_world_space, float dotNL) {
 	vec4 position_light_ortho_matrix = light_VP_matrix * position_world_space;
 	vec3 position_light_ortho_matrix_norm = position_light_ortho_matrix.xyz / position_light_ortho_matrix.w;
 
-
 	if (dir_light.blur == 0) {
 		float bias = 0.0005;
 

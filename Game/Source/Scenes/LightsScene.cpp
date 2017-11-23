@@ -52,6 +52,14 @@ namespace Ryno {
 		
 		lights[0].delete_component<Model>();
 
+		auto d = base.add_component<DirectionalLight>();
+		d->set_diffuse_color(255, 255, 255);
+		d->specular_intensity = 0;
+		d->diffuse_intensity = .5f;
+		d->set_rotation(-50, 0, 0);
+		d->absolute_movement = false;
+		d->shadows = false;
+
 
 		
 		parent.transform.set_position(0, 0, 0);

@@ -267,7 +267,6 @@ namespace Ryno{
 
 	void DeferredRenderer::point_light_pass(){		
 
-
 		LightType t = POINT;
 		if (!lightInfo[t].lights_enabled)
 			return;
@@ -277,9 +276,8 @@ namespace Ryno{
 		std::vector<PointLight*> lights_ptr;
 		std::vector<PointLightStruct> computeLights;
 
-		glBindBuffer(GL_TEXTURE_BUFFER, lights_tbo_buffer);
-		auto p = (glm::vec4*)glMapBuffer(GL_TEXTURE_BUFFER, GL_WRITE_ONLY);
-		U32 pos = 0;
+		auto p = get_tbo_handle();
+		U32 counter = 0;
 
 		for (auto l : PointLight::point_lights) {
 			if (!l->active || !l->game_object->active)
@@ -291,11 +289,10 @@ namespace Ryno{
 			}
 			else {
 				computeLights.emplace_back(ls);
-				p[pos++] = glm::vec4(ls.position.x, ls.position.y, ls.position.z, ls.radius);
+				p[counter++] = glm::vec4(glm::vec3(ubo_global_data.V * ls.position), ls.radius * ls.radius);
 			}
 		}
-		glUnmapBuffer(GL_TEXTURE_BUFFER);
-		glBindBuffer(GL_TEXTURE_BUFFER, 0);
+		unmap_tbo();
 
 		//Fill SSBOs
 		fill_ssbo(lightInfo[t].normal_ssbo, lights);
@@ -311,6 +308,7 @@ namespace Ryno{
 
 		//Process compute lights
 		tiled_pass(computeLights,t);
+
 
 	}
 

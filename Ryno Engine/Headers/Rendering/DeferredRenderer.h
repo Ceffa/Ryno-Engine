@@ -140,9 +140,19 @@ namespace Ryno{
 
 		U32 global_ubo = 0;
 
+		//Lights culling tbo
 		const U32 lights_tbo_tex_size = 128;
 		U32 lights_tbo_buffer = 0;
 		U32 lights_tbo_tex = 0;
+
+		glm::vec4* get_tbo_handle() {
+			glBindBuffer(GL_TEXTURE_BUFFER, lights_tbo_buffer);
+			return (glm::vec4*)glMapBuffer(GL_TEXTURE_BUFFER, GL_WRITE_ONLY);
+		}
+		void unmap_tbo() {
+			glUnmapBuffer(GL_TEXTURE_BUFFER);
+			glBindBuffer(GL_TEXTURE_BUFFER, 0);
+		}
 
 		//Holds info that are common to all lights
 		struct LightInfo {
@@ -162,6 +172,8 @@ namespace Ryno{
 		LightInfo lightInfo[3]{ {"dir",32},{ "point",16 } ,{ "spot",16 } };
 
 		static void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", get_instance()->global_ubo, 0,s); }
+	
+
 	private:
 
 		DeferredRenderer() {}
@@ -235,11 +247,8 @@ namespace Ryno{
 			s.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
 			s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
 			s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
-			if (t == POINT) {
+			if (t == POINT)
 				s.send_uniform_to_shader("tboSampler", &lights_tbo_tex, &samplerIndex);
-				glBindBuffer(1, lights_tbo_buffer);
-
-			}
 		
 
 

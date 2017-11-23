@@ -30,7 +30,7 @@ void before_commands(char* argv[]) {
 	//Ryno::Game::get_instance()->set_window_pos(x, y);
 	//Ryno::Game::get_instance()->set_window_size(w, h);
 	Ryno::Game::get_instance()->set_window_pos(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-	Ryno::Game::get_instance()->set_window_size(1290, 720);
+	Ryno::Game::get_instance()->set_window_size(1280, 720);
 
 
 }
