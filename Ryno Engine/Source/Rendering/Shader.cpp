@@ -431,6 +431,10 @@ namespace Ryno {
 			*type_of_texture = GL_TEXTURE_3D;
 			return true;
 		}
+		if (type == GL_SAMPLER_BUFFER) {
+			*type_of_texture = GL_TEXTURE_BUFFER;
+			return true;
+		}
 		return false;
 	}
 
@@ -515,6 +519,7 @@ namespace Ryno {
 		case GL_SAMPLER_CUBE:
 		case GL_SAMPLER_CUBE_SHADOW:
 		case GL_SAMPLER_2D_SHADOW:
+		case GL_SAMPLER_BUFFER:
 		case GL_IMAGE_2D:
 			return 1;
 		case GL_FLOAT_VEC2:

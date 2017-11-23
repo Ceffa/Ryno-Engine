@@ -1,6 +1,8 @@
 ﻿E(Includes/global)
 E(Includes/point_include)
 
+#extension GL_EXT_gpu_shader4 : enable
+
 layout(std430, binding = 1) readonly buffer point_compute_ssbo
 {
 	readonly PointLight lights[];
@@ -8,7 +10,9 @@ layout(std430, binding = 1) readonly buffer point_compute_ssbo
 
 
 #define MAX_LIGHTS 1024
-#define GROUP_SIZE 32
+#define GROUP_SIZE 16
+
+uniform samplerBuffer tboSampler;
 
 
 uniform uint nrOfLights;
@@ -36,8 +40,7 @@ void main() {
 	}
 	sync();
 
-	if (gl_GlobalInvocationID.x >= screen_width || gl_GlobalInvocationID.y >= screen_height)
-		return;
+	
 	const ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
 	vec3 color = imageLoad(main_tex, coords).rgb;
 
@@ -87,16 +90,15 @@ void main() {
 	const uint sqr_size = GROUP_SIZE*GROUP_SIZE;
 
 	for (uint i = local_offset; i < nrOfLights; i += sqr_size) {
-		
-		const PointLight p = lights[i];
-		const vec3 pos = (V * p.position).xyz;
-		const float rad = p.radius;
+
+		vec4 ls = texelFetchBuffer(tboSampler, int(i));
+		const vec3 pos = (V * vec4(ls.xyz,1)).xyz;
+		const float rad = ls.w;
 
 		const bool insideX = insidePlanes(pos, rad, planeL, planeR);
 		const bool insideY = insidePlanes(pos, rad, planeT, planeB);
 		const bool insideZ = insideDepth(pos.z, rad, DepthN, DepthF);
-		
-		const bool inside = testAABB(pos, p.radius, centerAABB, halfSizeAABB) && insideX && insideY && insideZ;
+		const bool inside = testAABB(pos, rad, centerAABB, halfSizeAABB);
 
 		if (inside) {
 			const uint idx = atomicAdd(finalLightsNr, 1);

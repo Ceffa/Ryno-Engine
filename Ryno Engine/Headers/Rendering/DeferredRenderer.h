@@ -140,9 +140,14 @@ namespace Ryno{
 
 		U32 global_ubo = 0;
 
+		const U32 lights_tbo_tex_size = 128;
+		U32 lights_tbo_buffer = 0;
+		U32 lights_tbo_tex = 0;
+
 		//Holds info that are common to all lights
 		struct LightInfo {
 			LightInfo(const std::string& prefix, U32 _tile_size);
+			~LightInfo();
 			U32 compute_ssbo = 0;
 			U32 normal_ssbo = 0;
 			std::string compute_ssbo_name;
@@ -154,7 +159,7 @@ namespace Ryno{
 			SubModel model;
 		};
 
-		LightInfo lightInfo[3]{ {"dir",32},{ "point",32 } ,{ "spot",16 } };
+		LightInfo lightInfo[3]{ {"dir",32},{ "point",16 } ,{ "spot",16 } };
 
 		static void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", get_instance()->global_ubo, 0,s); }
 	private:
@@ -177,10 +182,6 @@ namespace Ryno{
 		SpotLightStruct fillSpotLightStruct(SpotLight* l) const;
 
 
-
-
-		
-	
 		static void bind_ubo(const std::string& name, U32 block, U32 bind_point, const Shader& s);
 		static void bind_ssbo(const std::string& name, U32 block, U32 bind_point, const Shader& s);
 		
@@ -234,6 +235,13 @@ namespace Ryno{
 			s.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
 			s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
 			s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
+			if (t == POINT) {
+				s.send_uniform_to_shader("tboSampler", &lights_tbo_tex, &samplerIndex);
+				glBindBuffer(1, lights_tbo_buffer);
+
+			}
+		
+
 
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 			glDispatchCompute(std::ceil(WindowSize::w / (float)lightInfo[t].tile_size), std::ceil(WindowSize::h / (float)lightInfo[t].tile_size), 1);

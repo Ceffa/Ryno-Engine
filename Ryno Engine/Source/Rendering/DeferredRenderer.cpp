@@ -46,6 +46,15 @@ namespace Ryno{
 		model.material.set_shader(&light_shader);
 	}
 
+	DeferredRenderer::LightInfo::~LightInfo() {
+		glBindBuffer(1, compute_ssbo);
+		glDeleteBuffers(1, &compute_ssbo);
+		compute_ssbo = 0;
+		glBindBuffer(1, normal_ssbo);
+		glDeleteBuffers(1, &normal_ssbo);
+		normal_ssbo = 0;
+	}
+
 	
 	
 	DeferredRenderer* DeferredRenderer::get_instance() {
@@ -130,6 +139,20 @@ namespace Ryno{
 		glGenBuffers(1, &global_ubo);
 		glBindBuffer(GL_UNIFORM_BUFFER, global_ubo);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(UBO_Global_Data), &ubo_global_data, GL_DYNAMIC_DRAW);
+
+		//Generate light tbo
+		glGenBuffers(1, &lights_tbo_buffer);
+		glBindBuffer(GL_TEXTURE_BUFFER, lights_tbo_buffer);
+
+		// initialize buffer object
+		U32 size = lights_tbo_tex_size * lights_tbo_tex_size * 4 * sizeof(F32);
+		glBufferData(GL_TEXTURE_BUFFER, size, 0, GL_DYNAMIC_DRAW);
+
+		//tex
+		glGenTextures(1, &lights_tbo_tex);
+		glBindTexture(GL_TEXTURE_BUFFER, lights_tbo_tex);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, lights_tbo_buffer);
+		glBindBuffer(GL_TEXTURE_BUFFER, 0);
 	}
 	
 	void DeferredRenderer::init_frame(){
@@ -254,18 +277,26 @@ namespace Ryno{
 		std::vector<PointLight*> lights_ptr;
 		std::vector<PointLightStruct> computeLights;
 
+		glBindBuffer(GL_TEXTURE_BUFFER, lights_tbo_buffer);
+		auto p = (glm::vec4*)glMapBuffer(GL_TEXTURE_BUFFER, GL_WRITE_ONLY);
+		U32 pos = 0;
+
 		for (auto l : PointLight::point_lights) {
 			if (!l->active || !l->game_object->active)
 				continue;
+			auto ls = fillPointLightStruct(l);
 			if (l->shadows && lightInfo[t].shadows_enabled) {
-				lights.emplace_back(fillPointLightStruct(l));
+				lights.emplace_back(ls);
 				lights_ptr.push_back(l);
 			}
 			else {
-				computeLights.emplace_back(fillPointLightStruct(l));
+				computeLights.emplace_back(ls);
+				p[pos++] = glm::vec4(ls.position.x, ls.position.y, ls.position.z, ls.radius);
 			}
 		}
-		
+		glUnmapBuffer(GL_TEXTURE_BUFFER);
+		glBindBuffer(GL_TEXTURE_BUFFER, 0);
+
 		//Fill SSBOs
 		fill_ssbo(lightInfo[t].normal_ssbo, lights);
 		fill_ssbo(lightInfo[t].compute_ssbo, computeLights);
@@ -810,6 +841,12 @@ namespace Ryno{
 
 
 	void DeferredRenderer::destroy() {
+		glBindBuffer(1, lights_tbo_buffer);
+		glDeleteBuffers(1, &lights_tbo_buffer);
+		lights_tbo_buffer = 0;
+		glBindBuffer(1, global_ubo);
+		glDeleteBuffers(1, &global_ubo);
+		global_ubo = 0;
 	}
 
 

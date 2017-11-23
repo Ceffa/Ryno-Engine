@@ -6,17 +6,17 @@ namespace Ryno {
 
 	void LightsScene::start() {
 
-		camera->position = glm::vec4(0, 308.567f, -727.473, 1);
+		camera->position = glm::vec4(0, 3000, 0, 1);
 		camera->yaw = 0;
-		camera->pitch = 0.407f;
-		camera->movement_speed = 100;
+		camera->pitch = ryno_math::Pi/2;
+		camera->movement_speed = 1000;
 		camera->have_skybox = false;
 		camera->background = ColorRGB(0, 0, 0);
 		DeferredRenderer::get_instance()->lightInfo[POINT].shadows_enabled = false;
 
 
-		white = game->texture_manager->load_png("white_pixel.png", GAME);
-		white_normal = game->texture_manager->load_png("pack/161_norm.png", GAME);
+		white = game->texture_manager->load_png("brick.png", GAME);
+		white_normal = game->texture_manager->load_png("brick_normal.png", GAME);
 		
 		mesh = game->mesh_manager->load_mesh("cube", GAME);
 		sphere = game->mesh_manager->load_mesh("sphere", GAME);
