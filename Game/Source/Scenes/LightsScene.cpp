@@ -6,10 +6,10 @@ namespace Ryno {
 
 	void LightsScene::start() {
 
-		camera->position = glm::vec4(0, 3000, 0, 1);
+		camera->position = glm::vec4(0, 20, 1460, 1);
 		camera->yaw = 0;
-		camera->pitch = ryno_math::Pi/2;
-		camera->movement_speed = 1000;
+		camera->pitch = ryno_math::Pi/2.5;
+		camera->movement_speed = 180;
 		camera->have_skybox = false;
 		camera->background = ColorRGB(0, 0, 0);
 		DeferredRenderer::get_instance()->lightInfo[POINT].shadows_enabled = false;
@@ -32,7 +32,7 @@ namespace Ryno {
 		m.material.set_shader(&shader);
 		m.material.set_attribute("in_DiffuseColor", ColorRGBA(255, 255, 255, 0));
 		m.material.set_attribute("in_SpecularColor", ColorRGBA(255, 255, 255, 255));
-		m.material.set_attribute("in_Tiling", glm::vec2(100, 100));
+		m.material.set_attribute("in_Tiling", glm::vec2(500, 500));
 		m.material.set_uniform("texture_sampler", white.id);
 		m.material.set_uniform("normal_map_sampler", white_normal.id);
 		m.mesh = mesh;
@@ -42,16 +42,17 @@ namespace Ryno {
 		lights[0] = base;
 	
 		auto* p = lights[0].add_component<PointLight>();
-		p->diffuse_intensity = 300;
+		p->diffuse_intensity = 40;
 		p->specular_intensity = 0;
 		p->set_specular_color(0, 0, 0);
-		p->attenuation = 3;
+		p->attenuation = 2.5f;
 		p->shadows = true;
 		p->shadow_strength = 1;
 
 		
 		lights[0].delete_component<Model>();
 
+		/*
 		auto d = base.add_component<DirectionalLight>();
 		d->set_diffuse_color(255, 255, 255);
 		d->specular_intensity = 0;
@@ -59,7 +60,7 @@ namespace Ryno {
 		d->set_rotation(-50, 0, 0);
 		d->absolute_movement = false;
 		d->shadows = false;
-
+		*/
 
 		
 		parent.transform.set_position(0, 0, 0);
@@ -86,7 +87,7 @@ namespace Ryno {
 
 	void LightsScene::input() {
 
-		static F32 speed = 100;
+		static F32 speed = 10;
 
 		if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
 			parent.transform.add_position(TimeManager::delta_time * speed * glm::vec3(1, 0, 0));
