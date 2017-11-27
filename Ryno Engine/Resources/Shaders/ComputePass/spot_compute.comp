@@ -1,30 +1,151 @@
 ﻿E(Includes/spot_include)
+#extension GL_EXT_gpu_shader4 : enable
 
-layout(std430, binding = 1) buffer spot_compute_ssbo
+layout(std430, binding = 1) readonly buffer spot_compute_ssbo
 {
-	SpotLight lights[];
+	readonly SpotLight lights[];
 };
+
+
+#define MAX_LIGHTS 1024
+#define GROUP_SIZE 16
+
+uniform samplerBuffer tboSampler;
+
 
 uniform uint nrOfLights;
 
-layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+layout(local_size_x = GROUP_SIZE, local_size_y = GROUP_SIZE, local_size_z = 1) in;
 layout(rgba8, binding = 0) uniform image2D main_tex;
 
+shared uint minDepth;
+shared uint maxDepth;
+shared uint finalLightsIndices[MAX_LIGHTS];	//Keeps track of the indices of lights to be rendered
+shared uint finalLightsNr;					//Counter for lights that are not culled
+
+void sync();
+bool testAABB(vec4 ls, vec3 centerAABB, vec3 halfSizeAABB);
+bool insidePlanes(vec4 ls, vec4 planeA, vec4 planeB);
 
 void main() {
-	ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
-	vec3 color = imageLoad(main_tex, coords).xyz;
+
+	//First fragment initialize shared variables
+	if (gl_LocalInvocationID.x + gl_LocalInvocationID.y == 0) {
+		atomicExchange(maxDepth, 0);
+		atomicExchange(minDepth, 0xFFFFFFFFu);
+		atomicExchange(finalLightsNr, 0);
+	}
+
+	sync();
+
+	//Each fragment records its min and max depth
+	const ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
+
+	uint fragDepth = uint((1 - texelFetch(depth_tex, coords, 0).r) * 0xFFFFFFFFu);
+	atomicMin(minDepth, fragDepth);
+	atomicMax(maxDepth, fragDepth);
+
+	sync();
+
+	//Read initial image color
+	vec3 color = imageLoad(main_tex, coords).rgb;
+
+	//Get bounds of tile in NDC space
+	const float adj = float(GROUP_SIZE * 2);
+	const float adjW = adj / screen_width;
+	const float adjH = adj / screen_height;
+
+	const float left = gl_WorkGroupID.x * adjW - 1;
+	const float right = (gl_WorkGroupID.x + 1) * adjW - 1;
+	const float bottom = gl_WorkGroupID.y * adjH - 1;
+	const float top = (gl_WorkGroupID.y + 1) * adjH - 1;
+
+	//Gets depth in NDC space
+	const float depth_near_NDC = (float(minDepth) / 0xFFFFFFFFu) * 2 - 1;
+	const float depth_far_NDC = (float(maxDepth) / 0xFFFFFFFFu) * 2 - 1;
+
+	//Gets 4 corners of the frustum (two near and two far, they'll be useful).
+	const vec3 LBN = w_div(iP * vec4(left, bottom, depth_near_NDC, 1));
+	const vec3 LTF = w_div(iP * vec4(left, top, depth_far_NDC, 1));
+	const vec3 RBN = w_div(iP * vec4(right, bottom, depth_near_NDC, 1));
+	const vec3 RTF = w_div(iP * vec4(right, top, depth_far_NDC, 1));
+
+	//Get the 4 normals of the planes
+	vec4 planeL = vec4(normalize(cross(LTF, LBN)), 0);
+	vec4 planeT = vec4(normalize(cross(RTF, LTF)), 0);
+	vec4 planeR = vec4(normalize(cross(RBN, RTF)), 0);
+	vec4 planeB = vec4(normalize(cross(LBN, RBN)), 0);
+
+	//Calculate the D component of the planes
+	planeL = vec4(planeL.xyz, -dot(LBN, planeL.xyz));
+	planeT = vec4(planeT.xyz, -dot(LTF, planeT.xyz));
+	planeR = vec4(planeR.xyz, -dot(RTF, planeR.xyz));
+	planeB = vec4(planeB.xyz, -dot(RBN, planeB.xyz));
+
+	//Build AABB
+	const vec3 minAABB = vec3(min(LTF.x, LBN.x), min(RBN.y, LBN.y), LTF.z);
+	const vec3 maxAABB = vec3(max(RBN.x, RTF.x), max(LTF.y, RTF.y), LBN.z);
+	const vec3 halfSizeAABB = (maxAABB - minAABB) / 2;
+	const vec3 centerAABB = minAABB + halfSizeAABB;
+
+
+	//Each fragment loops through a subset of the lights, 
+	//and tests culling with Frustum and AABB method
+	const uint localOffset = GROUP_SIZE * gl_LocalInvocationID.x + gl_LocalInvocationID.y;
+	const uint sqSize = GROUP_SIZE*GROUP_SIZE;
+
+	for (uint i = localOffset; i < nrOfLights; i += sqSize) {
+
+		vec4 ls = texelFetchBuffer(tboSampler, int(i));
+
+		const bool insideX = insidePlanes(ls, planeL, planeR);
+		const bool insideY = insidePlanes(ls, planeT, planeB);
+		const bool insideAABB = testAABB(ls, centerAABB, halfSizeAABB);
+
+		//Adds light to the list if culling is negative
+		if (insideAABB && insideX && insideY) {
+			const uint idx = atomicAdd(finalLightsNr, 1);
+			finalLightsIndices[idx] = i;
+		}
+	}
+
+	sync();
 
 	//Estract info from G-buffer only once
 	const MatInfo info = extract_info_from_gbuffer(coords);
 
-	for (int i = 0; i < nrOfLights; i++) {
-		color += get_shaded_fragment(lights[i], info);
+	//Each fragments shades all lights
+	for (int i = 0; i < finalLightsNr; i++) {
+		color += get_shaded_fragment(lights[finalLightsIndices[i]], info);
 	}
-
+	//Store the result
 	imageStore(main_tex, coords, vec4(color, 1));
 }
 
-float get_shadow(vec3 position_world_space, float dotNL){
+float get_shadow(vec3 light_world_dir, float fov) {
 	return 1;
 }
+
+void sync() {
+	groupMemoryBarrier();
+	barrier();
+}
+
+bool testAABB(vec4 ls, vec3 centerAABB, vec3 halfSizeAABB) {
+	vec3 dist = maxVec(0, absVec(ls.xyz - centerAABB) - halfSizeAABB);
+	return dot(dist, dist) <= ls.w;
+}
+
+
+bool insidePlanes(vec4 ls, vec4 planeA, vec4 planeB) {
+	float dotA = dot(ls.xyz, planeA.xyz) + planeA.w;
+	float dotB = dot(ls.xyz, planeB.xyz) + planeB.w;
+	return (dotA<0 && dotB <0) || (dotA*dotA < ls.w) || (dotB*dotB < ls.w);
+}
+
+
+
+
+
+
+

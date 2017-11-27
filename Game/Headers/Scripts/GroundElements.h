@@ -72,7 +72,7 @@ namespace Ryno {
 				{
 					if (i == j && i == 0)continue;
 					poles[i*s + j] = poles[0];
-					poles[i*s + j].transform.set_position((i - s / 2) * 20, 1000, (j - s / 2) * 20);
+					poles[i*s + j].transform.set_position((i - s / 2) * 20, 0, (j - s / 2) * 20);
 				}
 			}
 		

@@ -12,7 +12,6 @@ namespace Ryno {
 		camera->movement_speed = 180;
 		camera->have_skybox = false;
 		camera->background = ColorRGB(0, 0, 0);
-		DeferredRenderer::get_instance()->lightInfo[POINT].shadows_enabled = false;
 
 
 		white = game->texture_manager->load_png("brick.png", GAME);
@@ -46,7 +45,7 @@ namespace Ryno {
 		p->specular_intensity = 0;
 		p->set_specular_color(0, 0, 0);
 		p->attenuation = 2.5f;
-		p->shadows = true;
+		p->shadows = false;
 		p->shadow_strength = 1;
 
 		

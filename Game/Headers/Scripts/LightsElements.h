@@ -58,7 +58,8 @@ namespace Ryno {
 			p->specular_intensity = 10000;
 			p->set_specular_color(255, 80, 0);
 			p->set_rotation(-90, 0, 0);
-			p->cutoff =30;
+			p->inner_angle = 40;
+			p->outer_angle = 50;
 			p->blur = 1;
 			p->absolute_movement = false;
 			p->shadows = true;

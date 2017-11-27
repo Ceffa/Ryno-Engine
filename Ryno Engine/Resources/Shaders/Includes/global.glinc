@@ -49,3 +49,7 @@ vec3 absVec(vec3 v) {
 vec3 w_div(vec4 v) {
 	return v.xyz / v.w;
 }
+
+float revLerp(float A, float B, float t) {
+	return clamp((t - A) / (B - A),0,1);
+}

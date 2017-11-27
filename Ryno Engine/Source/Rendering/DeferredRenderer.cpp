@@ -264,7 +264,7 @@ namespace Ryno{
 		//Process compute lights
 		tiled_pass(computeLights,t);
 	}	
-
+	
 	void DeferredRenderer::point_light_pass(){		
 
 		LightType t = POINT;
@@ -302,7 +302,7 @@ namespace Ryno{
 		bind_global_ubo(lightInfo[t].light_shader);
 		bind_ssbo(lightInfo[t].normal_ssbo_name, lightInfo[t].normal_ssbo, 1, lightInfo[t].light_shader);
 		for (U32 i = 0; i < lights.size(); ++i) {
-			//point_shadow_subpass(lights[i],lights_ptr[i]);
+			point_shadow_subpass(lights[i],lights_ptr[i]);
 			point_lighting_subpass(lights[i],lights_ptr[i], i);
 		}
 
@@ -323,18 +323,38 @@ namespace Ryno{
 		std::vector<SpotLightStruct> lights;
 		std::vector<SpotLight*> lights_ptr;
 		std::vector<SpotLightStruct> computeLights;
+		
+		auto p = get_tbo_handle();
+		U32 counter = 0;
 
 		for (auto l : SpotLight::spot_lights) {
 			if (!l->active || !l->game_object->active)
 				continue;
+			auto ls = fillSpotLightStruct(l);
 			if (l->shadows && lightInfo[t].shadows_enabled) {
-				lights.emplace_back(fillSpotLightStruct(l));
+				lights.emplace_back(ls);
 				lights_ptr.push_back(l);
 			}
 			else {
-				computeLights.emplace_back(fillSpotLightStruct(l));
+				computeLights.emplace_back(ls);
+				float h = ls.radius;
+				glm::vec4 center;
+				float radius;
+				if (ls.outer_angle > PI / 4.0f)
+				{
+					center = ls.position + cos(ls.outer_angle) * h * ls.direction;
+					radius = sin(ls.outer_angle) * h;
+				}
+				else
+				{
+					center = ls.position + h /(2*cos(ls.outer_angle)) * ls.direction;
+					radius = h / (2.0f * cos(ls.outer_angle));
+				}
+		
+				p[counter++] = glm::vec4(glm::vec3(ubo_global_data.V * center), radius * radius);
 			}
 		}
+		unmap_tbo();
 
 		//Fill SSBOs
 		fill_ssbo(lightInfo[t].normal_ssbo, lights);
@@ -410,7 +430,6 @@ namespace Ryno{
 			rot = parent->get_rotation() * rot;
 			parent = parent->get_parent();
 		}
-		F32 cutoff_value = cos(l->cutoff * DEG_TO_RAD);
 
 		SpotLightStruct ls;
 		ls.diffuse = l->diffuse_color;
@@ -418,7 +437,9 @@ namespace Ryno{
 		ls.diffuse_intensity = l->diffuse_intensity;
 		ls.specular_intensity = l->specular_intensity;
 		ls.position = trans;
-		ls.cutoff = cutoff_value;
+		ls.outer_angle = l->outer_angle * DEG_TO_RAD/2;
+		ls.inner_angle = l->inner_angle * DEG_TO_RAD/2;
+		ls.radius = l->max_radius;
 		ls.attenuation = l->attenuation;
 		ls.direction = glm::vec4(rot * glm::vec3(0, 0, -1), 0);
 		ls.blur = l->blur;
@@ -527,9 +548,8 @@ namespace Ryno{
 
 		auto go = l->game_object;
 
-		float angle = l->cutoff * DEG_TO_RAD;
-		float edge = l->max_radius / cos(angle);
-		float width = sin(angle) * edge;
+		float edge = l->max_radius / cos(ls.outer_angle);
+		float width = sin(ls.outer_angle) * edge;
 		glm::vec3 scale = glm::vec3(width, width, l->max_radius);
 
 		glm::quat rot = l->absolute_movement ? l->rotation : go->transform.get_rotation() * l->rotation;
@@ -665,7 +685,7 @@ namespace Ryno{
 		glm::vec3 up_vector = glm::vec3(dir.y, -dir.x, 0);//One of the perpendicular vectors to the direction
 		glm::mat4 view_matrix = glm::lookAt(correct_position, correct_position + glm::vec3(dir), up_vector);
 	
-		glm::mat4 projection_matrix = glm::perspective( l->cutoff*2 * DEG_TO_RAD, 1.0, 1.0, (F64)l->max_radius);
+		glm::mat4 projection_matrix = glm::perspective( ls.outer_angle * (double)2, 1.0, 1.0, (F64)l->max_radius);
 
 
 		//Multiply view by a perspective matrix large as the light radius

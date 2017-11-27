@@ -7,7 +7,8 @@ struct SpotLight {
 	float specular_intensity;
 	vec4 position; 
 	vec4 direction;
-	float cutoff; float attenuation; uint blur; float shininess;
+	float attenuation; uint blur; float shininess; float _pad0;
+	float radius; float inner_angle; float outer_angle; float _pad1;
 };
 
 
@@ -40,13 +41,13 @@ vec3 get_shaded_fragment(SpotLight spot_light, const MatInfo info) {
 
 
 	//CONE CUTOFF (with smoothing to the edges)
-	float actual_cutoff = dot(normalize(info.position_world_space.xyz - spot_light.position.xyz), spot_light.direction.rgb);
+	float angle = acos(dot(normalize(info.position_world_space.xyz - spot_light.position.xyz), spot_light.direction.xyz));
 
-	actual_cutoff = clamp(mix(0, 1, (actual_cutoff - spot_light.cutoff) / (spot_light.cutoff * 0.1)), 0.0, 1.0);
+	float fade = 1-revLerp(spot_light.inner_angle, spot_light.outer_angle, angle);
 
 	float shadow = get_shadow(info.position_world_space.xyz, dotNL);
 	//fragment color
-	return lerp(actual_cutoff * shadow *  (specular_final + diffuse_final) / attenuation, info.mat_diff_and_flat.xyz, info.mat_diff_and_flat.w);
+	return lerp(fade * shadow *  (specular_final + diffuse_final) / attenuation, info.mat_diff_and_flat.xyz, info.mat_diff_and_flat.w);
 }
 
 

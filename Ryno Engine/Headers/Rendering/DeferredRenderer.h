@@ -56,7 +56,8 @@ namespace Ryno{
 		float specular_intensity;
 		glm::vec4 position;
 		glm::vec4 direction;
-		float cutoff; float attenuation; U32 blur; float shininess;
+		float attenuation; U32 blur; float shininess; float _pad0;
+		float radius; float inner_angle; float outer_angle; float _pad1;
 	};
 
 
@@ -247,7 +248,7 @@ namespace Ryno{
 			s.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
 			s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
 			s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
-			if (t == POINT)
+			if (t != DIR )
 				s.send_uniform_to_shader("tboSampler", &lights_tbo_tex, &samplerIndex);
 		
 

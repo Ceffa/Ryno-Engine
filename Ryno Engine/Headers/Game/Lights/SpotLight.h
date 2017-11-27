@@ -26,7 +26,8 @@ namespace Ryno{
 		F32 attenuation = 2; //exp
 		glm::quat rotation;
 
-		F32 cutoff; //Angle of the cone
+		F32 inner_angle; 
+		F32 outer_angle; 
 
 		//Shaders uniform locations
 		struct location{
