@@ -62,7 +62,7 @@ namespace Ryno {
 			p->outer_angle = 50;
 			p->blur = 1;
 			p->absolute_movement = false;
-			p->shadows = true;
+			p->shadows = false;
 			p->shadow_strength = 1;
 
 			

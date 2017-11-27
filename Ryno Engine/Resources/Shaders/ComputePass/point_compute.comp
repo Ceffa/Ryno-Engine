@@ -65,17 +65,20 @@ void main() {
 	const float depth_near_NDC = (float(minDepth) / 0xFFFFFFFFu) * 2 - 1;
 	const float depth_far_NDC = (float(maxDepth) / 0xFFFFFFFFu) * 2 -1;
 	
-	//Gets 4 corners of the frustum (two near and two far, they'll be useful).
+	//Gets 4 corners of the frustum
 	const vec3 LBN = w_div(iP * vec4(left, bottom, depth_near_NDC, 1));
 	const vec3 LTF = w_div(iP * vec4(left, top, depth_far_NDC, 1));
 	const vec3 RBN = w_div(iP * vec4(right, bottom, depth_near_NDC, 1));
 	const vec3 RTF = w_div(iP * vec4(right, top, depth_far_NDC, 1));
-	
+	//Get another 2 faster
+	const vec3 RBF = RBN * LTF.z / RBN.z;
+	const vec3 RTN = RTF * LBN.z / RTF.z;
+
 	//Get the 4 normals of the planes
 	vec4 planeL = vec4(normalize(cross(LTF, LBN)), 0);
-	vec4 planeT = vec4(normalize(cross(RTF, LTF)), 0);
+	vec4 planeT = vec4(normalize(cross(RTN, LTF)), 0);
 	vec4 planeR = vec4(normalize(cross(RBN, RTF)), 0);
-	vec4 planeB = vec4(normalize(cross(LBN, RBN)), 0);
+	vec4 planeB = vec4(normalize(cross(LBN, RBF)), 0);
 
 	//Calculate the D component of the planes
 	planeL = vec4(planeL.xyz, -dot(LBN, planeL.xyz));
@@ -84,8 +87,8 @@ void main() {
 	planeB = vec4(planeB.xyz, -dot(RBN, planeB.xyz));
 
 	//Build AABB
-	const vec3 minAABB = vec3(min(LTF.x, LBN.x), min(RBN.y, LBN.y), LTF.z);
-	const vec3 maxAABB = vec3(max(RBN.x, RTF.x), max(LTF.y, RTF.y), LBN.z);
+	const vec3 minAABB = vec3(min(LTF.x, LBN.x), min(RBF.y, LBN.y), LTF.z);
+	const vec3 maxAABB = vec3(max(RBN.x, RTF.x), max(LTF.y, RTN.y), LBN.z);
 	const vec3 halfSizeAABB = (maxAABB - minAABB) / 2;
 	const vec3 centerAABB = minAABB + halfSizeAABB;
 
