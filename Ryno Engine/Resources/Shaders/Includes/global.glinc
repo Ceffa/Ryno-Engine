@@ -30,11 +30,6 @@ float length2(vec3 l) {
 	return l.x*l.x + l.y * l.y + l.z * l.z;
 }
 
-vec3 clean_color(vec3 c) {
-	float t = 0.00390625; // 1/255
-	return vec3(t > c.x ? 0 : c.x, t > c.y ? 0 : c.y, t > c.z ? 0 : c.z);
-}
-
 float lerp(float a, float b, float t) {
 	return a * (1-t) + t * b;
 }

@@ -8,7 +8,4 @@ uniform mat4 light_VP;
 void main(){
 	vec4 pos = vec4(in_Position, 1);
 	gl_Position = light_VP * in_M * pos;
-	
-
-	
 }

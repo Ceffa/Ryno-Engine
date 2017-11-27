@@ -1,6 +1,4 @@
-E(Includes/global)
 E(Includes/point_include)
-
 
 uniform samplerCubeShadow shadow_cube;
 uniform float shadow_strength;

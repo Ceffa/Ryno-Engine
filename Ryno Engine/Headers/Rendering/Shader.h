@@ -193,6 +193,7 @@ namespace Ryno{
 		Function to load a shader inside a buffer
 		*/
 		std::string read_file_inside_string(const std::string& path);
+		std::string read_file_inside_string_recursive(const std::string& path);
 
 		/**
 		Check for error during shader creation

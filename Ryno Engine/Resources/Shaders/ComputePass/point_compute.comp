@@ -1,5 +1,4 @@
-﻿E(Includes/global)
-E(Includes/point_include)
+﻿E(Includes/point_include)
 
 #extension GL_EXT_gpu_shader4 : enable
 
@@ -121,7 +120,7 @@ void main() {
 		color += get_shaded_fragment(lights[finalLightsIndices[i]], info);
 	}
 	//Store the result
-	imageStore(main_tex, coords, vec4(clean_color(color), 1));
+	imageStore(main_tex, coords, vec4(color, 1));
 }
 
 float get_shadow(vec3 light_world_dir, float fov) {

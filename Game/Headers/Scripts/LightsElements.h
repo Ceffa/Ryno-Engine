@@ -126,8 +126,8 @@ namespace Ryno {
 				center.transform.add_rotation(glm::quat(TimeManager::delta_time * speed* glm::vec3(0, -.02f, 0)));
 			}
 			if (game->input_manager->is_key_pressed(SDLK_z, KEYBOARD)) {
-				for (auto* c : center.transform.children) {
-					center.get_component<SpotLight>()->absolute_movement = !center.get_component<SpotLight>()->absolute_movement;
+				for (auto c : center.transform.children) {
+					c->game_object->get_component<SpotLight>()->absolute_movement = !c->game_object->get_component<SpotLight>()->absolute_movement;
 				}
 				center.get_component<DirectionalLight>()->absolute_movement = !center.get_component<DirectionalLight>()->absolute_movement;
 			}

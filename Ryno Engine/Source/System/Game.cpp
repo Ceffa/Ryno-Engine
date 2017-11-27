@@ -177,7 +177,7 @@ namespace Ryno{
 		deferred_renderer->directional_light_pass();
 		deferred_renderer->point_light_pass();
 		deferred_renderer->spot_light_pass();
-	//	deferred_renderer->skybox_pass();
+		deferred_renderer->skybox_pass();
 		deferred_renderer->post_processing_pass();
 		deferred_renderer->GUI_pass();
 		deferred_renderer->final_pass();

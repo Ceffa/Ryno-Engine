@@ -1,4 +1,3 @@
-E(Includes/global)
 E(Includes/spot_include)
 
 
@@ -19,19 +18,6 @@ uniform float shadow_strength;
 
 out vec3 fracolor;
 
-//This function generate a depth value from the direction vector, so that it can be compared 
-//with the depth value in the shadow cube
-
-float vector_to_depth(vec3 light_vec, float n, float f)
-{
-	vec3 AbsVec = abs(light_vec);
-	float LocalZcomp = max(AbsVec.x, max(AbsVec.y, AbsVec.z));
-
-
-
-	float NormZComp = (f + n) / (f - n) - (2 * f*n) / (f - n) / LocalZcomp;
-	return (NormZComp + 1.0) * 0.5;
-}
 
 float get_shadow(vec3 position_world_space, float dotNL) {
 
@@ -118,7 +104,7 @@ float get_shadow(vec3 position_world_space, float dotNL) {
 
 void main(){
 	//Get uvs of the current fragment
-	fracolor = get_shaded_fragment(lights[index], ivec2(gl_FragCoord.xy));
+	fracolor = get_shaded_fragment(lights[index], extract_info_from_gbuffer(ivec2(gl_FragCoord.xy)));
 }
 
 

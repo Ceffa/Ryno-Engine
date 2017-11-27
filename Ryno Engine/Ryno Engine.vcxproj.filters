@@ -190,6 +190,7 @@
     <None Include="Resources\Shaders\ShadowPass\spot_shadow.vert">
       <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
     </None>
+    <None Include="Resources\Shaders\Includes\light.glinc" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">

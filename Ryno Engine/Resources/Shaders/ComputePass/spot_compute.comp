@@ -1,5 +1,4 @@
-﻿E(Includes/global)
-E(Includes/spot_include)
+﻿E(Includes/spot_include)
 
 layout(std430, binding = 1) buffer spot_compute_ssbo
 {
@@ -15,8 +14,12 @@ layout(rgba8, binding = 0) uniform image2D main_tex;
 void main() {
 	ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
 	vec3 color = imageLoad(main_tex, coords).xyz;
+
+	//Estract info from G-buffer only once
+	const MatInfo info = extract_info_from_gbuffer(coords);
+
 	for (int i = 0; i < nrOfLights; i++) {
-		color += get_shaded_fragment(lights[i], coords);
+		color += get_shaded_fragment(lights[i], info);
 	}
 
 	imageStore(main_tex, coords, vec4(color, 1));

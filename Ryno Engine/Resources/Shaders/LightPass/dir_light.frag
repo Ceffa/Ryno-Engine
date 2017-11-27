@@ -1,4 +1,3 @@
-E(Includes/global)
 E(Includes/dir_include)
 
 uniform sampler3D jitter;
@@ -19,7 +18,7 @@ out vec3 fracolor;
 void main(){
 	
 	//fragment color
-	fracolor = get_shaded_fragment(lights[index], ivec2(gl_FragCoord.xy));
+	fracolor = get_shaded_fragment(lights[index], extract_info_from_gbuffer(ivec2(gl_FragCoord.xy)));
 
 }
 

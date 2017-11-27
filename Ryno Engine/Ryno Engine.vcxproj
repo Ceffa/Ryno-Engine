@@ -29,6 +29,7 @@
     <None Include="Resources\Shaders\GUIPass\sprite.vert" />
     <None Include="Resources\Shaders\Includes\dir_include.glinc" />
     <None Include="Resources\Shaders\Includes\global.glinc" />
+    <None Include="Resources\Shaders\Includes\light.glinc" />
     <None Include="Resources\Shaders\Includes\point_include.glinc" />
     <None Include="Resources\Shaders\Includes\spot_include.glinc" />
     <None Include="Resources\Shaders\LightPass\dir_light.frag" />

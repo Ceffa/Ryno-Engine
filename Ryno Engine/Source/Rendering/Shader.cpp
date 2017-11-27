@@ -105,20 +105,30 @@ namespace Ryno {
 			return;
 		}
 
-		//Read file
-		std::string content = read_file_inside_string(path);
+		
+		
+		std::string str = read_file_inside_string_recursive(path);
+	
+		const char* cstr = str.c_str();
+		//send to GL the shader and keep track of id
+		glShaderSource(m_shader_ids[index], 1, &cstr, NULL);
+
+	}
+
+	std::string Shader::read_file_inside_string_recursive(const std::string& path) {
+		auto content = read_file_inside_string(path);
 		U32 size = content.size();
 
 		//Parser of preprocessor includes
 		static std::string include_extension = ".glinc";
 		static const std::string middle_path = "Resources/Shaders/";
-		enum States{SEARCHING, READING, BREAK};
+		enum States { SEARCHING, READING, BREAK };
 		States state = SEARCHING;
 		std::vector<std::string> includes;
 		int startPath = 0;
 		int startFile = 0;
 		Owner owner;
-		
+
 
 		for (int i = 0; i < size; ++i) {
 			if (state == BREAK)
@@ -130,20 +140,20 @@ namespace Ryno {
 					state = BREAK;
 					break;
 				}
-				if ((cc == 'E' || cc == 'G') && content.at(i+1) == '(')
+				if ((cc == 'E' || cc == 'G') && content.at(i + 1) == '(')
 				{
 					owner = cc == 'E' ? ENGINE : GAME;
 					startPath = i + 2;
 					state = READING;
 				}
-				else if (cc != ' ' && cc != '\n' && cc!= '\t' && cc != '\r') {
+				else if (cc != ' ' && cc != '\n' && cc != '\t' && cc != '\r') {
 					state = BREAK;
 				}
 				break;
-		
+
 			case READING:
 				if (content.at(i) == ')') {
-					includes.push_back(BASE_PATHS[owner] + middle_path + content.substr(startPath,i-startPath) + include_extension);
+					includes.push_back(BASE_PATHS[owner] + middle_path + content.substr(startPath, i - startPath) + include_extension);
 					state = SEARCHING;
 					startFile = i + 1;
 				}
@@ -153,16 +163,10 @@ namespace Ryno {
 
 		std::string finalProgram;
 		for (int i = 0; i < includes.size(); i++) {
-			finalProgram += read_file_inside_string(includes[i]) + "\n";
+			finalProgram += read_file_inside_string_recursive(includes[i]) + "\n";
 		};
-
 		finalProgram += content.substr(startFile);
-		const char* cstr = finalProgram.c_str();
-		
-	
-		//send to GL the shader and keep track of id
-		glShaderSource(m_shader_ids[index], 1, &cstr, NULL);
-
+		return finalProgram;
 	}
 
 

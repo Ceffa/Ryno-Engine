@@ -1,0 +1,30 @@
+E(Includes/global)
+
+struct MatInfo {
+	vec4 position_world_space;
+	vec4 view_dir_view_space;
+	vec4 mat_diff_and_flat;
+	vec4 mat_spec_and_pow;
+	vec4 normal_view_space;
+};
+uniform sampler2D diffuse_tex;
+uniform sampler2D specular_tex;
+uniform sampler2D normal_tex;
+uniform sampler2D depth_tex;
+
+MatInfo extract_info_from_gbuffer(ivec2 coords) {
+	float depth = (1 - texelFetch(depth_tex, coords, 0).r) *2.0 - 1.0;
+	vec2 ndc_coords = (vec2(coords) / vec2(screen_width, screen_height))* 2.0 - 1.0;
+	vec4 position_screen_space = vec4(ndc_coords, depth, 1);
+	vec4 position_view_space_not_normalized = iP * position_screen_space;
+	vec3 position_view_space = position_view_space_not_normalized.xyz / position_view_space_not_normalized.w;
+	vec2 n = texelFetch(normal_tex, coords, 0).xy * 2.0 - 1;
+
+	MatInfo info;
+	info.position_world_space = iV * vec4(position_view_space, 1);
+	info.view_dir_view_space = vec4(normalize(-position_view_space), 0);
+	info.mat_diff_and_flat = texelFetch(diffuse_tex, coords, 0);
+	info.mat_spec_and_pow = texelFetch(specular_tex, coords, 0);
+	info.normal_view_space = vec4(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)), 0);
+	return info;
+}
