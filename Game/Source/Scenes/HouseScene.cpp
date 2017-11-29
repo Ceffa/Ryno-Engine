@@ -23,12 +23,15 @@ namespace Ryno{
 
 		camera->background = ColorRGB(0,0,0);
 
+		auto& ssao = post_processor->add_effect("PostProcessing/SSAO", GAME);
+		ssao.set_uniform("mask", 2);
+
 		light[0].transform.set_position(0, 100, 200);
 		auto* p = light[0].add_component<PointLight>();
 		p->set_diffuse_color(255, 150, 120);
 		p->diffuse_intensity = 3000;
 		p->attenuation = 2;
-		p->specular_intensity = 5000;
+		p->specular_intensity = 0;
 		p->shininess =10;
 		p->set_specular_color(255, 255,60);
 

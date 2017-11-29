@@ -9,26 +9,26 @@ uniform sampler2D scene_tex;
 
 out vec3 fracolor;
 
-float sample_depth() {
-	return texelFetch(depth_tex, ivec2(gl_FragCoord.xy),0).r *2.0 - 1.0;
+float sample_depth(vec2 c) {
+	return (1-texelFetch(depth_tex, ivec2(c),0).r) *2.0 - 1.0;
 }
 
-vec4 sample_diff_and_flat() {
-	return texelFetch(diffuse_tex, ivec2(gl_FragCoord.xy), 0);
+vec4 sample_diff_and_flat(vec2 c) {
+	return texelFetch(diffuse_tex, ivec2(c), 0);
 }
-vec4 sample_spec_and_pow() {
-	return texelFetch(specular_tex, ivec2(gl_FragCoord.xy), 0);
+vec4 sample_spec_and_pow(vec2 c) {
+	return texelFetch(specular_tex, ivec2(c), 0);
 }
-vec3 sample_scene_color() {
-	return texelFetch(scene_tex, ivec2(gl_FragCoord.xy), 0).rgb;
+vec3 sample_scene_color(vec2 c) {
+	return texelFetch(scene_tex, ivec2(c), 0).rgb;
 }
-vec3 sample_normal() {
-	vec2 n = texelFetch(normal_tex, ivec2(gl_FragCoord.xy), 0).xy;
+vec3 sample_normal(vec2 c) {
+	vec2 n = texelFetch(normal_tex, ivec2(c), 0).xy;
 	return vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
 }
-vec3 get_view_pos_from_depth(float depth) {
-	vec2 NDC_xy = (gl_FragCoord.xy / vec2(screen_width, screen_height)) * 2 - 1;
-	vec4 position_screen_space = vec4(NDC_xy, depth, 1);
+vec3 sample_view_pos(vec2 c) {
+	vec2 NDC_xy = (c / vec2(screen_width, screen_height)) * 2 - 1;
+	vec4 position_screen_space = vec4(NDC_xy, sample_depth(c), 1);
 	vec4 position_view_space = iP * position_screen_space;
 	return position_view_space.xyz / position_view_space.w;
 }

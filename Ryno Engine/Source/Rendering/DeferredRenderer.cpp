@@ -765,9 +765,10 @@ namespace Ryno{
 
 	void DeferredRenderer::post_processing_pass() {
 
+		m_fbo_deferred.m_current_scene_texture = 0; //the fbo is going to start the ping-pong of texture, set the entry point
+	
 		if (!postprocessor_enabled)
 			return;
-		m_fbo_deferred.m_current_scene_texture = 0; //the fbo is going to start the ping-pong of texture, set the entry point
 
 
 		glDisable(GL_BLEND);

@@ -168,6 +168,12 @@
     <None Include="Resources\Shaders\PostProcessing\mask.vert">
       <Filter>Resources\Shaders\PostProcessing</Filter>
     </None>
+    <None Include="Resources\Shaders\PostProcessing\SSAO.frag">
+      <Filter>Resources\Shaders\PostProcessing</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostProcessing\SSAO.vert">
+      <Filter>Resources\Shaders\PostProcessing</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">
