@@ -229,6 +229,10 @@ namespace Ryno {
 		std::ifstream file(path, std::ios::in);
 		file.seekg(0, std::ios::end);
 		I32 size = (I32)file.tellg();
+		if (size <= 0) {
+			std::cout << "Shader preprocessor error: Input file not found" << std::endl;
+			return "";
+		}
 		
 		file.seekg(0, std::ios::beg);
 		std::vector<C> buffer(size);

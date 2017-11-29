@@ -191,6 +191,7 @@
       <Filter>Header Files\Resource Files\Shaders\ShadowPass</Filter>
     </None>
     <None Include="Resources\Shaders\Includes\light.glinc" />
+    <None Include="Resources\Shaders\Includes\post_proc.glinc" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">
