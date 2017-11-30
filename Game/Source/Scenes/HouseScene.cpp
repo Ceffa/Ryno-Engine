@@ -20,11 +20,13 @@ namespace Ryno{
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);
 		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
+		noise = game->texture_manager->load_png("ssao_noise.jpg", GAME);
 
 		camera->background = ColorRGB(0,0,0);
 
 		auto& ssao = post_processor->add_effect("PostProcessing/SSAO", GAME);
 		ssao.set_uniform("mask", 2);
+		ssao.set_uniform("noise", noise);
 
 		light[0].transform.set_position(0, 100, 200);
 		auto* p = light[0].add_component<PointLight>();

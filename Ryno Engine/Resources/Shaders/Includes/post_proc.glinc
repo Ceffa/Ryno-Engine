@@ -28,7 +28,5 @@ vec3 sample_normal(vec2 c) {
 }
 vec3 sample_view_pos(vec2 c) {
 	vec2 NDC_xy = (c / vec2(screen_width, screen_height)) * 2 - 1;
-	vec4 position_screen_space = vec4(NDC_xy, sample_depth(c), 1);
-	vec4 position_view_space = iP * position_screen_space;
-	return position_view_space.xyz / position_view_space.w;
+	return w_div(iP * vec4(NDC_xy, sample_depth(c), 1));
 }

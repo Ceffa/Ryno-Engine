@@ -30,7 +30,7 @@ namespace Ryno{
 		GameObject light[1];
 		GameObject sponza;
 
-		Texture white, white_normal;
+		Texture white, white_normal, noise;
 	
 		Shader material;
 		int light_index = 0;
