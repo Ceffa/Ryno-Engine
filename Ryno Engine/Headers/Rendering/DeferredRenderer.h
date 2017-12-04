@@ -245,8 +245,10 @@ namespace Ryno{
 			s.send_uniform_to_shader("specular_tex", &m_fbo_deferred.m_textures[1], &samplerIndex);
 			s.send_uniform_to_shader("normal_tex", &m_fbo_deferred.m_textures[2], &samplerIndex);
 			s.send_uniform_to_shader("depth_tex", &m_fbo_deferred.m_textures[3], &samplerIndex);
-			if (t != DIR )
+			if (t != DIR)
 				s.send_uniform_to_shader("tboSampler", &lights_tbo_tex, &samplerIndex);
+			else
+				s.send_uniform_to_shader("ssao_visibility", &m_fbo_deferred.m_ssao_textures[0],&samplerIndex);
 		
 
 

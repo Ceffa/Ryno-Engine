@@ -20,13 +20,9 @@ namespace Ryno{
 
 		white = game->texture_manager->load_png("white_pixel.png", GAME);
 		white_normal = game->texture_manager->load_png("normal_pixel.png", GAME);
-		noise = game->texture_manager->load_png("ssao_noise.jpg", GAME);
 
 		camera->background = ColorRGB(0,0,0);
 
-		auto& ssao = post_processor->add_effect("PostProcessing/SSAO", GAME);
-		ssao.set_uniform("mask", 2);
-		ssao.set_uniform("noise", noise);
 
 		light[0].transform.set_position(0, 100, 200);
 		auto* p = light[0].add_component<PointLight>();
@@ -48,9 +44,9 @@ namespace Ryno{
 	
 		auto* l = sponza.add_component<DirectionalLight>();
 		l->set_rotation(-70, 10, 0);
-		l->diffuse_intensity = 2;
+		l->diffuse_intensity = 0;
 		l->set_diffuse_color(255, 235, 200);
-		l->ambient_intensity = .25f;
+		l->ambient_intensity = 2;
 		l->set_ambient_color(255, 235, 200);
 		l->blur = 2;
 		l->shadow_strength = .8f;

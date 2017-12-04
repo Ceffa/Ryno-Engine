@@ -22,6 +22,7 @@ namespace Ryno {
 		glGenTextures(FRAME_NUM_TEXTURES, m_textures);
 		glGenTextures(1, &m_depth_texture);
 		glGenTextures(2, m_final_textures);
+		glGenTextures(2, m_ssao_textures);
 
 		
 		//bind g diff texture
@@ -90,6 +91,24 @@ namespace Ryno {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, m_final_textures[1], 0);
 
+		//Bind first ssao texture 
+		glBindTexture(GL_TEXTURE_2D, m_ssao_textures[0]);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_FLOAT, nullptr);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, m_ssao_textures[0], 0);
+
+		//Bind second ssao texture
+		glBindTexture(GL_TEXTURE_2D, m_ssao_textures[1]);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_FLOAT, nullptr);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT7, GL_TEXTURE_2D, m_ssao_textures[1], 0);
+
 		//Check if ok
 		GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -149,14 +168,13 @@ namespace Ryno {
 
 		//Draw in the final_texture of fbo, not yet in the screen buffer
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
-				
-		
+	
 	}
 
-	void FBO_Deferred::bind_for_skybox_pass(){
 
+	void FBO_Deferred::bind_for_skybox_pass(){
+		bind_fbo();
 		glDrawBuffer(GL_NONE);
-	
 	}
 
 	void FBO_Deferred::bind_for_post_processing()
@@ -165,6 +183,14 @@ namespace Ryno {
 
 		m_current_scene_texture = 1 - m_current_scene_texture;
 		glDrawBuffer(GL_COLOR_ATTACHMENT4 + m_current_scene_texture);
+
+	}
+	void FBO_Deferred::bind_for_ssao()
+	{
+		bind_fbo();
+
+		m_current_ssao_texture = 1 - m_current_ssao_texture;
+		glDrawBuffer(GL_COLOR_ATTACHMENT6 + m_current_ssao_texture);
 
 	}
 

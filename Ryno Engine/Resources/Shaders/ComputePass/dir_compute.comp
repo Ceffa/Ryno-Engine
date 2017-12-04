@@ -17,7 +17,7 @@ void main(){
 
 	//Estract info from G-buffer only once
 	const MatInfo info = extract_info_from_gbuffer(coords);
-
+	ssao = get_ssao(coords);
 	for (int i = 0; i < nrOfLights; i++){
 		color+=get_shaded_fragment(lights[i],info);
 	}

@@ -16,9 +16,10 @@ out vec3 fracolor;
 
 
 void main(){
-	
+	ivec2 coords = ivec2(gl_FragCoord.xy);
+	ssao = get_ssao(coords);
 	//fragment color
-	fracolor = get_shaded_fragment(lights[index], extract_info_from_gbuffer(ivec2(gl_FragCoord.xy)));
+	fracolor = get_shaded_fragment(lights[index], extract_info_from_gbuffer(coords));
 
 }
 

@@ -108,9 +108,10 @@ namespace Ryno{
 		m_skybox_model.material.set_shader(new Shader("SkyboxPass/skybox", ENGINE));
 		m_blit_depth_model.material.set_shader(new Shader("Others/blit2depth", ENGINE));
 		m_blit_color_model.material.set_shader(new Shader("Others/blit2color", ENGINE));
-		//m_ssao_model.material.set_shader(new Shader("SSAO/ssao", ENGINE));
-		//m_blur_vert_model.material.set_shader(new Shader("SSAO/vert_blur", ENGINE));
-		//m_blur_horiz_model.material.set_shader(new Shader("SSAO/horiz_blur", ENGINE));
+		m_ssao_model.material.set_shader(new Shader("SSAO/ssao", ENGINE));
+		m_ssao_model.material.set_uniform("noise", game->texture_manager->load_png("ssao_noise.jpg", ENGINE));
+		m_blur_vert_model.material.set_shader(new Shader("SSAO/blur_vert", ENGINE));
+		m_blur_horiz_model.material.set_shader(new Shader("SSAO/blur_horiz", ENGINE));
 
 		//Sprite program
 		m_sprite_program.create("GUIPass/sprite", ENGINE);
@@ -473,6 +474,8 @@ namespace Ryno{
 		mat.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
 		mat.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
 		mat.set_uniform("shadow_tex", m_fbo_shadow.m_directional_texture);
+		mat.set_uniform("ssao_visibility", m_fbo_deferred.m_ssao_textures[0]);
+
 
 		mat.set_uniform("jitter", ls.blur == 0 ? m_fbo_shadow.m_jitter[0] : m_fbo_shadow.m_jitter[ls.blur - 1]);
 		mat.set_uniform("shadow_strength", l->shadow_strength);
@@ -761,6 +764,30 @@ namespace Ryno{
 	}
 
 	void DeferredRenderer::ssao_pass() {
+		m_fbo_deferred.m_current_ssao_texture = 1;
+		m_fbo_deferred.bind_for_ssao();
+		glDisable(GL_BLEND);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+
+		auto& m = m_ssao_model.material;
+		m.set_uniform("normal_tex", m_fbo_deferred.m_textures[2]);
+		m.set_uniform("depth_tex", m_fbo_deferred.m_textures[3]);
+
+		bind_global_ubo(*m.shader);
+		m_simple_drawer->draw(&m_ssao_model);
+
+		m_fbo_deferred.bind_for_ssao();
+		m_blur_horiz_model.material.set_uniform("input_tex", m_fbo_deferred.m_ssao_textures[0]);
+		bind_global_ubo(*m_blur_horiz_model.material.shader);
+		m_simple_drawer->draw(&m_blur_horiz_model);
+
+		m_fbo_deferred.bind_for_ssao();
+		m_blur_vert_model.material.set_uniform("input_tex", m_fbo_deferred.m_ssao_textures[1]);
+		bind_global_ubo(*m_blur_vert_model.material.shader);
+		m_simple_drawer->draw(&m_blur_vert_model);
 
 	}
 

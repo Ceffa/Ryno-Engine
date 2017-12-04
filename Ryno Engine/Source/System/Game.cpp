@@ -50,6 +50,7 @@ namespace Ryno{
 
 	void Game::init_internal_systems(){
 
+	    texture_manager = TextureManager::get_instance();
 		deferred_renderer = DeferredRenderer::get_instance();
 		deferred_renderer->init();
 		shell = Shell::get_instance();
@@ -65,7 +66,6 @@ namespace Ryno{
 		audio_manager->init();
 		time_manager = TimeManager::get_instance();
 		time_manager->init(60);
-	    texture_manager = TextureManager::get_instance();
 		input_manager = InputManager::get_instance();
 		input_manager->init(window);
 		mesh_manager = MeshManager::get_instance();
@@ -174,6 +174,7 @@ namespace Ryno{
 		deferred_renderer->init_frame();
 		deferred_renderer->fill_batches();
 		deferred_renderer->geometry_pass();
+		deferred_renderer->ssao_pass();
 		deferred_renderer->directional_light_pass();
 		deferred_renderer->point_light_pass();
 		deferred_renderer->spot_light_pass();

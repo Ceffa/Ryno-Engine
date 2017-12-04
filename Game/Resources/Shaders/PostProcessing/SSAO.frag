@@ -1,6 +1,5 @@
 E(Includes/post_proc)
 
-uniform int mask;
 uniform sampler2D noise;
 
 vec3 get_random_normal();

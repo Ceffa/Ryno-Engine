@@ -12,7 +12,14 @@ struct DirectionalLight {
 	vec4 direction;	
 };
 
+uniform sampler2D ssao_visibility;
+float ssao;
+
 float get_shadow(vec4 position_world_space, float dotNL);
+
+float get_ssao(ivec2 coords) {
+	return texelFetch(ssao_visibility, coords, 0).r;
+}
 
 vec3 get_shaded_fragment(DirectionalLight dir_light, const MatInfo info) {
 
@@ -34,7 +41,7 @@ vec3 get_shaded_fragment(DirectionalLight dir_light, const MatInfo info) {
 	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.shininess);
 
 	float shadow = get_shadow(info.position_world_space, dotNL);
-	vec3 final_color =  amb_final + lerp(shadow*(diffuse_final + specular_final), info.mat_diff_and_flat.xyz,info.mat_diff_and_flat.w);
+	vec3 final_color =  amb_final * ssao + lerp(shadow*(diffuse_final + specular_final), info.mat_diff_and_flat.xyz,info.mat_diff_and_flat.w);
 	return final_color;
 }
 
