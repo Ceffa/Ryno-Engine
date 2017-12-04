@@ -514,6 +514,12 @@ namespace Ryno {
 		else if (command.compare("pp") == 0) {
 			deferred_renderer->postprocessor_enabled = true;
 		}
+		else if (command.compare("noao") == 0) {
+			deferred_renderer->ssao_enabled = false;
+		}
+		else if (command.compare("ao") == 0) {
+			deferred_renderer->ssao_enabled = true;
+		}
 		else if (command.compare("nogui") == 0){
 			deferred_renderer->gui_sprites_enabled = false;
 			deferred_renderer->gui_text_enabled = false;

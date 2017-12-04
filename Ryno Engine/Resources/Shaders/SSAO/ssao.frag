@@ -21,7 +21,7 @@ vec3 sample_view_pos(vec2 c) {
 
 uniform sampler2D noise;
 
-out float visibility;
+out float occlusion;
 
 vec3 get_random_normal();
 
@@ -44,11 +44,11 @@ void main() {
 	vec3 norm = sample_normal(c);
 	float depth = sample_depth(c);
 
-	float scale = 1;
-	float intensity = 12;
-	float radius = 25;
-	float bias = 0.1;
-	float occlusion = 0;
+	float scale = 1.5;
+	float intensity = 20;
+	float radius = 20;
+	float bias = 0.05;
+	float maxOcc = .4;
 
 	for (int i = 0; i < samples; i++) {
 		vec3 rand_norm = get_random_normal();
@@ -64,8 +64,7 @@ void main() {
 		occlusion += (max(0, dot(dv, norm) - bias)* (1 / (1 + d * scale)))*intensity;
 	}
 	occlusion /= samples;
-
-	visibility = 1 - occlusion;
+	occlusion = min(maxOcc, occlusion);
 }
 
 vec3 get_random_normal() {

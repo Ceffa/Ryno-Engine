@@ -18,7 +18,7 @@ float ssao;
 float get_shadow(vec4 position_world_space, float dotNL);
 
 float get_ssao(ivec2 coords) {
-	return texelFetch(ssao_visibility, coords, 0).r;
+	return 1-texelFetch(ssao_visibility, coords, 0).r;
 }
 
 vec3 get_shaded_fragment(DirectionalLight dir_light, const MatInfo info) {

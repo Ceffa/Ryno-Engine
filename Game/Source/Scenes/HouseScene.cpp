@@ -44,13 +44,13 @@ namespace Ryno{
 	
 		auto* l = sponza.add_component<DirectionalLight>();
 		l->set_rotation(-70, 10, 0);
-		l->diffuse_intensity = 0;
+		l->diffuse_intensity = 2;
 		l->set_diffuse_color(255, 235, 200);
-		l->ambient_intensity = 2;
+		l->ambient_intensity = .85;
 		l->set_ambient_color(255, 235, 200);
 		l->blur = 2;
 		l->shadow_strength = .8f;
-		l->shadows = false;
+		l->shadows = true;
 
 	}
 

@@ -75,6 +75,7 @@ namespace Ryno{
 		bool postprocessor_enabled = true;
 		bool gui_sprites_enabled = true;
 		bool gui_text_enabled = true;
+		bool ssao_enabled = true;
 
 
 		//Initialize deferred rendering

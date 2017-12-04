@@ -766,6 +766,11 @@ namespace Ryno{
 	void DeferredRenderer::ssao_pass() {
 		m_fbo_deferred.m_current_ssao_texture = 1;
 		m_fbo_deferred.bind_for_ssao();
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		if (!ssao_enabled)
+			return;
+
 		glDisable(GL_BLEND);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
