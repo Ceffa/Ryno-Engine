@@ -40,9 +40,8 @@
     <None Include="Resources\Shaders\LightPass\spot_light.frag" />
     <None Include="Resources\Shaders\LightPass\spot_light.vert" />
     <None Include="Resources\Shaders\Others\blit2color.frag" />
-    <None Include="Resources\Shaders\Others\blit2color.vert" />
+    <None Include="Resources\Shaders\Others\vert.vert" />
     <None Include="Resources\Shaders\Others\blit2depth.frag" />
-    <None Include="Resources\Shaders\Others\blit2depth.vert" />
     <None Include="Resources\Shaders\post.frag" />
     <None Include="Resources\Shaders\post.vert" />
     <None Include="Resources\Shaders\ShadowPass\dir_shadow.vert" />
@@ -51,6 +50,12 @@
     <None Include="Resources\Shaders\ShadowPass\spot_shadow.vert" />
     <None Include="Resources\Shaders\SkyboxPass\skybox.frag" />
     <None Include="Resources\Shaders\SkyboxPass\skybox.vert" />
+    <None Include="Resources\Shaders\SSAO\blur_horiz.frag" />
+    <None Include="Resources\Shaders\SSAO\blur_horiz.vert" />
+    <None Include="Resources\Shaders\SSAO\blur_vert.frag" />
+    <None Include="Resources\Shaders\SSAO\blur_vert.vert" />
+    <None Include="Resources\Shaders\SSAO\ssao.frag" />
+    <None Include="Resources\Shaders\SSAO\ssao.vert" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav" />

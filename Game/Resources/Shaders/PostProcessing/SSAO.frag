@@ -22,12 +22,13 @@ void main() {
 	vec2 c = gl_FragCoord.xy;
 	vec3 view_pos = sample_view_pos(c);
 	vec3 norm = sample_normal(c);
+	vec3 scene_color = sample_scene_color(c);
 	float depth = sample_depth(c);
 
 	float scale = 1;
-	float intensity = 100;
-	float radius = 30;
-	float bias = 0.3;
+	float intensity = 10;
+	float radius = 25;
+	float bias = 0.1;
 	float occlusion = 0;
 
 	for (int i = 0; i < samples; i++) {
@@ -45,7 +46,8 @@ void main() {
 	}
 	occlusion /= samples;
 	
-	fracolor = vec3(1, 1, 1) * (1-occlusion);
+	fracolor = vec3(1, 1, 1) * (1 - occlusion);
+	fracolor = gl_FragCoord.y < screen_height / 2 ? scene_color * (1-occlusion) : fracolor;
 
 }
 

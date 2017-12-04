@@ -54,7 +54,7 @@ namespace Ryno{
 		l->set_ambient_color(255, 235, 200);
 		l->blur = 2;
 		l->shadow_strength = .8f;
-		l->shadows = true;
+		l->shadows = false;
 
 	}
 

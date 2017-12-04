@@ -23,8 +23,8 @@ vec3 sample_scene_color(vec2 c) {
 	return texelFetch(scene_tex, ivec2(c), 0).rgb;
 }
 vec3 sample_normal(vec2 c) {
-	vec2 n = texelFetch(normal_tex, ivec2(c), 0).xy;
-	return vec3(n.x, n.y, sqrt(abs(1 - dot(n.xy, n.xy))));
+	vec2 n = texelFetch(normal_tex, ivec2(c), 0).xy * 2 -1;
+	return vec3(n.x, n.y, sqrt(1 - dot(n, n)));
 }
 vec3 sample_view_pos(vec2 c) {
 	vec2 NDC_xy = (c / vec2(screen_width, screen_height)) * 2 - 1;

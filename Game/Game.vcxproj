@@ -167,11 +167,8 @@
     <None Include="Resources\Shaders\Geometry\material.frag" />
     <None Include="Resources\Shaders\Geometry\material.vert" />
     <None Include="Resources\Shaders\PostProcessing\neg.frag" />
-    <None Include="Resources\Shaders\PostProcessing\neg.vert" />
     <None Include="Resources\Shaders\PostProcessing\mask.frag" />
-    <None Include="Resources\Shaders\PostProcessing\mask.vert" />
     <None Include="Resources\Shaders\PostProcessing\SSAO.frag" />
-    <None Include="Resources\Shaders\PostProcessing\SSAO.vert" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav" />

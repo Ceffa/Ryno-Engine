@@ -25,6 +25,6 @@ MatInfo extract_info_from_gbuffer(ivec2 coords) {
 	info.view_dir_view_space = vec4(normalize(-position_view_space), 0);
 	info.mat_diff_and_flat = texelFetch(diffuse_tex, coords, 0);
 	info.mat_spec_and_pow = texelFetch(specular_tex, coords, 0);
-	info.normal_view_space = vec4(n.x, n.y, sqrt(1 - dot(n.xy, n.xy)), 0);
+	info.normal_view_space = vec4(n.x, n.y, sqrt(1 - dot(n, n)), 0);
 	return info;
 }

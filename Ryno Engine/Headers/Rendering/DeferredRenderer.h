@@ -84,20 +84,18 @@ namespace Ryno{
 
 		void fill_batches();
 
-		//Call before drawing geometry
 		void geometry_pass();
 
-		//Skybox pass. Not sure where to use yet
-		void skybox_pass();
+		void ssao_pass();
 
-		//Pass for point lights
+		void directional_light_pass();
+
 		void point_light_pass();
 
-		//Pass for spot lights
 		void spot_light_pass();
 
-		//Pass for directional lights
-		void directional_light_pass();
+		void skybox_pass();
+
 	
 
 
@@ -198,7 +196,6 @@ namespace Ryno{
 		static void bind_ubo(const std::string& name, U32 block, U32 bind_point, const Shader& s);
 		static void bind_ssbo(const std::string& name, U32 block, U32 bind_point, const Shader& s);
 		
-
 		Camera3D* m_camera;
 		FBO_Deferred m_fbo_deferred;
 		FBO_Shadow m_fbo_shadow;
@@ -207,12 +204,12 @@ namespace Ryno{
 		MeshManager* m_mesh_manager;
 		TextureManager* m_texture_manager;
 
-		//PROGRAMS
-		Shader m_skybox_program,m_flat_program,m_sprite_program,m_font_program;
-		Shader m_blit_depth, m_blit_color;
-			
 
-		SubModel m_blit_model_depth, m_blit_model_color, m_skybox_model, m_post_proc_model;
+		Shader m_sprite_program, m_font_program;
+
+		SubModel m_blit_depth_model, m_blit_color_model, m_skybox_model, m_post_proc_model;
+		SubModel m_ssao_model, m_blur_vert_model, m_blur_horiz_model;
+
 		glm::mat4 bias;
 		mutable glm::mat4 light_VP_matrix;
 		static const CameraDirection camera_directions[NUM_OF_LAYERS]; 

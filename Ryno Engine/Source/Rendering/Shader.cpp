@@ -80,14 +80,19 @@ namespace Ryno {
 		static std::string extensions[4]{ ".vert", ".geom", ".frag", ".comp" };
 		static const std::string middle_path = "Resources/Shaders/";
 
-			
-		for (U8 i = VERT; i < VERT + 4; i++){
+
+		for (U8 i = VERT; i < VERT + 4; i++) {
 			std::string path_and_name = BASE_PATHS[loc] + middle_path + name + extensions[i - VERT];
 			is_shader_present[i] = file_exists(path_and_name);
 			if (is_shader_present[i])
-				load_shader((ShadersIndex)i , path_and_name);
+				load_shader((ShadersIndex)i, path_and_name);
 		}
-		
+		//If frag is present and vert isn't, use the default vert shader
+		if (is_shader_present[FRAG] && !is_shader_present[VERT]) {
+			is_shader_present[VERT] = true;
+			load_shader(VERT, BASE_PATHS[ENGINE] + middle_path + "Others/vert.vert");
+		}
+				
 	}
 
 

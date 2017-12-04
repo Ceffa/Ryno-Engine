@@ -88,12 +88,16 @@ namespace Ryno{
 	
 		//LOAD MODELS
 		m_skybox_model.mesh = m_mesh_manager->load_mesh("cubemap_cube", ENGINE);
-		m_blit_model_depth.mesh = m_mesh_manager->load_mesh("square", ENGINE);
-		m_blit_model_color.mesh = m_blit_model_depth.mesh;
-		m_post_proc_model.mesh = m_blit_model_depth.mesh;
+		I32 quad_mesh = m_mesh_manager->load_mesh("square", ENGINE);
+		m_blit_depth_model.mesh = quad_mesh;
+		m_blit_color_model.mesh = quad_mesh;
+		m_post_proc_model.mesh = quad_mesh;
+		m_ssao_model.mesh = quad_mesh;
+		m_blur_vert_model.mesh = quad_mesh;
+		m_blur_horiz_model.mesh = quad_mesh;
 
 		//LOAD BOUNDING BOXES
-		lightInfo[DIR].model.mesh = m_blit_model_depth.mesh;
+		lightInfo[DIR].model.mesh = m_blit_depth_model.mesh;
 		lightInfo[POINT].model.mesh = m_mesh_manager->load_mesh("bound_sphere", ENGINE);
 		lightInfo[SPOT].model.mesh = m_mesh_manager->load_mesh("bound_pyramid", ENGINE);
 
@@ -101,17 +105,12 @@ namespace Ryno{
 
 
 		//SHADER PROGRAMS LOADING	
-		m_skybox_program.create("SkyboxPass/skybox",ENGINE);
-		m_skybox_model.material.set_shader(&m_skybox_program);
-
-		m_blit_depth.create("Others/blit2depth", ENGINE);
-		m_blit_model_depth.material.set_shader(&m_blit_depth);
-		
-		m_blit_color.create("Others/blit2color", ENGINE);
-		m_blit_model_color.material.set_shader(&m_blit_color);
-
-		
-
+		m_skybox_model.material.set_shader(new Shader("SkyboxPass/skybox", ENGINE));
+		m_blit_depth_model.material.set_shader(new Shader("Others/blit2depth", ENGINE));
+		m_blit_color_model.material.set_shader(new Shader("Others/blit2color", ENGINE));
+		//m_ssao_model.material.set_shader(new Shader("SSAO/ssao", ENGINE));
+		//m_blur_vert_model.material.set_shader(new Shader("SSAO/vert_blur", ENGINE));
+		//m_blur_horiz_model.material.set_shader(new Shader("SSAO/horiz_blur", ENGINE));
 
 		//Sprite program
 		m_sprite_program.create("GUIPass/sprite", ENGINE);
@@ -732,12 +731,12 @@ namespace Ryno{
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		auto& mat = m_blit_model_depth.material;
+		auto& mat = m_blit_depth_model.material;
 		mat.set_uniform("source_buffer", m_fbo_deferred.m_textures[3]);
 	
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
 		
-		m_simple_drawer->draw(&m_blit_model_depth);
+		m_simple_drawer->draw(&m_blit_depth_model);
 
 		glDepthMask(GL_FALSE);
 		
@@ -759,7 +758,9 @@ namespace Ryno{
 
 		//Restore depth
 		glDepthRange(0.0, 1.0);
+	}
 
+	void DeferredRenderer::ssao_pass() {
 
 	}
 
@@ -851,11 +852,11 @@ namespace Ryno{
 		glDepthMask(GL_TRUE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		m_blit_model_color.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[m_fbo_deferred.m_current_scene_texture]);
+		m_blit_color_model.material.set_uniform("source_buffer", m_fbo_deferred.m_final_textures[m_fbo_deferred.m_current_scene_texture]);
 
 		//copy depth buffer (the one created by geometry pass) inside the actual depth buffer to test
-		auto& m = m_blit_model_color.material;
-		m_simple_drawer->draw(&m_blit_model_color);
+		auto& m = m_blit_color_model.material;
+		m_simple_drawer->draw(&m_blit_color_model);
 	}
 
 

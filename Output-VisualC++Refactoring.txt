@@ -1,0 +1,20 @@
+﻿
+Renamed 'm_blit_model_depth' to 'm_blit_depth_model':
+-----------------------------------------------------
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Headers\Rendering\DeferredRenderer.h(213, 12)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(91, 3)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(92, 29)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(93, 28)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(96, 31)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(108, 3)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(735, 15)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(740, 26)
+
+Renamed 'm_blit_model_color' to 'm_blit_color_model':
+-----------------------------------------------------
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Headers\Rendering\DeferredRenderer.h(213, 32)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(92, 3)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(111, 3)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(856, 3)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(859, 13)
+c:\Users\Ceffa\Documents\Ryno\Ryno Engine\Source\Rendering\DeferredRenderer.cpp(860, 26)

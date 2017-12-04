@@ -156,22 +156,13 @@
     <None Include="Resources\Shaders\Geometry\material.vert">
       <Filter>Resources\Shaders\Geometry</Filter>
     </None>
-    <None Include="Resources\Shaders\PostProcessing\neg.vert">
-      <Filter>Resources\Shaders\PostProcessing</Filter>
-    </None>
     <None Include="Resources\Shaders\PostProcessing\neg.frag">
       <Filter>Resources\Shaders\PostProcessing</Filter>
     </None>
     <None Include="Resources\Shaders\PostProcessing\mask.frag">
       <Filter>Resources\Shaders\PostProcessing</Filter>
     </None>
-    <None Include="Resources\Shaders\PostProcessing\mask.vert">
-      <Filter>Resources\Shaders\PostProcessing</Filter>
-    </None>
     <None Include="Resources\Shaders\PostProcessing\SSAO.frag">
-      <Filter>Resources\Shaders\PostProcessing</Filter>
-    </None>
-    <None Include="Resources\Shaders\PostProcessing\SSAO.vert">
       <Filter>Resources\Shaders\PostProcessing</Filter>
     </None>
   </ItemGroup>
