@@ -90,8 +90,8 @@ namespace Ryno {
 					instance_offset += m_render_batches.back().num_instances;
 				}
 				Mesh* temp_mesh = m_mesh_manager->get_mesh(new_model->mesh);
-				I32 num_indices = temp_mesh->indices_number;
-				I32 num_vertices = temp_mesh->vertices_number;
+				I32 num_indices = temp_mesh->indices.size();
+				I32 num_vertices = temp_mesh->vertices.size();
 
 
 				m_render_batches.emplace_back(vertex_offset, num_vertices, indices_offset, num_indices, instance_offset, 1, new_model);
@@ -107,22 +107,19 @@ namespace Ryno {
 		
 		}
 		I32 total_vertices = m_render_batches.back().vertex_offset + m_render_batches.back().num_vertices;
+		I32 total_indices = m_render_batches.back().indices_offset + m_render_batches.back().num_indices;
 		I32 cv = 0;
 		vertices_positions.resize(total_vertices);
+		indices.resize(total_indices);
 		for (RenderBatchShadow rb : m_render_batches){
-			for (Vertex3D v : m_mesh_manager->get_mesh(rb.model->mesh)->vertices){
+			const auto m = m_mesh_manager->get_mesh(rb.model->mesh);
+			std::memcpy((void*)((U64)indices.data() + rb.indices_offset * sizeof(U32)), m->indices.data(), m->indices.size() * sizeof(U32));
+			for (auto& v : m->vertices){
 				vertices_positions[cv++] = v.position;
 			}
 		}
 
-		I32 total_indices = m_render_batches.back().indices_offset + m_render_batches.back().num_indices;
-		cv = 0;
-		indices.resize(total_indices);
-		for (RenderBatchShadow rb : m_render_batches){
-			for (U16 v : m_mesh_manager->get_mesh(rb.model->mesh)->indices){
-				indices[cv++] = v;
-			}
-		}
+		
 		
 
 	}

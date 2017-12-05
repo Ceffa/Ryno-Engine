@@ -18,7 +18,7 @@ namespace Ryno{
 	void MeshBuilder::new_vertex()
 	{
 		mesh->vertices.emplace_back();
-		last_vertex = &mesh->vertices[++mesh->vertices_number - 1];
+		last_vertex = &mesh->vertices.back();
 	}
 
 	void MeshBuilder::set_position(glm::vec3 pos)
@@ -45,7 +45,6 @@ namespace Ryno{
 		mesh->indices.push_back(a);
 		mesh->indices.push_back(b);
 		mesh->indices.push_back(c);
-		mesh->indices_number += 3;
 	}
 	void MeshBuilder::add_quad(U32 a, U32 b, U32 c, U32 d)
 	{
@@ -68,13 +67,12 @@ namespace Ryno{
 			return false;
 		}
 
-		mesh->indices_number = mesh->indices.size();
-		mesh->vertices_number = mesh->vertices.size();
+		
 
-		if (mesh->vertices_number == 0)
+		if (mesh->vertices.size() == 0)
 			last_vertex = nullptr;
 		else
-			last_vertex = &mesh->vertices[mesh->vertices_number - 1];
+			last_vertex = &mesh->vertices[mesh->vertices.size() - 1];
 
 		mesh_id = _mesh;
 		return true;
@@ -82,7 +80,7 @@ namespace Ryno{
 
 	void MeshBuilder::calculate_tangents(Mesh* mesh)
 	{
-		for (U32 i = 0; i < mesh->indices_number; i += 3) {
+		for (U32 i = 0; i < mesh->indices.size(); i += 3) {
 			Vertex3D* a = &mesh->vertices[mesh->indices[i]];
 			Vertex3D* b = &mesh->vertices[mesh->indices[i + 1]];
 			Vertex3D* c = &mesh->vertices[mesh->indices[i + 2]];
@@ -116,7 +114,7 @@ namespace Ryno{
 
 	void MeshBuilder::calculate_normals(Mesh* mesh)
 	{
-		for (U32 i = 0; i < mesh->indices_number; i += 3) {
+		for (U32 i = 0; i < mesh->indices.size(); i += 3) {
 			Vertex3D* a = &mesh->vertices[mesh->indices[i]];
 			Vertex3D* b = &mesh->vertices[mesh->indices[i + 1]];
 			Vertex3D* c = &mesh->vertices[mesh->indices[i + 2]];

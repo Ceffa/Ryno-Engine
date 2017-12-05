@@ -14,8 +14,6 @@ namespace Ryno{
 
 		std::vector<Vertex3D> vertices;
 		std::vector<U32> indices;
-		U32 vertices_number;
-		U32 indices_number;
 	};
 
 	class MeshManager{

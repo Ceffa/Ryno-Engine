@@ -61,9 +61,7 @@ namespace Ryno{
 		
 		Mesh* mesh = new Mesh();
 		mesh->indices = shapes[0].mesh.indices;
-		mesh->indices_number = shapes[0].mesh.indices.size(); 
 		mesh->vertices = shapes[0].mesh.vertices;
-		mesh->vertices_number = shapes[0].mesh.vertices.size(); 
 
 		if (shapes[0].mesh.has_uvs && !shapes[0].mesh.has_normals) 
 			MeshBuilder::calculate_normals(mesh);
@@ -183,8 +181,6 @@ namespace Ryno{
 					mesh->indices.push_back(face.mIndices[j]);
 			}
 
-			mesh->indices_number = assimp_mesh->mNumFaces*3;
-			mesh->vertices_number = assimp_mesh->mNumVertices;
 
 			if (!assimp_mesh->mNormals) {
 				MeshBuilder::calculate_normals(mesh);

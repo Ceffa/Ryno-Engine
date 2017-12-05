@@ -29,6 +29,7 @@ namespace Ryno{
 	struct model_and_matrix {
 	public:
 		model_and_matrix(SubModel* s, glm::mat4* m) : model(s), matrix(m) {}
+		model_and_matrix() {}
 		SubModel* model;
 		glm::mat4* matrix;
 	};

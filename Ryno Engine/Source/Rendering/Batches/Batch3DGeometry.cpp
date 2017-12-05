@@ -31,17 +31,23 @@ namespace Ryno {
 	}
 	void Batch3DGeometry::end() {
 
+		CPUProfiler::start_time();
 		//Sort with provided compare function
 		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
 
 		//Create batches
 		create_render_batches();
+		CPUProfiler::cout_time();
 
 	}
 
 	void Batch3DGeometry::draw(Model* mod) {
-		for (SubModel& m : mod->sub_models)
-			m_models.push_back(&m);
+		U32 start_size = m_models.size();
+		U32 total_size = mod->sub_models.size() + start_size;
+		m_models.resize(total_size);
+
+		for (I32 i = start_size; i < total_size; i++)
+			m_models[i] = &mod->sub_models[i - start_size];
 	}
 
 
@@ -50,7 +56,7 @@ namespace Ryno {
 	void Batch3DGeometry::create_render_batches(){
 
 		U32 total_size = 0;
-		for (auto mod : m_models){
+		for (const auto mod : m_models){
 			total_size += mod->material.shader->attributes_struct_size;
 		}
 
@@ -58,12 +64,11 @@ namespace Ryno {
 		input_instances = malloc(total_size);
 
 		U32 temp_size = 0;
-		for (auto mod : m_models){
+		for (const auto mod : m_models){
 			const auto& m = mod->material;
 			U32 curr_size = m.shader->attributes_struct_size;
 			std::memcpy((void*)((U64)input_instances + temp_size), m.attribute_memory, curr_size);
 			temp_size += curr_size;
-
 		}
 		
 		//Return if no mesh
@@ -77,7 +82,7 @@ namespace Ryno {
 		bool first_iter = true;
 		SubModel* last_mod = nullptr;
 		//For each mesh...
-		for (auto new_mod : m_models){
+		for (const auto new_mod : m_models){
 	
 			//Checks to see if the new model has different uniforms than the previous one,
 			//thus requiring a new draw call (and a new render abtch)
@@ -91,7 +96,6 @@ namespace Ryno {
 				shaders.push_back(a.shader);
 			}
 			else {
-				
 				equals_uniform = new_mod->mesh == last_mod->mesh && 0 == memcmp(a.uniform_memory, b.uniform_memory, a.shader->uniforms_map_size);
 			}
 
@@ -106,9 +110,9 @@ namespace Ryno {
 				}
 				
 
-				Mesh* temp_mesh = m_mesh_manager->get_mesh(new_mod->mesh);
-				m_render_batches.emplace_back(vertex_offset, temp_mesh->vertices_number, indices_offset, temp_mesh->indices_number, instance_offset, 1, new_mod);
-	
+				auto temp_mesh = m_mesh_manager->get_mesh(new_mod->mesh);
+				m_render_batches.emplace_back(vertex_offset, temp_mesh->vertices.size(), indices_offset, temp_mesh->indices.size(), instance_offset, 1, new_mod);
+				
 			}
 			else
 			{
@@ -119,25 +123,17 @@ namespace Ryno {
 			first_iter = false;
 
 		}
+		
+
 		I32 total_vertices = m_render_batches.back().vertex_offset + m_render_batches.back().num_vertices;
-
-		I32 cv = 0;
-		vertices.resize(total_vertices);
-		for (const auto& rb : m_render_batches){
-			for (Vertex3D v : m_mesh_manager->get_mesh(rb.model->mesh)->vertices){
-				vertices[cv++] = v;
-			}
-		}
-
 		I32 total_indices = m_render_batches.back().indices_offset + m_render_batches.back().num_indices;
-		cv = 0;
+		vertices.resize(total_vertices);
 		indices.resize(total_indices);
 		for (const auto& rb : m_render_batches){
-			for (U32 v : m_mesh_manager->get_mesh(rb.model->mesh)->indices){
-				indices[cv++] = v;
-			}
-		}
-
+			const auto m = m_mesh_manager->get_mesh(rb.model->mesh);
+			std::memcpy((void*)((U64)vertices.data() + rb.vertex_offset * sizeof(Vertex3D)), m->vertices.data(), m->vertices.size() * sizeof(Vertex3D));
+			std::memcpy((void*)((U64)indices.data() + rb.indices_offset * sizeof(U32)), m->indices.data(), m->indices.size() * sizeof(U32));
+		}	
 	}
 
 
@@ -197,6 +193,7 @@ namespace Ryno {
 		Shader* old_shader = nullptr;
 		
 		U64 buffer_data_offset = 0;
+
 		for (const auto& rb : m_render_batches){
 
 			auto curr_shader = rb.model->material.shader;

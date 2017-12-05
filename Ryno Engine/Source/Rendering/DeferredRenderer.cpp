@@ -193,20 +193,18 @@ namespace Ryno{
 		
 	}
 
-
 	void DeferredRenderer::fill_batches() {
-
 		m_shadow_batch3d.begin();
 		m_geometry_batch3d.begin();
-
-		for (Model* model : Model::models) {
+		bool need_shadows = lightInfo[DIR].shadows_enabled || lightInfo[POINT].shadows_enabled || lightInfo[SPOT].shadows_enabled;
+		for (auto model : Model::models) {
 			if (!model->game_object->active)
 				continue;
 			for (SubModel& s : model->sub_models)
 				s.material.set_attribute("in_M", model->game_object->transform.hinerited_matrix * model->game_object->transform.model_matrix);
 			m_geometry_batch3d.draw(model);
 
-			if (lightInfo[DIR].shadows_enabled || lightInfo[POINT].shadows_enabled || lightInfo[SPOT].shadows_enabled)
+			if (need_shadows)
 				m_shadow_batch3d.draw(model);
 		}
 
@@ -217,7 +215,6 @@ namespace Ryno{
 
 	void DeferredRenderer::geometry_pass()
 	{
-		
 
 		m_fbo_deferred.bind_for_geometry_pass();
 

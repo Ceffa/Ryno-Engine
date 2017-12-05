@@ -37,14 +37,14 @@ namespace Ryno {
 		enable_attributes_and_uniforms(model->material);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, m->vertices_number * sizeof(Vertex3D), nullptr, GL_DYNAMIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, m->vertices_number * sizeof(Vertex3D), m_mesh_manager->get_mesh(model->mesh)->vertices.data());
+		glBufferData(GL_ARRAY_BUFFER, m->vertices.size() * sizeof(Vertex3D), nullptr, GL_DYNAMIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, m->vertices.size() * sizeof(Vertex3D), m_mesh_manager->get_mesh(model->mesh)->vertices.data());
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m->indices_number * sizeof(U32), &m->indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m->indices.size() * sizeof(U32), &m->indices[0], GL_STATIC_DRAW);
 
-		glDrawElements(GL_TRIANGLES, m->indices_number, GL_UNSIGNED_INT, (void*)0);
+		glDrawElements(GL_TRIANGLES, m->indices.size(), GL_UNSIGNED_INT, (void*)0);
 		s->unuse();
 	}
 

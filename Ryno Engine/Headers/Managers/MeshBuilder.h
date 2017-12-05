@@ -36,8 +36,8 @@ namespace Ryno{
 		void calculate_normals() { calculate_normals(mesh);}
 		void calculate_tangents() { calculate_tangents(mesh);};
 
-		U32 get_vertices_count(){ return mesh->vertices_number; };
-		U32 get_indices_count(){ return mesh->indices_number; };
+		U32 get_vertices_count(){ return mesh->vertices.size(); };
+		U32 get_indices_count(){ return mesh->indices.size(); };
 
 
 	private:
