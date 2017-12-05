@@ -49,11 +49,6 @@ namespace Ryno{
 
 	
 		~Material(){ 
-			
-			if (this->shader && this->shader->name == "PostProcessing/neg") {
-				std::cout << "-" << std::endl;
-			}
-			
 			free(attribute_memory);
 			free(uniform_memory);
 		}

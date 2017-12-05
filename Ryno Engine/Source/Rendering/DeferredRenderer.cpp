@@ -834,8 +834,8 @@ namespace Ryno{
 			
 			bind_global_ubo(*m.shader);
 			m_simple_drawer->draw(&m_post_proc_model);
-
 		}
+		m_post_proc_model.material = Material();
 	}
 
 

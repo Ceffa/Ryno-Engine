@@ -15,8 +15,7 @@ namespace Ryno {
 
 		attribute_memory = calloc(shader->attributes_struct_size, 1);
 		uniform_memory = calloc(shader->uniforms_map_size, 1);
-		if (this->shader && this->shader->name == "PostProcessing/neg")
-			std::cout << "+" << std::endl;
+		
 		if (!attribute_memory || !uniform_memory){
 			std::cout << "Failed to allocate material structs" << std::endl;
 			return false;
