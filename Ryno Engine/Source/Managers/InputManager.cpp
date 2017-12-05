@@ -47,8 +47,6 @@ namespace Ryno {
 			case SDL_MOUSEMOTION:
 				if(is_key_down(SDL_BUTTON_RIGHT, MOUSE))
 					set_mouse_movement(evnt.motion.xrel, evnt.motion.yrel);
-				
-
 				break;
 			case SDL_TEXTINPUT:
 				frame_text += evnt.text.text;
@@ -79,7 +77,9 @@ namespace Ryno {
 				case 2: set_controller_axis_coord(&m_controller_RX_coords.x, evnt.jaxis.value); break;
 				case 3: set_controller_axis_coord(&m_controller_RX_coords.y, evnt.jaxis.value); break;
 				}
-				
+				break;
+			default:
+				break;
 					
 			}
 		}
@@ -87,7 +87,6 @@ namespace Ryno {
 		SDL_StopTextInput();
 
 		if (is_key_pressed(SDLK_ESCAPE,KEYBOARD))exit = !exit;
-		//if(!exit)SDL_WarpMouseInWindow(m_window, WindowSize::w / 2.0f, WindowSize::h / 2.0f);
 
 		return Input::OK;
 	}

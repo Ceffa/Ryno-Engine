@@ -31,13 +31,11 @@ namespace Ryno {
 	}
 	void Batch3DGeometry::end() {
 
-		CPUProfiler::start_time();
 		//Sort with provided compare function
 		std::stable_sort(m_models.begin(), m_models.end(), compare_models);
 
 		//Create batches
 		create_render_batches();
-		CPUProfiler::cout_time();
 
 	}
 

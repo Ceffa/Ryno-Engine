@@ -14,7 +14,7 @@ namespace Ryno{
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-		if ((window = SDL_CreateWindow("Ryno Engine", WindowPos::x, WindowPos::y, WindowSize::w, WindowSize::h, SDL_WINDOW_OPENGL)) == NULL){
+		if ((window = SDL_CreateWindow("Ryno Engine", WindowPos::x, WindowPos::y, WindowSize::w, WindowSize::h, SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS)) == NULL){
 			std::cout<<"Failed to create SDL window: "+ std::string(SDL_GetError())<<std::endl;
 		}
 

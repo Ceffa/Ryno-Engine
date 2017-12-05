@@ -39,7 +39,7 @@ namespace Ryno{
 	private:
 		Shell(){}
 
-		std::map < std::string, std::function<void()>> commands;
+		std::map < std::string, std::function<std::string(bool hint)>> commands;
 		void create_commands();
 
 		DeferredRenderer* deferred_renderer;

@@ -76,7 +76,7 @@ namespace Ryno {
 		history_length = 0;
 		hide();
 
-		create_commands();
+		create_commands(); 
 		
 	}
 	void Shell::set_text_color(U8 r, U8 g, U8 b)
@@ -244,7 +244,7 @@ namespace Ryno {
 	{
 		auto& c = commands.find(command);
 		if (c != commands.end())
-			c->second();
+			c->second(false);
 		else
 			print_message("Command not found.");	
 	}
@@ -261,62 +261,93 @@ namespace Ryno {
 
 	void Shell::create_commands()
 	{
-		commands["server"] = [=]() {
+		commands["server"] = [=](bool hint) {
+			if(hint) return "Starts a server.";
 			Network::get_instance()->start_server();
+			return "";
 		};
-		commands["client"] = [=]() {
-			Network::get_instance()->start_client();
+		commands["client"] = [=](bool hint) {
+			if(hint) return "Starts a client.";
+			Network::get_instance()->start_client();			return "";
+			return "";
 		};
-		commands["pausemusic"] = [=]() {
+		commands["pausemusic"] = [=](bool hint) {
+			if(hint) return "Pauses the music.";
 			Music::pause();
+			return "";
 		};
-		commands["resumemusic"] = [=]() {
+		commands["resumemusic"] = [=](bool hint) {
+			if(hint) return "Resumes the music.";
 			Music::resume();
+			return "";
 		};
-		commands["mutemusic"] = [=]() {
+		commands["mutemusic"] = [=](bool hint) {
+			if(hint) return "Mutes the music.";
 			Music::set_volume(0);
+			return "";
 		};
-		commands["mutesound"] = [=]() {
+		commands["mutesound"] = [=](bool hint) {
+			if(hint) return "Mutes the sound.";
 			Sound::set_volume(0);
+			return "";
 		};
-		commands["musicvolume"] = [=]() {
+		commands["musicvolume"] = [=](bool hint) {
+			if(hint) return "Sets music volume to [f0].";
 			bool err = false;
 			F32 f = float_argument(err);
 			if (!err) Music::set_volume(f);
+			return "";
 		};
-		commands["soundvolume"] = [=]() {
+		commands["soundvolume"] = [=](bool hint) {
+			if(hint) return "Sets sound volume to [f0].";
 			bool err = false;
 			F32 f = float_argument(err);
 			if (!err) Sound::set_volume(f);
+			return "";
 		};
-		commands["p"] = [=]() {
+		commands["p"] = [=](bool hint) {
+			if(hint) return "Pauses or unpauses game.";
 			request_pause = !request_pause;
+			return "";
 		};
-		commands["r"] = [=]() {
+		commands["r"] = [=](bool hint) {
+			if(hint) return "Reloads current scene.";
 			Game::get_instance()->reset_scene();
+			return "";
 		};
-		commands["n"] = [=]() {
+		commands["n"] = [=](bool hint) {
+			if(hint) return "Loads next scene.";
 			Game::get_instance()->next_scene();
+			return "";
 		};
-		commands["t"] = [=]() {
+		commands["t"] = [=](bool hint) {
+			if(hint) return "Multiply global time by [f0].";
 			bool err = false;
 			F32 f = float_argument(err);
 			if (!err) time_manager->slow_factor = f;
+			return "";
 		};
-		commands["echo"] = [=]() {
+		commands["echo"] = [=](bool hint) {
+			if(hint) return "Prints back string [s0].";
 			bool err = false;
 			std::string s = string_argument(err);
 			if (!err) log->print(s);
+			return "";
 		};
-		commands["s"] = [=]() {
+		commands["s"] = [=](bool hint) {
+			if(hint) return "Loads scene number [i0].";
 			bool err = false;
 			int i = int_argument(err);
 			if (!err) Game::get_instance()->set_scene(i);
+			return "";
 		};
-		commands["fuckyou"] = [=]() {
+		commands["fuckyou"] = [=](bool hint) {
+			if(hint) return "Engages in philosophycal argument.";
 			print_message("well, fuck you too.");
+			return "";
 		};
-		commands["clr"] = [=]() {
+		commands["clr"] = [=](bool hint) {
+			if(hint) return "Clears screen and history of shell and log.";
 			for (GUIObject& go : log->lines)
 				go.text->text = "";
 			for (GUIObject& go : lines)
@@ -327,77 +358,135 @@ namespace Ryno {
 			history.clear();
 			history_length = 0;
 			iterator = history.begin();
+			return "";
 		};
-		commands["exit"] = [=]() {
+		commands["exit"] = [=](bool hint) {
+			if(hint) return "Request exit from game.";
 			request_exit = true;
+			return "";
 		};
-		commands["nodl"] = [=]() {
+		commands["nodl"] = [=](bool hint) {
+			if(hint) return "Disables directional lights.";
 			deferred_renderer->lightInfo[DIR].lights_enabled = false;
+			return "";
 		};
-		commands["dl"] = [=]() {
+		commands["dl"] = [=](bool hint) {
+			if(hint) return "Enables directional lights.";
 			deferred_renderer->lightInfo[DIR].lights_enabled = true;
+			return "";
 		};
-		commands["nopl"] = [=]() {
+		commands["nopl"] = [=](bool hint) {
+			if(hint) return "Disables point lights.";
 			deferred_renderer->lightInfo[POINT].lights_enabled = false;
+			return "";
 		};
-		commands["pl"] = [=]() {
+		commands["pl"] = [=](bool hint) {
+			if(hint) return "Enables point lights.";
 			deferred_renderer->lightInfo[POINT].lights_enabled = true;
+			return "";
 		};
-		commands["nosl"] = [=]() {
+		commands["nosl"] = [=](bool hint) {
+			if(hint) return "Disables spot lights.";
 			deferred_renderer->lightInfo[SPOT].lights_enabled = false;
+			return "";
 		};
-		commands["sl"] = [=]() {
+		commands["sl"] = [=](bool hint) {
+			if(hint) return "Enables spot lights.";
 			deferred_renderer->lightInfo[SPOT].lights_enabled = true;
+			return "";
 		};
-		commands["nods"] = [=]() {
+		commands["nods"] = [=](bool hint) {
+			if(hint) return "Disables directional shadows.";
 			deferred_renderer->lightInfo[DIR].shadows_enabled = false;
+			return "";
 		};
-		commands["ds"] = [=]() {
+		commands["ds"] = [=](bool hint) {
+			if(hint) return "Enables directional shadows.";
 			deferred_renderer->lightInfo[DIR].shadows_enabled = true;
+			return "";
 		};
-		commands["nops"] = [=]() {
+		commands["nops"] = [=](bool hint) {
+			if(hint) return "Disables point shadows.";
 			deferred_renderer->lightInfo[POINT].shadows_enabled = false;
+			return "";
 		};
-		commands["ps"] = [=]() {
+		commands["ps"] = [=](bool hint) {
+			if(hint) return "Enables point shadows.";
 			deferred_renderer->lightInfo[POINT].shadows_enabled = true;
+			return "";
 		};
-		commands["noss"] = [=]() {
+		commands["noss"] = [=](bool hint) {
+			if(hint) return "Disables spot shadows.";
 			deferred_renderer->lightInfo[SPOT].shadows_enabled = false;
+			return "";
 		};
-		commands["ss"] = [=]() {
+		commands["ss"] = [=](bool hint) {
+			if(hint) return "Enables spot shadows.";
 			deferred_renderer->lightInfo[SPOT].shadows_enabled = true;
+			return "";
 		};
-		commands["nosb"] = [=]() {
+		commands["nosb"] = [=](bool hint) {
+			if(hint) return "Disables skybox.";
 			deferred_renderer->skybox_enabled = false;
+			return "";
 		};
-		commands["sb"] = [=]() {
+		commands["sb"] = [=](bool hint) {
+			if(hint) return "Enables skybox.";
 			deferred_renderer->skybox_enabled = true;
+			return "";
 		};
-		commands["nogui"] = [=]() {
+		commands["nogui"] = [=](bool hint) {
+			if(hint) return "Disables GUI.";
 			deferred_renderer->gui_sprites_enabled = false;
 			deferred_renderer->gui_text_enabled = false;
+			return "";
 		};
-		commands["gui"] = [=]() {
+		commands["gui"] = [=](bool hint) {
+			if(hint) return "Enables GUIss.";
 			deferred_renderer->gui_sprites_enabled = true;
 			deferred_renderer->gui_text_enabled = true;
+			return "";
 		};
-		commands["nogm"] = [=]() {
+		commands["nogm"] = [=](bool hint) {
+			if(hint) return "Disables geometry.";
 			deferred_renderer->geometry_enabled = false;
+			return "";
 		};
-		commands["gm"] = [=]() {
+		commands["gm"] = [=](bool hint) {
+			if(hint) return "Enables geometry.";
 			deferred_renderer->geometry_enabled = true;
+			return "";
 		};
-		commands["nopp"] = [=]() {
+		commands["nopp"] = [=](bool hint) {
+			if(hint) return "Disables postprocessor.";
 			deferred_renderer->postprocessor_enabled = false;
+			return "";
 		};
-		commands["pp"] = [=]() {
+		commands["pp"] = [=](bool hint) {
+			if(hint) return "Enables postprocessor.";
 			deferred_renderer->postprocessor_enabled = true;
+			return "";
 		};
-		commands["noao"] = [=]() {
+		commands["noao"] = [=](bool hint) {
+			if(hint) return "Disables SSAO.";
 			deferred_renderer->ssao_enabled = false;
+			return "";
 		};
-		commands["ao"] = [=]() {
+		commands["ao"] = [=](bool hint) {
+			if(hint) return "Enables SSAO.";
 			deferred_renderer->ssao_enabled = true;
+			return "";
+		};
+		commands["hint"] = [=](bool hint) {
+			if (hint) return "Explains command [s0].";
+			bool err = false;
+			auto s = string_argument(err);
+			auto& c = commands.find(s);
+			if (c != commands.end())
+				print_message(c->second(true));
+			else
+				print_message("Command not found.");
+			return "";
 		};
 	}
 
