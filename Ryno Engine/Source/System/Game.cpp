@@ -163,7 +163,7 @@ namespace Ryno{
 		mesh_manager->reset();
 		texture_manager->reset();
 		audio_manager->reset();
-		delete scene;
+		SceneManager::delete_current_scene(s);
 		scene = nullptr;
 	}
 
@@ -198,7 +198,6 @@ namespace Ryno{
 		delete log;
 		delete shell;
 		SDL_Quit();
-		exit(0);
 	}	
 
 	void Game::handle_input(){

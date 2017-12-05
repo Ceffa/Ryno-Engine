@@ -24,6 +24,7 @@ namespace Ryno {
 
 		m_render_batches.clear();
 		free(input_instances);
+		input_instances = nullptr;
 		m_models.clear();
 		shaders.clear();
 		create_vertex_array();
@@ -79,7 +80,7 @@ namespace Ryno {
 		
 		bool first_iter = true;
 		SubModel* last_mod = nullptr;
-		//For each mesh...
+		
 		for (const auto new_mod : m_models){
 	
 			//Checks to see if the new model has different uniforms than the previous one,
@@ -127,11 +128,14 @@ namespace Ryno {
 		I32 total_indices = m_render_batches.back().indices_offset + m_render_batches.back().num_indices;
 		vertices.resize(total_vertices);
 		indices.resize(total_indices);
+
+		
 		for (const auto& rb : m_render_batches){
 			const auto m = m_mesh_manager->get_mesh(rb.model->mesh);
 			std::memcpy((void*)((U64)vertices.data() + rb.vertex_offset * sizeof(Vertex3D)), m->vertices.data(), m->vertices.size() * sizeof(Vertex3D));
 			std::memcpy((void*)((U64)indices.data() + rb.indices_offset * sizeof(U32)), m->indices.data(), m->indices.size() * sizeof(U32));
 		}	
+	
 		draw_calls = m_render_batches.size();
 
 	}
@@ -194,6 +198,7 @@ namespace Ryno {
 		
 		U64 buffer_data_offset = 0;
 
+		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		for (const auto& rb : m_render_batches){
 
 			auto curr_shader = rb.model->material.shader;
@@ -216,17 +221,17 @@ namespace Ryno {
 			
 			rb.model->material.send_uniforms_to_shader();
 			
-		
-			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
+
 			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * curr_shader->attributes_struct_size, (void*)((U64)input_instances + buffer_data_offset ), GL_STATIC_DRAW);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			buffer_data_offset += rb.num_instances* curr_shader->attributes_struct_size;
 			U32 offset = rb.indices_offset * sizeof(U32);
 
 			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_INT, (void*)offset, rb.num_instances, rb.vertex_offset);
-
 			curr_shader->unuse();
+
 		}
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	}
 
 	const U8 Batch3DGeometry::compare_models(SubModel* a, SubModel* b) {

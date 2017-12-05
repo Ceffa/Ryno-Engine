@@ -60,8 +60,6 @@ namespace Ryno{
 
 	void HouseScene::update(){
 
-		Log::println("Test log");
-
 		if (attach){
 			light[light_index].transform.set_position(camera->position.x, camera->position.y, camera->position.z);
 		}

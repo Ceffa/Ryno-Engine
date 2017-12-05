@@ -6,10 +6,11 @@ namespace Ryno {
 
 	class PostProcessor {
 		
-	public: 
+	public:
+		~PostProcessor() { }
 		Material& add_effect(const std::string& name, Owner location);
 
-		std::vector<Material> effects;
+		std::vector<Material> effects{};
 	};
 
 }

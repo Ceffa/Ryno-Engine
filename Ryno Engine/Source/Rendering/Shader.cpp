@@ -75,8 +75,8 @@ namespace Ryno {
 
 
 
-	void Shader::load_shaders(const std::string& name, Owner loc) {
-		shader_name = name;
+	void Shader::load_shaders(const std::string& _name, Owner loc) {
+		name = _name;
 		static std::string extensions[4]{ ".vert", ".geom", ".frag", ".comp" };
 		static const std::string middle_path = "Resources/Shaders/";
 

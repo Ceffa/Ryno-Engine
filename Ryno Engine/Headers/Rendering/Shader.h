@@ -157,6 +157,7 @@ namespace Ryno{
 		U8 get_size_from_type(const GLenum type);
 
 		U32 get_id()const { return m_program_id; }
+		std::string name;
 	private:
 
 		//local enum to differentiate the shader type
@@ -174,7 +175,6 @@ namespace Ryno{
 		//the ids of the shaders
 		U32 m_shader_ids[4];
 		
-		std::string shader_name;
 
 		/**
 		Load a single shader.

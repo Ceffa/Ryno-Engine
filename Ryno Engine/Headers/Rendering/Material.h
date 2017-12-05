@@ -49,12 +49,17 @@ namespace Ryno{
 
 	
 		~Material(){ 
+			
+			if (this->shader && this->shader->name == "PostProcessing/neg") {
+				std::cout << "-" << std::endl;
+			}
+			
 			free(attribute_memory);
 			free(uniform_memory);
 		}
 		Material(const Material& copy);
 		void copy(const Material& copy);
-		Material(){ attribute_memory = nullptr; }
+		Material() {}
 		void* attribute_memory = nullptr;
 		void* uniform_memory = nullptr;
 		Shader* shader = nullptr;

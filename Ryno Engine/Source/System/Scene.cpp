@@ -3,7 +3,8 @@
 #include "Component.h"
 namespace Ryno{
 
-	std::vector<Scene*(*)()> SceneManager::scenes;
+	std::vector<Scene*(*)()> SceneManager::scenes_constructors;
+	std::vector<void(*)(Scene*)> SceneManager::scenes_destructors;
 	std::map <std::string,U8> SceneManager::scene_names;
 	U8 SceneManager::current = 0;
 	U8 SceneManager::last_scene = 0;
@@ -13,7 +14,6 @@ namespace Ryno{
 	{
 		game = Game::get_instance();
 		camera.reset(new Camera3D(WindowSize::w, WindowSize::h));
-		post_processor.reset(new PostProcessor());
 	}
 
 	void Scene::update_scripts()

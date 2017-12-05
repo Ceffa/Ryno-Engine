@@ -50,6 +50,5 @@ int main(int argc, char* argv[]) {
 	after_commands(argv);
 	
 	game->run();
-	
-	return 0;
+	return EXIT_SUCCESS;
 }

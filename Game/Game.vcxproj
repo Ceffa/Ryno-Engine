@@ -120,6 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_SECURE_SCL=0; _NO_DEBUG_HEAP=1;</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -149,8 +150,6 @@
     <ClInclude Include="Headers\Scenes\FireworkScene.h" />
     <ClInclude Include="Headers\Scenes\HouseScene.h" />
     <ClInclude Include="Headers\Scenes\WaveScene.h" />
-    <ClInclude Include="Headers\Scripts\GroundElements.h" />
-    <ClInclude Include="Headers\Scripts\LightsElements.h" />
     <ClInclude Include="Headers\Terrain.h" />
   </ItemGroup>
   <ItemGroup>

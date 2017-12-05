@@ -197,11 +197,14 @@ namespace Ryno{
 
 	void DeferredRenderer::fill_batches() {
 		m_geometry_batch3d.draw_calls = 0;
-		if (!geometry_enabled)
-			return;
 		m_shadow_batch3d.begin();
 		m_geometry_batch3d.begin();
+
+		if (!geometry_enabled)
+			return;
+
 		bool need_shadows = lightInfo[DIR].shadows_enabled || lightInfo[POINT].shadows_enabled || lightInfo[SPOT].shadows_enabled;
+	
 		for (auto model : Model::models) {
 			if (!model->game_object->active)
 				continue;
@@ -220,7 +223,6 @@ namespace Ryno{
 
 	void DeferredRenderer::geometry_pass()
 	{
-
 		m_fbo_deferred.bind_for_geometry_pass();
 
 		m_geometry_batch3d.render_batch();
@@ -280,7 +282,7 @@ namespace Ryno{
 		std::vector<PointLight*> lights_ptr;
 		std::vector<PointLightStruct> computeLights;
 
-		auto p = get_tbo_handle();
+		glm::vec4* tbo_handle = nullptr;
 		U32 counter = 0;
 
 		for (auto l : PointLight::point_lights) {
@@ -293,7 +295,9 @@ namespace Ryno{
 			}
 			else {
 				computeLights.emplace_back(ls);
-				p[counter++] = glm::vec4(glm::vec3(ubo_global_data.V * ls.position), ls.radius * ls.radius);
+				if (!tbo_handle)
+					tbo_handle = get_tbo_handle();
+				tbo_handle[counter++] = glm::vec4(glm::vec3(ubo_global_data.V * ls.position), ls.radius * ls.radius);
 			}
 		}
 		unmap_tbo();
@@ -324,12 +328,12 @@ namespace Ryno{
 			return;
 
 		//Creates two arrays of lights
-		std::vector<SpotLightStruct> lights;
-		std::vector<SpotLight*> lights_ptr;
-		std::vector<SpotLightStruct> computeLights;
-		
-		auto p = get_tbo_handle();
+		std::vector<SpotLightStruct> lights{};
+		std::vector<SpotLight*> lights_ptr{};
+		std::vector<SpotLightStruct> computeLights{};
+			
 		U32 counter = 0;
+		glm::vec4* tbo_handle = nullptr;
 
 		for (auto l : SpotLight::spot_lights) {
 			if (!l->active || !l->game_object->active)
@@ -354,8 +358,9 @@ namespace Ryno{
 					center = ls.position + h /(2*cos(ls.outer_angle)) * ls.direction;
 					radius = h / (2.0f * cos(ls.outer_angle));
 				}
-		
-				p[counter++] = glm::vec4(glm::vec3(ubo_global_data.V * center), radius * radius);
+				if (!tbo_handle)
+					tbo_handle = get_tbo_handle();
+				tbo_handle[counter++] = glm::vec4(glm::vec3(ubo_global_data.V * center), radius * radius);
 			}
 		}
 		unmap_tbo();
@@ -377,6 +382,7 @@ namespace Ryno{
 		tiled_pass(computeLights,t);
 
 		total_active_lights += lights.size() + computeLights.size();
+		
 	}
 
 
@@ -817,7 +823,7 @@ namespace Ryno{
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 
-		for (auto& m : game->scene->post_processor->effects) {
+		for (auto& m : game->scene->post_processor.effects) {
 			m_post_proc_model.material = m;
 			m_fbo_deferred.bind_for_post_processing();
 			m.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
@@ -846,7 +852,7 @@ namespace Ryno{
 		m_sprite_batch2d.begin();
 		m_font_batch2d.begin();
 
-		for (GUIObject* go : GUIObject::gui_objects)
+		for (auto go : GUIObject::gui_objects)
 		{
 			if (go->sprite && (gui_sprites_enabled || go->sprite->use == SHELL)) {
 				go->sprite->generate_model_matrix();

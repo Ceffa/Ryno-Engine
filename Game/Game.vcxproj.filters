@@ -104,12 +104,6 @@
     <ClInclude Include="Headers\Scenes\HouseScene.h">
       <Filter>Header\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Scripts\GroundElements.h">
-      <Filter>Header\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Scripts\LightsElements.h">
-      <Filter>Header\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Scenes\WaveScene.h">
       <Filter>Header\Scenes</Filter>
     </ClInclude>

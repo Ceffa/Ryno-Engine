@@ -213,19 +213,19 @@ namespace Ryno {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_vbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), indices.data(), GL_STATIC_DRAW);
 
+		glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 		for (RenderBatchShadow rb : m_render_batches){
 			
 			
-			glBindBuffer(GL_ARRAY_BUFFER, m_i_vbo);
 			glBufferData(GL_ARRAY_BUFFER, rb.num_instances * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, rb.num_instances * sizeof(glm::mat4), &models_matrices[rb.instance_offset]);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			
 			U32 offset = rb.indices_offset * sizeof(U32);
 
 			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, rb.num_indices, GL_UNSIGNED_INT, (void*)offset, rb.num_instances, rb.vertex_offset);
 
 		}
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
 	}

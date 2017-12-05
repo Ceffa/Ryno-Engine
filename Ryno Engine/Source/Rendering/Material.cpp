@@ -15,7 +15,8 @@ namespace Ryno {
 
 		attribute_memory = calloc(shader->attributes_struct_size, 1);
 		uniform_memory = calloc(shader->uniforms_map_size, 1);
-
+		if (this->shader && this->shader->name == "PostProcessing/neg")
+			std::cout << "+" << std::endl;
 		if (!attribute_memory || !uniform_memory){
 			std::cout << "Failed to allocate material structs" << std::endl;
 			return false;
@@ -42,17 +43,9 @@ namespace Ryno {
 
 	void Material::copy(const Material& cp)
 	{
-		if (attribute_memory) {
-			free(attribute_memory);
-			attribute_memory = nullptr;
-		}
-		if (uniform_memory) {
-			free(uniform_memory);
-			uniform_memory = nullptr;
-		}
-		
 		//Set same shader
 		set_shader(cp.shader);
+		
 
 		//Copy attributes memory
 		std::memcpy(attribute_memory, cp.attribute_memory, shader->attributes_struct_size);

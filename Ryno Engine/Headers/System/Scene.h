@@ -17,7 +17,7 @@ namespace Ryno{
 	public:
 		
 		std::unique_ptr<Camera3D> camera;
-		std::unique_ptr<PostProcessor> post_processor;
+		PostProcessor post_processor{};
 
 		Scene() {
 		
@@ -37,6 +37,7 @@ namespace Ryno{
 	};
 	
 	template<typename T> Scene * create_scene() { return new T; }
+	template<typename T> void delete_scene(Scene* S) { delete (T*)S; }
 
 	class SceneManager{
 		
@@ -58,14 +59,20 @@ namespace Ryno{
 				return nullptr;
 			return new_scene(n);
 		}
+
 		static Scene * new_scene(I8 n)
 		{
 			if (!scene_exists(n))
 				return nullptr;
 			current = n;
-			Scene* s = scenes[n]();
+			Scene* s = scenes_constructors[n]();
 			s->init();
 			return s;
+		}
+		static void delete_current_scene(Scene* s)
+		{
+			delete s;
+			//scenes_destructors[current](s);
 		}
 
 
@@ -83,11 +90,13 @@ namespace Ryno{
 		static void add_to_scenes(std::string& scene_name)
 		{
 			scene_names[scene_name] = last_scene++;
-			scenes.push_back(&create_scene < T >);
+			scenes_constructors.push_back(&create_scene < T >);
+			scenes_destructors.push_back(&delete_scene < T >);
 		}
 	protected: 
 		static U8 current;
-		static std::vector<Scene*(*)()> scenes;
+		static std::vector<Scene*(*)()> scenes_constructors;
+		static std::vector<void(*)(Scene*)> scenes_destructors;
 		static std::map <std::string, U8> scene_names;
 		static U8 last_scene;
 

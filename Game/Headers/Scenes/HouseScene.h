@@ -27,12 +27,12 @@ namespace Ryno{
 		Music music;
 		Font font;
 
+		Shader material;
 		GameObject light[1];
 		GameObject sponza;
 
 		Texture white, white_normal, noise;
 	
-		Shader material;
 		int light_index = 0;
 
 	};

@@ -210,8 +210,8 @@ namespace Ryno{
 
 		Shader m_sprite_program, m_font_program;
 
-		SubModel m_blit_depth_model, m_blit_color_model, m_skybox_model, m_post_proc_model;
-		SubModel m_ssao_model, m_blur_vert_model, m_blur_horiz_model;
+		SubModel m_blit_depth_model{}, m_blit_color_model{}, m_skybox_model{}, m_post_proc_model{};
+		SubModel m_ssao_model{}, m_blur_vert_model{}, m_blur_horiz_model{};
 
 		glm::mat4 bias;
 		mutable glm::mat4 light_VP_matrix;
