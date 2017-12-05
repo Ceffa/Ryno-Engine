@@ -260,6 +260,8 @@ namespace Ryno{
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 			s.unuse();
 		}
+
+		I32 quad_mesh = 0;
 	
 };
 	

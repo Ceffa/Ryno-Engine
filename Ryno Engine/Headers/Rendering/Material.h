@@ -53,6 +53,10 @@ namespace Ryno{
 			free(uniform_memory);
 		}
 		Material(const Material& copy);
+		Material & operator= (const Material & other) {
+			copy(other);
+			return *this;
+		}
 		void copy(const Material& copy);
 		Material() {}
 		void* attribute_memory = nullptr;

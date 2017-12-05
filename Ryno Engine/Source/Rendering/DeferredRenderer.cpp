@@ -88,10 +88,9 @@ namespace Ryno{
 	
 		//LOAD MODELS
 		m_skybox_model.mesh = m_mesh_manager->load_mesh("cubemap_cube", ENGINE);
-		I32 quad_mesh = m_mesh_manager->load_mesh("square", ENGINE);
+		quad_mesh = m_mesh_manager->load_mesh("square", ENGINE);
 		m_blit_depth_model.mesh = quad_mesh;
 		m_blit_color_model.mesh = quad_mesh;
-		m_post_proc_model.mesh = quad_mesh;
 		m_ssao_model.mesh = quad_mesh;
 		m_blur_vert_model.mesh = quad_mesh;
 		m_blur_horiz_model.mesh = quad_mesh;
@@ -822,9 +821,10 @@ namespace Ryno{
 
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
-
+		SubModel pp_mod{};
+		pp_mod.mesh = quad_mesh;
 		for (auto& m : game->scene->post_processor.effects) {
-			m_post_proc_model.material = m;
+			pp_mod.material = m;
 			m_fbo_deferred.bind_for_post_processing();
 			m.set_uniform("diffuse_tex", m_fbo_deferred.m_textures[0]);
 			m.set_uniform("specular_tex", m_fbo_deferred.m_textures[1]);
@@ -833,9 +833,8 @@ namespace Ryno{
 			m.set_uniform("scene_tex", m_fbo_deferred.m_final_textures[1 - m_fbo_deferred.m_current_scene_texture]);
 			
 			bind_global_ubo(*m.shader);
-			m_simple_drawer->draw(&m_post_proc_model);
+			m_simple_drawer->draw(&pp_mod);
 		}
-		m_post_proc_model.material = Material();
 	}
 
 
