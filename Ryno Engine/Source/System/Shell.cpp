@@ -5,10 +5,6 @@
 #include <iostream>
 #include <unordered_map>
 
-#define MISSING_INT INT_MAX/2-1
-#define ERROR_INT INT_MAX/2
-#define MISSING_FLOAT FLT_MAX/2-1
-#define ERROR_FLOAT INT_MAX/2
 
 namespace Ryno {
 
@@ -36,7 +32,7 @@ namespace Ryno {
 		auto* s = background.sprite;
 		s->set_texture(background_texture);
 		s->angle = 0;
-		s->set_color(0, 0, 0, 240);
+		s->set_color(0, 0, 0, 200);
 		s->depth = 5;
 		s->use = SHELL;
 
@@ -66,7 +62,7 @@ namespace Ryno {
 		t->text = base_path;
 		t->set_scale(0.7f,0.7f);
 		t->depth = 4;
-		t->set_color(255, 230, 0, 255);
+		t->set_color(50,255,0, 255);
 		t->set_position(0.003f, 0.005f);
 		t->use = SHELL;
 
@@ -79,6 +75,8 @@ namespace Ryno {
 		iterator = history.begin();
 		history_length = 0;
 		hide();
+
+		create_commands();
 		
 	}
 	void Shell::set_text_color(U8 r, U8 g, U8 b)
@@ -244,293 +242,11 @@ namespace Ryno {
 	//GARBAGE CODE - Could really use a refactoring
 	void Shell::parse_command(const std::string& command)
 	{
-		if (command.compare("winpos") == 0) {
-			U32 x = int_argument();
-			U32 y = int_argument();
-			Game::get_instance()->set_window_pos(x, y);
-		}
-		else if (command.compare("winsize") == 0) {
-			U32 w = int_argument();
-			U32 h = int_argument();
-			Game::get_instance()->set_window_pos(w,h);
-		}
-
-		else if (command.compare("server") == 0) {
-			Network::get_instance()->start_server();
-		}
-		else if (command.compare("client") == 0) {
-			Network::get_instance()->start_client();
-		}
-		else if (command.compare("pausemusic") == 0)
-			Music::pause();
-		else if (command.compare("resumemusic") == 0)
-			Music::resume();
-		else if (command.compare("mutemusic") == 0)
-			Music::set_volume(0);
-		else if (command.compare("mutesound") == 0)
-			Sound::set_volume(0);
-		else if (command.compare("musicvolume") == 0){
-
-			//read args
-			F32 f;
-
-
-			f = float_argument();
-			if (f == ERROR_FLOAT){
-				print_message("argument(s) is not an int."); return;
-			}
-			else if (f == MISSING_FLOAT){
-				print_message("missing argument(s)."); return;
-			}
-
-			Music::set_volume(f);
-
-		}
-		else if (command.compare("soundvolume") == 0){
-
-			//read args
-			F32 f;
-
-
-			f = float_argument();
-			if (f == ERROR_FLOAT){
-				print_message("argument(s) is not an int."); return;
-			}
-			else if (f == MISSING_FLOAT){
-				print_message("missing argument(s)."); return;
-			}
-
-			Sound::set_volume(f);
-
-		}
-		else if (command.compare("p") == 0){
-			request_pause = !request_pause;
-		}
-		else if (command.compare("r") == 0){
-			Game::get_instance()->reset_scene();
-		}
-		else if (command.compare("n") == 0) {
-			Game::get_instance()->next_scene();
-		}
-		else if (command.compare("fps") == 0) {
-			Log::get_instance()->fps_log = !Log::get_instance()->fps_log;
-		}
-		else if (command.compare("t") == 0){
-
-			//read args
-			F32 f;
-
-
-			f = float_argument();
-			if (f == ERROR_FLOAT){
-				print_message("argument(s) is not an int."); return;
-			}
-			else if (f == MISSING_FLOAT){
-				print_message("missing argument(s)."); return;
-			}
-			
-			
-			time_manager->slow_factor = f;
-
-		}
-		else if (command.compare("shelltextcolor") == 0){
-			
-			//read args
-			I32 args[3];
-
-			for (U8 i = 0; i < 3; i++){
-				args[i] = int_argument();
-				if (args[i] == ERROR_INT){
-					print_message("argument(s) is not an int."); return;
-				}
-				else if (args[i] == MISSING_INT){
-					print_message("missing argument(s)."); return;
-				}
-			}
-		
-			set_text_color(args[0], args[1], args[2]);
-
-		}
-		else if (command.compare("shellbackcolor") == 0){
-
-			//read args
-			I32 args[4];
-
-			for (U8 i = 0; i < 4; i++){
-				args[i] = int_argument();
-				if (args[i] == ERROR_INT){
-					print_message("argument(s) is not an int."); return;
-				}
-				else if (args[i] == MISSING_INT && i!=3){
-					print_message("missing argument(s)."); return;
-				}
-			}
-			
-			background.sprite->set_color(args[0], args[1], args[2], args[3]);
-
-		}
-		else if (command.compare("logtextcolor") == 0){
-
-			//read args
-			I32 args[3];
-
-			for (U8 i = 0; i < 3; i++){
-				args[i] = int_argument();
-				if (args[i] == ERROR_INT){
-					print_message("argument(s) is not an int."); return;
-				}
-				else if (args[i] == MISSING_INT){
-					print_message("missing argument(s)."); return;
-				}
-			}
-
-			log->set_text_color(args[0], args[1], args[2]);
-
-		}
-		else if (command.compare("logbackcolor") == 0){
-
-			//read args
-			I32 args[4];
-
-			for (U8 i = 0; i < 4; i++){
-				args[i] = int_argument();
-				if (args[i] == ERROR_INT){
-					print_message("argument(s) is not an int."); return;
-				}
-				else if (args[i] == MISSING_INT && i != 3){
-					print_message("missing argument(s)."); return;
-				}
-			}
-
-			log->background.sprite->set_color(args[0], args[1], args[2], args[3]);
-
-		}
-		else if (command.compare("echo") == 0){
-			std::string s = string_argument();
-			if (s.empty()){
-				print_message("missing argument(s)."); return;
-			}
-			log->print(s);
-		}
-		else if (command.compare("s") == 0){
-			int i = int_argument();
-			if (i == ERROR_INT){
-				print_message("missing argument(s)."); return;
-			}
-			Game::get_instance()->set_scene(i);
-		}
-	
-		else if (command.compare("fuckyou") == 0){
-			
-			print_message("well, fuck you too.");
-		}
-		else if (command.compare("clearshellhistory") == 0){
-			history.clear();
-			history_length = 0;
-			iterator = history.begin();
-		}
-		else if (command.compare("clearshellscreen") == 0){
-			for (GUIObject& go : lines)
-				go.text->text = base_path;
-
-		}
-		else if (command.compare("clearloghistory") == 0){
-			log->history.clear();
-			log->history_length = 0;
-			log->iterator = log->history.begin();
-		}
-		else if (command.compare("clr") == 0){
-			for (GUIObject& go : log->lines)
-				go.text->text = "";
-
-		}
-		else if (command.compare("exit") == 0){
-			
-			request_exit = true;
-		}
-		else if (command.compare("nodl") == 0){
-			deferred_renderer->lightInfo[DIR].lights_enabled = false;
-		}
-		else if (command.compare("dl") == 0){
-			deferred_renderer->lightInfo[DIR].lights_enabled = true;
-		}
-		else if (command.compare("nopl") == 0){
-			deferred_renderer->lightInfo[POINT].lights_enabled = false;
-		}
-		else if (command.compare("pl") == 0){
-			deferred_renderer->lightInfo[POINT].lights_enabled = true;
-		}
-		else if (command.compare("nosl") == 0){
-			deferred_renderer->lightInfo[SPOT].lights_enabled = false;
-		}
-		else if (command.compare("sl") == 0){
-			deferred_renderer->lightInfo[SPOT].lights_enabled = true;
-		}
-		else if (command.compare("nods") == 0){
-			deferred_renderer->lightInfo[DIR].shadows_enabled = false;
-		}
-		else if (command.compare("ds") == 0){
-			deferred_renderer->lightInfo[DIR].shadows_enabled = true;
-		}
-		else if (command.compare("nops") == 0){
-			deferred_renderer->lightInfo[POINT].shadows_enabled = false;
-		}
-		else if (command.compare("ps") == 0){
-			deferred_renderer->lightInfo[POINT].shadows_enabled = true;
-		}
-		else if (command.compare("noss") == 0){
-			deferred_renderer->lightInfo[SPOT].shadows_enabled = false;
-		}
-		else if (command.compare("ss") == 0){
-			deferred_renderer->lightInfo[SPOT].shadows_enabled = true;
-		}
-		else if (command.compare("nosb") == 0){
-			deferred_renderer->skybox_enabled = false;
-		}
-		else if (command.compare("sb") == 0){
-			deferred_renderer->skybox_enabled = true;
-		}
-		else if (command.compare("nogs") == 0){
-			deferred_renderer->gui_sprites_enabled = false;
-		}
-		else if (command.compare("gs") == 0){
-			deferred_renderer->gui_sprites_enabled = true;
-		}
-		else if (command.compare("nogt") == 0){
-			deferred_renderer->gui_text_enabled = false;
-		}
-		else if (command.compare("gt") == 0){
-			deferred_renderer->gui_text_enabled = true;
-		}
-		else if (command.compare("nogm") == 0){
-			deferred_renderer->geometry_enabled = false;
-		}
-		else if (command.compare("gm") == 0){
-			deferred_renderer->geometry_enabled = true;
-		}
-		else if (command.compare("nopp") == 0) {
-			deferred_renderer->postprocessor_enabled = false;
-		}
-		else if (command.compare("pp") == 0) {
-			deferred_renderer->postprocessor_enabled = true;
-		}
-		else if (command.compare("noao") == 0) {
-			deferred_renderer->ssao_enabled = false;
-		}
-		else if (command.compare("ao") == 0) {
-			deferred_renderer->ssao_enabled = true;
-		}
-		else if (command.compare("nogui") == 0){
-			deferred_renderer->gui_sprites_enabled = false;
-			deferred_renderer->gui_text_enabled = false;
-
-		}
-		else if (command.compare("gui") == 0){
-			deferred_renderer->gui_sprites_enabled = true;
-			deferred_renderer->gui_text_enabled = true;
-		}
+		auto& c = commands.find(command);
+		if (c != commands.end())
+			c->second();
 		else
-			print_message("Command not found");
+			print_message("Command not found.");	
 	}
 
 	void Shell::rotate_lines()
@@ -541,6 +257,148 @@ namespace Ryno {
 		}
 		lines[0].text->text = base_path;
 		
+	}
+
+	void Shell::create_commands()
+	{
+		commands["server"] = [=]() {
+			Network::get_instance()->start_server();
+		};
+		commands["client"] = [=]() {
+			Network::get_instance()->start_client();
+		};
+		commands["pausemusic"] = [=]() {
+			Music::pause();
+		};
+		commands["resumemusic"] = [=]() {
+			Music::resume();
+		};
+		commands["mutemusic"] = [=]() {
+			Music::set_volume(0);
+		};
+		commands["mutesound"] = [=]() {
+			Sound::set_volume(0);
+		};
+		commands["musicvolume"] = [=]() {
+			bool err = false;
+			F32 f = float_argument(err);
+			if (!err) Music::set_volume(f);
+		};
+		commands["soundvolume"] = [=]() {
+			bool err = false;
+			F32 f = float_argument(err);
+			if (!err) Sound::set_volume(f);
+		};
+		commands["p"] = [=]() {
+			request_pause = !request_pause;
+		};
+		commands["r"] = [=]() {
+			Game::get_instance()->reset_scene();
+		};
+		commands["n"] = [=]() {
+			Game::get_instance()->next_scene();
+		};
+		commands["t"] = [=]() {
+			bool err = false;
+			F32 f = float_argument(err);
+			if (!err) time_manager->slow_factor = f;
+		};
+		commands["echo"] = [=]() {
+			bool err = false;
+			std::string s = string_argument(err);
+			if (!err) log->print(s);
+		};
+		commands["s"] = [=]() {
+			bool err = false;
+			int i = int_argument(err);
+			if (!err) Game::get_instance()->set_scene(i);
+		};
+		commands["fuckyou"] = [=]() {
+			print_message("well, fuck you too.");
+		};
+		commands["clr"] = [=]() {
+			for (GUIObject& go : log->lines)
+				go.text->text = "";
+			for (GUIObject& go : lines)
+				go.text->text = base_path;
+			log->history.clear();
+			log->history_length = 0;
+			log->iterator = log->history.begin();
+			history.clear();
+			history_length = 0;
+			iterator = history.begin();
+		};
+		commands["exit"] = [=]() {
+			request_exit = true;
+		};
+		commands["nodl"] = [=]() {
+			deferred_renderer->lightInfo[DIR].lights_enabled = false;
+		};
+		commands["dl"] = [=]() {
+			deferred_renderer->lightInfo[DIR].lights_enabled = true;
+		};
+		commands["nopl"] = [=]() {
+			deferred_renderer->lightInfo[POINT].lights_enabled = false;
+		};
+		commands["pl"] = [=]() {
+			deferred_renderer->lightInfo[POINT].lights_enabled = true;
+		};
+		commands["nosl"] = [=]() {
+			deferred_renderer->lightInfo[SPOT].lights_enabled = false;
+		};
+		commands["sl"] = [=]() {
+			deferred_renderer->lightInfo[SPOT].lights_enabled = true;
+		};
+		commands["nods"] = [=]() {
+			deferred_renderer->lightInfo[DIR].shadows_enabled = false;
+		};
+		commands["ds"] = [=]() {
+			deferred_renderer->lightInfo[DIR].shadows_enabled = true;
+		};
+		commands["nops"] = [=]() {
+			deferred_renderer->lightInfo[POINT].shadows_enabled = false;
+		};
+		commands["ps"] = [=]() {
+			deferred_renderer->lightInfo[POINT].shadows_enabled = true;
+		};
+		commands["noss"] = [=]() {
+			deferred_renderer->lightInfo[SPOT].shadows_enabled = false;
+		};
+		commands["ss"] = [=]() {
+			deferred_renderer->lightInfo[SPOT].shadows_enabled = true;
+		};
+		commands["nosb"] = [=]() {
+			deferred_renderer->skybox_enabled = false;
+		};
+		commands["sb"] = [=]() {
+			deferred_renderer->skybox_enabled = true;
+		};
+		commands["nogui"] = [=]() {
+			deferred_renderer->gui_sprites_enabled = false;
+			deferred_renderer->gui_text_enabled = false;
+		};
+		commands["gui"] = [=]() {
+			deferred_renderer->gui_sprites_enabled = true;
+			deferred_renderer->gui_text_enabled = true;
+		};
+		commands["nogm"] = [=]() {
+			deferred_renderer->geometry_enabled = false;
+		};
+		commands["gm"] = [=]() {
+			deferred_renderer->geometry_enabled = true;
+		};
+		commands["nopp"] = [=]() {
+			deferred_renderer->postprocessor_enabled = false;
+		};
+		commands["pp"] = [=]() {
+			deferred_renderer->postprocessor_enabled = true;
+		};
+		commands["noao"] = [=]() {
+			deferred_renderer->ssao_enabled = false;
+		};
+		commands["ao"] = [=]() {
+			deferred_renderer->ssao_enabled = true;
+		};
 	}
 
 
@@ -577,44 +435,56 @@ namespace Ryno {
 	}
 
 
-	std::string Shell::string_argument()
+	std::string Shell::string_argument(bool& error)
 	{
 		std::string s = get_argument();
+		if (s.empty()) {
+			print_message("Missing argument (expected string).");
+			error = true;
+		}
 		return s;
 
 	}
 
-	I32 Shell::int_argument()
+	I32 Shell::int_argument(bool& error)
 	{
-		C* error;
+		C* error_int;
 		
 		std::string s = get_argument();
+		I64 r = 0;
+		if (s.empty()) {
+			print_message("Missing argument (expected int).");
+			error = true;
+		}
+		else {
 
-		if (s.empty())
-			return MISSING_INT;
+			r = std::strtol(s.c_str(), &error_int, 0);
 
-		I64 r = std::strtol(s.c_str(),&error,0);
-		
-		if (*error!='\0'){
-			return ERROR_INT;
+			if (*error_int != '\0') {
+				print_message("Wrong argument (expected int).");
+				error = true;
+			}
 		}
 		return (I32)r;
 		
 	}
 
-	F32 Shell::float_argument()
+	F32 Shell::float_argument(bool& error)
 	{
-		C* error;
+		C* error_float;
 
 		std::string s = get_argument();
+		F64 r = 0;
 
-		if (s.empty())
-			return MISSING_FLOAT - 1;
+		if (s.empty()) {
+			print_message("Missing argument (expected float).");
+			error = true;
+		}
+		r = std::strtod(s.c_str(), &error_float);
 
-		F64 r = std::strtod(s.c_str(), &error);
-
-		if (*error != '\0'){
-			return ERROR_FLOAT;
+		if (*error_float != '\0') {
+			print_message("Wrong argument (expected float).");
+			error = true;
 		}
 		return (F32)r;
 

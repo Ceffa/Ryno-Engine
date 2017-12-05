@@ -111,7 +111,7 @@ namespace Ryno{
 			physics_world->physics_step(TimeManager::delta_time);
 			draw();
 			time_manager->end_frame();
-			if (game_state != GameState::Paused) time_manager->print_fps();
+			Log::update_stats();
 		}
 		end();
 		exit_game();

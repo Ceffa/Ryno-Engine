@@ -39,15 +39,7 @@ namespace Ryno{
 		time += delta_time;
 
 	}
-	void TimeManager::print_fps(){
-		if (Log::get_instance()->fps_log) {
-			static U32 frame_count = 0;
-			if (frame_count++ == 30) {
-				frame_count = 0;
-				Log::println(current_fps);
-			}
-		}
-	}
+
 
 	Ryno::F32 TimeManager::time= 0 ;
 	Ryno::F32 TimeManager::delta_time= 0;

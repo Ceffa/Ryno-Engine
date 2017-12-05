@@ -60,26 +60,24 @@ namespace Ryno{
 
 	void HouseScene::update(){
 
-	
+		Log::println("Test log");
 
 		if (attach){
 			light[light_index].transform.set_position(camera->position.x, camera->position.y, camera->position.z);
 		}
-		if (game->input_manager->is_key_pressed(SDLK_x, KEYBOARD)) {
-			power = power == 0 ? 100 : 0;
-		//	for (auto& m : sponza.get_component<Model>()->sub_models)
-		//		m.material.set_uniform("power", power);
-			
-			sponza.get_component<DirectionalLight>()->shadows = !sponza.get_component<DirectionalLight>()->shadows;
-			for (auto& l : light)
-				l.get_component<PointLight>()->shadows = !light[0].get_component<PointLight>()->shadows;
-		}
+		
+		
+	}
+	void HouseScene::input() {
 
-	
+		if (game->input_manager->is_key_pressed(SDLK_SPACE, KEYBOARD)) {
+			attach = !attach;
+		}
 		if (game->input_manager->is_key_down(SDLK_LEFT, KEYBOARD)) {
 			light[light_index].get_component<PointLight>()->diffuse_intensity -= .05f;
-		}else if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
-				light[light_index].get_component<PointLight>()->diffuse_intensity += .05f;
+		}
+		else if (game->input_manager->is_key_down(SDLK_RIGHT, KEYBOARD)) {
+			light[light_index].get_component<PointLight>()->diffuse_intensity += .05f;
 		}
 		if (game->input_manager->is_key_down(SDLK_UP, KEYBOARD)) {
 			light[light_index].get_component<PointLight>()->specular_intensity += 2.5f;
@@ -96,11 +94,5 @@ namespace Ryno{
 		}
 
 
-	}
-	void HouseScene::input() {
-
-		if (game->input_manager->is_key_pressed(SDLK_SPACE, KEYBOARD)) {
-			attach = !attach;
-		}
 	}
 }

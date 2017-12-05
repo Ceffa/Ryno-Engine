@@ -9,6 +9,8 @@
 #include "AudioManager.h"
 #include <list>
 #include <vector>
+#include <map>
+#include <functional>
 
 #define NUM_LINES 10
 #define HISTORY_LENGTH 50
@@ -37,6 +39,9 @@ namespace Ryno{
 	private:
 		Shell(){}
 
+		std::map < std::string, std::function<void()>> commands;
+		void create_commands();
+
 		DeferredRenderer* deferred_renderer;
 		TimeManager* time_manager;
 		Log* log;
@@ -60,11 +65,13 @@ namespace Ryno{
 		
 		void print_message(const std::string& message);
 		std::string get_argument();
-		std::string string_argument();
-		I32 int_argument();
-		F32 float_argument();
+		std::string string_argument(bool& error);
+		I32 int_argument(bool& error);
+		F32 float_argument(bool& error);
 
 		static Shell* instance;
+
+
 	};
 
 }

@@ -1,7 +1,10 @@
 #include "Log.h"
 #include "TextureManager.h"
+#include "TimeManager.h"
 #include <iostream>
 #include <sstream>
+#include <iomanip> // setprecision
+
 
 
 #define MISSING_INT INT_MIN-1
@@ -35,13 +38,21 @@ namespace Ryno {
 		TextureManager* texture_manager = TextureManager::get_instance();
 		Texture background_texture = texture_manager->load_png("background.png", ENGINE);
 
-		background.sprite = new Sprite();
-		Sprite* s = background.sprite;
+		background_log.sprite = new Sprite();
+		Sprite* s = background_log.sprite;
 		s->set_texture(background_texture);
 		s->angle = 0;
-		s->set_color(0, 0, 0, 240);
+		s->set_color(0, 0, 0, 200);
 		s->depth = 5;
 		s->use = SHELL;
+		s->anchor_point = TOP_LEFT;
+		s->set_position(0, .935);
+		s->set_scale(350, .603 * WindowSize::h);
+
+		background_stats.sprite = new Sprite(s);
+		s = background_stats.sprite;
+		s->set_position(0, 1);
+		s->set_scale(350, .06 * WindowSize::h);
 
 
 
@@ -52,19 +63,16 @@ namespace Ryno {
 		history_length = 0;
 		input_manager = InputManager::get_instance();
 		
-		background.sprite->anchor_point = TOP_LEFT;
-		background.sprite->set_position(0, 1);
-		background.sprite->set_scale(350, WindowSize::h / 1.506f);
 
 			
 		lines[0].text = new Text();
-		auto* t = lines[0].text;
+		Text* t = lines[0].text;
 		t->anchor_point = BOTTOM_LEFT;
 		t->font = &font;
 		t->text = "";
 		t->set_scale(0.7f,0.7f);
 		t->depth = 4;
-		t->set_color(255, 230, 0, 255);
+		t->set_color(255, 255, 0, 255);
 		t->set_position(0.005f, .34f);
 		t->use = SHELL;
 
@@ -72,8 +80,24 @@ namespace Ryno {
 		for (U8 i = 1; i < NUM_LINES; i++)
 		{
 			lines[i].text = new Text(lines[0].text);
-			lines[i].text->set_position(0.005f, .34f + 0.66f * i / NUM_LINES);
+			lines[i].text->set_position(0.005f, .34f + 0.6f * i / NUM_LINES);
 		}
+
+		stats[0].text = new Text(lines[0].text);
+		t = stats[0].text;
+		t->anchor_point = TOP_LEFT;
+		t->set_position(0.005f, .994f);
+		t->text = "DRAW";
+		t->set_color(255, 0,0, 255);
+
+
+		stats[1].text = new Text(stats[0].text);
+		stats[2].text = new Text(stats[0].text);
+		stats[3].text = new Text(stats[0].text);
+		stats[1].text->set_position(0.13f * 1280 / WindowSize::w, .994f);
+		stats[2].text->set_position(0.005f, .969f);
+		stats[3].text->set_position(0.13f * 1280 / WindowSize::w, .969f);
+
 
 		Log::print("");
 		hide();
@@ -86,7 +110,10 @@ namespace Ryno {
 		active = b;
 		for (auto& go : lines)
 			go.text->active = b;
-		background.sprite->active = b;
+		for (auto& go : stats)
+			go.text->active = b;
+		background_log.sprite->active = b;
+		background_stats.sprite->active = b;
 	}
 
 	void Log::show()
@@ -196,6 +223,18 @@ namespace Ryno {
 	{
 		println("");
 		print(vec);
+	}
+
+	void Log::update_stats()
+	{
+		auto dr = DeferredRenderer::get_instance();
+		std::stringstream stream;
+		stream << std::fixed << std::setprecision(2) << TimeManager::get_instance()->current_fps;
+		instance->stats[0].text->text = "Fps: " + stream.str();
+		instance->stats[1].text->text = "Draw calls: " + std::to_string(dr->m_geometry_batch3d.draw_calls);
+		instance->stats[2].text->text = "Vertices: " + std::to_string(dr->m_geometry_batch3d.total_vertices);
+		instance->stats[3].text->text = "Lights: " + std::to_string(dr->total_active_lights);
+
 	}
 
 	void Log::read_up()

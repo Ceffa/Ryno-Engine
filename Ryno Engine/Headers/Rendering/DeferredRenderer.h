@@ -78,6 +78,8 @@ namespace Ryno{
 		bool ssao_enabled = true;
 
 
+
+
 		//Initialize deferred rendering
 		void init();
 
@@ -173,7 +175,7 @@ namespace Ryno{
 
 		static void bind_global_ubo(const Shader& s) { bind_ubo("glob_ubo", get_instance()->global_ubo, 0,s); }
 	
-
+		U32 total_active_lights = 0;
 	private:
 
 		DeferredRenderer() {}

@@ -125,7 +125,7 @@ namespace Ryno {
 		}
 		
 
-		I32 total_vertices = m_render_batches.back().vertex_offset + m_render_batches.back().num_vertices;
+		total_vertices = m_render_batches.back().vertex_offset + m_render_batches.back().num_vertices;
 		I32 total_indices = m_render_batches.back().indices_offset + m_render_batches.back().num_indices;
 		vertices.resize(total_vertices);
 		indices.resize(total_indices);
@@ -134,6 +134,8 @@ namespace Ryno {
 			std::memcpy((void*)((U64)vertices.data() + rb.vertex_offset * sizeof(Vertex3D)), m->vertices.data(), m->vertices.size() * sizeof(Vertex3D));
 			std::memcpy((void*)((U64)indices.data() + rb.indices_offset * sizeof(U32)), m->indices.data(), m->indices.size() * sizeof(U32));
 		}	
+		draw_calls = m_render_batches.size();
+
 	}
 
 

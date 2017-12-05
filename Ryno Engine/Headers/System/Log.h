@@ -7,7 +7,7 @@
 #include <list>
 
 
-#define NUM_LINES 20
+#define NUM_LINES 18
 #define HISTORY_LENGTH 50
 
 namespace Ryno{
@@ -24,7 +24,6 @@ namespace Ryno{
 		void set_text_color(U8 r, U8 g, U8 b);
 
 		bool active = true;
-		bool fps_log = false;
 
 		static void print(const std::string& message);
 		static void print(F32 f);
@@ -32,6 +31,7 @@ namespace Ryno{
 		static void println(const std::string& message);
 		static void println(F32 f);
 		static void println(const glm::vec3& vec);
+		static void update_stats();
 
 		
 
@@ -42,8 +42,10 @@ namespace Ryno{
 		Log(){}
 		InputManager* input_manager;
 		Font font;
-		GUIObject background;
+		GUIObject background_log;
+		GUIObject background_stats;
 
+		GUIObject stats[4];
 		GUIObject lines[NUM_LINES];
 		std::list<std::string> history;
 		std::list<std::string>::iterator iterator;

@@ -191,9 +191,14 @@ namespace Ryno{
 			if (go->active)
 				go->transform.combine_model_matrices();
 		
+		total_active_lights = 0;
+
 	}
 
 	void DeferredRenderer::fill_batches() {
+		m_geometry_batch3d.draw_calls = 0;
+		if (!geometry_enabled)
+			return;
 		m_shadow_batch3d.begin();
 		m_geometry_batch3d.begin();
 		bool need_shadows = lightInfo[DIR].shadows_enabled || lightInfo[POINT].shadows_enabled || lightInfo[SPOT].shadows_enabled;
@@ -260,6 +265,8 @@ namespace Ryno{
 		
 		//Process compute lights
 		tiled_pass(computeLights,t);
+
+		total_active_lights+=lights.size() + computeLights.size();
 	}	
 	
 	void DeferredRenderer::point_light_pass(){		
@@ -306,7 +313,7 @@ namespace Ryno{
 		//Process compute lights
 		tiled_pass(computeLights,t);
 
-
+		total_active_lights += lights.size() + computeLights.size();
 	}
 
 	void DeferredRenderer::spot_light_pass()
@@ -369,6 +376,7 @@ namespace Ryno{
 		//Process compute lights
 		tiled_pass(computeLights,t);
 
+		total_active_lights += lights.size() + computeLights.size();
 	}
 
 

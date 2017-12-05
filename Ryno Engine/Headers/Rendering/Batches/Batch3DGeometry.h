@@ -46,7 +46,8 @@ namespace Ryno{
 
 		std::vector<Shader*> shaders;
 		std::vector<SubModel*> m_models;
-
+		U32 draw_calls = 0;
+		U32 total_vertices = 0;
 	protected:
 		U32 m_vbo = 0;
 		U32 m_i_vbo = 0;//instancing vbo
