@@ -477,7 +477,7 @@ namespace Ryno {
 			deferred_renderer->ssao_enabled = true;
 			return "";
 		};
-		commands["hint"] = [=](bool hint) {
+		commands["help"] = [=](bool hint) {
 			if (hint) return "Explains command [s0].";
 			bool err = false;
 			auto s = string_argument(err);

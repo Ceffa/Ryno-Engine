@@ -44,7 +44,7 @@ namespace Ryno{
 		std::vector<InstanceValues> input_instances;
 		std::vector<RenderBatch2D> m_render_batches;
 		
-		static U8 compare_models(Sprite* a, Sprite* b) ;
+		const static bool compare_models(const Sprite* a, const Sprite* b) ;
 
 		void create_render_batches();
 		void create_vertex_array();

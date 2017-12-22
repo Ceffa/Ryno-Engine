@@ -53,6 +53,7 @@ namespace Ryno{
 		U32 m_i_vbo = 0;//instancing vbo
 		U32 m_index_vbo = 0;
 		U32 m_vao = 0;
+		U32 dither_tex = 0;
 
 		Camera3D* m_camera;
 		MeshManager* m_mesh_manager;
@@ -64,7 +65,7 @@ namespace Ryno{
 		void* input_instances = nullptr;
 		std::vector<RenderBatchStruct> m_render_batches;
 		
-		const static U8 compare_models(SubModel* a, SubModel* b);
+		const static bool compare_models(const SubModel* a, const SubModel* b);
 
 		void create_render_batches();
 		void enable_attributes(Shader* s);

@@ -1,0 +1,17 @@
+E(Includes/global)
+#extension GL_EXT_gpu_shader4 : enable
+
+#define DITHER_H 20
+#define DITHER_TILES 16
+#define DITHER_TILE_SIZE 8
+
+uniform sampler2D dither_tex;
+
+
+bool is_transparent(ivec2 coords, float _alpha) {
+
+	int i = int(_alpha * DITHER_TILES);
+	int x = i*DITHER_TILE_SIZE + coords.x % DITHER_TILE_SIZE;
+	int y = coords.y % DITHER_H;
+	return texelFetch(dither_tex, ivec2(x,y), 0).r < .5;
+}

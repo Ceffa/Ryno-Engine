@@ -208,7 +208,7 @@ namespace Ryno {
 
 	}
 
-	U8 Batch2DSprite::compare_models(Sprite* a, Sprite* b){
+	const bool Batch2DSprite::compare_models(const Sprite* a, const Sprite* b){
 	
 		return a->get_texture_id() < b->get_texture_id();
 	}

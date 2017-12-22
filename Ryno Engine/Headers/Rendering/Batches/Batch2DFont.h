@@ -45,15 +45,12 @@ namespace Ryno{
 		std::vector<InstanceValuesFont> input_instances;
 		std::vector<RenderBatch2DFont> m_render_batches;
 		
-		static U8 compare_models(FontGlyph* a, FontGlyph* b) ;
+		const static bool compare_models(const FontGlyph* a, const FontGlyph* b) ;
 
 		void create_render_batches();
 		void create_vertex_array();
 		void enable_attributes();
 		void set_uvs(Vertex2D* quad_vertices, glm::vec4* uvs);
-		
-
-		
 	};
 
 

@@ -29,7 +29,7 @@ vec3 get_shaded_fragment(SpotLight spot_light, const MatInfo info) {
 
 	//Calculate base colors
 	vec3 diff_color = split3(spot_light.diffuse) * spot_light.diffuse_intensity;
-	vec3 spec_color = split3(spot_light.specular) * spot_light.specular_intensity;
+	vec3 spec_color = split3(spot_light.specular) * spot_light.specular_intensity * info.mat_spec_and_pow.xyz;
 
 
 	//final colors for diffuse and specular
@@ -37,7 +37,7 @@ vec3 get_shaded_fragment(SpotLight spot_light, const MatInfo info) {
 	float dotNL = dot(normal, light_dir_view_space.xyz);
 
 	vec3 diffuse_final = max(0, dotNL) * diff_color * info.mat_diff_and_flat.xyz;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal), 0.000001), spot_light.shininess)* info.mat_spec_and_pow.xyz * info.mat_spec_and_pow.w;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, normal), 0.000001), spot_light.shininess * info.mat_spec_and_pow.w);
 
 
 	//CONE CUTOFF (with smoothing to the edges)

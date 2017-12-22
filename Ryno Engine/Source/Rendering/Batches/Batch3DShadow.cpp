@@ -230,10 +230,8 @@ namespace Ryno {
 
 	}
 
-	U8 Batch3DShadow::compare_models(model_and_matrix a, model_and_matrix b){
-	
+	const bool Batch3DShadow::compare_models(const model_and_matrix& a, const model_and_matrix& b){
 		return a.model->mesh < b.model->mesh;
-
 	}
 
 

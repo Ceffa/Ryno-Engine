@@ -1,10 +1,10 @@
-#version 430
-#extension GL_EXT_gpu_shader4 : enable
+E(Includes/geom_include)
 
 in  vec4 diff_color;
 in	vec4 spec_color; 
 in  mat3 TBN;
 in  vec2 uvs;
+in float _alpha;
 
 layout(location = 0) out vec4 out_diffuse;
 layout(location = 1) out vec4 out_specular;
@@ -21,12 +21,14 @@ uniform sampler2D normal_texture;
 void main() {
 
 	//Sample textures
-	vec3 text_diffuse = textureSize2D(diffuse_texture,0).x > 1 ? texture(diffuse_texture, uvs).rgb : vec3(1,1,1);
+	vec4 text_diffuse = textureSize2D(diffuse_texture,0).x > 1 ? texture(diffuse_texture, uvs): vec4(0,0,0,0);
+	if (is_transparent(ivec2(gl_FragCoord.xy), _alpha))
+		discard;
 	vec3 text_specular = textureSize2D(specular_texture,0).x > 1 ? texture(specular_texture, uvs).rgb : vec3(1,1,1);
 	vec3 text_normal = textureSize2D(normal_texture,0).x > 1 ? texture(normal_texture, uvs).rgb : vec3(.5,.5,1);
 
 	//Calculate final colors
-	out_diffuse = vec4(diff_color.rgb * text_diffuse, diff_color.w);
+	out_diffuse = vec4(diff_color.rgb * text_diffuse.rgb, diff_color.w);
 	out_specular = vec4(spec_color.rgb * text_specular, spec_color.w);
 
 	//Normalize normal

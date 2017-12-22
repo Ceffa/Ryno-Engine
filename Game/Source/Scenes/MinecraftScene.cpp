@@ -43,19 +43,6 @@ namespace Ryno{
 		l->ambient_intensity = 0;
 		l->set_ambient_color(255, 255, 255);
 		l->shadows = true;
-
-		for (auto& m : sponza.get_component<Model>()->sub_models) {
-			m.cast_shadows = false;
-			ColorRGBA* attr = (ColorRGBA*)m.material.get_attribute("diffuse_color");
-			if (attr != nullptr) {
-				ColorRGBA c = *attr;
-				c.a = 100;
-				m.material.set_attribute("diffuse_color", c);
-			}
-			
-		}
-
-
 	}
 
 

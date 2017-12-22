@@ -24,6 +24,7 @@ namespace Ryno{
 
 		U32 m_vbo;
 		U32 m_vao;
+		U32 m_i_vbo;
 		U32 m_index_vbo;
 
 		MeshManager* m_mesh_manager;

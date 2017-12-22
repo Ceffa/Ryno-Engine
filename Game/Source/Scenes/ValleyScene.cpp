@@ -20,7 +20,6 @@ namespace Ryno {
 		auto& eff = post_processor.add_effect("PostProcessing/mask", GAME);
 		eff.set_uniform("mask", 2);
 		post_processor.add_effect("PostProcessing/neg", GAME);
-		std::cout << post_processor.effects.size() << std::endl;
 
 		bt = game->texture_manager->load_png("brick.png", GAME);
 		bn = game->texture_manager->load_png("brick_normal.png", GAME);

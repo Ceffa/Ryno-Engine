@@ -59,7 +59,6 @@ namespace Ryno{
 	int power = 0;
 
 	void HouseScene::update(){
-
 		if (attach){
 			light[light_index].transform.set_position(camera->position.x, camera->position.y, camera->position.z);
 		}

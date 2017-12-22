@@ -56,7 +56,7 @@ namespace Ryno{
 		std::vector<glm::mat4> models_matrices;
 		std::vector<RenderBatchShadow> m_render_batches;
 		
-		static U8 compare_models(model_and_matrix a, model_and_matrix b);
+		const static bool compare_models(const model_and_matrix& a, const model_and_matrix& b);
 		
 		std::vector<U32> indices;
 

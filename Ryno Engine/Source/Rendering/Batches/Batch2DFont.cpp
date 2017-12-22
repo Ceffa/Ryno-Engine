@@ -10,28 +10,6 @@
 
 namespace Ryno {
 
-	U8 almost_equals(F32 a, F32 b){
-		if (abs(a - b) < 0.0001f)
-			return true;
-		return false;
-	}
-
-	U8 are_uvs_equals(glm::vec4* a, glm::vec4* b){
-		if (almost_equals(a->x, b->x) && almost_equals(a->y, b->y) && almost_equals(a->z, b->z) && almost_equals(a->w, b->w))
-			return true;
-		return false;
-	}
-
-	U8 compare_uvs(glm::vec4* a, glm::vec4* b){
-		if (almost_equals(a->x,b->x))
-			if (almost_equals(a->y,b->y))
-				if (almost_equals(a->z,b->z))
-					return a->w < b->w;
-				else return a->z < b->z;
-			else return a->y < b->y;
-		else return a->x < b->x;
-	}
-
 	void Batch2DFont::init() {
 	
 		create_vertex_array();
@@ -106,7 +84,7 @@ namespace Ryno {
 			//If a mesh has a different texture or mesh than the one before, i create a new batch
 			if (cg == 0	
 				|| m_font_glyphs[cg]->get_texture_id() != m_font_glyphs[cg - 1]->get_texture_id()
-				|| !are_uvs_equals(&m_font_glyphs[cg]->uv,&m_font_glyphs[cg - 1]->uv))
+				|| memcmp(&m_font_glyphs[cg]->uv,&m_font_glyphs[cg - 1]->uv,sizeof(glm::vec3))!=0)
 				
 			{
 				if (cg != 0){
@@ -261,10 +239,9 @@ namespace Ryno {
 	
 	}
 
-	U8 Batch2DFont::compare_models(FontGlyph* a, FontGlyph* b){
-		if (a->get_texture_id() == b->get_texture_id())
-			return compare_uvs(&a->uv, &b->uv);
-		return a->get_texture_id() < b->get_texture_id();
+	const bool Batch2DFont::compare_models(const FontGlyph* a, const FontGlyph* b){
+		I32 r = a->get_texture_id() - b->get_texture_id();
+		return r == 0 ? memcmp(&a->uv, &b->uv, sizeof(glm::vec3))<0 : r < 0;
 	}
 
 	

@@ -5,6 +5,7 @@
 #include <GLM/gtx/string_cast.hpp>
 #include "Log.h"
 #include "CPUProfiler.h"
+#include "TextureManager.h"
 
 namespace Ryno {
 
@@ -14,6 +15,8 @@ namespace Ryno {
 		m_mesh_manager = MeshManager::get_instance();
 		indices.resize(0);
 		input_instances = nullptr;
+		dither_tex = TextureManager::get_instance()->load_png("dither.png", ENGINE).id;
+
 
 	}
 	void Batch3DGeometry::set_camera(Camera3D* camera) {
@@ -218,7 +221,7 @@ namespace Ryno {
 			}
 
 		
-			
+			rb.model->material.set_uniform("dither_tex", dither_tex);
 			rb.model->material.send_uniforms_to_shader();
 			
 
@@ -234,7 +237,7 @@ namespace Ryno {
 
 	}
 
-	const U8 Batch3DGeometry::compare_models(SubModel* a, SubModel* b) {
+	const bool Batch3DGeometry::compare_models(const SubModel* a, const SubModel* b) {
 		const auto& ma = a->material;
 		const auto& mb = b->material;
 

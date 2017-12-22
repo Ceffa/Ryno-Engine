@@ -31,14 +31,14 @@ vec3 get_shaded_fragment(DirectionalLight dir_light, const MatInfo info) {
 
 	//Calculate base colors
 	vec3 diff_color = split3(dir_light.diffuse) * dir_light.diffuse_intensity * info.mat_diff_and_flat.xyz;
-	vec3 spec_color = split3(dir_light.specular) * info.mat_spec_and_pow.w * dir_light.specular_intensity * info.mat_spec_and_pow.xyz;
+	vec3 spec_color = split3(dir_light.specular)  * dir_light.specular_intensity * info.mat_spec_and_pow.xyz;
 	vec3 amb_final = split3(dir_light.ambient) * dir_light.ambient_intensity * info.mat_diff_and_flat.xyz;
 
 	//final colors for diffuse, specular and ambient
 	vec3 normal = info.normal_view_space.xyz;
 	float dotNL = max(0, dot(normal, view_dir_light));
 	vec3 diffuse_final = dotNL * diff_color;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.shininess);
+	vec3 specular_final = spec_color * pow(max(dot(half_dir, normal), 0.0001), dir_light.shininess * info.mat_spec_and_pow.w);
 
 	float shadow = get_shadow(info.position_world_space, dotNL);
 	vec3 final_color =  amb_final * ssao + lerp(shadow*(diffuse_final + specular_final), info.mat_diff_and_flat.xyz,info.mat_diff_and_flat.w);

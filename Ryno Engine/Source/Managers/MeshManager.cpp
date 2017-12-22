@@ -113,10 +113,8 @@ namespace Ryno{
 			
 
 			//Aboid rendering of invisible objects
-			float transp;
-			mat->Get(AI_MATKEY_OPACITY, transp);
-			if (transp < .9f)
-				continue;
+			float alpha = 0;
+			mat->Get(AI_MATKEY_OPACITY, alpha);
 
 			aiColor3D diffuse;
 			mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
@@ -134,6 +132,7 @@ namespace Ryno{
 			//Set colors
 			sm.material.set_attribute("diffuse_color", diffuse_final);
 			sm.material.set_attribute("specular_color", specular_final);
+			sm.material.set_attribute("alpha", alpha);
 
 			//Set textures
 			aiString tex_name;

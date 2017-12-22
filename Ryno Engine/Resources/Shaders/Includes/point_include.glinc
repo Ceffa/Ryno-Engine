@@ -27,12 +27,12 @@ vec3 get_shaded_fragment(PointLight point_light, const MatInfo info) {
 
 	//Calculate base colors
 	vec3 diff_color = split3(point_light.diffuse) * point_light.diffuse_intensity;
-	vec3 spec_color = split3(point_light.specular) * info.mat_spec_and_pow.w * point_light.specular_intensity;
+	vec3 spec_color = split3(point_light.specular) * info.mat_spec_and_pow.xyz * point_light.specular_intensity;
 
 
 	//final colors for diffuse and specular
 	vec3 diffuse_final = max(0, dot(info.normal_view_space.xyz, light_dir_view_space.xyz)) * diff_color * info.mat_diff_and_flat.xyz;
-	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, info.normal_view_space.xyz), 0.000001), point_light.shininess) *  info.mat_spec_and_pow.xyz* info.mat_spec_and_pow.w;
+	vec3 specular_final = spec_color * pow(max(dot(half_dir_view_space.xyz, info.normal_view_space.xyz), 0.000001), point_light.shininess * info.mat_spec_and_pow.w);
 
 	float shadow = get_shadow(-light_dir_world_space_not_normalized.xyz, point_light.radius);
 	vec3 final_color = lerp (shadow * (specular_final  + diffuse_final ) / attenuation, info.mat_diff_and_flat.xyz, info.mat_diff_and_flat.w);

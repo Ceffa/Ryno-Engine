@@ -151,7 +151,6 @@
     <None Include="Resources\Shaders\post.vert" />
     <None Include="Resources\Shaders\Others\blit2color.frag" />
     <None Include="Resources\Shaders\Others\blit2depth.frag" />
-    <None Include="Resources\Shaders\Others\blit2depth.vert" />
     <None Include="Resources\Shaders\ComputePass\dir_compute.comp" />
     <None Include="Resources\Shaders\Includes\global.glinc" />
     <None Include="Resources\Shaders\ComputePass\point_compute.comp" />
@@ -198,6 +197,7 @@
     <None Include="Resources\Shaders\SSAO\ssao.frag" />
     <None Include="Resources\Shaders\SSAO\ssao.vert" />
     <None Include="Resources\Shaders\Others\vert.vert" />
+    <None Include="Resources\Shaders\Includes\geom_include.glinc" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sounds\hum.wav">
