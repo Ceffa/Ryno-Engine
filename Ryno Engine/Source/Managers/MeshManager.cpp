@@ -146,6 +146,10 @@ namespace Ryno{
 			r = mat->GetTexture(aiTextureType_NORMALS, 0, &tex_name);
 			sm.material.set_uniform("normal_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
 		
+			r = mat->GetTexture(aiTextureType_OPACITY, 0, &tex_name);
+			sm.material.set_uniform("alpha_texture", r == aiReturn_SUCCESS ? text_man->load_png(name + "/" + tex_name.C_Str(), GAME).id : -1);
+
+
 			Mesh* mesh = new Mesh();
 
 			//Set vertices

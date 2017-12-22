@@ -15,15 +15,18 @@ layout(location = 3) out float out_depth;
 uniform sampler2D diffuse_texture;
 uniform sampler2D specular_texture;
 uniform sampler2D normal_texture;
+uniform sampler2D alpha_texture;
 
 
 
 void main() {
 
-	//Sample textures
-	vec4 text_diffuse = textureSize2D(diffuse_texture,0).x > 1 ? texture(diffuse_texture, uvs): vec4(0,0,0,0);
-	if (is_transparent(ivec2(gl_FragCoord.xy), _alpha))
+	//Discard alpha
+	float tex_alpha = textureSize2D(alpha_texture, 0).x > 1 ? texture(alpha_texture, uvs).r : 1;
+	if (is_transparent(ivec2(gl_FragCoord.xy), tex_alpha * _alpha))
 		discard;
+	//Sample textures
+	vec3 text_diffuse = textureSize2D(diffuse_texture,0).x > 1 ? texture(diffuse_texture, uvs).rgb	: vec3(0,0,0);
 	vec3 text_specular = textureSize2D(specular_texture,0).x > 1 ? texture(specular_texture, uvs).rgb : vec3(1,1,1);
 	vec3 text_normal = textureSize2D(normal_texture,0).x > 1 ? texture(normal_texture, uvs).rgb : vec3(.5,.5,1);
 
