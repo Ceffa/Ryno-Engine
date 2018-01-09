@@ -43,13 +43,8 @@ namespace Ryno {
 
 	}
 
-	void Batch3DGeometry::draw(Model* mod) {
-		U32 start_size = m_models.size();
-		U32 total_size = mod->sub_models.size() + start_size;
-		m_models.resize(total_size);
-
-		for (I32 i = start_size; i < total_size; i++)
-			m_models[i] = &mod->sub_models[i - start_size];
+	void Batch3DGeometry::draw(SubModel& s) {
+		m_models.push_back(&s);
 	}
 
 

@@ -14,6 +14,8 @@ namespace Ryno{
 
 		std::vector<Vertex3D> vertices;
 		std::vector<U32> indices;
+		F32 min_X, min_Y, min_Z, max_X, max_Y, max_Z;
+		void calculate_AABB();
 	};
 
 	class MeshManager{

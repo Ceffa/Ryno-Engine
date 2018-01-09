@@ -43,7 +43,7 @@ namespace Ryno{
 		void init(Camera3D* camera);
 		void set_camera(Camera3D* camera);
 
-		void draw(Model* m);
+		void draw(SubModel& m);
 
 		void render_batch();
 

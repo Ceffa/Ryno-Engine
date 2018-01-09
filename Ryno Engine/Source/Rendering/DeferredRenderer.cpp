@@ -207,12 +207,17 @@ namespace Ryno{
 		for (auto model : Model::models) {
 			if (!model->game_object->active)
 				continue;
-			for (SubModel& s : model->sub_models)
+			for (auto& s : model->sub_models) {
 				s.material.set_attribute("in_M", model->game_object->transform.hinerited_matrix * model->game_object->transform.model_matrix);
-			m_geometry_batch3d.draw(model);
-
-			if (need_shadows)
-				m_shadow_batch3d.draw(model);
+				std::cout << s.parent << std::endl;
+				
+				if (s.parent == nullptr)
+					continue;
+					m_geometry_batch3d.draw(s);
+				if (need_shadows)
+					m_shadow_batch3d.draw(s);
+			}
+			
 		}
 
 		m_shadow_batch3d.end();

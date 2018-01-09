@@ -39,7 +39,7 @@ namespace Ryno{
 		void begin();
 		void end();
 		
-		void draw(Model* go);
+		void draw(SubModel& s);
 
 		//Render batches with material-defined shaders
 		void render_batch();

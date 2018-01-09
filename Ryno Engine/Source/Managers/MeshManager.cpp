@@ -68,6 +68,7 @@ namespace Ryno{
 			
 		MeshBuilder::calculate_tangents(mesh);
 		
+		mesh->calculate_AABB();
 
 		if (loc == Owner::ENGINE)
 			lifetime_meshes.push_back(mesh);
@@ -176,6 +177,7 @@ namespace Ryno{
 				mesh->vertices.push_back(v);
 
 			}
+
 			//Set indices
 			for (GLuint i = 0; i < assimp_mesh->mNumFaces; i++)
 			{
@@ -193,7 +195,7 @@ namespace Ryno{
 				MeshBuilder::calculate_tangents(mesh);
 			}
 
-
+			mesh->calculate_AABB();
 			if (loc == Owner::ENGINE)
 				lifetime_meshes.push_back(mesh);
 			else
@@ -223,5 +225,18 @@ namespace Ryno{
 		}
 		lifetime_meshes.push_back(mesh);
 		return ++last_lifetime_mesh;
+	}
+
+	void Mesh::calculate_AABB() {
+		min_X = min_Y = min_Z = FLT_MAX;
+		max_X = max_Y = max_Z = FLT_MIN;
+		for (auto& v : vertices) {
+			min_X = std::min(min_X, v.position.x);
+			min_Y = std::min(min_Y, v.position.y);
+			min_Z = std::min(min_Z, v.position.z);
+			max_X = std::max(max_X, v.position.x);
+			max_Y = std::max(max_Y, v.position.y);
+			max_Z = std::max(max_Z, v.position.z);
+		}
 	}
 }
