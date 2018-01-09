@@ -7,6 +7,7 @@
 
 
 namespace Ryno{
+	class SubModel;
 	class Camera3D{
 	public:
 
@@ -31,6 +32,7 @@ namespace Ryno{
 
 		static glm::mat4 generate_P_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far);
 
+		bool check_frustum(const SubModel& s, const glm::mat4& matr) const;
 		
 		F32 movement_speed = 1.0f;
 		F32 rotation_speed = 0.5f;

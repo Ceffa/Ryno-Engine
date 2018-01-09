@@ -182,11 +182,11 @@ namespace Ryno{
 
 		//Iterate once and for all through the GameObject
 		//First generate individual model matrices
-		for (GameObject* go : GameObject::game_objects)
+		for (auto go : GameObject::game_objects)
 			if(go->active)
 				go->transform.generate_model_matrix();
 		//Then combine them
-		for (GameObject* go : GameObject::game_objects)
+		for (auto go : GameObject::game_objects)
 			if (go->active)
 				go->transform.combine_model_matrices();
 		
@@ -204,15 +204,15 @@ namespace Ryno{
 
 		bool need_shadows = lightInfo[DIR].shadows_enabled || lightInfo[POINT].shadows_enabled || lightInfo[SPOT].shadows_enabled;
 	
-		for (auto model : Model::models) {
-			if (!model->game_object->active)
+		for (auto go : GameObject::game_objects) {
+			auto m = go->get_component<Model>();
+			if (!go->active || !m)
 				continue;
-			for (auto& s : model->sub_models) {
-				s.material.set_attribute("in_M", model->game_object->transform.hinerited_matrix * model->game_object->transform.model_matrix);
-				std::cout << s.parent << std::endl;
+			for (auto& s : m->sub_models) {
+				glm::mat4 matr = m->game_object->transform.hinerited_matrix * m->game_object->transform.model_matrix;
+				s.material.set_attribute("in_M", matr);
 				
-				if (s.parent == nullptr)
-					continue;
+				if (m_camera->check_frustum(s, matr))
 					m_geometry_batch3d.draw(s);
 				if (need_shadows)
 					m_shadow_batch3d.draw(s);

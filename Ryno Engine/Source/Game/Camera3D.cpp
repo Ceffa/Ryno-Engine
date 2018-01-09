@@ -3,7 +3,9 @@
 #include <GLM/gtx/transform.hpp>
 #include <GLM/gtx/string_cast.hpp>
 #include <iostream>
+#include "Model.h"
 #include <math.h>
+#include "MeshManager.h"
 
 
 
@@ -23,6 +25,40 @@ namespace Ryno{
 
 	glm::mat4 Camera3D::generate_P_matrix(F32 angle, U32 width, U32 height, F32 near, F32 far){
 		return glm::perspective((F32)(angle * M_PI / 180.0),width/(F32) height, near, far);
+	}
+
+	bool Camera3D::check_frustum(const SubModel & s, const glm::mat4& matr) const
+	{
+		auto& m = *MeshManager::get_instance()->get_mesh(s.mesh);
+		glm::vec4 AABB[8]{};
+		bool insidePlane[6]{ false };
+		AABB[0] = glm::vec4(m.min_X, m.min_Y, m.min_Z, 1);
+		AABB[1] = glm::vec4(m.min_X, m.min_Y, m.max_Z, 1);
+		AABB[2] = glm::vec4(m.min_X, m.max_Y, m.min_Z, 1);
+		AABB[3] = glm::vec4(m.min_X, m.max_Y, m.max_Z, 1);
+		AABB[4] = glm::vec4(m.max_X, m.min_Y, m.min_Z, 1);
+		AABB[5] = glm::vec4(m.max_X, m.min_Y, m.max_Z, 1);
+		AABB[6] = glm::vec4(m.max_X, m.max_Y, m.min_Z, 1);
+		AABB[7] = glm::vec4(m.max_X, m.max_Y, m.max_Z, 1);
+
+		for (auto& p : AABB) {
+			p = VP_matrix * matr * p;
+			p = p / p.w;
+		}
+
+		for (auto& p : AABB) {
+			insidePlane[0] |= p.x > -1;
+			insidePlane[1] |= p.x < 1;
+			insidePlane[2] |= p.y > -1;
+			insidePlane[3] |= p.y < 1;
+			insidePlane[4] |= p.z > -1;
+			insidePlane[5] |= p.z < 1;
+		}
+		for (auto& b : insidePlane) {
+			if (!b)
+				return false;
+		}
+		return true;
 	}
 
 

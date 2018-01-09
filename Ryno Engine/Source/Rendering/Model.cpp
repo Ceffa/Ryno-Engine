@@ -22,12 +22,8 @@ namespace Ryno{
 	
 	Model::Model(const Model& cp) {
 		copy(cp);
-		models.insert(this);
 	}
 
-	
-
-	std::set<Model*> Model::models;
 
 	SubModel::SubModel(const SubModel& cp)
 	{
@@ -36,6 +32,7 @@ namespace Ryno{
 
 	void SubModel::copy(const SubModel& cp) {
 		cast_shadows = cp.cast_shadows;
+		parent = cp.parent;
 		mesh = cp.mesh;
 		material.copy(cp.material);
 	}

@@ -178,6 +178,7 @@ namespace Ryno{
 
 			}
 
+
 			//Set indices
 			for (GLuint i = 0; i < assimp_mesh->mNumFaces; i++)
 			{

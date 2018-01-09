@@ -25,12 +25,12 @@ namespace Ryno{
 	
 		SubModel& add_sub_model();
 
-		Model() { models.insert(this); }
-		~Model() { models.erase(this); }
+		Model() {  }
+		~Model() { }
 		void copy(const Model& cp);
 		Model(const Model& cp);
 		std::vector<SubModel> sub_models;
-		static std::set<Model*> models;
+
 
 		void update() override {}
 		void input() override {}
@@ -40,6 +40,7 @@ namespace Ryno{
 		virtual Model* clone() {
 			return new Model(*this);
 		}
+		Model& operator = (const Model &t) { copy(t); return *this; };
 
 	};
 }
