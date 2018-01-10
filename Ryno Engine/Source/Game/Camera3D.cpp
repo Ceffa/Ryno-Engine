@@ -4,6 +4,7 @@
 #include <GLM/gtx/string_cast.hpp>
 #include <iostream>
 #include "Model.h"
+#include "Log.h"
 #include <math.h>
 #include "MeshManager.h"
 
@@ -40,19 +41,21 @@ namespace Ryno{
 		AABB[5] = glm::vec4(m.max_X, m.min_Y, m.max_Z, 1);
 		AABB[6] = glm::vec4(m.max_X, m.max_Y, m.min_Z, 1);
 		AABB[7] = glm::vec4(m.max_X, m.max_Y, m.max_Z, 1);
+		
 
 		for (auto& p : AABB) {
 			p = VP_matrix * matr * p;
-			p = p / p.w;
+			p = p / abs(p.w);
 		}
+		
 
 		for (auto& p : AABB) {
-			insidePlane[0] |= p.x > -1;
-			insidePlane[1] |= p.x < 1;
-			insidePlane[2] |= p.y > -1;
-			insidePlane[3] |= p.y < 1;
-			insidePlane[4] |= p.z > -1;
-			insidePlane[5] |= p.z < 1;
+			insidePlane[0] |= p.x >= -1;
+			insidePlane[1] |= p.x <= 1;
+			insidePlane[2] |= p.y >= -1;
+			insidePlane[3] |= p.y <= 1;
+			insidePlane[4] |= p.z >= -1;
+			insidePlane[5] |= p.z <= 1;
 		}
 		for (auto& b : insidePlane) {
 			if (!b)

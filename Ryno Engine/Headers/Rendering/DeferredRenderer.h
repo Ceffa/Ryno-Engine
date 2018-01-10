@@ -219,6 +219,8 @@ namespace Ryno{
 
 		template <class T>
 		void fill_ssbo(U32 ssbo, std::vector<T>& vec) {
+			if (vec.size() == 0)
+				return;
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(T) * vec.size(), vec.data(), GL_DYNAMIC_READ);
 			GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);

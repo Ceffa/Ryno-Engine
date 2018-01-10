@@ -57,14 +57,15 @@ namespace Ryno{
 					camera->move_down(TimeManager::delta_time);
 				}
 			}
-			glm::vec2 mouse_coords = game->input_manager->get_mouse_movement();
-			camera->rotate(mouse_coords.x * TimeManager::delta_time, mouse_coords.y* TimeManager::delta_time);
-			glm::vec2 rotation_view = game->input_manager->get_controller_RX_coords();
-			camera->rotate(0.01f * rotation_view.x* TimeManager::delta_time, 0.01f* rotation_view.y* TimeManager::delta_time);
-			glm::vec2 direction = game->input_manager->get_controller_LX_coords();
-			camera->move_forward(TimeManager::delta_time *1.0f * -direction.y);
-			camera->move_right(TimeManager::delta_time * 1.0f * direction.x);
 		}
+		glm::vec2 mouse_coords = game->input_manager->get_mouse_movement();
+		camera->rotate(mouse_coords.x * TimeManager::delta_time, mouse_coords.y* TimeManager::delta_time);
+		glm::vec2 rotation_view = game->input_manager->get_controller_RX_coords();
+		camera->rotate(0.01f * rotation_view.x* TimeManager::delta_time, 0.01f* rotation_view.y* TimeManager::delta_time);
+		glm::vec2 direction = game->input_manager->get_controller_LX_coords();
+		camera->move_forward(TimeManager::delta_time *1.0f * -direction.y);
+		camera->move_right(TimeManager::delta_time * 1.0f * direction.x);
+		
 		camera->generate_matrices();
 		
 		/*Log::println("X: ");

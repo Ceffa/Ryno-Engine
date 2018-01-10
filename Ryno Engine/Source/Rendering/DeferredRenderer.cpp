@@ -16,7 +16,7 @@
 
 #define PI 3.14159265359
 #define HALF_PI 1.57079632679489661923
-
+#define TILED_MIN_LIGHTS 64
 
 
 namespace Ryno{
@@ -245,10 +245,20 @@ namespace Ryno{
 		std::vector<DirectionalLight*> lights_ptr{};
 		std::vector<DirLightStruct> computeLights{};
 
+		//Checks whether there are enough lights to trigger tiled
+		bool tiled = DirectionalLight::dir_lights.size() >= TILED_MIN_LIGHTS;
+		if (tiled) {
+			U32 nr_of_lights = 0;
+			for (auto l : DirectionalLight::dir_lights)
+				if (l->active && l->game_object->active)
+					nr_of_lights++;
+			tiled = nr_of_lights >= TILED_MIN_LIGHTS;
+		}
+
 		for (auto l : DirectionalLight::dir_lights){
 			if (!l->active || !l->game_object->active)
 				continue;
-			if (l->shadows && lightInfo[t].shadows_enabled) {
+			if (!tiled || (l->shadows && lightInfo[t].shadows_enabled)) {
 				lights.emplace_back(fillDirLightStruct(l));
 				lights_ptr.push_back(l);
 			}
@@ -289,11 +299,20 @@ namespace Ryno{
 		glm::vec4* tbo_handle = nullptr;
 		U32 counter = 0;
 
+		//Checks whether there are enough lights to trigger tiled
+		bool tiled = PointLight::point_lights.size() >= TILED_MIN_LIGHTS;
+		if (tiled) {
+			U32 nr_of_lights = 0;
+			for (auto l : PointLight::point_lights)
+				if (l->active && l->game_object->active)
+					nr_of_lights++;
+			tiled = nr_of_lights >= TILED_MIN_LIGHTS;
+		}
 		for (auto l : PointLight::point_lights) {
 			if (!l->active || !l->game_object->active)
 				continue;
 			auto ls = fillPointLightStruct(l);
-			if (l->shadows && lightInfo[t].shadows_enabled) {
+			if (!tiled || (l->shadows && lightInfo[t].shadows_enabled)) {
 				lights.emplace_back(ls);
 				lights_ptr.push_back(l);
 			}
@@ -339,11 +358,21 @@ namespace Ryno{
 		U32 counter = 0;
 		glm::vec4* tbo_handle = nullptr;
 
+		//Checks whether there are enough lights to trigger tiled
+		bool tiled = SpotLight::spot_lights.size() >= TILED_MIN_LIGHTS;
+		if (tiled) {
+			U32 nr_of_lights = 0;
+			for (auto l : SpotLight::spot_lights)
+				if (l->active && l->game_object->active)
+					nr_of_lights++;
+			tiled = nr_of_lights >= TILED_MIN_LIGHTS;
+		}
+
 		for (auto l : SpotLight::spot_lights) {
 			if (!l->active || !l->game_object->active)
 				continue;
 			auto ls = fillSpotLightStruct(l);
-			if (l->shadows && lightInfo[t].shadows_enabled) {
+			if (!tiled ||(l->shadows && lightInfo[t].shadows_enabled)) {
 				lights.emplace_back(ls);
 				lights_ptr.push_back(l);
 			}
