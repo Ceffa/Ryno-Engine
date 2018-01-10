@@ -9,6 +9,8 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtx/transform.hpp>
 #include <GLM/gtx/string_cast.hpp>
+#include <future>
+
 
 #include "Emitter.h"
 
@@ -219,9 +221,12 @@ namespace Ryno{
 			}
 			
 		}
-
-		m_shadow_batch3d.end();
+		CPUProfiler::start_time();
+		auto ss = std::async(std::launch::async, &Batch3DShadow::end, &m_shadow_batch3d);
 		m_geometry_batch3d.end();
+		ss.get();
+		CPUProfiler::cout_time();
+
 
 	}
 
